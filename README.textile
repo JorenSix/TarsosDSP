@@ -1,0 +1,26 @@
+h1. TarsosDSP
+
+Is a collection of classes to do simple audio processing. It features 
+an implementation of a percussion onset detector and two pitch detection
+algorithms: Yin and the Mcleod Pitch method.
+ 
+Its aim is to provide a simple interface to some audio (signal) processing
+algorithms.
+
+E.g. if you would want to detect pitch in a wav file:
+
+AudioInputStream inputStream = AudioSystem.getAudioInputStream(testFile);
+AudioDispatcher dispatcher = new AudioDispatcher(inputStream,stepSize,overlap);
+dispatcher.addAudioProcessor(new HighPass(startFrequency, sampleRate, overlap));
+dispatcher.addAudioProcessor(new LowPassFS(stopFrequency, sampleRate, overlap));
+dispatcher.addAudioProcessor(new FloatConverter(format));
+dispatcher.addAudioProcessor(new WaveformWriter(format,stepSize, overlap, "filtered.wav"));
+dispatcher.run();
+
+
+
+h2. Credits
+
+Tarsos is developed at University College Ghent, Faculty of Music 
+
+"http://cons.hogent.be":http://cons.hogent.be
