@@ -9,6 +9,7 @@ algorithms.
 
 E.g. if you would want to detect pitch in a wav file:
 
+<code>
 AudioInputStream inputStream = AudioSystem.getAudioInputStream(testFile);
 AudioDispatcher dispatcher = new AudioDispatcher(inputStream,stepSize,overlap);
 dispatcher.addAudioProcessor(new HighPass(startFrequency, sampleRate, overlap));
@@ -16,8 +17,12 @@ dispatcher.addAudioProcessor(new LowPassFS(stopFrequency, sampleRate, overlap));
 dispatcher.addAudioProcessor(new FloatConverter(format));
 dispatcher.addAudioProcessor(new WaveformWriter(format,stepSize, overlap, "filtered.wav"));
 dispatcher.run();
+</code>
 
-
+The source tree is divided in three directories: 
+* @src@ contains the core class files. 
+* @examples@ contains a couple of examples with a user interface
+* @test@ contains unit tests. 
 
 h2. Credits
 
