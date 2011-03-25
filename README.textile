@@ -1,14 +1,12 @@
 h1. TarsosDSP
 
-Is a collection of classes to do simple audio processing. It features 
-an implementation of a percussion onset detector and two pitch detection
-algorithms: Yin and the Mcleod Pitch method.
+TarsosDSP is a collection of classes to do simple audio processing. It features an implementation of a percussion onset detector and two pitch detection algorithms: Yin and the Mcleod Pitch method. 
  
-Its aim is to provide a simple interface to some audio (signal) processing
-algorithms.
+Its aim is to provide a simple interface to some audio (signal) processing algorithms implemented in JAVA.
 
-E.g. if you would want to detect pitch in a wav file:
+The following example filters a band of frequencies of an input file @testFile@. It keeps the frequencies form @startFrequency@ to @stopFrequency@. 
 
+<pre>
 <code>
 AudioInputStream inputStream = AudioSystem.getAudioInputStream(testFile);
 AudioDispatcher dispatcher = new AudioDispatcher(inputStream,stepSize,overlap);
@@ -18,14 +16,14 @@ dispatcher.addAudioProcessor(new FloatConverter(format));
 dispatcher.addAudioProcessor(new WaveformWriter(format,stepSize, overlap, "filtered.wav"));
 dispatcher.run();
 </code>
+</pre>
 
 The source tree is divided in three directories: 
 * @src@ contains the core class files. 
-* @examples@ contains a couple of examples with a user interface
+* @examples@ contains a couple of examples with a user interface. 
 * @test@ contains unit tests. 
 
 h2. Credits
 
-Tarsos is developed at University College Ghent, Faculty of Music 
-
+"Tarsos":http://tarsos.0110.be and TarsosDSP is developed at University College Ghent, Faculty of Music
 "http://cons.hogent.be":http://cons.hogent.be
