@@ -19,14 +19,14 @@ public class UtterAsteriksPanel extends JPanel {
 	private long lastReset;
 	private int score;
 	
-	double[] pattern={200,400,600,200};
+	double[] pattern={400,400,600,400,900,800,400,400,600,400,1100,900};
 	// 0.5 1 1.5 2 2.5 
 	
 	ArrayList<Double> startTimeStamps;
 	ArrayList<Double> pitches;
 	
 	public UtterAsteriksPanel(){
-		patternLength = 5;
+		patternLength = 8;
 		currentMarker = 0;
 		startTimeStamps = new ArrayList<Double>();
 		pitches = new ArrayList<Double>();
