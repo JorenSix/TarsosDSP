@@ -24,7 +24,7 @@ public class InputPanel extends JPanel {
 	
 	public InputPanel(){
 		super(new GridLayout(0,1));
-		this.setBorder(new TitledBorder("Choose a microphone input"));
+		this.setBorder(new TitledBorder("1. Choose a microphone input"));
 		ButtonGroup group = new ButtonGroup();
 		for(Mixer.Info info : Shared.getMixerInfo(false, true)){
 			JRadioButton button = new JRadioButton();

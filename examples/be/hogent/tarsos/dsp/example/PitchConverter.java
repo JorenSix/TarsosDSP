@@ -15,7 +15,7 @@ public final class PitchConverter {
 	}
 
 	/**
-	 * C-1 = 16.35/2 Hz.
+	 * C-1 = 16.35 / 2 Hz.
 	 */
 	private static final double REF_FREQ = 8.17579892;
 
@@ -133,7 +133,7 @@ public final class PitchConverter {
 
 	/**
 	 * Converts a frequency in Hz to a MIDI CENT value using
-	 * <code>(12 � log2 (f / 440)) + 69</code> <br>
+	 * <code>(12 * log2 (f / 440)) + 69</code> <br>
 	 * E.g.<br>
 	 * <code>69.168 MIDI CENTS = MIDI NOTE 69  + 16,8 cents</code><br>
 	 * <code>69.168 MIDI CENTS = 440Hz + x Hz</code>

@@ -285,6 +285,4 @@ public final class AudioDispatcher implements Runnable {
 		final AudioInputStream stream = new AudioInputStream(bais, audioFormat, length);
 		return new AudioDispatcher(stream, audioBufferSize, bufferOverlap);
 	}
-
-
 }

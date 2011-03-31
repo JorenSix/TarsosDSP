@@ -1,6 +1,9 @@
 package be.hogent.tarsos.dsp.example;
 
 import java.awt.BorderLayout;
+import java.awt.GridLayout;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 import java.lang.reflect.InvocationTargetException;
@@ -12,9 +15,12 @@ import javax.sound.sampled.LineUnavailableException;
 import javax.sound.sampled.Mixer;
 import javax.sound.sampled.TargetDataLine;
 import javax.sound.sampled.UnsupportedAudioFileException;
+import javax.swing.ButtonGroup;
 import javax.swing.JFrame;
 import javax.swing.JPanel;
+import javax.swing.JRadioButton;
 import javax.swing.SwingUtilities;
+import javax.swing.border.TitledBorder;
 
 import be.hogent.tarsos.dsp.AudioDispatcher;
 import be.hogent.tarsos.dsp.PitchProcessor;
@@ -23,17 +29,50 @@ import be.hogent.tarsos.dsp.PitchProcessor.PitchEstimationAlgorithm;
 
 public class UtterAsterisk extends JFrame implements DetectedPitchHandler {
 	
-	AudioDispatcher dispatcher;
-	Mixer currentMixer;
-	UtterAsteriksPanel panel;
+	private final UtterAsteriskPanel panel;
+	private AudioDispatcher dispatcher;
+	private Mixer currentMixer;	
+	private PitchEstimationAlgorithm algo;	
+	private ActionListener alogChangeListener = new ActionListener(){
+		@Override
+		public void actionPerformed(final ActionEvent e) {
+			String name = e.getActionCommand();
+			PitchEstimationAlgorithm newAlgo = PitchEstimationAlgorithm.valueOf(name);
+			algo = newAlgo;
+			try {
+				setNewMixer(currentMixer);
+			} catch (LineUnavailableException e1) {
+				e1.printStackTrace();
+			} catch (UnsupportedAudioFileException e1) {
+				e1.printStackTrace();
+			}
+	}};
 	
 	public UtterAsterisk(){
 		this.setLayout(new BorderLayout());
 		this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-		this.setTitle("UtterAsteriks");
+		this.setTitle("UtterAsterisk");
+		
+		panel = new UtterAsteriskPanel();
+		
+		
+		algo = PitchEstimationAlgorithm.YIN;
+		
+		JPanel pitchDetectionPanel = new JPanel(new GridLayout(0,1));
+		pitchDetectionPanel.setBorder(new TitledBorder("2. Choose a pitch detection algorithm"));
+		ButtonGroup group = new ButtonGroup();
+		for (PitchEstimationAlgorithm value : PitchEstimationAlgorithm.values()) {
+			JRadioButton button = new JRadioButton();
+			button.setText(value.toString());
+			pitchDetectionPanel.add(button);
+			group.add(button);
+			button.setSelected(value == algo);
+			button.setActionCommand(algo.name());
+			button.addActionListener(alogChangeListener);
+		}
 		
 		JPanel inputPanel = new InputPanel();
-		add(inputPanel,BorderLayout.NORTH);
+	
 		inputPanel.addPropertyChangeListener("mixer",
 				new PropertyChangeListener() {
 					@Override
@@ -49,10 +88,21 @@ public class UtterAsterisk extends JFrame implements DetectedPitchHandler {
 						}
 					}
 				});
-		panel = new UtterAsteriksPanel();
 		
-		this.add(panel,BorderLayout.CENTER);
+		JPanel containerPanel = new JPanel(new GridLayout(1,0));
+		containerPanel.add(inputPanel);
+		containerPanel.add(pitchDetectionPanel);
+		this.add(containerPanel,BorderLayout.NORTH);
+		
+		JPanel otherContainer = new JPanel(new BorderLayout());
+		otherContainer.add(panel,BorderLayout.CENTER);
+		otherContainer.setBorder(new TitledBorder("3. Utter a sound (whistling works best)"));
+			
+		this.add(otherContainer,BorderLayout.CENTER);
 	}
+
+	
+	
 	
 	private void setNewMixer(Mixer mixer) throws LineUnavailableException, UnsupportedAudioFileException {
 
@@ -68,7 +118,7 @@ public class UtterAsterisk extends JFrame implements DetectedPitchHandler {
 		//textArea.append("Started listening with " + mixer.getMixerInfo().getName() + "\n\tparams: " + threshold + "dB\n");
 
 		final AudioFormat format = new AudioFormat(sampleRate, 16, 1, true,
-				true);
+				false);
 		final DataLine.Info dataLineInfo = new DataLine.Info(
 				TargetDataLine.class, format);
 		TargetDataLine line;
@@ -83,11 +133,10 @@ public class UtterAsterisk extends JFrame implements DetectedPitchHandler {
 				overlap);
 
 		// add a processor, handle percussion event.
-		dispatcher.addAudioProcessor(new PitchProcessor(PitchEstimationAlgorithm.YIN, sampleRate, bufferSize, overlap, 0, this));
+		dispatcher.addAudioProcessor(new PitchProcessor(algo, sampleRate, bufferSize, overlap, 0, this));
 
 		// run the dispatcher (on a new thread).
 		new Thread(dispatcher,"Audio dispatching").start();
-		
 	}
 
 	/**

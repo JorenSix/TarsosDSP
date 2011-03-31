@@ -8,7 +8,7 @@ import java.util.ArrayList;
 
 import javax.swing.JPanel;
 
-public class UtterAsteriksPanel extends JPanel {
+public class UtterAsteriskPanel extends JPanel {
 	
 	/**
 	 * 
@@ -25,7 +25,7 @@ public class UtterAsteriksPanel extends JPanel {
 	ArrayList<Double> startTimeStamps;
 	ArrayList<Double> pitches;
 	
-	public UtterAsteriksPanel(){
+	public UtterAsteriskPanel(){
 		patternLength = 8;
 		currentMarker = 0;
 		startTimeStamps = new ArrayList<Double>();
@@ -54,7 +54,7 @@ public class UtterAsteriksPanel extends JPanel {
 		}
 		
 		
-		graphics.setBackground(Color.GRAY);
+		graphics.setColor(Color.GRAY);
 		for(int i = 0 ; i < pattern.length ; i++){
 			int patternWidth = (int) (0.5 / (double) patternLength * getWidth());//0.5 seconds
 			int patternHeight = (int) (30.0 / 1200.0 * getHeight());
@@ -63,13 +63,13 @@ public class UtterAsteriksPanel extends JPanel {
 			graphics.drawRect(patternX, patternY, patternWidth, patternHeight);
 		}
 		
-		graphics.setBackground(Color.RED);
+		graphics.setColor(Color.RED);
 		for(int i = 0 ; i < pitches.size() ; i++){
 			double pitchInCents = pitches.get(i);
 			double startTimeStamp = startTimeStamps.get(i) % patternLength;
 			int patternX = (int) ( startTimeStamp / (double) patternLength * getWidth());
 			int patternY = getHeight() - (int) (pitchInCents / 1200.0 * getHeight());
-			graphics.drawRect(patternX, patternY, 3, 3);
+			graphics.drawRect(patternX, patternY, 2,2);
 		}
 	}
 	
@@ -100,9 +100,4 @@ public class UtterAsteriksPanel extends JPanel {
 	
 		this.repaint();
 	}
-	
-	
-	
-	
-
 }
