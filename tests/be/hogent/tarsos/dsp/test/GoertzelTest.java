@@ -1,8 +1,22 @@
 package be.hogent.tarsos.dsp.test;
 
+import static org.junit.Assert.assertEquals;
+
+import java.io.ByteArrayInputStream;
+
+import javax.sound.sampled.AudioFormat;
+import javax.sound.sampled.AudioInputStream;
+import javax.sound.sampled.LineUnavailableException;
+import javax.sound.sampled.UnsupportedAudioFileException;
+
 import org.junit.Test;
 
+import be.hogent.tarsos.dsp.AudioDispatcher;
+import be.hogent.tarsos.dsp.BlockingAudioPlayer;
+import be.hogent.tarsos.dsp.SilenceDetector;
 import be.hogent.tarsos.dsp.pitch.Goertzel;
+import be.hogent.tarsos.dsp.pitch.Goertzel.FrequencyDetectedHandler;
+import be.hogent.tarsos.dsp.util.AudioFloatConverter;
 
 public class GoertzelTest {
 	
@@ -20,24 +34,51 @@ public class GoertzelTest {
 	}
 	
 	@Test
-	public void testDetection(){
-		int size = 8820;
-		Goertzel goertzel = new Goertzel(44100,size);
-		int presentFrequency = 6000;
+	public void testDetection() throws LineUnavailableException, UnsupportedAudioFileException{
 		
-		float[] audio = testAudioBufferSine(presentFrequency, size);
-		
-		for(int i = 0 ; i < 100 ; i ++){
-			System.out.println(audio[i]);
+		final float[][] floatSinBuffer = {testAudioBufferSine(6000,10240),testAudioBufferSine(5000,10240),testAudioBufferSine(4000,10240)};
+
+		int size = 0;
+		for(int i = 0 ; i < floatSinBuffer.length ; i ++){
+			size += floatSinBuffer[i].length;
 		}
 		
-		int stepsize = presentFrequency / 100;
 		
-		for(int i = 0 ; i < 200; i++){
-			int guessFrequency = stepsize * i;
-			double value = goertzel.process(audio,guessFrequency);
-			System.out.println("Trying freq " + guessFrequency + " value: " + value + " actual frequency: " + presentFrequency);			
+		final float[] floatBuffer = new float[size];
+		
+		
+		for(int i = 0 ; i < floatSinBuffer.length ; i ++){
+			int index = 0;
+			for(int j = 0 ; j < floatSinBuffer[i].length ; j++){
+				floatBuffer[index] = floatSinBuffer[i][j];
+				index++;
+			}
 		}
+
+		final AudioFormat format = new AudioFormat(44100, 16, 1, true, false);
+		final AudioFloatConverter converter = AudioFloatConverter
+				.getConverter(format);
+		final byte[] byteBuffer = new byte[floatBuffer.length
+				* format.getFrameSize()];
+		assertEquals("Specified 16 bits so framesize should be 2.", 2,
+				format.getFrameSize());
+		converter.toByteArray(floatBuffer, byteBuffer);
+		final ByteArrayInputStream bais = new ByteArrayInputStream(byteBuffer);
+		final AudioInputStream inputStream = new AudioInputStream(bais, format,
+				floatBuffer.length);
+		final AudioDispatcher dispatcher = new AudioDispatcher(inputStream,
+				1024, 0);
+		
+		float[] frequencies = {6000,4000,3000};
+		
+        dispatcher.addAudioProcessor(new Goertzel(44100,1024,frequencies,new FrequencyDetectedHandler() {
+			@Override
+			public void detectedFrequency(double frequency) {
+				System.out.println(frequency + " detected");
+			}
+		}));
+        dispatcher.addAudioProcessor(new BlockingAudioPlayer(format,1024, 0));
+        dispatcher.run();
 	}
 
 }
