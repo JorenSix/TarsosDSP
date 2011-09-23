@@ -20,8 +20,6 @@ public class InputPanel extends JPanel {
 	
 	Mixer mixer = null;
 	
-	
-	
 	public InputPanel(){
 		super(new GridLayout(0,1));
 		this.setBorder(new TitledBorder("1. Choose a microphone input"));

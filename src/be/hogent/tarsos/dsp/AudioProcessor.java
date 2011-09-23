@@ -32,6 +32,7 @@ public interface AudioProcessor {
      *            The buffer to process using the float data type.
      * @param audioByteBuffer
      *            The buffer to process using raw bytes.
+     * @return False if the chain needs to stop here, true otherwise. This can be used to implement e.g. a silence detector.
      */
     boolean processOverlapping(final float[] audioFloatBuffer, final byte[] audioByteBuffer);
 
