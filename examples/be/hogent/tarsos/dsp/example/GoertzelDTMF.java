@@ -1,0 +1,181 @@
+package be.hogent.tarsos.dsp.example;
+
+import static org.junit.Assert.assertEquals;
+
+import java.awt.BorderLayout;
+import java.awt.Font;
+import java.awt.GridLayout;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.awt.event.KeyAdapter;
+import java.awt.event.KeyEvent;
+import java.io.ByteArrayInputStream;
+
+import javax.sound.sampled.AudioFormat;
+import javax.sound.sampled.AudioInputStream;
+import javax.sound.sampled.LineUnavailableException;
+import javax.sound.sampled.UnsupportedAudioFileException;
+import javax.swing.JButton;
+import javax.swing.JFrame;
+import javax.swing.JLabel;
+import javax.swing.JPanel;
+import javax.swing.JProgressBar;
+import javax.swing.SwingUtilities;
+import javax.swing.UIManager;
+import javax.swing.border.TitledBorder;
+
+import be.hogent.tarsos.dsp.AudioDispatcher;
+import be.hogent.tarsos.dsp.AudioProcessor;
+import be.hogent.tarsos.dsp.BlockingAudioPlayer;
+import be.hogent.tarsos.dsp.pitch.DTMF;
+import be.hogent.tarsos.dsp.pitch.Goertzel;
+import be.hogent.tarsos.dsp.pitch.Goertzel.FrequenciesDetectedHandler;
+import be.hogent.tarsos.dsp.util.AudioFloatConverter;
+
+public class GoertzelDTMF extends JFrame implements ActionListener{
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = -1143769091770146361L;
+	
+	private KeyAdapter keyAdapter = new KeyAdapter() {
+		@Override
+		public void keyPressed(KeyEvent event) {
+			if(DTMF.isDTMFCharacter(event.getKeyChar())){
+				try {
+					process(event.getKeyChar());
+				} catch (UnsupportedAudioFileException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				} catch (LineUnavailableException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
+			}
+		}
+	};
+	
+	private final int stepSize = 256;
+	
+	private final AudioProcessor goertzelAudioProcessor = new Goertzel(44100, stepSize,DTMF.DTMF_FREQUENCIES, new FrequenciesDetectedHandler() {
+		@Override
+		public void handleDetectedFrequencies(final double[] frequencies, final double[] powers, final double[] allFrequencies, final double allPowers[]) {
+			if (frequencies.length == 2) {
+				int rowIndex = -1;
+				int colIndex = -1;
+				for (int i = 0; i < 4; i++) {
+					if (frequencies[0] == DTMF.DTMF_FREQUENCIES[i] || frequencies[1] == DTMF.DTMF_FREQUENCIES[i])
+						rowIndex = i;
+				}
+				for (int i = 4; i < DTMF.DTMF_FREQUENCIES.length; i++) {
+					if (frequencies[0] == DTMF.DTMF_FREQUENCIES[i] || frequencies[1] == DTMF.DTMF_FREQUENCIES[i])
+						colIndex = i-4;
+				}
+				if(rowIndex>=0 && colIndex>=0){
+					detectedChar.setText(""+DTMF.DTMF_CHARACTERS[rowIndex][colIndex]);
+					for (int i = 0; i < allPowers.length; i++) {
+						powerBars[i].setValue((int) allPowers[i]);
+					}
+				}
+			}
+		}
+	});
+	
+	private final JProgressBar[] powerBars;
+	private final JLabel detectedChar = new JLabel(" ");
+	
+	public GoertzelDTMF(){
+		this.getContentPane().setLayout(new BorderLayout(5,3));
+		this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+		
+		JPanel detectionPanel = new JPanel(new GridLayout(DTMF.DTMF_FREQUENCIES.length,2,5,3));
+		powerBars = new JProgressBar[DTMF.DTMF_FREQUENCIES.length];
+		for(int i= 0 ; i < DTMF.DTMF_FREQUENCIES.length ; i++){
+			detectionPanel.add(new JLabel(DTMF.DTMF_FREQUENCIES[i] + "Hz"));
+			powerBars[i] = new JProgressBar(-30,50);
+			detectionPanel.add(powerBars[i]);
+			powerBars[i].setValue(-30);
+		}
+		detectionPanel.setBorder(new TitledBorder("Detected Powers"));
+		
+		
+		
+		JPanel labelPanel = new JPanel(new BorderLayout());
+		labelPanel.add(detectionPanel,BorderLayout.NORTH);
+		
+		detectedChar.setBorder(new TitledBorder("Detected character"));
+		detectedChar.setHorizontalAlignment(JLabel.CENTER);
+		
+		Font f = new Font("Police", Font.PLAIN, 20);
+		detectedChar.setFont(f);
+		
+		labelPanel.add(detectedChar,BorderLayout.CENTER);
+		
+		JPanel dailPad = new JPanel(new GridLayout(4,4));
+		dailPad.setBorder(new TitledBorder("DailPad"));
+		for(int row = 0 ; row < DTMF.DTMF_CHARACTERS.length ; row++){
+			for(int col = 0 ; col < DTMF.DTMF_CHARACTERS[row].length ; col++){
+				JButton numberButton = new JButton(DTMF.DTMF_CHARACTERS[row][col]+"");
+				numberButton.addActionListener(this);
+				numberButton.addKeyListener(keyAdapter);
+				dailPad.add(numberButton);
+			}
+		}
+		this.addKeyListener(keyAdapter);
+		dailPad.addKeyListener(keyAdapter);
+		this.add(labelPanel,BorderLayout.SOUTH);
+		this.add(dailPad,BorderLayout.CENTER);
+	}
+
+	public static void main(String...strings){
+		SwingUtilities.invokeLater(new Runnable() {
+			@Override
+			public void run() {
+				try {
+					UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
+				} catch (Exception e) {
+					
+				}
+				JFrame frame = new GoertzelDTMF();
+				frame.pack();
+				frame.setSize(200,420);
+				frame.setVisible(true);
+			}
+		});
+	}
+
+	@Override
+	public void actionPerformed(ActionEvent event) {
+		JButton button = ((JButton) event.getSource());
+		//System.out.println(button.getText().charAt(0));
+		try {
+			process(button.getText().charAt(0));
+		} catch (UnsupportedAudioFileException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (LineUnavailableException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+	}
+	
+	public void process(char character) throws UnsupportedAudioFileException, LineUnavailableException{
+		final float[] floatBuffer = DTMF.generateDTMFTone(character);
+		
+		final AudioFormat format = new AudioFormat(44100, 16, 1, true, false);
+		final AudioFloatConverter converter = AudioFloatConverter.getConverter(format);
+		final byte[] byteBuffer = new byte[floatBuffer.length * format.getFrameSize()];
+		assertEquals("Specified 16 bits so framesize should be 2.", 2, format.getFrameSize());
+		converter.toByteArray(floatBuffer, byteBuffer);
+		final ByteArrayInputStream bais = new ByteArrayInputStream(byteBuffer);
+		
+		final AudioInputStream inputStream = new AudioInputStream(bais, format,floatBuffer.length);
+		final AudioDispatcher dispatcher = new AudioDispatcher(inputStream, stepSize, 0);
+		
+		dispatcher.addAudioProcessor(goertzelAudioProcessor);
+		dispatcher.addAudioProcessor(new BlockingAudioPlayer(format, stepSize, 0));
+		//dispatcher.run();
+		new Thread(dispatcher).start();
+		
+	}
+}
