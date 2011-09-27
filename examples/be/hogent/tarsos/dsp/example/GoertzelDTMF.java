@@ -1,7 +1,5 @@
 package be.hogent.tarsos.dsp.example;
 
-import static org.junit.Assert.assertEquals;
-
 import java.awt.BorderLayout;
 import java.awt.Font;
 import java.awt.GridLayout;
@@ -32,6 +30,10 @@ import be.hogent.tarsos.dsp.pitch.Goertzel;
 import be.hogent.tarsos.dsp.pitch.Goertzel.FrequenciesDetectedHandler;
 import be.hogent.tarsos.dsp.util.AudioFloatConverter;
 
+/**
+ * An example of DTMF ( Dual-tone multi-frequency signaling ) decoding with the Goertzel algorithm.
+ * @author Joren Six
+ */
 public class GoertzelDTMF extends JFrame implements ActionListener{
 	/**
 	 * 
@@ -98,8 +100,6 @@ public class GoertzelDTMF extends JFrame implements ActionListener{
 		}
 		detectionPanel.setBorder(new TitledBorder("Detected Powers"));
 		
-		
-		
 		JPanel labelPanel = new JPanel(new BorderLayout());
 		labelPanel.add(detectionPanel,BorderLayout.NORTH);
 		
@@ -123,8 +123,9 @@ public class GoertzelDTMF extends JFrame implements ActionListener{
 		}
 		this.addKeyListener(keyAdapter);
 		dailPad.addKeyListener(keyAdapter);
-		this.add(labelPanel,BorderLayout.SOUTH);
+		
 		this.add(dailPad,BorderLayout.CENTER);
+		this.add(labelPanel,BorderLayout.SOUTH);
 	}
 
 	public static void main(String...strings){
@@ -134,7 +135,7 @@ public class GoertzelDTMF extends JFrame implements ActionListener{
 				try {
 					UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
 				} catch (Exception e) {
-					
+					//ignore failure to set default look en feel;
 				}
 				JFrame frame = new GoertzelDTMF();
 				frame.pack();
@@ -159,22 +160,23 @@ public class GoertzelDTMF extends JFrame implements ActionListener{
 		}
 	}
 	
+	/**
+	 * Process a DTMF character: generate sound and decode the sound.
+	 * @param character The character.
+	 * @throws UnsupportedAudioFileException
+	 * @throws LineUnavailableException
+	 */
 	public void process(char character) throws UnsupportedAudioFileException, LineUnavailableException{
-		final float[] floatBuffer = DTMF.generateDTMFTone(character);
-		
+		final float[] floatBuffer = DTMF.generateDTMFTone(character);		
 		final AudioFormat format = new AudioFormat(44100, 16, 1, true, false);
 		final AudioFloatConverter converter = AudioFloatConverter.getConverter(format);
 		final byte[] byteBuffer = new byte[floatBuffer.length * format.getFrameSize()];
-		assertEquals("Specified 16 bits so framesize should be 2.", 2, format.getFrameSize());
 		converter.toByteArray(floatBuffer, byteBuffer);
-		final ByteArrayInputStream bais = new ByteArrayInputStream(byteBuffer);
-		
+		final ByteArrayInputStream bais = new ByteArrayInputStream(byteBuffer);		
 		final AudioInputStream inputStream = new AudioInputStream(bais, format,floatBuffer.length);
-		final AudioDispatcher dispatcher = new AudioDispatcher(inputStream, stepSize, 0);
-		
+		final AudioDispatcher dispatcher = new AudioDispatcher(inputStream, stepSize, 0);		
 		dispatcher.addAudioProcessor(goertzelAudioProcessor);
 		dispatcher.addAudioProcessor(new BlockingAudioPlayer(format, stepSize, 0));
-		//dispatcher.run();
 		new Thread(dispatcher).start();
 		
 	}
