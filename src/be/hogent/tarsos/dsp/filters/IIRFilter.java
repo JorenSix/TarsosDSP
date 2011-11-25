@@ -64,6 +64,7 @@ public abstract class IIRFilter implements AudioProcessor {
 	 *            the cutoff frequency
 	 * @param sampleRate
 	 *            the sample rate of audio to be filtered
+	 * @param overlap The overlap in samples.
 	 */
 	public IIRFilter(float freq, float sampleRate,int overlap) {
 		this.sampleRate = sampleRate;

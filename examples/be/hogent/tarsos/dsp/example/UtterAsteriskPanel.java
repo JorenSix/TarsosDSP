@@ -18,15 +18,21 @@ public class UtterAsteriskPanel extends JPanel {
 	private double currentMarker;
 	private long lastReset;
 	private int score;
+	private double patternLengthInQuarterNotes;
 	
-	double[] pattern={400,400,600,400,900,800,400,400,600,400,1100,900};
-	// 0.5 1 1.5 2 2.5 
+	private static final double CENTS_DEVIATION = 30.0;
+	
+	double[] pattern={400,400,600,400,900,800,400,400,600,400,1100,900}; // in cents
+	double[] timing ={3  ,1  ,4  ,4  ,4  ,6  ,3  ,1  ,4  ,4  ,4  ,6   }; //in eight notes
 	
 	ArrayList<Double> startTimeStamps;
 	ArrayList<Double> pitches;
 	
 	public UtterAsteriskPanel(){
-		patternLength = 8;
+		for(double timeInQuarterNotes : timing){
+			patternLengthInQuarterNotes+=timeInQuarterNotes;
+		}
+		patternLength = 12;
 		currentMarker = 0;
 		startTimeStamps = new ArrayList<Double>();
 		pitches = new ArrayList<Double>();
@@ -41,6 +47,7 @@ public class UtterAsteriskPanel extends JPanel {
 		graphics.setBackground(Color.WHITE);
 		graphics.clearRect(0, 0, getWidth(), getHeight());
 		int x = (int) (currentMarker / (float) patternLength * getWidth());
+	
 		if(x < 3 && System.currentTimeMillis() - lastReset > 1000){
 			lastReset = System.currentTimeMillis();
 			score();
@@ -55,12 +62,16 @@ public class UtterAsteriskPanel extends JPanel {
 		
 		
 		graphics.setColor(Color.GRAY);
+		double lengthPerQuarterNote = patternLength/patternLengthInQuarterNotes; // in seconds per quarter note
+		double currentXPosition = 0.5; // seconds of pause before start
 		for(int i = 0 ; i < pattern.length ; i++){
-			int patternWidth = (int) (0.5 / (double) patternLength * getWidth());//0.5 seconds
-			int patternHeight = (int) (30.0 / 1200.0 * getHeight());
-			int patternX = (int) ( (0.5 + 0.5 * i) / (double) patternLength * getWidth());
+			double lengthInSeconds = timing[i] * lengthPerQuarterNote;//seconds
+			int patternWidth = (int) ( lengthInSeconds / (double) patternLength * getWidth());//pixels
+			int patternHeight = (int) (CENTS_DEVIATION / 1200.0 * getHeight());
+			int patternX = (int) ( (currentXPosition) / (double) patternLength * getWidth());
 			int patternY = getHeight() - (int) (pattern[i] / 1200.0 * getHeight()) - patternHeight/2 ;
 			graphics.drawRect(patternX, patternY, patternWidth, patternHeight);
+			currentXPosition += lengthInSeconds; //in seconds
 		}
 		
 		graphics.setColor(Color.RED);
@@ -79,17 +90,20 @@ public class UtterAsteriskPanel extends JPanel {
 			double pitchInCents = pitches.get(i);
 			double startTimeStamp = startTimeStamps.get(i) % patternLength;
 			if(startTimeStamp > 0.5 && startTimeStamp <= 0.5 + 0.5 * pattern.length){
+				double lengthPerQuarterNote = patternLength/patternLengthInQuarterNotes; // in seconds per quarter note
+				double currentXPosition = 0.5; // seconds of pause before start
 				for(int j = 0 ; j < pattern.length ; j++){
-					if(startTimeStamp > 0.5 + j * 0.5 && startTimeStamp <= 0.5 + 0.5 * (j + 1) && Math.abs(pitchInCents-pattern[j]) < 30){
+					double lengthInSeconds = timing[j] * lengthPerQuarterNote;//seconds
+					if(startTimeStamp > currentXPosition && startTimeStamp <= currentXPosition + lengthInSeconds && Math.abs(pitchInCents-pattern[j]) < CENTS_DEVIATION){
 						score++;
 					}
+					currentXPosition += lengthInSeconds; //in seconds
 				}
 			}
 		}
 	}
 	
 	public void setMarker(double timeStamp,double frequency){
-		
 		currentMarker = timeStamp % patternLength;
 		//ignore everything outside 80-2000Hz
 		if(frequency > 80 && frequency < 2000){
@@ -97,7 +111,6 @@ public class UtterAsteriskPanel extends JPanel {
 			pitches.add(pitchInCents);
 			startTimeStamps.add(timeStamp);
 		}
-	
 		this.repaint();
 	}
 }
