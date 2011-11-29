@@ -112,7 +112,7 @@ public class UtterAsterisk extends JFrame implements DetectedPitchHandler {
 		currentMixer = mixer;
 		
 		float sampleRate = 44100;
-		int bufferSize = 256;
+		int bufferSize = 1536;
 		int overlap = 0;
 		
 		//textArea.append("Started listening with " + mixer.getMixerInfo().getName() + "\n\tparams: " + threshold + "dB\n");

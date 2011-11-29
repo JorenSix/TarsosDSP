@@ -243,5 +243,4 @@ public class PercussionDetectorInterface extends JFrame implements PercussionHan
 			}
 		});
 	}
-
 }
