@@ -67,6 +67,11 @@ public class SilenceDetector implements AudioProcessor {
 	private double linearToDecibel(final double value) {
 		return 20.0 * Math.log10(value);
 	}
+	
+	double currentSPL = 0;
+	public double currentSPL(){
+		return currentSPL;
+	}
 
 	/**
 	 * Checks if the dBSPL level in the buffer falls below a certain threshold.
@@ -79,7 +84,8 @@ public class SilenceDetector implements AudioProcessor {
 	 *         false otherwise.
 	 */
 	public boolean isSilence(final float[] buffer, final double silenceThreshold) {
-		return soundPressureLevel(buffer) < silenceThreshold;
+		currentSPL = soundPressureLevel(buffer);
+		return currentSPL < silenceThreshold;
 	}
 
 	public boolean isSilence(final float[] buffer) {
