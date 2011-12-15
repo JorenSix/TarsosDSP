@@ -9,3 +9,5 @@ ant -q -f utter_asterisk.xml
 ant -q -f pitch_detector.xml
 
 ant -q -f percussion_detector.xml
+
+ant -q -f goertzel_algorithm.xml

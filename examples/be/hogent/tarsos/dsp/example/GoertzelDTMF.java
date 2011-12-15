@@ -89,6 +89,7 @@ public class GoertzelDTMF extends JFrame implements ActionListener{
 	public GoertzelDTMF(){
 		this.getContentPane().setLayout(new BorderLayout(5,3));
 		this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+		this.setTitle("Goertzel");
 		
 		JPanel detectionPanel = new JPanel(new GridLayout(DTMF.DTMF_FREQUENCIES.length,2,5,3));
 		powerBars = new JProgressBar[DTMF.DTMF_FREQUENCIES.length];

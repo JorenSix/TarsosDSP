@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<project default="create_run_jar" name="Create Runnable Goertzel DTMF Jar">
+    <target name="create_run_jar">
+        <jar destfile="GoertzelDTMF.jar" filesetmanifest="mergewithoutmain">
+            <manifest>
+                <attribute name="Main-Class" value="be.hogent.tarsos.dsp.example.GoertzelDTMF"/>
+                <attribute name="Class-Path" value="."/>
+            </manifest>
+            
+            <!-- include class files -->
+            <fileset dir="../bin">
+            	<exclude name="**/*.wav"/>
+            	<exclude name="**/test/**"/>
+            </fileset>
+            
+            <!-- include source files -->
+        	<fileset dir="../src">
+        		<include name="**/*.java"/>
+        	</fileset>	
+        	<fileset dir="../examples">
+        		<exclude name="**/*.wav"/>
+        		<include name="**/*.java"/>
+        	</fileset>
+        </jar>
+    </target>
+</project>
