@@ -1,5 +1,7 @@
 package be.hogent.tarsos.dsp.example;
 
+import java.awt.BorderLayout;
+import java.awt.Dimension;
 import java.awt.GridLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -9,6 +11,7 @@ import javax.sound.sampled.Mixer;
 import javax.swing.ButtonGroup;
 import javax.swing.JPanel;
 import javax.swing.JRadioButton;
+import javax.swing.JScrollPane;
 import javax.swing.border.TitledBorder;
 
 public class InputPanel extends JPanel {
@@ -21,17 +24,21 @@ public class InputPanel extends JPanel {
 	Mixer mixer = null;
 	
 	public InputPanel(){
-		super(new GridLayout(0,1));
+		super(new BorderLayout());
 		this.setBorder(new TitledBorder("1. Choose a microphone input"));
+		JPanel buttonPanel = new JPanel(new GridLayout(0,1));
 		ButtonGroup group = new ButtonGroup();
 		for(Mixer.Info info : Shared.getMixerInfo(false, true)){
 			JRadioButton button = new JRadioButton();
 			button.setText(info.toString());
-			this.add(button);
+			buttonPanel.add(button);
 			group.add(button);
 			button.setActionCommand(info.toString());
 			button.addActionListener(setInput);
 		}
+		this.add(new JScrollPane(buttonPanel,JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED,JScrollPane.HORIZONTAL_SCROLLBAR_NEVER),BorderLayout.CENTER);
+		this.setMaximumSize(new Dimension(300,150));
+		this.setPreferredSize(new Dimension(300,150));
 	}
 	
 	private ActionListener setInput = new ActionListener(){

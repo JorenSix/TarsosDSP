@@ -1,5 +1,8 @@
 package be.hogent.tarsos.dsp.test;
 
+import java.io.File;
+import java.io.IOException;
+
 import javax.sound.sampled.AudioFormat;
 import javax.sound.sampled.AudioInputStream;
 import javax.sound.sampled.AudioSystem;
@@ -9,7 +12,12 @@ import javax.sound.sampled.Mixer;
 import javax.sound.sampled.TargetDataLine;
 import javax.sound.sampled.UnsupportedAudioFileException;
 
+import org.junit.Test;
+
 import be.hogent.tarsos.dsp.AudioDispatcher;
+import be.hogent.tarsos.dsp.BlockingAudioPlayer;
+import be.hogent.tarsos.dsp.EnvelopeFollower;
+import be.hogent.tarsos.dsp.FloatConverter;
 import be.hogent.tarsos.dsp.PercussionOnsetDetector;
 import be.hogent.tarsos.dsp.PercussionOnsetDetector.PercussionHandler;
 
@@ -59,4 +67,24 @@ public class PercussionOnsetTest {
 		//run the dispatcher (on the same thread, use start() to run it on another thread). 
 		dispatcher.run();
 	}
+	
+	@Test
+	public void testOnset() throws UnsupportedAudioFileException, IOException{
+		
+		String file = "/home/joren/Desktop/Fingerprinting/07. Pleasant Shadow Song_original.wav.semitone_up.wav";
+		
+		AudioFormat format = AudioSystem.getAudioInputStream(new File(file)).getFormat();
+
+		AudioDispatcher dispatcher = AudioDispatcher.fromFile(new File(file),1024);
+		dispatcher.addAudioProcessor(new PercussionOnsetDetector(format.getSampleRate(),1024,512, new PercussionHandler() {
+			int i = 0 ;
+			@Override
+			public void handlePercussion(double timestamp) {
+				System.out.println(i++ + "\t" + timestamp);
+				
+			}
+		},44,4));
+		dispatcher.run();
+	}
+	
 }
