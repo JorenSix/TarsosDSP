@@ -31,7 +31,9 @@ public final class BlockingAudioPlayer implements AudioProcessor {
 	 * depends on the bit depth. Since the integer data type is used only
 	 * 8,16,24,... bits or 1,2,3,... bytes are supported.
 	 */
-	private final int byteOverlap, byteStepSize;
+	private int byteOverlap, byteStepSize;
+	
+	private final AudioFormat format;
 
 	/**
 	 * Creates a new BlockingAudioPlayer.
@@ -49,12 +51,19 @@ public final class BlockingAudioPlayer implements AudioProcessor {
 	public BlockingAudioPlayer(final AudioFormat format, final int bufferSize, final int overlap)
 			throws LineUnavailableException {
 		final DataLine.Info info = new DataLine.Info(SourceDataLine.class,format);
+		this.format = format;
 		line = (SourceDataLine) AudioSystem.getLine(info);
 		line.open();
 		line.start();	
 		// overlap in samples * nr of bytes / sample = bytes overlap
 		this.byteOverlap = overlap * format.getFrameSize();
 		this.byteStepSize = bufferSize * format.getFrameSize() - byteOverlap;
+	}
+	
+	public void setStepSizeAndOverlap(final int audioBufferSize, final int bufferOverlap){
+		
+		this.byteOverlap = bufferOverlap * format.getFrameSize();
+		this.byteStepSize = audioBufferSize * format.getFrameSize() - byteOverlap;
 	}
 
 	/*
@@ -66,7 +75,7 @@ public final class BlockingAudioPlayer implements AudioProcessor {
 	 */
 	public boolean processFull(final float[] audioFloatBuffer, final byte[] audioByteBuffer) {
 		// Play the first full buffer
-		line.write(audioByteBuffer, 0, audioByteBuffer.length);
+		line.write(audioByteBuffer, 0, byteStepSize);
 		return true;
 	}
 
@@ -78,7 +87,7 @@ public final class BlockingAudioPlayer implements AudioProcessor {
 	 * float[], byte[])
 	 */
 	public boolean processOverlapping(final float[] audioBuffer, final byte[] audioByteBuffer) {
-		// Play only the audio that has not been played yet.
+		// Play only the audio that has not been played already.
 		line.write(audioByteBuffer, byteOverlap, byteStepSize);
 		return true;
 	}

@@ -40,13 +40,13 @@ public final class AudioDispatcher implements Runnable {
 	 * This buffer is reused again and again to store audio data using the float
 	 * data type.
 	 */
-	private final float[] audioFloatBuffer;
+	private float[] audioFloatBuffer;
 
 	/**
 	 * This buffer is reused again and again to store audio data using the byte
 	 * data type.
 	 */
-	private final byte[] audioByteBuffer;
+	private byte[] audioByteBuffer;
 
 	/**
 	 * A list of registered audio processors. The audio processors are
@@ -65,14 +65,14 @@ public final class AudioDispatcher implements Runnable {
 	 * from the previous buffer. Overlap should be smaller (strict) than the
 	 * buffer size and can be zero. Defined in number of samples.
 	 */
-	private final int floatOverlap, floatStepSize;
+	private int floatOverlap, floatStepSize;
 
 	/**
 	 * The overlap and stepsize defined not in samples but in bytes. So it
 	 * depends on the bit depth. Since the int datatype is used only 8,16,24,...
 	 * bits or 1,2,3,... bytes are supported.
 	 */
-	private final int byteOverlap, byteStepSize;
+	private int byteOverlap, byteStepSize;
 	
 	
 	/**
@@ -101,18 +101,34 @@ public final class AudioDispatcher implements Runnable {
 		audioInputStream = stream;
 
 		final AudioFormat format = audioInputStream.getFormat();
-
+		
+		setStepSizeAndOverlap(audioBufferSize, bufferOverlap);
 		converter = AudioFloatConverter.getConverter(format);
-
+		
+		stopped = false;
+	}
+	
+	/**
+	 * Set a new step size and overlap size. Both in number of samples. Watch
+	 * out with this method: it should be called after a batch of samples is
+	 * processed, not during.
+	 * 
+	 * @param audioBufferSize
+	 *            The size of the buffer defines how much samples are processed
+	 *            in one step. Common values are 1024,2048.
+	 * @param bufferOverlap
+	 *            How much consecutive buffers overlap (in samples). Half of the
+	 *            AudioBufferSize is common (512, 1024) for an FFT.
+	 */
+	public void setStepSizeAndOverlap(final int audioBufferSize, final int bufferOverlap){
 		audioFloatBuffer = new float[audioBufferSize];
 		floatOverlap = bufferOverlap;
 		floatStepSize = audioFloatBuffer.length - floatOverlap;
 
+		final AudioFormat format = audioInputStream.getFormat();
 		audioByteBuffer = new byte[audioFloatBuffer.length * format.getFrameSize()];
 		byteOverlap = floatOverlap * format.getFrameSize();
 		byteStepSize = floatStepSize * format.getFrameSize();
-		
-		stopped = false;
 	}
 
 	/**
@@ -231,9 +247,13 @@ public final class AudioDispatcher implements Runnable {
 	private int slideBuffer() throws IOException {
 		assert floatOverlap < audioFloatBuffer.length;
 
+		//Is array copy faster to shift an array? No Idea, probably..
+		
 		for (int i = 0; i < floatOverlap; i++) {
 			audioFloatBuffer[i] = audioFloatBuffer[i + floatStepSize];
 		}
+		
+		//System.arraycopy(audioFloatBuffer, 0, audioFloatBuffer, floatStepSize, floatOverlap);
 
 		final int bytesRead = audioInputStream.read(audioByteBuffer, byteOverlap, byteStepSize);
 		converter.toFloatArray(audioByteBuffer, byteOverlap, audioFloatBuffer, floatOverlap, floatStepSize);
@@ -248,16 +268,17 @@ public final class AudioDispatcher implements Runnable {
 	 *            The file.
 	 * @param size
 	 *            The number of samples used in the buffer.
+	 * @param overlap 
 	 * @return A new audioprocessor.
 	 * @throws UnsupportedAudioFileException
 	 *             If the audio file is not supported.
 	 * @throws IOException
 	 *             When an error occurs reading the file.
 	 */
-	public static AudioDispatcher fromFile(final File audioFile, final int size)
+	public static AudioDispatcher fromFile(final File audioFile, final int size,final int overlap)
 			throws UnsupportedAudioFileException, IOException {
 		final AudioInputStream stream = AudioSystem.getAudioInputStream(audioFile);
-		return new AudioDispatcher(stream, size, 0);
+		return new AudioDispatcher(stream, size, overlap);
 	}
 
 	/**
@@ -284,5 +305,31 @@ public final class AudioDispatcher implements Runnable {
 		final long length = byteArray.length / audioFormat.getFrameSize();
 		final AudioInputStream stream = new AudioInputStream(bais, audioFormat, length);
 		return new AudioDispatcher(stream, audioBufferSize, bufferOverlap);
+	}
+	
+	/**
+	 * Create a stream from an array of floats and use that to create a new
+	 * AudioDispatcher.
+	 * 
+	 * @param floatArray
+	 *            An array of floats, containing audio information.
+	 * @param sampleRate 
+	 * 			  The sample rate of the audio information contained in the buffer.
+	 * @param audioBufferSize
+	 *            The size of the buffer defines how much samples are processed
+	 *            in one step. Common values are 1024,2048.
+	 * @param bufferOverlap
+	 *            How much consecutive buffers overlap (in samples). Half of the
+	 *            AudioBufferSize is common.
+	 * @return A new AudioDispatcher.
+	 * @throws UnsupportedAudioFileException
+	 *             If the audio format is not supported.
+	 */
+	public static AudioDispatcher fromFloatArray(final float[] floatArray, final int sampleRate, final int audioBufferSize, final int bufferOverlap) throws UnsupportedAudioFileException {
+		final AudioFormat audioFormat = new AudioFormat(sampleRate, 16, 1, true, false);
+		final AudioFloatConverter converter = AudioFloatConverter.getConverter(audioFormat);
+		final byte[] byteArray = new byte[floatArray.length * audioFormat.getFrameSize()]; 
+		converter.toByteArray(floatArray, byteArray);
+		return AudioDispatcher.fromByteArray(byteArray, audioFormat, audioBufferSize, bufferOverlap);
 	}
 }

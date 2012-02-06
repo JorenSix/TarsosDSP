@@ -75,7 +75,7 @@ public class PercussionOnsetTest {
 		
 		AudioFormat format = AudioSystem.getAudioInputStream(new File(file)).getFormat();
 
-		AudioDispatcher dispatcher = AudioDispatcher.fromFile(new File(file),1024);
+		AudioDispatcher dispatcher = AudioDispatcher.fromFile(new File(file),1024,0);
 		dispatcher.addAudioProcessor(new PercussionOnsetDetector(format.getSampleRate(),1024,512, new PercussionHandler() {
 			int i = 0 ;
 			@Override

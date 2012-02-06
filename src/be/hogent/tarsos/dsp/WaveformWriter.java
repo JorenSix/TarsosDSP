@@ -46,7 +46,7 @@ public class WaveformWriter implements AudioProcessor {
 	 * depends on the bit depth. Since the integer data type is used only
 	 * 8,16,24,... bits or 1,2,3,... bytes are supported.
 	 */
-	private final int byteOverlap, byteStepSize;
+	private int byteOverlap, byteStepSize;
 	
 	/**
 	 * Initialize the writer.
@@ -83,6 +83,11 @@ public class WaveformWriter implements AudioProcessor {
 			byte[] audioByteBuffer) {
 		writeData(audioByteBuffer, byteOverlap, byteStepSize);
 		return true;
+	}
+	
+	public void setStepSizeAndOverlap(final int audioBufferSize, final int bufferOverlap){
+		this.byteOverlap = bufferOverlap * format.getFrameSize();
+		this.byteStepSize = audioBufferSize * format.getFrameSize() - byteOverlap;
 	}
 	
 	private void writeData(byte[] audioByteBuffer,int offset,int length){

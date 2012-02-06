@@ -15,7 +15,7 @@ public class Goertzel implements AudioProcessor {
 	 * If the power in dB is higher than this threshold, the frequency is
 	 * present in the signal.
 	 */
-	private static final double POWER_THRESHOLD = 37;// in dB
+	private static final double POWER_THRESHOLD = 35;// in dB
 
 	/**
 	 * A list of frequencies to detect.
