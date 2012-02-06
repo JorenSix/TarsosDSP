@@ -11,3 +11,5 @@ ant -q -f pitch_detector.xml
 ant -q -f percussion_detector.xml
 
 ant -q -f goertzel_algorithm.xml
+
+ant -q -f time_stretch.xml
