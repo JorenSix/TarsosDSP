@@ -1,17 +1,11 @@
 package be.hogent.tarsos.dsp.filters;
 
-import java.io.File;
-import java.io.IOException;
-
 import javax.sound.sampled.AudioFormat;
-import javax.sound.sampled.AudioSystem;
 import javax.sound.sampled.LineUnavailableException;
-import javax.sound.sampled.UnsupportedAudioFileException;
 
 import be.hogent.tarsos.dsp.AudioDispatcher;
 import be.hogent.tarsos.dsp.AudioProcessor;
 import be.hogent.tarsos.dsp.BlockingAudioPlayer;
-import be.hogent.tarsos.dsp.WaveformWriter;
 import be.hogent.tarsos.dsp.util.AudioFloatConverter;
 
 /**
@@ -88,6 +82,8 @@ public class WaveformSimilarityBasedOverlapAdd implements AudioProcessor {
 		
 		tempo = params.getTempo();
 		
+		//pMidBuffer and pRefBuffer are initialized with 8 times the needed length to prevent a reset
+		//of the arrays when overlapLength changes.
 		if(overlapLength > oldOverlapLength * 8){
 			pMidBuffer = new float[overlapLength * 8]; //overlapLengthx2?
 			pRefMidBuffer = new float[overlapLength * 8];//overlapLengthx2?
@@ -101,6 +97,8 @@ public class WaveformSimilarityBasedOverlapAdd implements AudioProcessor {
 		outputFloatBuffer= new float[getOutputBufferSize()];
 		outputByteBuffer = new byte [getOutputBufferSize() * format.getFrameSize()];
 		newParameters = null;
+		
+		
 		
 		outputProcessor.setStepSizeAndOverlap(getOutputBufferSize(), 0);
 	}
@@ -265,8 +263,13 @@ public class WaveformSimilarityBasedOverlapAdd implements AudioProcessor {
 		
 		private final double tempo;
 		private final double sampleRate;
-		
+
 		/**
+		 * @param tempo
+		 *            The tempo change 1.0 means unchanged, 2.0 is + 100% , 0.5
+		 *            is half of the speed.
+		 * @param sampleRate
+		 *            The sample rate of the audio 44.1kHz is common.
 		 * @param newSequenceMs
 		 *            Length of a single processing sequence, in milliseconds.
 		 *            This determines to how long sequences the original sound
@@ -335,9 +338,9 @@ public class WaveformSimilarityBasedOverlapAdd implements AudioProcessor {
 		}
 		
 		public static Parameters slowdownDefaults(double tempo, double sampleRate){
-			int sequenceMs = 90;
-			int seekWindowMs =  30;
-			int overlapMs = 18;
+			int sequenceMs = 100;
+			int seekWindowMs =  35;
+			int overlapMs = 20;
 			return new Parameters(tempo,sampleRate,sequenceMs, seekWindowMs,overlapMs);
 		}
 		

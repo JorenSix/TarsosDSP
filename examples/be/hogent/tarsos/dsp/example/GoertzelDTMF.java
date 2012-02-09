@@ -136,7 +136,7 @@ public class GoertzelDTMF extends JFrame implements ActionListener{
 				try {
 					UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
 				} catch (Exception e) {
-					//ignore failure to set default look en feel;
+					//ignore failure to set default look & feel;
 				}
 				JFrame frame = new GoertzelDTMF();
 				frame.pack();

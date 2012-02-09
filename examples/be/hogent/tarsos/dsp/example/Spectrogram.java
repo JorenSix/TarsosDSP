@@ -22,16 +22,28 @@ import javax.swing.UIManager;
 import javax.swing.border.TitledBorder;
 
 import be.hogent.tarsos.dsp.AudioDispatcher;
+import be.hogent.tarsos.dsp.AudioProcessor;
 import be.hogent.tarsos.dsp.PitchProcessor;
 import be.hogent.tarsos.dsp.PitchProcessor.DetectedPitchHandler;
 import be.hogent.tarsos.dsp.PitchProcessor.PitchEstimationAlgorithm;
+import be.hogent.tarsos.dsp.util.FFT;
 
-public class UtterAsterisk extends JFrame implements DetectedPitchHandler {
+public class Spectrogram extends JFrame implements DetectedPitchHandler {
 	
-	private final UtterAsteriskPanel panel;
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 1383896180290138076L;
+	private final SpectrogramPanel panel;
 	private AudioDispatcher dispatcher;
 	private Mixer currentMixer;	
-	private PitchEstimationAlgorithm algo;	
+	private PitchEstimationAlgorithm algo;
+	double pitch ; 
+	
+	private final float sampleRate = 44100;
+	private final int bufferSize = 8192;
+	private final int overlap = 7168;
+	
 	private ActionListener algoChangeListener = new ActionListener(){
 		@Override
 		public void actionPerformed(final ActionEvent e) {
@@ -46,15 +58,12 @@ public class UtterAsterisk extends JFrame implements DetectedPitchHandler {
 				e1.printStackTrace();
 			}
 	}};
-	
-	public UtterAsterisk(){
+		
+	public Spectrogram(){
 		this.setLayout(new BorderLayout());
 		this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-		this.setTitle("UtterAsterisk");
-		
-		panel = new UtterAsteriskPanel();
-		
-		
+		this.setTitle("Spectrogram");
+		panel = new SpectrogramPanel();
 		algo = PitchEstimationAlgorithm.YIN;
 		
 		JPanel pitchDetectionPanel = new PitchDetectionPanel(algoChangeListener);
@@ -88,7 +97,6 @@ public class UtterAsterisk extends JFrame implements DetectedPitchHandler {
 			
 		this.add(otherContainer,BorderLayout.CENTER);
 	}
-
 	
 	
 	
@@ -99,9 +107,7 @@ public class UtterAsterisk extends JFrame implements DetectedPitchHandler {
 		}
 		currentMixer = mixer;
 		
-		float sampleRate = 44100;
-		int bufferSize = 1536;
-		int overlap = 0;
+
 		
 		//textArea.append("Started listening with " + mixer.getMixerInfo().getName() + "\n\tparams: " + threshold + "dB\n");
 
@@ -120,40 +126,70 @@ public class UtterAsterisk extends JFrame implements DetectedPitchHandler {
 		dispatcher = new AudioDispatcher(stream, bufferSize,
 				overlap);
 
-		// add a processor, handle percussion event.
+		// add a processor, handle pitch event.
 		dispatcher.addAudioProcessor(new PitchProcessor(algo, sampleRate, bufferSize, overlap, 0, this));
+		
+		dispatcher.addAudioProcessor(fftProcessor);
 
 		// run the dispatcher (on a new thread).
 		new Thread(dispatcher,"Audio dispatching").start();
 	}
+	
+	AudioProcessor fftProcessor = new AudioProcessor(){
+		
+		FFT fft = new FFT(bufferSize);
+		float[] amplitudes = new float[bufferSize/2];
+	
 
-	/**
-	 * 
-	 */
-	private static final long serialVersionUID = 4787721035066991486L;
+		@Override
+		public boolean processFull(float[] audioFloatBuffer,
+				byte[] audioByteBuffer) {
+			return true;
+		}
 
+		@Override
+		public boolean processOverlapping(float[] audioFloatBuffer,
+				byte[] audioByteBuffer) {
+			float[] transformbuffer = new float[bufferSize*2];
+			
+			System.arraycopy(audioFloatBuffer, 0, transformbuffer, 0, audioFloatBuffer.length); 
+			fft.forwardTransform(transformbuffer);
+			fft.modulus(transformbuffer, amplitudes);
+			panel.drawFFT(pitch, amplitudes,fft);
+			return true;
+		}
+
+		@Override
+		public void processingFinished() {
+			// TODO Auto-generated method stub
+		}
+		
+	};
+	
+	@Override
+	public void handlePitch(float pitch, float probability, float timeStamp,
+			float progress) {
+		this.pitch = pitch;
+	}
+	
 	public static void main(String... strings) throws InterruptedException,
 			InvocationTargetException {
 		SwingUtilities.invokeAndWait(new Runnable() {
 			@Override
 			public void run() {
 				try {
-					UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
+					UIManager.setLookAndFeel(UIManager
+							.getSystemLookAndFeelClassName());
 				} catch (Exception e) {
-					//ignore failure to set default look en feel;
+					// ignore failure to set default look en feel;
 				}
-				JFrame frame = new UtterAsterisk();
+				JFrame frame = new Spectrogram();
 				frame.pack();
-				frame.setSize(640,480);
+				frame.setSize(640, 480);
 				frame.setVisible(true);
 			}
 		});
-	}
-
-	@Override
-	public void handlePitch(float pitch, float probability, float timeStamp,
-			float progress) {
-		panel.setMarker(timeStamp,pitch);
-	}
+}
+	
 
 }
