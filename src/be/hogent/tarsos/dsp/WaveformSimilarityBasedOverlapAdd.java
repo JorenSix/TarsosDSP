@@ -1,11 +1,8 @@
-package be.hogent.tarsos.dsp.filters;
+package be.hogent.tarsos.dsp;
 
 import javax.sound.sampled.AudioFormat;
 import javax.sound.sampled.LineUnavailableException;
 
-import be.hogent.tarsos.dsp.AudioDispatcher;
-import be.hogent.tarsos.dsp.AudioProcessor;
-import be.hogent.tarsos.dsp.BlockingAudioPlayer;
 import be.hogent.tarsos.dsp.util.AudioFloatConverter;
 
 /**

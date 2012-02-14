@@ -1,5 +1,9 @@
 package be.hogent.tarsos.dsp.filters;
 
+/**
+ * Single pass low pass filter.
+ * @author Joren Six
+ */
 public class LowPassSP extends IIRFilter {
 
 	public LowPassSP(float freq, float sampleRate, int overlap) {

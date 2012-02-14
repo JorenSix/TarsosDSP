@@ -4,6 +4,9 @@ package be.hogent.tarsos.dsp.pitch;
  * Utility class to generate Dual-tone multi-frequency (DTMF) signaling tones.
  * This class also contains a list of valid DTMF frequencies and characters.
  * 
+ * See the <a href="http://en.wikipedia.org/wiki/Dual-tone_multi-frequency_signaling"
+ * >WikiPedia article on DTMF</a>.
+ * 
  * @author Joren Six
  */
 public class DTMF {
@@ -67,7 +70,21 @@ public class DTMF {
 		return (firstFrequency!=-1 && secondFrequency!=-1);
 	}
 
-	public static float[] audioBufferDTMF(final double f0,final double f1,int size) {
+	/**
+	 * Creates an audio buffer in a float array of the defined size. The sample
+	 * rate is 44100Hz by default. It mixes the two given frequencies with an
+	 * amplitude of 0.5.
+	 * 
+	 * @param f0
+	 *            The first fundamental frequency.
+	 * @param f1
+	 *            The second fundamental frequency.
+	 * @param size
+	 *            The size of the float array (sample rate is 44.1kHz).
+	 * @return An array of the defined size.
+	 */
+	public static float[] audioBufferDTMF(final double f0, final double f1,
+			int size) {
 		final double sampleRate = 44100.0;
 		final double amplitudeF0 = 0.5;
 		final double amplitudeF1 = 0.5;
@@ -82,6 +99,4 @@ public class DTMF {
 		}
 		return buffer;
 	}
-	
-
 }

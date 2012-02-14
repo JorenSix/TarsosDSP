@@ -1,5 +1,9 @@
 package be.hogent.tarsos.dsp.filters;
 
+/**
+ * A High pass IIR filter. Frequency defines the cutoff.
+ * @author Joren Six
+ */
 public class HighPass extends IIRFilter{
 	
 	public HighPass(float freq, float sampleRate, int overlap) {
