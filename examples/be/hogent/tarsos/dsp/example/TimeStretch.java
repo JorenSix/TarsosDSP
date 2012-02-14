@@ -38,8 +38,10 @@ import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
 
 import be.hogent.tarsos.dsp.AudioDispatcher;
+import be.hogent.tarsos.dsp.BlockingAudioPlayer;
 import be.hogent.tarsos.dsp.WaveformSimilarityBasedOverlapAdd;
 import be.hogent.tarsos.dsp.WaveformSimilarityBasedOverlapAdd.Parameters;
+import be.hogent.tarsos.dsp.WaveformWriter;
 
 public class TimeStretch extends JFrame{
 
@@ -147,8 +149,14 @@ public class TimeStretch extends JFrame{
 		try {
 			format = AudioSystem.getAudioFileFormat(inputFile).getFormat();
 			wsola = new WaveformSimilarityBasedOverlapAdd(format,Parameters.slowdownDefaults(tempoSlider.getValue()/100.0,format.getSampleRate()));
+			try {
+				wsola.setBlockingAudioPlayer(new BlockingAudioPlayer(format, wsola.getOutputBufferSize(),0));
+			} catch (LineUnavailableException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
 			dispatcher = AudioDispatcher.fromFile(inputFile,wsola.getInputBufferSize(),wsola.getOverlap());
-			wsola.dispatcher = dispatcher;
+			wsola.setDispatcher(dispatcher);
 			dispatcher.addAudioProcessor(wsola);
 			Thread t = new Thread(dispatcher);
 			t.start();
@@ -166,8 +174,8 @@ public class TimeStretch extends JFrame{
 	public static void main(String[] argv)
 			throws UnsupportedAudioFileException, IOException,
 			LineUnavailableException, InterruptedException, InvocationTargetException {
-		if (argv.length == 1) {
-			startCli(argv[0]);
+		if (argv.length == 3) {
+			startCli(argv[1],argv[2],Double.parseDouble(argv[0]));
 		} else {
 			startGui();
 		}
@@ -190,25 +198,15 @@ public class TimeStretch extends JFrame{
 		});
 	}
 	
-	private static void startCli(String fileName) throws UnsupportedAudioFileException, IOException{
-		File inputFile = new File(fileName);
+	private static void startCli(String source,String target,double tempo) throws UnsupportedAudioFileException, IOException{
+		File inputFile = new File(source);
 		AudioFormat format = AudioSystem.getAudioFileFormat(inputFile).getFormat();	
-		WaveformSimilarityBasedOverlapAdd wsola = new WaveformSimilarityBasedOverlapAdd(format,Parameters.slowdownDefaults(0.7,format.getSampleRate()));
+		WaveformSimilarityBasedOverlapAdd wsola = new WaveformSimilarityBasedOverlapAdd(format,Parameters.slowdownDefaults(tempo,format.getSampleRate()));
+		wsola.setWaveFormWriter(new WaveformWriter(format, wsola.getOutputBufferSize(), 0, target));
 		AudioDispatcher dispatcher = AudioDispatcher.fromFile(inputFile,wsola.getInputBufferSize(),wsola.getOverlap());
-		wsola.dispatcher = dispatcher;
+		wsola.setDispatcher(dispatcher);
 		dispatcher.addAudioProcessor(wsola);
-		Thread t = new Thread(dispatcher);
-		t.start();
-		for(double tempo = 0.7 ; tempo < 1.5 ; tempo += 0.01){
-			try {
-				Thread.sleep(1000);
-			} catch (InterruptedException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			}
-			System.out.println(tempo);
-			wsola.setParameters(Parameters.slowdownDefaults(tempo, format.getSampleRate()));
-		}
+		dispatcher.run();
 	}
 
 }
