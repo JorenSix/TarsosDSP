@@ -28,8 +28,8 @@ import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
 
 import be.hogent.tarsos.dsp.AudioDispatcher;
-import be.hogent.tarsos.dsp.filters.WaveformSimilarityBasedOverlapAdd;
-import be.hogent.tarsos.dsp.filters.WaveformSimilarityBasedOverlapAdd.Parameters;
+import be.hogent.tarsos.dsp.WaveformSimilarityBasedOverlapAdd;
+import be.hogent.tarsos.dsp.WaveformSimilarityBasedOverlapAdd.Parameters;
 
 public class TimeStretch extends JFrame{
 

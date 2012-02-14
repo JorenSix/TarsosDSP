@@ -13,3 +13,5 @@ ant -q -f percussion_detector.xml
 ant -q -f goertzel_algorithm.xml
 
 ant -q -f time_stretch.xml
+
+ant -q -f spectrogram.xml

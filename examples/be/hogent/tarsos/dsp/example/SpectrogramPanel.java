@@ -29,8 +29,8 @@ public class SpectrogramPanel extends JComponent implements ComponentListener{
 	}
 	
 	 private int frequencyToBin(final double frequency) {
-	        final double minFrequency = 100; // Hz
-	        final double maxFrequency = 20000; // Hz
+	        final double minFrequency = 50; // Hz
+	        final double maxFrequency = 11000; // Hz
 	        int bin = 0;
 	        final boolean logaritmic = true;
 	        if (frequency != 0 && frequency > minFrequency && frequency < maxFrequency) {
@@ -63,7 +63,7 @@ public class SpectrogramPanel extends JComponent implements ComponentListener{
 		float[] pixeledAmplitudes = new float[getHeight()];
 		//iterate the lare arrray and map to pixels
 		 for (int i = amplitudes.length/800; i < amplitudes.length; i++) {
-             int pixelY = frequencyToBin(fft.binToHz(i,44100));
+             int pixelY = frequencyToBin(i * 44100 / (amplitudes.length * 8));
              pixeledAmplitudes[pixelY] += amplitudes[i];
              maxAmplitude = Math.max(pixeledAmplitudes[pixelY], maxAmplitude);
          }
@@ -128,7 +128,6 @@ public class SpectrogramPanel extends JComponent implements ComponentListener{
 		bufferedImage = new BufferedImage(getWidth(),getHeight(), BufferedImage.TYPE_INT_RGB);
 		bufferedGraphics = bufferedImage.createGraphics();
 		position = 0;
-		System.out.println("resized");
 	}
 
 	@Override
