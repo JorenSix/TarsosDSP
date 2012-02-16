@@ -57,6 +57,7 @@ public class WaveformSimilarityBasedOverlapAdd implements AudioProcessor {
 	private WaveformWriter waveFormWriter;
 	private AudioFloatConverter converter;
 	private AudioDispatcher dispatcher;
+	private final GainProcessor gainProcessor;
 	
 	private Parameters newParameters;
 	
@@ -67,6 +68,7 @@ public class WaveformSimilarityBasedOverlapAdd implements AudioProcessor {
 	 */
 	public WaveformSimilarityBasedOverlapAdd(AudioFormat format,Parameters  params){
 		this.format = format;
+		this.gainProcessor = new GainProcessor(1.0, 0);
 		converter = AudioFloatConverter.getConverter(format);
 		setParameters(params);
 		applyNewParameters();
@@ -81,6 +83,10 @@ public class WaveformSimilarityBasedOverlapAdd implements AudioProcessor {
 	
 	public void setParameters(Parameters params){
 		newParameters = params;
+	}
+	
+	public void setGain(double gain){
+		gainProcessor.setGain(gain);
 	}
 	
 	private void applyNewParameters(){
@@ -249,6 +255,8 @@ public class WaveformSimilarityBasedOverlapAdd implements AudioProcessor {
         // processing sequence and so on
 		System.arraycopy(audioFloatBuffer, offset + sequenceLength + overlapLength, pMidBuffer, 0, overlapLength);
 		
+		gainProcessor.processFull(outputFloatBuffer, outputByteBuffer);
+		
 		converter.toByteArray(outputFloatBuffer, outputByteBuffer);
 		if(blockingPlayer != null){
 			blockingPlayer.processFull(outputFloatBuffer, outputByteBuffer);
@@ -256,6 +264,8 @@ public class WaveformSimilarityBasedOverlapAdd implements AudioProcessor {
 		if(waveFormWriter!=null){
 			waveFormWriter.processFull(outputFloatBuffer, outputByteBuffer);
 		}
+		
+		
 		
 		if(newParameters!=null){
 			applyNewParameters();

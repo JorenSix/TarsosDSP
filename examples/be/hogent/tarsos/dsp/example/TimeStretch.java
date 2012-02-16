@@ -55,6 +55,7 @@ public class TimeStretch extends JFrame{
 	private AudioDispatcher dispatcher;
 	private WaveformSimilarityBasedOverlapAdd wsola; 
 	private final JSlider tempoSlider;
+	private final JSlider gainSlider;
 	SpinnerModel overlapModel;
 	SpinnerModel windowModel;
 	SpinnerModel sequenceModel;
@@ -67,8 +68,21 @@ public class TimeStretch extends JFrame{
 		tempoSlider = new JSlider(20, 250);
 		tempoSlider.setValue(100);
 		tempoSlider.setPaintLabels(true);
-		
 		tempoSlider.addChangeListener(parameterSettingChangedListener);
+		
+		gainSlider = new JSlider(0,200);
+		gainSlider.setValue(100);
+		gainSlider.setPaintLabels(true);
+		gainSlider.addChangeListener(new ChangeListener() {
+			
+			@Override
+			public void stateChanged(ChangeEvent arg0) {
+				double gain = gainSlider.getValue() / 100.0;
+				wsola.setGain(gain);
+			}
+		});
+		
+	
 		
 		JPanel fileChooserPanel = new JPanel(new BorderLayout());
 		fileChooserPanel.setBorder(new TitledBorder("1. Choose your audio (wav mono)"));
@@ -127,8 +141,16 @@ public class TimeStretch extends JFrame{
 		subPanel.add(overlapSpinnner);
 		params.add(subPanel,BorderLayout.SOUTH);
 		
+		JPanel gainPanel = new JPanel(new BorderLayout());
+		label = new JLabel("Gain");
+		label.setToolTipText("Volume in % (100 is no change).");
+		gainPanel.add(label,BorderLayout.NORTH);
+		gainPanel.add(gainSlider,BorderLayout.CENTER);
+		gainPanel.setBorder(new TitledBorder("3. Optionally change the volume"));
+		
 		this.add(fileChooserPanel,BorderLayout.NORTH);
 		this.add(params,BorderLayout.CENTER);
+		this.add(gainPanel,BorderLayout.SOUTH);
 	}
 	
 	private ChangeListener parameterSettingChangedListener = new ChangeListener(){
@@ -156,6 +178,7 @@ public class TimeStretch extends JFrame{
 				e.printStackTrace();
 			}
 			dispatcher = AudioDispatcher.fromFile(inputFile,wsola.getInputBufferSize(),wsola.getOverlap());
+			
 			wsola.setDispatcher(dispatcher);
 			dispatcher.addAudioProcessor(wsola);
 			Thread t = new Thread(dispatcher);
@@ -192,7 +215,7 @@ public class TimeStretch extends JFrame{
 				}
 				JFrame frame = new TimeStretch();
 				frame.pack();
-				frame.setSize(560,300);
+				frame.setSize(400,350);
 				frame.setVisible(true);
 			}
 		});
