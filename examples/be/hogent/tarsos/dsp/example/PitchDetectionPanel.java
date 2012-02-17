@@ -18,7 +18,7 @@ import javax.swing.JPanel;
 import javax.swing.JRadioButton;
 import javax.swing.border.TitledBorder;
 
-import be.hogent.tarsos.dsp.PitchProcessor.PitchEstimationAlgorithm;
+import be.hogent.tarsos.dsp.pitch.PitchProcessor.PitchEstimationAlgorithm;
 
 public class PitchDetectionPanel extends JPanel {
 

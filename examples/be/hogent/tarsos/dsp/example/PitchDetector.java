@@ -31,9 +31,11 @@ import javax.swing.JTextArea;
 import javax.swing.SwingUtilities;
 
 import be.hogent.tarsos.dsp.AudioDispatcher;
-import be.hogent.tarsos.dsp.PitchProcessor;
-import be.hogent.tarsos.dsp.PitchProcessor.DetectedPitchHandler;
-import be.hogent.tarsos.dsp.PitchProcessor.PitchEstimationAlgorithm;
+import be.hogent.tarsos.dsp.BlockingAudioPlayer;
+import be.hogent.tarsos.dsp.FloatConverter;
+import be.hogent.tarsos.dsp.pitch.PitchProcessor;
+import be.hogent.tarsos.dsp.pitch.PitchProcessor.DetectedPitchHandler;
+import be.hogent.tarsos.dsp.pitch.PitchProcessor.PitchEstimationAlgorithm;
 
 public class PitchDetector extends JFrame implements DetectedPitchHandler {
 
@@ -110,6 +112,8 @@ public class PitchDetector extends JFrame implements DetectedPitchHandler {
 
 		// add a processor, handle percussion event.
 		dispatcher.addAudioProcessor(new PitchProcessor(PitchEstimationAlgorithm.YIN, sampleRate, bufferSize, overlap, 0, this));
+		dispatcher.addAudioProcessor(new FloatConverter(format));
+		dispatcher.addAudioProcessor(new BlockingAudioPlayer(format, bufferSize, overlap));
 		
 
 		// run the dispatcher (on a new thread).

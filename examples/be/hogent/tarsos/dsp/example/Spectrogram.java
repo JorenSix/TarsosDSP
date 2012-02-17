@@ -37,9 +37,9 @@ import javax.swing.border.TitledBorder;
 import be.hogent.tarsos.dsp.AudioDispatcher;
 import be.hogent.tarsos.dsp.AudioProcessor;
 import be.hogent.tarsos.dsp.BlockingAudioPlayer;
-import be.hogent.tarsos.dsp.PitchProcessor;
-import be.hogent.tarsos.dsp.PitchProcessor.DetectedPitchHandler;
-import be.hogent.tarsos.dsp.PitchProcessor.PitchEstimationAlgorithm;
+import be.hogent.tarsos.dsp.pitch.PitchProcessor;
+import be.hogent.tarsos.dsp.pitch.PitchProcessor.DetectedPitchHandler;
+import be.hogent.tarsos.dsp.pitch.PitchProcessor.PitchEstimationAlgorithm;
 import be.hogent.tarsos.dsp.util.FFT;
 
 public class Spectrogram extends JFrame implements DetectedPitchHandler {

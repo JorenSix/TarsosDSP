@@ -32,9 +32,9 @@ import javax.swing.UIManager;
 import javax.swing.border.TitledBorder;
 
 import be.hogent.tarsos.dsp.AudioDispatcher;
-import be.hogent.tarsos.dsp.PitchProcessor;
-import be.hogent.tarsos.dsp.PitchProcessor.DetectedPitchHandler;
-import be.hogent.tarsos.dsp.PitchProcessor.PitchEstimationAlgorithm;
+import be.hogent.tarsos.dsp.pitch.PitchProcessor;
+import be.hogent.tarsos.dsp.pitch.PitchProcessor.DetectedPitchHandler;
+import be.hogent.tarsos.dsp.pitch.PitchProcessor.PitchEstimationAlgorithm;
 
 public class UtterAsterisk extends JFrame implements DetectedPitchHandler {
 	
