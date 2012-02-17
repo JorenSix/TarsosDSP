@@ -8,11 +8,9 @@
 *  http://tarsos.0110.be/tag/TarsosDSP
 *
 **/
-package be.hogent.tarsos.dsp;
+package be.hogent.tarsos.dsp.pitch;
 
-import be.hogent.tarsos.dsp.pitch.McLeodPitchMethod;
-import be.hogent.tarsos.dsp.pitch.PitchDetector;
-import be.hogent.tarsos.dsp.pitch.Yin;
+import be.hogent.tarsos.dsp.AudioProcessor;
 
 
 /**
