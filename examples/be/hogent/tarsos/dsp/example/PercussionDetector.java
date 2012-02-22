@@ -36,6 +36,7 @@ import javax.swing.JScrollPane;
 import javax.swing.JSlider;
 import javax.swing.JTextArea;
 import javax.swing.SwingUtilities;
+import javax.swing.UIManager;
 import javax.swing.border.TitledBorder;
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
@@ -253,6 +254,11 @@ public class PercussionDetector extends JFrame implements PercussionHandler {
 		SwingUtilities.invokeAndWait(new Runnable() {
 			@Override
 			public void run() {
+				try {
+					UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
+				} catch (Exception e) {
+					//ignore failure to set default look en feel;
+				}
 				JFrame frame = new PercussionDetector();
 				frame.pack();
 				frame.setSize(640, 480);

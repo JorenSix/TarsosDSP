@@ -37,11 +37,11 @@ import javax.swing.border.TitledBorder;
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
 
-import be.hogent.tarsos.dsp.AudioDispatcher;
-import be.hogent.tarsos.dsp.BlockingAudioPlayer;
-import be.hogent.tarsos.dsp.WaveformSimilarityBasedOverlapAdd;
-import be.hogent.tarsos.dsp.WaveformSimilarityBasedOverlapAdd.Parameters;
-import be.hogent.tarsos.dsp.WaveformWriter;
+import be.hogent.tarsos.dsp.NewAudioDispatcher;
+import be.hogent.tarsos.dsp.NewAudioPlayer;
+import be.hogent.tarsos.dsp.NewGainProcessor;
+import be.hogent.tarsos.dsp.NewWaveformSimilarityBasedOverlapAdd;
+import be.hogent.tarsos.dsp.NewWaveformSimilarityBasedOverlapAdd.Parameters;
 
 public class TimeStretch extends JFrame{
 
@@ -52,8 +52,11 @@ public class TimeStretch extends JFrame{
 	
 	private JFileChooser fileChooser;
 	
-	private AudioDispatcher dispatcher;
-	private WaveformSimilarityBasedOverlapAdd wsola; 
+	private NewAudioDispatcher dispatcher;
+	private NewWaveformSimilarityBasedOverlapAdd wsola; 
+	private NewGainProcessor gain;
+	private NewAudioPlayer audioPlayer;
+	
 	private final JSlider tempoSlider;
 	private final JSlider gainSlider;
 	SpinnerModel overlapModel;
@@ -74,11 +77,12 @@ public class TimeStretch extends JFrame{
 		gainSlider.setValue(100);
 		gainSlider.setPaintLabels(true);
 		gainSlider.addChangeListener(new ChangeListener() {
-			
 			@Override
 			public void stateChanged(ChangeEvent arg0) {
-				double gain = gainSlider.getValue() / 100.0;
-				wsola.setGain(gain);
+				if (TimeStretch.this.dispatcher != null) {
+					double gainValue = gainSlider.getValue() / 100.0;
+					gain.setGain(gainValue);
+				}
 			}
 		});
 		
@@ -142,7 +146,7 @@ public class TimeStretch extends JFrame{
 		params.add(subPanel,BorderLayout.SOUTH);
 		
 		JPanel gainPanel = new JPanel(new BorderLayout());
-		label = new JLabel("Gain");
+		label = new JLabel("Gain (in %)");
 		label.setToolTipText("Volume in % (100 is no change).");
 		gainPanel.add(label,BorderLayout.NORTH);
 		gainPanel.add(gainSlider,BorderLayout.CENTER);
@@ -157,7 +161,7 @@ public class TimeStretch extends JFrame{
 
 		@Override
 		public void stateChanged(ChangeEvent arg0) {
-			 if (!tempoSlider.getValueIsAdjusting() && TimeStretch.this.dispatcher != null) {
+			 if (TimeStretch.this.dispatcher != null) {
 				 wsola.setParameters(new Parameters(tempoSlider.getValue()/100.0,44100,(Integer) sequenceModel.getValue(),(Integer)windowModel.getValue(),(Integer)overlapModel.getValue()));
 			 }
 		}}; 
@@ -170,23 +174,26 @@ public class TimeStretch extends JFrame{
 		AudioFormat format;
 		try {
 			format = AudioSystem.getAudioFileFormat(inputFile).getFormat();
-			wsola = new WaveformSimilarityBasedOverlapAdd(format,Parameters.slowdownDefaults(tempoSlider.getValue()/100.0,format.getSampleRate()));
-			try {
-				wsola.setBlockingAudioPlayer(new BlockingAudioPlayer(format, wsola.getOutputBufferSize(),0));
-			} catch (LineUnavailableException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			}
-			dispatcher = AudioDispatcher.fromFile(inputFile,wsola.getInputBufferSize(),wsola.getOverlap());
 			
+			gain = new NewGainProcessor(1.0);
+			audioPlayer = new NewAudioPlayer(format);
+			
+			wsola = new NewWaveformSimilarityBasedOverlapAdd(Parameters.slowdownDefaults(tempoSlider.getValue()/100.0,format.getSampleRate()));
+			dispatcher = NewAudioDispatcher.fromFile(inputFile,wsola.getInputBufferSize(),wsola.getOverlap());
 			wsola.setDispatcher(dispatcher);
 			dispatcher.addAudioProcessor(wsola);
+			dispatcher.addAudioProcessor(gain);
+			dispatcher.addAudioProcessor(audioPlayer);
+
 			Thread t = new Thread(dispatcher);
 			t.start();
 		} catch (UnsupportedAudioFileException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (LineUnavailableException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}	
@@ -222,14 +229,16 @@ public class TimeStretch extends JFrame{
 	}
 	
 	private static void startCli(String source,String target,double tempo) throws UnsupportedAudioFileException, IOException{
+		/*
 		File inputFile = new File(source);
 		AudioFormat format = AudioSystem.getAudioFileFormat(inputFile).getFormat();	
-		WaveformSimilarityBasedOverlapAdd wsola = new WaveformSimilarityBasedOverlapAdd(format,Parameters.slowdownDefaults(tempo,format.getSampleRate()));
+		NewWaveformSimilarityBasedOverlapAdd wsola = new NewWaveformSimilarityBasedOverlapAdd(format,Parameters.slowdownDefaults(tempo,format.getSampleRate()));
 		wsola.setWaveFormWriter(new WaveformWriter(format, wsola.getOutputBufferSize(), 0, target));
 		AudioDispatcher dispatcher = AudioDispatcher.fromFile(inputFile,wsola.getInputBufferSize(),wsola.getOverlap());
 		wsola.setDispatcher(dispatcher);
 		dispatcher.addAudioProcessor(wsola);
 		dispatcher.run();
+		*/
 	}
 
 }

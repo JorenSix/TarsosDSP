@@ -16,8 +16,8 @@ package be.hogent.tarsos.dsp.filters;
  */
 public class HighPass extends IIRFilter{
 	
-	public HighPass(float freq, float sampleRate, int overlap) {
-		super(freq, sampleRate, overlap);
+	public HighPass(float freq, float sampleRate) {
+		super(freq, sampleRate);
 	}
 
 	protected void calcCoeff() 

@@ -10,9 +10,6 @@
 **/
 package be.hogent.tarsos.dsp;
 
-import javax.sound.sampled.AudioFormat;
-
-import be.hogent.tarsos.dsp.util.AudioFloatConverter;
 
 /**
  * <p>

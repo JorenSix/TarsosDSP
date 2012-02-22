@@ -28,7 +28,8 @@
 
 package be.hogent.tarsos.dsp.filters;
 
-import be.hogent.tarsos.dsp.AudioProcessor;
+import be.hogent.tarsos.dsp.AudioEvent;
+import be.hogent.tarsos.dsp.NewAudioProcessor;
 
 /**
  * An Infinite Impulse Response, or IIR, filter is a filter that uses a set of
@@ -41,9 +42,10 @@ import be.hogent.tarsos.dsp.AudioProcessor;
  * <code>b<sub>1</sub></code>.
  * 
  * @author Damien Di Fede
+ * @author Joren Six
  * 
  */
-public abstract class IIRFilter implements AudioProcessor {
+public abstract class IIRFilter implements NewAudioProcessor {
 	
 	/** The b coefficients. */
 	protected float[] b;
@@ -63,8 +65,7 @@ public abstract class IIRFilter implements AudioProcessor {
 	private final float frequency;
 	
 	private final float sampleRate;
-	
-	private final int overlap;
+
 
 	/**
 	 * Constructs an IIRFilter with the given cutoff frequency that will be used
@@ -74,15 +75,13 @@ public abstract class IIRFilter implements AudioProcessor {
 	 *            the cutoff frequency
 	 * @param sampleRate
 	 *            the sample rate of audio to be filtered
-	 * @param overlap The overlap in samples.
 	 */
-	public IIRFilter(float freq, float sampleRate,int overlap) {
+	public IIRFilter(float freq, float sampleRate) {
 		this.sampleRate = sampleRate;
 		this.frequency = freq;	
 		calcCoeff();
 		in = new float[a.length];
 		out = new float[b.length];
-		this.overlap = overlap;
 	}
 
 	/**
@@ -109,24 +108,12 @@ public abstract class IIRFilter implements AudioProcessor {
 	 */
 	protected abstract void calcCoeff() ;
 
-
-
-	@Override
-	public boolean processFull(float[] audioFloatBuffer, byte[] audioByteBuffer) {
-		process(0,audioFloatBuffer);
-		return true;
-	}
-
-
-	@Override
-	public boolean processOverlapping(float[] audioFloatBuffer,
-			byte[] audioByteBuffer) {
-		process(overlap,audioFloatBuffer);
-		return true;
-	}
 	
-	private void process(int offset,float[] audioFloatBuffer){
-		for (int i = offset; i < audioFloatBuffer.length; i++) {
+	@Override
+	public boolean process(AudioEvent audioEvent) {
+		float[] audioFloatBuffer = audioEvent.getFloatBuffer();
+		
+		for (int i = audioEvent.getOverlap(); i < audioFloatBuffer.length; i++) {
 			//shift the in array
 			System.arraycopy(in, 0, in, 1, in.length - 1);
 			in[0] = audioFloatBuffer[i];
@@ -146,7 +133,9 @@ public abstract class IIRFilter implements AudioProcessor {
 			
 			audioFloatBuffer[i] = y;
 		} 
+		return true;
 	}
+	
 
 	@Override
 	public void processingFinished() {

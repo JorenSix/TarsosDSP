@@ -29,6 +29,7 @@ import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTextArea;
 import javax.swing.SwingUtilities;
+import javax.swing.UIManager;
 
 import be.hogent.tarsos.dsp.AudioDispatcher;
 import be.hogent.tarsos.dsp.BlockingAudioPlayer;
@@ -125,6 +126,11 @@ public class PitchDetector extends JFrame implements DetectedPitchHandler {
 		SwingUtilities.invokeAndWait(new Runnable() {
 			@Override
 			public void run() {
+				try {
+					UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
+				} catch (Exception e) {
+					//ignore failure to set default look en feel;
+				}
 				JFrame frame = new PitchDetector();
 				frame.pack();
 				frame.setVisible(true);

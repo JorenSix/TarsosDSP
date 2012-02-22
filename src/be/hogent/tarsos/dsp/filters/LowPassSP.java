@@ -16,8 +16,8 @@ package be.hogent.tarsos.dsp.filters;
  */
 public class LowPassSP extends IIRFilter {
 
-	public LowPassSP(float freq, float sampleRate, int overlap) {
-		super(freq, sampleRate, overlap);
+	public LowPassSP(float freq, float sampleRate) {
+		super(freq, sampleRate);
 	}
 
 	@Override
