@@ -29,7 +29,7 @@
 package be.hogent.tarsos.dsp.filters;
 
 import be.hogent.tarsos.dsp.AudioEvent;
-import be.hogent.tarsos.dsp.NewAudioProcessor;
+import be.hogent.tarsos.dsp.AudioProcessor;
 
 /**
  * An Infinite Impulse Response, or IIR, filter is a filter that uses a set of
@@ -45,7 +45,7 @@ import be.hogent.tarsos.dsp.NewAudioProcessor;
  * @author Joren Six
  * 
  */
-public abstract class IIRFilter implements NewAudioProcessor {
+public abstract class IIRFilter implements AudioProcessor {
 	
 	/** The b coefficients. */
 	protected float[] b;

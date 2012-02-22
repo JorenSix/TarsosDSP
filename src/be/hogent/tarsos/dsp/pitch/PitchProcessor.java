@@ -10,6 +10,7 @@
 **/
 package be.hogent.tarsos.dsp.pitch;
 
+import be.hogent.tarsos.dsp.AudioEvent;
 import be.hogent.tarsos.dsp.AudioProcessor;
 
 
@@ -70,10 +71,9 @@ public class PitchProcessor implements AudioProcessor {
 	 */
 	final PitchDetector detector;
 	final long lengthInSamples;
-	final int overlap;
+
 	final float sampleRate;
 	final DetectedPitchHandler handler;
-	long processedSamples;
 	
 	/**
 	 * Initialize a new pitch processor.
@@ -93,41 +93,35 @@ public class PitchProcessor implements AudioProcessor {
 	 *            The handler handles detected pitch.
 	 */
 	public PitchProcessor(PitchEstimationAlgorithm algorithm, float sampleRate,
-			int bufferSize, int bufferOverlap, long totalLengthInSamples,
+			int bufferSize, long totalLengthInSamples,
 			DetectedPitchHandler handler) {
 		this.sampleRate = sampleRate;
 		lengthInSamples = totalLengthInSamples;
-		processedSamples = 0;
+
 		this.handler = handler;
-		overlap = bufferOverlap;
 		if (PitchEstimationAlgorithm.MPM == algorithm) {
 			detector = new McLeodPitchMethod(sampleRate, bufferSize);
 		} else {
 			detector = new Yin(sampleRate, bufferSize);
 		}
 	}
-
+	
 	@Override
-	public boolean processFull(float[] audioFloatBuffer, byte[] audioByteBuffer) {
-		this.processedSamples += audioFloatBuffer.length;
+	public boolean process(AudioEvent audioEvent) {
+		float[] audioFloatBuffer = audioEvent.getFloatBuffer();
+		
 		float pitch = detector.getPitch(audioFloatBuffer);
 		float probability = detector.getProbability();
-		float timeStamp = processedSamples / sampleRate;
-		float progress = processedSamples / (float) lengthInSamples;
+		float timeStamp = (float) audioEvent.getTimeStamp();
+		float progress = (float) audioEvent.getProgress();
 		
 		handler.handlePitch(pitch, probability, timeStamp, progress);
 		return true;
 	}
 
 	@Override
-	public boolean processOverlapping(float[] audioFloatBuffer,
-			byte[] audioByteBuffer) {
-		this.processedSamples -= overlap;
-		return processFull(audioFloatBuffer,audioByteBuffer);
-
-	}
-
-	@Override
 	public void processingFinished() {
 	}
+
+	
 }

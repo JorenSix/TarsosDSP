@@ -28,7 +28,7 @@ import javax.sound.sampled.SourceDataLine;
  * 
  * @author Joren Six
  */
-public final class NewAudioPlayer implements NewAudioProcessor {
+public final class AudioPlayer implements AudioProcessor {
 	
 
 	/**
@@ -47,7 +47,7 @@ public final class NewAudioPlayer implements NewAudioProcessor {
 	 * @throws LineUnavailableException
 	 *             If no output line is available.
 	 */
-	public NewAudioPlayer(final AudioFormat format)	throws LineUnavailableException {
+	public AudioPlayer(final AudioFormat format)	throws LineUnavailableException {
 		final DataLine.Info info = new DataLine.Info(SourceDataLine.class,format);
 		this.format = format;
 		line = (SourceDataLine) AudioSystem.getLine(info);

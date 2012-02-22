@@ -22,9 +22,10 @@ public class DelayEffect implements AudioProcessor {
 	
 	private double sampleRate;
 	private float[] echoBuffer;//in seconds
-	private int writeIndex;
+	private int position;
 	private float decay;
-	private int overlap;
+	
+	private double newEchoLength;
 	
 	/**
 	 * @param echoLength in seconds
@@ -32,50 +33,66 @@ public class DelayEffect implements AudioProcessor {
 	 * @param decay The decay of the echo, a value between 0 and 1.
 	 * @param overlap 
 	 */
-	public DelayEffect(double echoLength,double sampleRate,double decay, int overlap) {
+	public DelayEffect(double echoLength,double decay,double sampleRate) {
 		this.sampleRate = sampleRate;
 		setDecay(decay);
 		setEchoLength(echoLength);
-		this.overlap = overlap;
+		applyNewEchoLength();	
 	}
 	
+	/**
+	 * @param newEchoLength A new echo buffer length in seconds.
+	 */
 	public void setEchoLength(double newEchoLength){
-		this.echoBuffer = new float[(int) (sampleRate * newEchoLength)];
+		this.newEchoLength = newEchoLength;
 	}
 	
+	private void applyNewEchoLength(){
+		if(newEchoLength != -1){
+			
+			//create a new buffer with the information of the previous buffer
+			float[] newEchoBuffer = new float[(int) (sampleRate * newEchoLength)];
+			if(echoBuffer != null){
+				for(int i = 0 ; i < newEchoBuffer.length; i++){
+					if(position >= echoBuffer.length){
+						position = 0;
+					}
+					newEchoBuffer[i] = echoBuffer[position];
+					position++;
+				}
+			}
+			this.echoBuffer = newEchoBuffer;
+			newEchoLength = -1;
+		}
+	}
+	
+	/**
+	 * A decay, should be a value between zero and one.
+	 * @param newDecay the new decay (preferably between zero and one).
+	 */
 	public void setDecay(double newDecay){
 		this.decay = (float) newDecay;
 	}
-
+	
 	@Override
-	public boolean processFull(float[] audioFloatBuffer, byte[] audioByteBuffer) {
-		
-		return true;
-	}
-
-	@Override
-	public boolean processOverlapping(float[] audioFloatBuffer,
-			byte[] audioByteBuffer) {
-		
-		
-		for(int i = 0 ; i < audioFloatBuffer.length ; i++){
-			echoBuffer[writeIndex] = audioFloatBuffer[i] + echoBuffer[writeIndex] * decay;
-			writeIndex++;
-			if(writeIndex == echoBuffer.length){
-				writeIndex=0;
+	public boolean process(AudioEvent audioEvent) {
+		float[] audioFloatBuffer = audioEvent.getFloatBuffer();
+		int overlap = audioEvent.getOverlap();
+			
+		for(int i = overlap ; i < audioFloatBuffer.length ; i++){
+			if(position >= echoBuffer.length){
+				position = 0;
 			}
+			
+			//output is the input added with the decayed echo 		
+			audioFloatBuffer[i] = audioFloatBuffer[i] + echoBuffer[position] * decay;
+			//store the sample in the buffer;
+			echoBuffer[position] = audioFloatBuffer[i];
+			
+			position++;
 		}
 		
-		int readIndex = writeIndex;
-		
-		for(int i = 0 ; i < audioFloatBuffer.length ; i++){
-			audioFloatBuffer[i] = audioFloatBuffer[i] + echoBuffer[readIndex];
-			readIndex++;
-			if(readIndex == echoBuffer.length){
-				readIndex=0;
-			}
-		}
-		
+		applyNewEchoLength();
 		
 		return true;
 	}
@@ -83,5 +100,4 @@ public class DelayEffect implements AudioProcessor {
 	@Override
 	public void processingFinished() {		
 	}
-
 }

@@ -25,8 +25,7 @@ import javax.sound.sampled.UnsupportedAudioFileException;
 import org.junit.Test;
 
 import be.hogent.tarsos.dsp.AudioDispatcher;
-import be.hogent.tarsos.dsp.BlockingAudioPlayer;
-import be.hogent.tarsos.dsp.FloatConverter;
+import be.hogent.tarsos.dsp.AudioPlayer;
 import be.hogent.tarsos.dsp.WaveformWriter;
 import be.hogent.tarsos.dsp.filters.HighPass;
 import be.hogent.tarsos.dsp.filters.LowPassFS;
@@ -64,10 +63,9 @@ public class TestFilters {
 				floatBuffer.length);
 		final AudioDispatcher dispatcher = new AudioDispatcher(inputStream,
 				1024, 0);
-		dispatcher.addAudioProcessor(new LowPassFS(1000, 44100, 0));
-		dispatcher.addAudioProcessor(new HighPass(100, 44100, 0));
-		dispatcher.addAudioProcessor(new FloatConverter(format));
-		dispatcher.addAudioProcessor(new BlockingAudioPlayer(format, 1024, 0));
+		dispatcher.addAudioProcessor(new LowPassFS(1000, 44100));
+		dispatcher.addAudioProcessor(new HighPass(100, 44100));
+		dispatcher.addAudioProcessor(new AudioPlayer(format));
 		dispatcher.run();
 	}
 
@@ -83,10 +81,9 @@ public class TestFilters {
 		float stopFrequency = 800;
 		AudioInputStream inputStream = AudioSystem.getAudioInputStream(testFile);
 		AudioDispatcher dispatcher = new AudioDispatcher(inputStream,stepSize,overlap);
-		dispatcher.addAudioProcessor(new HighPass(startFrequency, sampleRate, overlap));
-		dispatcher.addAudioProcessor(new LowPassFS(stopFrequency, sampleRate, overlap));
-		dispatcher.addAudioProcessor(new FloatConverter(format));
-		dispatcher.addAudioProcessor(new WaveformWriter(format,stepSize, overlap, "filtered.wav"));
+		dispatcher.addAudioProcessor(new HighPass(startFrequency, sampleRate));
+		dispatcher.addAudioProcessor(new LowPassFS(stopFrequency, sampleRate));
+		dispatcher.addAudioProcessor(new WaveformWriter(format, "filtered.wav"));
 		dispatcher.run();
 	}
 

@@ -23,20 +23,20 @@ import javax.swing.border.TitledBorder;
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
 
-import be.hogent.tarsos.dsp.NewAudioDispatcher;
-import be.hogent.tarsos.dsp.NewAudioPlayer;
-import be.hogent.tarsos.dsp.NewDelayEffect;
-import be.hogent.tarsos.dsp.NewGainProcessor;
+import be.hogent.tarsos.dsp.AudioDispatcher;
+import be.hogent.tarsos.dsp.AudioPlayer;
+import be.hogent.tarsos.dsp.DelayEffect;
+import be.hogent.tarsos.dsp.GainProcessor;
 
-public class DelayEffectExample extends JFrame {
+public class Delay extends JFrame {
 	
 	/**
 	 * 
 	 */
 	private static final long serialVersionUID = -5020248948695915733L;
-	private NewAudioDispatcher dispatcher;
-	private NewDelayEffect delayEffect;
-	private NewGainProcessor inputGain;
+	private AudioDispatcher dispatcher;
+	private DelayEffect delayEffect;
+	private GainProcessor inputGain;
 	
 	private int defaultInputGain = 100;//%
 	private int defaultDelay = 200;//ms
@@ -58,7 +58,7 @@ public class DelayEffectExample extends JFrame {
 	};
 	
 	
-	public DelayEffectExample() {
+	public Delay() {
 		this.setLayout(new BorderLayout());
 		this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		this.setTitle("Delay Effect Example");
@@ -159,15 +159,15 @@ public class DelayEffectExample extends JFrame {
 		final AudioInputStream stream = new AudioInputStream(line);
 
 		// create a new dispatcher
-		dispatcher = new NewAudioDispatcher(stream, bufferSize, overlap);
+		dispatcher = new AudioDispatcher(stream, bufferSize, overlap);
 		
-		delayEffect = new NewDelayEffect(defaultDelay/1000.0,defaultDecay/100.0,sampleRate);
-		inputGain = new NewGainProcessor(defaultInputGain/100.0);
+		delayEffect = new DelayEffect(defaultDelay/1000.0,defaultDecay/100.0,sampleRate);
+		inputGain = new GainProcessor(defaultInputGain/100.0);
 		
 		//add  processors
 		dispatcher.addAudioProcessor(inputGain);
 		dispatcher.addAudioProcessor(delayEffect);
-		dispatcher.addAudioProcessor(new NewAudioPlayer(format));
+		dispatcher.addAudioProcessor(new AudioPlayer(format));
 
 		// run the dispatcher (on a new thread).
 		new Thread(dispatcher, "Audio dispatching").start();
@@ -183,7 +183,7 @@ public class DelayEffectExample extends JFrame {
 				} catch (Exception e) {
 					//ignore failure to set default look en feel;
 				}
-				JFrame frame = new DelayEffectExample();
+				JFrame frame = new Delay();
 				frame.pack();
 				frame.setVisible(true);
 			}

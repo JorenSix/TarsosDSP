@@ -15,3 +15,5 @@ ant -q -f goertzel_algorithm.xml
 ant -q -f time_stretch.xml
 
 ant -q -f spectrogram.xml
+
+ant -q -f delay_effect.xml

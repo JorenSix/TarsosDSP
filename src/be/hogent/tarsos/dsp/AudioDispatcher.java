@@ -69,6 +69,8 @@ public final class AudioDispatcher implements Runnable {
 	 * versa).
 	 */
 	private final AudioFloatConverter converter;
+	
+	private final AudioFormat format;
 
 	/**
 	 * The floatOverlap: the number of elements that are copied in the buffer
@@ -84,6 +86,20 @@ public final class AudioDispatcher implements Runnable {
 	 */
 	private int byteOverlap, byteStepSize;
 	
+	
+	/**
+	 * The number of bytes to skip before processing starts.
+	 */
+	private long bytesToSkip;
+	
+	/**
+	 * Position in the stream in bytes. e.g. if 44100 bytes are processed and 16
+	 * bits per frame are used then you are 0.5 seconds into the stream.
+	 */
+	private long bytesProcessed;
+	
+	
+	private final AudioEvent audioEvent;
 	
 	/**
 	 * If true the dispatcher stops dispatching audio.
@@ -106,16 +122,28 @@ public final class AudioDispatcher implements Runnable {
 	 */
 	public AudioDispatcher(final AudioInputStream stream, final int audioBufferSize, final int bufferOverlap)
 			throws UnsupportedAudioFileException {
-
+		
 		audioProcessors = new ArrayList<AudioProcessor>();
 		audioInputStream = stream;
 
-		final AudioFormat format = audioInputStream.getFormat();
-		
+		format = audioInputStream.getFormat();
+		audioEvent = new AudioEvent(format,stream.getFrameLength());
 		setStepSizeAndOverlap(audioBufferSize, bufferOverlap);
 		converter = AudioFloatConverter.getConverter(format);
 		
 		stopped = false;
+		
+		bytesToSkip = 0;
+		bytesProcessed=0;
+	}
+	
+	
+	/**
+	 * Skip a number of seconds before processing the stream.
+	 * @param seconds
+	 */
+	public void skip(double seconds){
+		bytesToSkip = Math.round(seconds * format.getSampleRate() * format.getFrameSize()); 
 	}
 	
 	/**
@@ -172,31 +200,37 @@ public final class AudioDispatcher implements Runnable {
 	public void run() {
 		try {
 			int bytesRead;
-
-			// Read, convert and process the first full buffer.
-			bytesRead = audioInputStream.read(audioByteBuffer);
-
-			if (bytesRead != -1 && !stopped) {
-				converter.toFloatArray(audioByteBuffer, audioFloatBuffer);
-				for (final AudioProcessor processor : audioProcessors) {
-					if(!processor.processFull(audioFloatBuffer, audioByteBuffer)){
-						break;
-					}
-				}
-				// Read, convert and process consecutive overlapping buffers.
-				// Slide the buffer.
-				bytesRead = slideBuffer();
+			
+			if(bytesToSkip!=0){
+				audioInputStream.skip(bytesToSkip);
+				bytesProcessed += bytesToSkip;
 			}
+			
+			bytesRead = processFirstBuffer();
 
 			// as long as the stream has not ended or the number of bytes
 			// processed is smaller than the number of bytes to process: process
 			// bytes.
 			while (bytesRead != -1 && !stopped) {
+				
+				//Makes sure the right buffers are processed, they can be changed by audio processors.
+				audioEvent.setOverlap(floatOverlap);
+				audioEvent.setFloatBuffer(audioFloatBuffer);
+				audioEvent.setBytesProcessed(bytesProcessed);
+				
 				for (final AudioProcessor processor : audioProcessors) {
-					if(!processor.processOverlapping(audioFloatBuffer, audioByteBuffer)){
+					if(!processor.process(audioEvent)){
 						break;
 					}
 				}
+								
+				//Update the number of bytes processed;
+				bytesProcessed += bytesRead;
+				//Subtract the overlap
+				bytesProcessed -= byteOverlap;
+				
+				// Read, convert and process consecutive overlapping buffers.
+				// Slide the buffer.
 				bytesRead = slideBuffer();
 			}
 
@@ -204,14 +238,38 @@ public final class AudioDispatcher implements Runnable {
 			// when stop() is called processingFinished is called explicitly, no need to do this again.
 			// The explicit call is to prevent timing issues.
 			if(!stopped){
-				for (final AudioProcessor processor : audioProcessors) {
-					processor.processingFinished();
-				}
-				audioInputStream.close();
+				stop();
 			}
 		} catch (final IOException e) {
 			LOG.log(Level.SEVERE, "Error while reading data from audio stream.", e);
 		}
+	}
+	
+	private int processFirstBuffer() throws IOException{
+		//the overlap for the first buffer is zero.
+		audioEvent.setOverlap(0);
+		audioEvent.setFloatBuffer(audioFloatBuffer);
+		audioEvent.setBytesProcessed(bytesProcessed);
+		
+		// Read, convert and process the first full buffer.
+		int bytesRead = audioInputStream.read(audioByteBuffer);
+		
+		if (bytesRead != -1 && !stopped) {
+			converter.toFloatArray(audioByteBuffer, audioFloatBuffer);
+			
+			for (final AudioProcessor processor : audioProcessors) {
+				if(!processor.process(audioEvent)){
+					break;
+				}
+			}
+			//Update the number of bytes processed;
+			bytesProcessed += bytesRead;
+			
+			// Read, convert and process consecutive overlapping buffers.
+			// Slide the buffer.
+			bytesRead = slideBuffer();
+		}
+		return bytesRead;
 	}
 	
 	/**
@@ -257,18 +315,17 @@ public final class AudioDispatcher implements Runnable {
 	private int slideBuffer() throws IOException {
 		assert floatOverlap < audioFloatBuffer.length;
 
-		//Is array copy faster to shift an array? No Idea, probably..
-		
-		for (int i = 0; i < floatOverlap; i++) {
-			audioFloatBuffer[i] = audioFloatBuffer[i + floatStepSize];
-		}
-		
-		//System.arraycopy(audioFloatBuffer, 0, audioFloatBuffer, floatStepSize, floatOverlap);
+		//Is array copy faster to shift an array? Probably..
+		System.arraycopy(audioFloatBuffer, floatStepSize, audioFloatBuffer,0 ,floatOverlap);
 
 		final int bytesRead = audioInputStream.read(audioByteBuffer, byteOverlap, byteStepSize);
 		converter.toFloatArray(audioByteBuffer, byteOverlap, audioFloatBuffer, floatOverlap, floatStepSize);
 
 		return bytesRead;
+	}
+	
+	public AudioFormat getFormat(){
+		return format;
 	}
 
 	/**

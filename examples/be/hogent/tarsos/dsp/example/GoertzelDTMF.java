@@ -33,8 +33,8 @@ import javax.swing.UIManager;
 import javax.swing.border.TitledBorder;
 
 import be.hogent.tarsos.dsp.AudioDispatcher;
+import be.hogent.tarsos.dsp.AudioPlayer;
 import be.hogent.tarsos.dsp.AudioProcessor;
-import be.hogent.tarsos.dsp.BlockingAudioPlayer;
 import be.hogent.tarsos.dsp.pitch.DTMF;
 import be.hogent.tarsos.dsp.pitch.Goertzel;
 import be.hogent.tarsos.dsp.pitch.Goertzel.FrequenciesDetectedHandler;
@@ -187,7 +187,7 @@ public class GoertzelDTMF extends JFrame implements ActionListener{
 		final AudioInputStream inputStream = new AudioInputStream(bais, format,floatBuffer.length);
 		final AudioDispatcher dispatcher = new AudioDispatcher(inputStream, stepSize, 0);		
 		dispatcher.addAudioProcessor(goertzelAudioProcessor);
-		dispatcher.addAudioProcessor(new BlockingAudioPlayer(format, stepSize, 0));
+		dispatcher.addAudioProcessor(new AudioPlayer(format));
 		new Thread(dispatcher).start();
 		
 	}

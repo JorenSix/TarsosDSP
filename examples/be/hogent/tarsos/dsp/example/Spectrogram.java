@@ -35,8 +35,9 @@ import javax.swing.UIManager;
 import javax.swing.border.TitledBorder;
 
 import be.hogent.tarsos.dsp.AudioDispatcher;
+import be.hogent.tarsos.dsp.AudioEvent;
 import be.hogent.tarsos.dsp.AudioProcessor;
-import be.hogent.tarsos.dsp.BlockingAudioPlayer;
+import be.hogent.tarsos.dsp.AudioPlayer;
 import be.hogent.tarsos.dsp.pitch.PitchProcessor;
 import be.hogent.tarsos.dsp.pitch.PitchProcessor.DetectedPitchHandler;
 import be.hogent.tarsos.dsp.pitch.PitchProcessor.PitchEstimationAlgorithm;
@@ -143,7 +144,7 @@ public class Spectrogram extends JFrame implements DetectedPitchHandler {
 				File audioFile = new File(fileName);
 				dispatcher = AudioDispatcher.fromFile(audioFile, bufferSize, overlap);
 				AudioFormat format = AudioSystem.getAudioFileFormat(audioFile).getFormat();
-				dispatcher.addAudioProcessor(new BlockingAudioPlayer(format, bufferSize, overlap));
+				dispatcher.addAudioProcessor(new AudioPlayer(format));
 			} catch (IOException e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
@@ -154,7 +155,7 @@ public class Spectrogram extends JFrame implements DetectedPitchHandler {
 		
 
 		// add a processor, handle pitch event.
-		dispatcher.addAudioProcessor(new PitchProcessor(algo, sampleRate, bufferSize, overlap, 0, this));
+		dispatcher.addAudioProcessor(new PitchProcessor(algo, sampleRate, bufferSize, 0, this));
 		dispatcher.addAudioProcessor(fftProcessor);
 		
 		
@@ -167,29 +168,21 @@ public class Spectrogram extends JFrame implements DetectedPitchHandler {
 		
 		FFT fft = new FFT(bufferSize);
 		float[] amplitudes = new float[bufferSize/2];
-	
 
 		@Override
-		public boolean processFull(float[] audioFloatBuffer,
-				byte[] audioByteBuffer) {
-			processOverlapping(audioFloatBuffer,audioByteBuffer);
-			return true;
+		public void processingFinished() {
+			// TODO Auto-generated method stub
 		}
 
 		@Override
-		public boolean processOverlapping(float[] audioFloatBuffer,
-				byte[] audioByteBuffer) {
+		public boolean process(AudioEvent audioEvent) {
+			float[] audioFloatBuffer = audioEvent.getFloatBuffer();
 			float[] transformbuffer = new float[bufferSize*2];
 			System.arraycopy(audioFloatBuffer, 0, transformbuffer, 0, audioFloatBuffer.length); 
 			fft.forwardTransform(transformbuffer);
 			fft.modulus(transformbuffer, amplitudes);
 			panel.drawFFT(pitch, amplitudes,fft);
-			return true;
-		}
-
-		@Override
-		public void processingFinished() {
-			// TODO Auto-generated method stub
+			return false;
 		}
 		
 	};

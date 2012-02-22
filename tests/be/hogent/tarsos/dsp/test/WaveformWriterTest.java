@@ -64,7 +64,7 @@ public class WaveformWriterTest {
 		AudioDispatcher dispatcher = new AudioDispatcher(stream, bufferSize,
 				overlap);
 
-		WaveformWriter writer = new WaveformWriter(format,bufferSize,overlap,"01.file.wav");
+		WaveformWriter writer = new WaveformWriter(format,"01.file.wav");
 		// add a processor, handle percussion event.
 		dispatcher.addAudioProcessor(new SilenceDetector());
 		dispatcher.addAudioProcessor(writer);
@@ -76,7 +76,7 @@ public class WaveformWriterTest {
 		Thread.sleep(5000);
 		
 		dispatcher.removeAudioProcessor(writer);
-		writer = new WaveformWriter(format,bufferSize,overlap,"02.file.wav");
+		writer = new WaveformWriter(format,"02.file.wav");
 		dispatcher.addAudioProcessor(writer);
 		
 		Thread.sleep(5000);

@@ -231,7 +231,7 @@ public class PercussionDetector extends JFrame implements PercussionHandler {
 
 		// add a processor, handle percussion event.
 		dispatcher.addAudioProcessor(new PercussionOnsetDetector(sampleRate,
-				bufferSize, overlap, this,sensitivity,threshold));
+				bufferSize, this,sensitivity,threshold));
 
 		// run the dispatcher (on a new thread).
 		new Thread(dispatcher,"Audio dispatching").start();

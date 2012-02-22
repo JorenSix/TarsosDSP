@@ -22,7 +22,7 @@ import javax.sound.sampled.UnsupportedAudioFileException;
 import org.junit.Test;
 
 import be.hogent.tarsos.dsp.AudioDispatcher;
-import be.hogent.tarsos.dsp.BlockingAudioPlayer;
+import be.hogent.tarsos.dsp.AudioPlayer;
 import be.hogent.tarsos.dsp.SilenceDetector;
 import be.hogent.tarsos.dsp.util.AudioFloatConverter;
 
@@ -52,7 +52,7 @@ public class SilenceTest {
 				1024, 0);
 		
         dispatcher.addAudioProcessor(new SilenceDetector());
-        dispatcher.addAudioProcessor(new BlockingAudioPlayer(format,1024, 0));
+        dispatcher.addAudioProcessor(new AudioPlayer(format));
         dispatcher.run();
 	}
 

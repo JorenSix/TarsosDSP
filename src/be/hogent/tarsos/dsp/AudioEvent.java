@@ -24,12 +24,6 @@ public class AudioEvent {
 	private float[] floatBuffer;
 	
 	/**
-	 * The check buffer is used to check whether data in floatBuffer has changed.
-	 * It does this by storing and comparing samples.
-	 */
-	private float[] checkBuffer;
-	
-	/**
 	 * The audio data encoded in bytes according to format.
 	 */
 	private byte[] byteBuffer;
@@ -39,15 +33,22 @@ public class AudioEvent {
 	 */
 	private int overlap;
 	
+	/**
+	 * The length of the stream, expressed in sample frames rather than bytes
+	 */
+	private long frameLength;
+	
+	/**
+	 * The number of bytes processed before this event. It can be used to calculate the time stamp for when this event started.
+	 */
+	private long bytesProcessed;
 	
 	
-	public AudioEvent(AudioFormat format,int bufferSize,int overlap){
+	public AudioEvent(AudioFormat format,long frameLength){
 		this.format = format;
 		this.converter = AudioFloatConverter.getConverter(format);
-		this.overlap = overlap;
-		setFloatBuffer(new float[bufferSize]);
-		setByteBuffer(new byte[bufferSize * format.getFrameSize()]);
-		fillCheckFloatBuffer();
+		this.overlap = 0;
+		this.frameLength = frameLength;
 	}
 	
 	public float getSampleRate(){
@@ -65,62 +66,54 @@ public class AudioEvent {
 	public void setOverlap(int newOverlap){
 		overlap = newOverlap;
 	}
-		
+	
+	public void setBytesProcessed(long bytesProcessed){
+		this.bytesProcessed = bytesProcessed;		
+	}
+	
 	/**
-	 * Create a new byte array with the audio data in bytes. The conversion is done using the AudioFloatConverter class. Pleas do not call this method too much
-	 * @return a new byte array with the audio data in bytes.
+	 * Calculates and returns the time stamp at the beginning of this audio event.
+	 * @return The time stamp at the beginning of the event.
+	 */
+	public double getTimeStamp(){
+		return bytesProcessed / format.getFrameSize() / format.getSampleRate();
+	}
+	
+	public long getSamplesProcessed(){
+		return bytesProcessed / format.getFrameSize();
+	}
+
+	/**
+	 * Calculate the progress in percentage of the total number of frames.
+	 * 
+	 * @return a percentage of processed frames or a negative number if the
+	 *         number of frames is not known beforehand.
+	 */
+	public double getProgress(){
+		return bytesProcessed / format.getFrameSize() / (double) frameLength;
+	}
+	
+	/**
+	 * Return a byte array with the audio data in bytes.
+	 *  A conversion is done from float, cache accordingly on the other side...
+	 * 
+	 * @return a byte array with the audio data in bytes.
 	 */
 	public byte[] getByteBuffer(){
-		if(isDirty()){
-			int length = getFloatBuffer().length * format.getFrameSize();
-			if(byteBuffer.length != length){
-				byteBuffer = new byte[length];
-			}
-			converter.toByteArray(getFloatBuffer(), byteBuffer);
-			//mark this event as 'clean', isDirty() should return false.
-			fillCheckFloatBuffer();
-		}	
+		int length = getFloatBuffer().length * format.getFrameSize();
+		if(byteBuffer == null || byteBuffer.length != length){
+			byteBuffer = new byte[length];
+		}
+		converter.toByteArray(getFloatBuffer(), byteBuffer);
 		return byteBuffer;
-	}
-	
-	public void setByteBuffer(byte[] byteBuffer) {
-		this.byteBuffer = byteBuffer;
-	}
-	
-	public float[] getFloatBuffer(){
-		return floatBuffer;
 	}
 	
 	public void setFloatBuffer(float[] floatBuffer) {
 		this.floatBuffer = floatBuffer;
 	}
 	
-	/**
-	 * When the float buffer is modified the audio is automatically marked as dirty. When a byteBuffer is requested it is then either created
-	 * from the information in the floatBuffer, when dirty, or just returned,
-	 * otherwise.
-	 *
-	 * @return true if the floatBuffer has changed, false otherwise.
-	 */
-	private boolean isDirty(){
-		boolean dirty = false;
-		int step = floatBuffer.length / checkBuffer.length;
-		for(int i = 0 ; i < checkBuffer.length ; i++){
-			if(checkBuffer[i] != floatBuffer[i*step]){
-				dirty = true;
-			}
-		}
-		return dirty;
+	public float[] getFloatBuffer(){
+		return floatBuffer;
 	}
 	
-	/**
-	 * Fill the check float buffer, used to mark this event as dirty automatically.
-	 */
-	private void fillCheckFloatBuffer(){
-		checkBuffer = new float[20];
-		int step = floatBuffer.length / checkBuffer.length;
-		for(int i = 0 ; i < checkBuffer.length ; i++){
-			checkBuffer[i] = floatBuffer[i*step];
-		}
-	}
 }

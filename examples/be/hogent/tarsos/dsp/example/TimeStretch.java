@@ -37,11 +37,11 @@ import javax.swing.border.TitledBorder;
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
 
-import be.hogent.tarsos.dsp.NewAudioDispatcher;
-import be.hogent.tarsos.dsp.NewAudioPlayer;
-import be.hogent.tarsos.dsp.NewGainProcessor;
-import be.hogent.tarsos.dsp.NewWaveformSimilarityBasedOverlapAdd;
-import be.hogent.tarsos.dsp.NewWaveformSimilarityBasedOverlapAdd.Parameters;
+import be.hogent.tarsos.dsp.AudioDispatcher;
+import be.hogent.tarsos.dsp.AudioPlayer;
+import be.hogent.tarsos.dsp.GainProcessor;
+import be.hogent.tarsos.dsp.WaveformSimilarityBasedOverlapAdd;
+import be.hogent.tarsos.dsp.WaveformSimilarityBasedOverlapAdd.Parameters;
 
 public class TimeStretch extends JFrame{
 
@@ -52,10 +52,10 @@ public class TimeStretch extends JFrame{
 	
 	private JFileChooser fileChooser;
 	
-	private NewAudioDispatcher dispatcher;
-	private NewWaveformSimilarityBasedOverlapAdd wsola; 
-	private NewGainProcessor gain;
-	private NewAudioPlayer audioPlayer;
+	private AudioDispatcher dispatcher;
+	private WaveformSimilarityBasedOverlapAdd wsola; 
+	private GainProcessor gain;
+	private AudioPlayer audioPlayer;
 	
 	private final JSlider tempoSlider;
 	private final JSlider gainSlider;
@@ -175,11 +175,11 @@ public class TimeStretch extends JFrame{
 		try {
 			format = AudioSystem.getAudioFileFormat(inputFile).getFormat();
 			
-			gain = new NewGainProcessor(1.0);
-			audioPlayer = new NewAudioPlayer(format);
+			gain = new GainProcessor(1.0);
+			audioPlayer = new AudioPlayer(format);
 			
-			wsola = new NewWaveformSimilarityBasedOverlapAdd(Parameters.slowdownDefaults(tempoSlider.getValue()/100.0,format.getSampleRate()));
-			dispatcher = NewAudioDispatcher.fromFile(inputFile,wsola.getInputBufferSize(),wsola.getOverlap());
+			wsola = new WaveformSimilarityBasedOverlapAdd(Parameters.slowdownDefaults(tempoSlider.getValue()/100.0,format.getSampleRate()));
+			dispatcher = AudioDispatcher.fromFile(inputFile,wsola.getInputBufferSize(),wsola.getOverlap());
 			wsola.setDispatcher(dispatcher);
 			dispatcher.addAudioProcessor(wsola);
 			dispatcher.addAudioProcessor(gain);
@@ -232,7 +232,7 @@ public class TimeStretch extends JFrame{
 		/*
 		File inputFile = new File(source);
 		AudioFormat format = AudioSystem.getAudioFileFormat(inputFile).getFormat();	
-		NewWaveformSimilarityBasedOverlapAdd wsola = new NewWaveformSimilarityBasedOverlapAdd(format,Parameters.slowdownDefaults(tempo,format.getSampleRate()));
+		WaveformSimilarityBasedOverlapAdd wsola = new WaveformSimilarityBasedOverlapAdd(format,Parameters.slowdownDefaults(tempo,format.getSampleRate()));
 		wsola.setWaveFormWriter(new WaveformWriter(format, wsola.getOutputBufferSize(), 0, target));
 		AudioDispatcher dispatcher = AudioDispatcher.fromFile(inputFile,wsola.getInputBufferSize(),wsola.getOverlap());
 		wsola.setDispatcher(dispatcher);

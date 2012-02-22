@@ -24,9 +24,9 @@ import org.junit.Test;
 
 
 import be.hogent.tarsos.dsp.AudioDispatcher;
+import be.hogent.tarsos.dsp.AudioEvent;
+import be.hogent.tarsos.dsp.AudioPlayer;
 import be.hogent.tarsos.dsp.AudioProcessor;
-import be.hogent.tarsos.dsp.BlockingAudioPlayer;
-import be.hogent.tarsos.dsp.FloatConverter;
 import be.hogent.tarsos.dsp.util.AudioFloatConverter;
 import be.hogent.tarsos.dsp.util.FFT;
 
@@ -68,21 +68,17 @@ public class FFTTest {
 			public void processingFinished() {
 			}
 			
+	
 			@Override
-			public boolean processOverlapping(float[] audioFloatBuffer,
-					byte[] audioByteBuffer) {
-				return processFull(audioFloatBuffer, audioByteBuffer);				
-			}
-			
-			@Override
-			public boolean processFull(float[] audioFloatBuffer, byte[] audioByteBuffer) {
+			public boolean process(AudioEvent audioEvent) {
+				float[] audioFloatBuffer = audioEvent.getFloatBuffer();
 				fft.forwardTransform(audioFloatBuffer);
 				fft.backwardsTransform(audioFloatBuffer);
-				return true;
+				return false;
 			}
 		});
-        dispatcher.addAudioProcessor(new FloatConverter(format));
-        dispatcher.addAudioProcessor(new BlockingAudioPlayer(format,1024, 0));
+
+        dispatcher.addAudioProcessor(new AudioPlayer(format));
         dispatcher.run();
 	}
 }

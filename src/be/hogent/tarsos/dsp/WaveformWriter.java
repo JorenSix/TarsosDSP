@@ -65,10 +65,9 @@ public class WaveformWriter implements AudioProcessor {
 	 * @param overlap The overlap of two consecutive buffers (in samples, not bytes).
 	 * @param fileName The name of the wav file to store.
 	 */
-	public WaveformWriter(final AudioFormat format, final int bufferSize, final int overlap,final String fileName){
+	public WaveformWriter(final AudioFormat format,final String fileName){
 		this.format=format;
-		this.byteOverlap = overlap * format.getFrameSize();
-		this.byteStepSize = bufferSize * format.getFrameSize() - byteOverlap;
+
 		this.fileName = fileName;
 		//a temporary raw file with a random prefix
 		this.rawOutputFile = new File(System.getProperty("java.io.tmpdir"), new Random().nextInt() + "out.raw");
@@ -83,29 +82,15 @@ public class WaveformWriter implements AudioProcessor {
 	}
 	
 	@Override
-	public boolean processFull(float[] audioFloatBuffer, byte[] audioByteBuffer) {
-		writeData(audioByteBuffer, 0, byteStepSize);
-		return true;
-	}
-
-	@Override
-	public boolean processOverlapping(float[] audioFloatBuffer,
-			byte[] audioByteBuffer) {
-		writeData(audioByteBuffer, byteOverlap, byteStepSize);
-		return true;
-	}
-	
-	public void setStepSizeAndOverlap(final int audioBufferSize, final int bufferOverlap){
-		this.byteOverlap = bufferOverlap * format.getFrameSize();
-		this.byteStepSize = audioBufferSize * format.getFrameSize() - byteOverlap;
-	}
-	
-	private void writeData(byte[] audioByteBuffer,int offset,int length){
+	public boolean process(AudioEvent audioEvent) {
+		this.byteOverlap = audioEvent.getOverlap() * format.getFrameSize();
+		this.byteStepSize = audioEvent.getBufferSize() * format.getFrameSize() - byteOverlap;
 		try {
-			rawOutputStream.write(audioByteBuffer, byteOverlap, byteStepSize);
+			rawOutputStream.write(audioEvent.getByteBuffer(), byteOverlap, byteStepSize);
 		} catch (IOException e) {
-			
+			LOG.severe(String.format("Failure while writing temporary file: %1s: %2s", rawOutputFile.getAbsolutePath(), e.getMessage()));
 		}
+		return true;
 	}
 
 	@Override
@@ -134,5 +119,4 @@ public class WaveformWriter implements AudioProcessor {
 			LOG.severe(message);
 		}
 	}
-
 }

@@ -5,16 +5,16 @@ import javax.sound.sampled.UnsupportedAudioFileException;
 
 import org.junit.Test;
 
-import be.hogent.tarsos.dsp.NewAudioDispatcher;
-import be.hogent.tarsos.dsp.NewAudioPlayer;
+import be.hogent.tarsos.dsp.AudioDispatcher;
+import be.hogent.tarsos.dsp.AudioPlayer;
 
 public class AudioPlayerTest {
 	
 	@Test
 	public void testAudioPlayer() throws UnsupportedAudioFileException, LineUnavailableException{
 		float[] sine = TestUtilities.audioBufferSine();
-		NewAudioDispatcher dispatcher = NewAudioDispatcher.fromFloatArray(sine, 44100, 1024, 512);
-		dispatcher.addAudioProcessor(new NewAudioPlayer(dispatcher.getFormat()));	
+		AudioDispatcher dispatcher = AudioDispatcher.fromFloatArray(sine, 44100, 1024, 512);
+		dispatcher.addAudioProcessor(new AudioPlayer(dispatcher.getFormat()));	
 		dispatcher.run();
 	}
 

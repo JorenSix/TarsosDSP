@@ -25,9 +25,6 @@ import javax.sound.sampled.UnsupportedAudioFileException;
 import org.junit.Test;
 
 import be.hogent.tarsos.dsp.AudioDispatcher;
-import be.hogent.tarsos.dsp.BlockingAudioPlayer;
-import be.hogent.tarsos.dsp.EnvelopeFollower;
-import be.hogent.tarsos.dsp.FloatConverter;
 import be.hogent.tarsos.dsp.PercussionOnsetDetector;
 import be.hogent.tarsos.dsp.PercussionOnsetDetector.PercussionHandler;
 
@@ -86,7 +83,7 @@ public class PercussionOnsetTest {
 		AudioFormat format = AudioSystem.getAudioInputStream(new File(file)).getFormat();
 
 		AudioDispatcher dispatcher = AudioDispatcher.fromFile(new File(file),1024,0);
-		dispatcher.addAudioProcessor(new PercussionOnsetDetector(format.getSampleRate(),1024,512, new PercussionHandler() {
+		dispatcher.addAudioProcessor(new PercussionOnsetDetector(format.getSampleRate(),1024, new PercussionHandler() {
 			int i = 0 ;
 			@Override
 			public void handlePercussion(double timestamp) {

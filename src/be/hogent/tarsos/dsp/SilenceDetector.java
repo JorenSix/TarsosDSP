@@ -12,8 +12,7 @@ package be.hogent.tarsos.dsp;
 
 
 /**
- * The silence detector breaks the audio processing pipeline when silence is detected, when there is sound 
- * (no silence) it hands over the audio data to the next AudioProcessor.
+ * The continuing silence detector does not break the audio processing pipeline when silence is detected.
  */
 public class SilenceDetector implements AudioProcessor {
 	
@@ -21,11 +20,13 @@ public class SilenceDetector implements AudioProcessor {
 	
 	private final double threshold;//db
 	
+	private final boolean breakProcessingQueueOnSilence;
+	
 	/**
 	 * Create a new silence detector with a default threshold.
 	 */
 	public SilenceDetector(){
-		this(DEFAULT_SILENCE_THRESHOLD);
+		this(DEFAULT_SILENCE_THRESHOLD,false);
 	}
 	
 	/**
@@ -34,9 +35,11 @@ public class SilenceDetector implements AudioProcessor {
 	 * @param silenceThreshold
 	 *            The threshold which defines when a buffer is silent (in dB).
 	 *            Normal values are [-70.0,-30.0] dB SPL.
+	 * @param breakProcessingQueueOnSilence 
 	 */
-	public SilenceDetector(final double silenceThreshold){
+	public SilenceDetector(final double silenceThreshold,boolean breakProcessingQueueOnSilence){
 		this.threshold = silenceThreshold;
+		this.breakProcessingQueueOnSilence = breakProcessingQueueOnSilence;
 	}
 
 	/**
@@ -102,20 +105,22 @@ public class SilenceDetector implements AudioProcessor {
 		return isSilence(buffer, threshold);
 	}
 
-	@Override
-	public boolean processFull(float[] audioFloatBuffer, byte[] audioByteBuffer) {
-		//break the chain if silence is detected, continue if sound if present.
-		return !isSilence(audioFloatBuffer);
-	}
 
 	@Override
-	public boolean processOverlapping(float[] audioFloatBuffer,
-			byte[] audioByteBuffer) {
-		return processFull(audioFloatBuffer,audioByteBuffer);
+	public boolean process(AudioEvent audioEvent) {
+		boolean isSilence = isSilence(audioEvent.getFloatBuffer());
+		//break processing chain on silence?
+		if(breakProcessingQueueOnSilence){
+			//break if silent
+			return !isSilence;
+		}else{
+			//never break the chain
+			return true;
+		}
 	}
+
 
 	@Override
 	public void processingFinished() {
 	}
-
 }

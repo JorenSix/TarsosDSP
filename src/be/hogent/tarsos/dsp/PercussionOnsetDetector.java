@@ -77,7 +77,6 @@ public class PercussionOnsetDetector implements AudioProcessor {
 	private final PercussionHandler handler;
 
 	private final float sampleRate;//samples per second (Hz)
-	private final int overlap;// in samples
 	private long processedSamples;//in samples
 	
 	/**
@@ -121,7 +120,7 @@ public class PercussionOnsetDetector implements AudioProcessor {
 	 */
 	public PercussionOnsetDetector(float sampleRate, int bufferSize,
 			int bufferOverlap, PercussionHandler handler) {
-		this(sampleRate, bufferSize, bufferOverlap, handler,
+		this(sampleRate, bufferSize, handler,
 				DEFAULT_SENSITIVITY, DEFAULT_THRESHOLD);
 	}
 
@@ -143,9 +142,7 @@ public class PercussionOnsetDetector implements AudioProcessor {
 	 *            Energy rise within a frequency bin necessary to count toward
 	 *            broadband total (dB). In [0-20].
 	 */
-	public PercussionOnsetDetector(float sampleRate, int bufferSize,
-			int bufferOverlap, PercussionHandler handler, double sensitivity,
-			double threshold) {
+	public PercussionOnsetDetector(float sampleRate, int bufferSize, PercussionHandler handler, double sensitivity, double threshold) {
 		fft = new FFT(bufferSize / 2);
 		this.threshold = threshold;
 		this.sensitivity = sensitivity;
@@ -153,12 +150,14 @@ public class PercussionOnsetDetector implements AudioProcessor {
 		currentMagnitudes = new float[bufferSize / 2];
 		this.handler = handler;
 		this.sampleRate = sampleRate;
-		this.overlap = bufferOverlap;
+		
 	}
-
+	
 	@Override
-	public boolean processFull(float[] audioFloatBuffer, byte[] audioByteBuffer) {
+	public boolean process(AudioEvent audioEvent) {
+		float[] audioFloatBuffer = audioEvent.getFloatBuffer();
 		this.processedSamples += audioFloatBuffer.length;
+		this.processedSamples -= audioEvent.getOverlap();
 
 		fft.forwardTransform(audioFloatBuffer);
 		fft.modulus(audioFloatBuffer, currentMagnitudes);
@@ -188,14 +187,6 @@ public class PercussionOnsetDetector implements AudioProcessor {
 	}
 
 	@Override
-	public boolean processOverlapping(float[] audioFloatBuffer,
-			byte[] audioByteBuffer) {
-		this.processedSamples -= overlap;
-		return processFull(audioFloatBuffer, audioByteBuffer);
-	}
-
-	@Override
 	public void processingFinished() {
 	}
-
 }

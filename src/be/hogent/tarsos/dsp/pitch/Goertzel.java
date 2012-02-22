@@ -10,6 +10,7 @@
 **/
 package be.hogent.tarsos.dsp.pitch;
 
+import be.hogent.tarsos.dsp.AudioEvent;
 import be.hogent.tarsos.dsp.AudioProcessor;
 
 /**
@@ -89,7 +90,8 @@ public class Goertzel implements AudioProcessor {
 	}
 
 	@Override
-	public boolean processFull(float[] audioFloatBuffer, byte[] audioByteBuffer) {
+	public boolean process(AudioEvent audioEvent) {
+		float[] audioFloatBuffer = audioEvent.getFloatBuffer();
 		double skn0, skn1, skn2;
 		int numberOfDetectedFrequencies = 0;
 		for (int j = 0; j < frequenciesToDetect.length; j++) {
@@ -125,12 +127,7 @@ public class Goertzel implements AudioProcessor {
 		return true;
 	}
 
-	@Override
-	public boolean processOverlapping(float[] audioFloatBuffer,
-			byte[] audioByteBuffer) {
-		processFull(audioFloatBuffer, audioByteBuffer);
-		return true;
-	}
+
 
 	@Override
 	public void processingFinished() {

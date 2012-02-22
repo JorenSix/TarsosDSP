@@ -40,8 +40,8 @@ import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
 
 import be.hogent.tarsos.dsp.AudioDispatcher;
+import be.hogent.tarsos.dsp.AudioEvent;
 import be.hogent.tarsos.dsp.AudioProcessor;
-import be.hogent.tarsos.dsp.ContinuingSilenceDetector;
 import be.hogent.tarsos.dsp.SilenceDetector;
 
 public class SoundDetector extends JFrame implements AudioProcessor {
@@ -58,7 +58,7 @@ public class SoundDetector extends JFrame implements AudioProcessor {
 	AudioDispatcher dispatcher;
 	Mixer currentMixer;
 	private final GaphPanel graphPanel;
-	ContinuingSilenceDetector silenceDetector;
+	SilenceDetector silenceDetector;
 	
 
 	public SoundDetector() {
@@ -256,7 +256,7 @@ public class SoundDetector extends JFrame implements AudioProcessor {
 				overlap);
 
 		// add a processor, handle percussion event.
-		silenceDetector = new ContinuingSilenceDetector(threshold);
+		silenceDetector = new SilenceDetector(threshold,false);
 		dispatcher.addAudioProcessor(silenceDetector);
 		dispatcher.addAudioProcessor(this);
 
@@ -278,14 +278,7 @@ public class SoundDetector extends JFrame implements AudioProcessor {
 	}
 
 	@Override
-	public boolean processFull(float[] audioFloatBuffer, byte[] audioByteBuffer) {
-		handleSound();
-		return true;
-	}
-
-	@Override
-	public boolean processOverlapping(float[] audioFloatBuffer,
-			byte[] audioByteBuffer) {
+	public boolean process(AudioEvent audioEvent) {
 		handleSound();
 		return true;
 	}
@@ -301,5 +294,7 @@ public class SoundDetector extends JFrame implements AudioProcessor {
 	public void processingFinished() {		
 		
 	}
+
+	
 
 }

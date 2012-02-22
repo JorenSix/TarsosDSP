@@ -11,11 +11,9 @@ package be.hogent.tarsos.dsp;
  */
 public class GainProcessor implements AudioProcessor {
 	private double gain;
-	private final int overlap;// in samples
-
-	public GainProcessor(double newGain, int overlap) {
+	
+	public GainProcessor(double newGain) {
 		setGain(newGain);
-		this.overlap = overlap;
 	}
 
 	public void setGain(double newGain) {
@@ -23,27 +21,22 @@ public class GainProcessor implements AudioProcessor {
 	}
 
 	@Override
-	public boolean processFull(float[] audioFloatBuffer, byte[] audioByteBuffer) {
-		for (int i = 0; i < audioFloatBuffer.length; i++) {
-			audioFloatBuffer[i] = Math.min(1.0f,
-					(float) (audioFloatBuffer[i] * gain));
+	public boolean process(AudioEvent audioEvent) {
+		float[] audioFloatBuffer = audioEvent.getFloatBuffer();
+		for (int i = audioEvent.getOverlap(); i < audioFloatBuffer.length ; i++) {
+			float newValue = (float) (audioFloatBuffer[i] * gain);
+			if(newValue > 1.0f) {
+				newValue = 1.0f;
+			} else if(newValue < -1.0f) {
+				newValue = -1.0f;
+			}
+			audioFloatBuffer[i] = newValue;
 		}
 		return true;
 	}
-
-	@Override
-	public boolean processOverlapping(float[] audioFloatBuffer,
-			byte[] audioByteBuffer) {
-		for (int i = overlap; i < audioFloatBuffer.length; i++) {
-			audioFloatBuffer[i] = Math.min(1.0f,(float) (audioFloatBuffer[i] * gain));
-		}
-		return false;
-	}
-
+	
 	@Override
 	public void processingFinished() {
-		// TODO Auto-generated method stub
-
+		// NOOP
 	}
-
 }

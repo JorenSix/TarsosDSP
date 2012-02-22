@@ -10,9 +10,6 @@
 **/
 package be.hogent.tarsos.dsp;
 
-import javax.sound.sampled.AudioFormat;
-
-import be.hogent.tarsos.dsp.util.AudioFloatConverter;
 
 /**
  *
@@ -37,8 +34,7 @@ import be.hogent.tarsos.dsp.util.AudioFloatConverter;
  * @author Joren Six
  * @author Olli Parviainen
  */
-public class WaveformSimilarityBasedOverlapAdd implements AudioProcessor {
-	
+public class WaveformSimilarityBasedOverlapAdd implements AudioProcessor {	
 	private int seekWindowLength;
 	private int seekLength;
 	private int overlapLength;
@@ -46,19 +42,14 @@ public class WaveformSimilarityBasedOverlapAdd implements AudioProcessor {
 	private float[] pMidBuffer;	
 	private float[] pRefMidBuffer;
 	private float[] outputFloatBuffer;
-	private byte[] outputByteBuffer;
 	
 	private int intskip;
 	private int sampleReq; 
 	
 	private double tempo;
-	private AudioFormat format;
-	private BlockingAudioPlayer blockingPlayer;
-	private WaveformWriter waveFormWriter;
-	private AudioFloatConverter converter;
-	private AudioDispatcher dispatcher;
-	private final GainProcessor gainProcessor;
 	
+	private AudioDispatcher dispatcher;
+
 	private Parameters newParameters;
 	
 	/**
@@ -66,27 +57,17 @@ public class WaveformSimilarityBasedOverlapAdd implements AudioProcessor {
 	 * @param format The format to use.
 	 * @param params The parameters for the algorithm.
 	 */
-	public WaveformSimilarityBasedOverlapAdd(AudioFormat format,Parameters  params){
-		this.format = format;
-		this.gainProcessor = new GainProcessor(1.0, 0);
-		converter = AudioFloatConverter.getConverter(format);
+	public WaveformSimilarityBasedOverlapAdd(Parameters  params){
 		setParameters(params);
 		applyNewParameters();
-	}
-	
-	public void setBlockingAudioPlayer(BlockingAudioPlayer newPlayer){
-		blockingPlayer = newPlayer;
-	}
-	public void setWaveFormWriter(WaveformWriter newWaveformWriter){
-		this.waveFormWriter = newWaveformWriter;
 	}
 	
 	public void setParameters(Parameters params){
 		newParameters = params;
 	}
 	
-	public void setGain(double gain){
-		gainProcessor.setGain(gain);
+	public void setDispatcher(AudioDispatcher newDispatcher){
+		this.dispatcher = newDispatcher;
 	}
 	
 	private void applyNewParameters(){
@@ -110,27 +91,20 @@ public class WaveformSimilarityBasedOverlapAdd implements AudioProcessor {
 		
 		sampleReq = Math.max(intskip + overlapLength, seekWindowLength) + seekLength;
 		
-		outputFloatBuffer= new float[getOutputBufferSize()];
-		outputByteBuffer = new byte [getOutputBufferSize() * format.getFrameSize()];
+		outputFloatBuffer = new float[getOutputBufferSize()];
 		newParameters = null;
-		if(blockingPlayer != null){
-			blockingPlayer.setStepSizeAndOverlap(getOutputBufferSize(), 0);
-		}
-		if(waveFormWriter != null){
-			waveFormWriter.setStepSizeAndOverlap(getOutputBufferSize(), 0);
-		}
 	}
 	
 	public int getInputBufferSize(){
 		return sampleReq;
 	}
 	
-	public int getOverlap(){
-		return sampleReq-intskip;
+	private int getOutputBufferSize(){
+		return seekWindowLength - overlapLength;
 	}
 	
-	public int getOutputBufferSize(){
-		return seekWindowLength - overlapLength;
+	public int getOverlap(){
+		return sampleReq-intskip;
 	}
 	
 	
@@ -226,17 +200,11 @@ public class WaveformSimilarityBasedOverlapAdd implements AudioProcessor {
 	}
 	
 	
-	/**
-	 * Set a new dispatcher. The same audio format should be kept.
-	 * @param dispatcher
-	 */
-	public void setDispatcher(AudioDispatcher dispatcher) {
-		this.dispatcher = dispatcher;
-	}
-	
-
 	@Override
-	public boolean processFull(float[] audioFloatBuffer, byte[] audioByteBuffer) {
+	public boolean process(AudioEvent audioEvent) {
+		float[] audioFloatBuffer = audioEvent.getFloatBuffer();
+		assert audioFloatBuffer.length == getInputBufferSize();
+		
 		//Search for the best overlapping position.
 		int offset =  seekBestOverlapPosition(audioFloatBuffer,0);
 		
@@ -255,17 +223,10 @@ public class WaveformSimilarityBasedOverlapAdd implements AudioProcessor {
         // processing sequence and so on
 		System.arraycopy(audioFloatBuffer, offset + sequenceLength + overlapLength, pMidBuffer, 0, overlapLength);
 		
-		gainProcessor.processFull(outputFloatBuffer, outputByteBuffer);
+		assert outputFloatBuffer.length == getOutputBufferSize();
 		
-		converter.toByteArray(outputFloatBuffer, outputByteBuffer);
-		if(blockingPlayer != null){
-			blockingPlayer.processFull(outputFloatBuffer, outputByteBuffer);
-		}
-		if(waveFormWriter!=null){
-			waveFormWriter.processFull(outputFloatBuffer, outputByteBuffer);
-		}
-		
-		
+		audioEvent.setFloatBuffer(outputFloatBuffer);
+		audioEvent.setOverlap(0);
 		
 		if(newParameters!=null){
 			applyNewParameters();
@@ -275,21 +236,11 @@ public class WaveformSimilarityBasedOverlapAdd implements AudioProcessor {
 	}
 
 	@Override
-	public boolean processOverlapping(float[] audioFloatBuffer,
-			byte[] audioByteBuffer) {
-		return processFull(audioFloatBuffer, audioByteBuffer);
-	}
-
-
-	@Override
 	public void processingFinished() {
-		if(blockingPlayer != null){
-			blockingPlayer.processingFinished();
-		}
-		if(waveFormWriter!=null){
-			waveFormWriter.processingFinished();
-		}
+		// NOOP
 	}
+
+
 	
 	/**
 	 * An object to encapsulate some of the parameters for
@@ -427,6 +378,4 @@ public class WaveformSimilarityBasedOverlapAdd implements AudioProcessor {
 	}
 
 
-	
-	
 }
