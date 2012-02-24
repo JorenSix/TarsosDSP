@@ -74,7 +74,7 @@ public final class AudioPlayer implements AudioProcessor {
 	 */
 	public void processingFinished() {
 		// cleanup
-		line.drain();
+		//line.drain();//drain takes too long..
 		line.close();
 	}
 }

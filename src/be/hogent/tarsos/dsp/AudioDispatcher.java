@@ -127,7 +127,8 @@ public final class AudioDispatcher implements Runnable {
 		audioInputStream = stream;
 
 		format = audioInputStream.getFormat();
-		audioEvent = new AudioEvent(format,stream.getFrameLength());
+		audioEvent = new AudioEvent(format,audioInputStream.getFrameLength());
+			
 		setStepSizeAndOverlap(audioBufferSize, bufferOverlap);
 		converter = AudioFloatConverter.getConverter(format);
 		
@@ -135,6 +136,14 @@ public final class AudioDispatcher implements Runnable {
 		
 		bytesToSkip = 0;
 		bytesProcessed=0;
+	}
+	
+	/**
+	 * Returns the duration of the stream in seconds. If the length of the stream can not be determined (e.g. microphone input), it returns a negative number.
+	 * @return The duration of the stream in seconds or a negative number.
+	 */
+	public double durationInSeconds(){
+		return audioInputStream.getFrameLength() / format.getSampleRate();
 	}
 	
 	
@@ -226,9 +235,7 @@ public final class AudioDispatcher implements Runnable {
 								
 				//Update the number of bytes processed;
 				bytesProcessed += bytesRead;
-				//Subtract the overlap
-				bytesProcessed -= byteOverlap;
-				
+					
 				// Read, convert and process consecutive overlapping buffers.
 				// Slide the buffer.
 				bytesRead = slideBuffer();
@@ -317,9 +324,17 @@ public final class AudioDispatcher implements Runnable {
 
 		//Is array copy faster to shift an array? Probably..
 		System.arraycopy(audioFloatBuffer, floatStepSize, audioFloatBuffer,0 ,floatOverlap);
-
-		final int bytesRead = audioInputStream.read(audioByteBuffer, byteOverlap, byteStepSize);
-		converter.toFloatArray(audioByteBuffer, byteOverlap, audioFloatBuffer, floatOverlap, floatStepSize);
+		
+		final int bytesRead;
+		
+		//Check here if the dispatcher is stopped to prevent reading from a closed audio stream.
+		if(stopped){
+			bytesRead = -1;
+		}else{	
+			bytesRead = audioInputStream.read(audioByteBuffer, byteOverlap, byteStepSize);
+			converter.toFloatArray(audioByteBuffer, byteOverlap, audioFloatBuffer, floatOverlap, floatStepSize);
+		}
+		
 
 		return bytesRead;
 	}

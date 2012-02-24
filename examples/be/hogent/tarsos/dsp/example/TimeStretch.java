@@ -197,7 +197,6 @@ public class TimeStretch extends JFrame{
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}	
-		
 	}
 	
 
