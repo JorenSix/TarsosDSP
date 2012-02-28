@@ -36,16 +36,18 @@ public class Player implements AudioProcessor {
 	private double currentTime;
 	private double pauzedAt;
 	
-	private final AudioProcessor processor;
+	private final AudioProcessor beforeWSOLAProcessor;
+	private final AudioProcessor afterWSOLAProcessor;
 	
 	private double gain;
 	private double tempo;
 	
-	public Player(AudioProcessor processor){
+	public Player(AudioProcessor beforeWSOLAProcessor,AudioProcessor afterWSOLAProcessor){
 		state = PlayerState.NO_FILE_LOADED;
 		gain = 1.0;
 		tempo = 1.0;
-		this.processor = processor;
+		this.beforeWSOLAProcessor = beforeWSOLAProcessor;
+		this.afterWSOLAProcessor = afterWSOLAProcessor;
 	}
 	
 
@@ -104,9 +106,11 @@ public class Player implements AudioProcessor {
 				dispatcher.skip(startTime);
 				
 				dispatcher.addAudioProcessor(this);
-				dispatcher.addAudioProcessor(processor);
+				dispatcher.addAudioProcessor(beforeWSOLAProcessor);
 				dispatcher.addAudioProcessor(wsola);
+				dispatcher.addAudioProcessor(afterWSOLAProcessor);
 				dispatcher.addAudioProcessor(gainProcessor);
+				
 				dispatcher.addAudioProcessor(audioPlayer);
 
 				Thread t = new Thread(dispatcher,"Audio Player Thread");

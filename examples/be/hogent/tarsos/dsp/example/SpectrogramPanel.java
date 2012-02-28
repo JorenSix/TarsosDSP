@@ -67,11 +67,13 @@ public class SpectrogramPanel extends JComponent implements ComponentListener{
 
 
 	String currentPitch = "";
+	
+
 	public void drawFFT(double pitch,float[] amplitudes,FFT fft){
 		double maxAmplitude=0;
 		//for every pixel calculate an amplitude
 		float[] pixeledAmplitudes = new float[getHeight()];
-		//iterate the lare arrray and map to pixels
+		//iterate the lage arrray and map to pixels
 		 for (int i = amplitudes.length/800; i < amplitudes.length; i++) {
              int pixelY = frequencyToBin(i * 44100 / (amplitudes.length * 8));
              pixeledAmplitudes[pixelY] += amplitudes[i];
@@ -82,11 +84,12 @@ public class SpectrogramPanel extends JComponent implements ComponentListener{
 		 for (int i = 0; i < pixeledAmplitudes.length; i++) {
     		 Color color = Color.black;
              if (maxAmplitude != 0) {
-            	 final int greyValue = (int) (pixeledAmplitudes[i] / maxAmplitude * 255);
+            	  
+            	 final int greyValue = (int) (Math.log1p(pixeledAmplitudes[i] / maxAmplitude) / Math.log1p(1.0000001) * 255);
              	 color = new Color(greyValue, greyValue, greyValue);
              }
              bufferedGraphics.setColor(color);
-        	 bufferedGraphics.fillRect(position, i, 1, 1);
+        	 bufferedGraphics.fillRect(position, i, 3, 1);
          }
 	
 		 
@@ -121,7 +124,7 @@ public class SpectrogramPanel extends JComponent implements ComponentListener{
 		}
         
 		repaint();
-		position++;
+		position+=3;
 		position = position % getWidth();
 	}
 

@@ -74,7 +74,7 @@ public class FFTTest {
 				float[] audioFloatBuffer = audioEvent.getFloatBuffer();
 				fft.forwardTransform(audioFloatBuffer);
 				fft.backwardsTransform(audioFloatBuffer);
-				return false;
+				return true;
 			}
 		});
 

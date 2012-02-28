@@ -1,6 +1,7 @@
 package be.hogent.tarsos.dsp.example;
 
 import java.awt.BorderLayout;
+import java.awt.Dimension;
 import java.awt.GridLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -25,6 +26,7 @@ import javax.swing.event.ChangeListener;
 import be.hogent.tarsos.dsp.AudioEvent;
 import be.hogent.tarsos.dsp.AudioProcessor;
 import be.hogent.tarsos.dsp.example.Player.PlayerState;
+import be.hogent.tarsos.dsp.util.FFT;
 
 public class AdvancedAudioPlayer extends JFrame {
 
@@ -49,6 +51,8 @@ public class AdvancedAudioPlayer extends JFrame {
 	private int newPositionValue;
 	
 	final Player player;
+	
+	final SpectrogramPanel panel = new SpectrogramPanel();
 	
 	final AudioProcessor processor = new AudioProcessor() {
 		
@@ -79,8 +83,12 @@ public class AdvancedAudioPlayer extends JFrame {
 		this.add(createTempoPanel());
 		this.add(createProgressPanel());
 		this.add(createButtonPanel());
+		JFrame frame =  new JFrame();
+		frame.setSize(new Dimension(600,800));
+		frame.add(panel);
+		frame.setVisible(true);
 		
-		player = new Player(processor);
+		player = new Player(processor,fftProcessor);
 		player.addPropertyChangeListener(new PropertyChangeListener() {
 			@Override
 			public void propertyChange(PropertyChangeEvent arg0) {
@@ -265,6 +273,35 @@ public class AdvancedAudioPlayer extends JFrame {
 		gainPanel.setBorder(new TitledBorder("Volume control"));
 		return gainPanel;
 	}
+	
+	AudioProcessor fftProcessor = new AudioProcessor(){
+		
+		FFT fft;
+		int prevSize;
+		float[] amplitudes;
+		@Override
+		public void processingFinished() {
+			// TODO Auto-generated method stub
+		}
+
+		@Override
+		public boolean process(AudioEvent audioEvent) {
+			float[] audioFloatBuffer = audioEvent.getFloatBuffer();
+			int bufferSize = audioFloatBuffer.length; 
+			float[] transformbuffer = new float[bufferSize*2];
+			if(prevSize != bufferSize){
+				fft = new FFT(bufferSize);
+				amplitudes = new float[bufferSize/2];
+			}
+			
+			System.arraycopy(audioFloatBuffer, 0, transformbuffer, 0, bufferSize); 
+			fft.forwardTransform(transformbuffer);
+			fft.modulus(transformbuffer, amplitudes);
+			panel.drawFFT(0.0, amplitudes,fft);
+			return true;
+		}
+		
+	};
 	
 	
 	public static void main(String... args) throws InterruptedException, InvocationTargetException {
