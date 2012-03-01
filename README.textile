@@ -40,3 +40,8 @@ The onset detector implementation is based on a "VAMP plugin example":http://vam
 
 For the implementation of the YIN pitch tracking algorithm. Both the  "the YIN paper":http://recherche.ircam.fr/equipes/pcm/cheveign/ps/2002_JASA_YIN_proof.pdf and the "aubio implementation":http://aubio.org were used as a reference.
 
+For the MPM pitch tracking algorithm, the paper titled "A Smarter Way To Find Pitch":http://miracle.otago.ac.nz/tartini/papers/A_Smarter_Way_to_Find_Pitch.pdf by Philip McLeod and Geoff Wyvill was used. 
+
+The audio time stretching algorithm is described in "An Overlap-Add Technique Based on Waveform Similarity  (WSOLA) For Hight Quality Time-Scale Modifications of speech":http://mir.cs.nthu.edu.tw/users/litbee/RelatedPaper/[WSOLA]An%20overlap-add%20technique%20based%20on%20waveform%20similarity%20(WSOLA)%20for%20high-quality%20time-scale%20modifications%20of%20speech.pdf by Werner Verhelst and Marc Roelands. As a reference implementation the WSOLA implementation by Olli Parviainen in the "SoundTouch - an open-source audio processing library":http://www.surina.net/soundtouch/ was used.
+
+The FFT implementation used within TarsosDSP is by Piotr Wendykier and is included in his "JTransforms library":https://sites.google.com/site/piotrwendykier/software/jtransforms. JTransforms is the first, open source, multithreaded FFT library written in pure Java. 
