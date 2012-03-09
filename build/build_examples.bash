@@ -10,3 +10,4 @@ ant -q -f time_stretch.xml
 ant -q -f spectrogram.xml
 ant -q -f delay_effect.xml
 ant -q -f advanced_audio_player.xml
+ant -q -f oscilloscope.xml
