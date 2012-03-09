@@ -70,7 +70,6 @@ public class PitchProcessor implements AudioProcessor {
 	 * The underlying pitch detector;
 	 */
 	final PitchDetector detector;
-	final long lengthInSamples;
 
 	final float sampleRate;
 	final DetectedPitchHandler handler;
@@ -93,10 +92,10 @@ public class PitchProcessor implements AudioProcessor {
 	 *            The handler handles detected pitch.
 	 */
 	public PitchProcessor(PitchEstimationAlgorithm algorithm, float sampleRate,
-			int bufferSize, long totalLengthInSamples,
+			int bufferSize,
 			DetectedPitchHandler handler) {
 		this.sampleRate = sampleRate;
-		lengthInSamples = totalLengthInSamples;
+
 
 		this.handler = handler;
 		if (PitchEstimationAlgorithm.MPM == algorithm) {

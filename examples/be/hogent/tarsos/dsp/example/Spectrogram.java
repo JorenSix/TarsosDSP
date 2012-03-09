@@ -155,7 +155,7 @@ public class Spectrogram extends JFrame implements DetectedPitchHandler {
 		
 
 		// add a processor, handle pitch event.
-		dispatcher.addAudioProcessor(new PitchProcessor(algo, sampleRate, bufferSize, 0, this));
+		dispatcher.addAudioProcessor(new PitchProcessor(algo, sampleRate, bufferSize, this));
 		dispatcher.addAudioProcessor(fftProcessor);
 		
 		

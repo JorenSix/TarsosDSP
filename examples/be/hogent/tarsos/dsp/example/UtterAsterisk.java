@@ -127,11 +127,10 @@ public class UtterAsterisk extends JFrame implements DetectedPitchHandler {
 		final AudioInputStream stream = new AudioInputStream(line);
 
 		// create a new dispatcher
-		dispatcher = new AudioDispatcher(stream, bufferSize,
-				overlap);
+		dispatcher = new AudioDispatcher(stream, bufferSize,overlap);
 
 		// add a processor, handle percussion event.
-		dispatcher.addAudioProcessor(new PitchProcessor(algo, sampleRate, bufferSize, 0, this));
+		dispatcher.addAudioProcessor(new PitchProcessor(algo, sampleRate, bufferSize, this));
 
 		// run the dispatcher (on a new thread).
 		new Thread(dispatcher,"Audio dispatching").start();

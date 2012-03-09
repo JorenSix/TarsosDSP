@@ -376,6 +376,4 @@ public class WaveformSimilarityBasedOverlapAdd implements AudioProcessor {
 			return tempo;
 		}
 	}
-
-
 }
