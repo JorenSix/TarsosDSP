@@ -112,7 +112,10 @@ public class PitchDetector extends JFrame implements DetectedPitchHandler {
 				overlap);
 
 		// add a processor
-		dispatcher.addAudioProcessor(new PitchProcessor(PitchEstimationAlgorithm.YIN, sampleRate, bufferSize, this));
+		//dispatcher.addAudioProcessor(new PitchProcessor(PitchEstimationAlgorithm.YIN, sampleRate, bufferSize, this));
+		
+		dispatcher.addAudioProcessor(new PitchProcessor(PitchEstimationAlgorithm.DYNAMIC_WAVELET, sampleRate, bufferSize, this));
+		
 		dispatcher.addAudioProcessor(new AudioPlayer(format));
 		
 

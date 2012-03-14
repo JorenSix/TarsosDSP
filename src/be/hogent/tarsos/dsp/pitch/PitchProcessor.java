@@ -39,7 +39,22 @@ public class PitchProcessor implements AudioProcessor {
 		 * "http://miracle.otago.ac.nz/postgrads/tartini/papers/A_Smarter_Way_to_Find_Pitch.pdf"
 		 * >A Smarter Way to Find Pitch</a>".
 		 */
-		MPM
+		MPM,
+		
+		DYNAMIC_WAVELET;
+		
+		public PitchDetector getDetector(float sampleRate,int bufferSize){
+			PitchDetector detector;
+			if (this == MPM ) {
+				detector = new McLeodPitchMethod(sampleRate, bufferSize);
+			} else if(this == DYNAMIC_WAVELET ) {
+				detector = new DynamicWavelet(sampleRate);
+			} else {
+				detector = new Yin(sampleRate, bufferSize);
+			}
+			return detector;
+		}
+		
 	};
 	
 	/**
@@ -96,14 +111,9 @@ public class PitchProcessor implements AudioProcessor {
 			int bufferSize,
 			DetectedPitchHandler handler) {
 		this.sampleRate = sampleRate;
-
-
+		detector = algorithm.getDetector(sampleRate, bufferSize);
 		this.handler = handler;
-		if (PitchEstimationAlgorithm.MPM == algorithm) {
-			detector = new McLeodPitchMethod(sampleRate, bufferSize);
-		} else {
-			detector = new Yin(sampleRate, bufferSize);
-		}
+		
 	}
 	
 	@Override

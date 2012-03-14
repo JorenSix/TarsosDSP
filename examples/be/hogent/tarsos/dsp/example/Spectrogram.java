@@ -83,7 +83,7 @@ public class Spectrogram extends JFrame implements DetectedPitchHandler {
 		this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		this.setTitle("Spectrogram");
 		panel = new SpectrogramPanel();
-		algo = PitchEstimationAlgorithm.YIN;
+		algo = PitchEstimationAlgorithm.DYNAMIC_WAVELET;
 		this.fileName = fileName;
 		
 		JPanel pitchDetectionPanel = new PitchDetectionPanel(algoChangeListener);
