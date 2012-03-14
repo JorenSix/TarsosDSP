@@ -63,10 +63,25 @@ THE SOFTWARE.
  * 
  */
 public class DynamicWavelet implements PitchDetector{
+	
+	// algorithm parameters
+	private final int maxFLWTlevels = 6;
+	private final double maxF = 3000.;
+	private final int differenceLevelsN = 3;
+	private final double maximaThresholdRatio = 0.75;
+	
 	private final float sampleRate;
 	
-	public DynamicWavelet(float sampleRate){
-		this.sampleRate = 44100;
+	int[] distances; 
+	int[] mins;
+	int[] maxs;
+	
+	public DynamicWavelet(float sampleRate,int bufferSize){
+		this.sampleRate = sampleRate;
+		
+		distances = new int[bufferSize];
+		mins = new int[bufferSize];
+		maxs = new int[bufferSize];
 	}
 	
 	@Override
@@ -74,17 +89,22 @@ public class DynamicWavelet implements PitchDetector{
 		float pitchF = -1.0f;
 		
 		int curSamNb = audioBuffer.length;
-		int[] distances = new int[audioBuffer.length];
-		int[] mins = new int[audioBuffer.length];
-		int[] maxs = new int[audioBuffer.length];
+	
 		int nbMins;
 		int nbMaxs;
 		
-		// algorithm parameters
-		int maxFLWTlevels = 6;
-		double maxF = 3000.;
-		int differenceLevelsN = 3;
-		double maximaThresholdRatio = 0.75;
+		//check if the buffer size changed
+		if(distances.length == audioBuffer.length){
+			//if not fill the arrays with zero
+			Arrays.fill(distances,0);
+			Arrays.fill(mins,0);
+			Arrays.fill(maxs,0);
+		} else {
+			//otherwise create new ones 
+			distances = new int[audioBuffer.length];
+			mins = new int[audioBuffer.length];
+			maxs = new int[audioBuffer.length];
+		}
 		
 		double ampltitudeThreshold;  
 		double theDC = 0.0;
@@ -111,6 +131,8 @@ public class DynamicWavelet implements PitchDetector{
 		int curLevel = 0;
 		double curModeDistance = -1.;
 		int delta;
+		
+		//TODO: refactor to make this more java, break it up in methods, remove the wile and branching statements...
 		
 		search:
 		while(true){
@@ -147,16 +169,8 @@ public class DynamicWavelet implements PitchDetector{
 								mins[nbMins++] = i;
 								lastMinIndex = i;
 								findMin = false;
-								//if DEBUGG then put "min ok"&&si
-								//
-							} else {
-								//if DEBUGG then put "min too close to previous"&&(i - lastMinIndex)
-								//
-							}
-						} else {
-							// if DEBUGG then put "min "&abs(si)&" < thresh = "&ampltitudeThreshold
-							//--
-						}
+							} 
+						} 
 					}
 					
 					if (findMax  && previousDV > 0 && dv <= 0) {
@@ -166,15 +180,9 @@ public class DynamicWavelet implements PitchDetector{
 								maxs[nbMaxs++] = i;
 								lastmaxIndex = i;
 								findMax = false;
-							} else {
-								//if DEBUGG then put "max too close to previous"&&(i - lastmaxIndex)
-								//--
 							}
-						} else {
-							//if DEBUGG then put "max "&abs(si)&" < thresh = "&ampltitudeThreshold
-							//--
 						}
-					}					
+					}
 				}
 				previousDV = dv;
 			}
@@ -264,19 +272,29 @@ public class DynamicWavelet implements PitchDetector{
 	 			//asLog("dywapitch not enough samples, exiting\n");
 				break search;
 			}
-			for (int i = 0; i < curSamNb/2; i++) {
-				audioBuffer[i] = (audioBuffer[2*i] + audioBuffer[2*i + 1])/2.0f;
+			//do not modify original audio buffer, make a copy buffer, if
+			//downsampling is needed (only once).
+			float[] newAudioBuffer = audioBuffer;
+			if(curSamNb == distances.length){
+				newAudioBuffer = new float[curSamNb/2];
 			}
+			for (int i = 0; i < curSamNb/2; i++) {
+				newAudioBuffer[i] = (audioBuffer[2*i] + audioBuffer[2*i + 1])/2.0f;				
+			}
+			audioBuffer = newAudioBuffer;
 			curSamNb /= 2;
 		}		
 		
 		return pitchF;
 	}
 
+	/* (non-Javadoc)
+	 * @see be.hogent.tarsos.dsp.pitch.PitchDetector#getProbability()
+	 */
 	@Override
 	public float getProbability() {
 		// TODO Auto-generated method stub
-		return 0;
+		return -1.0f;
 	}
 
 }

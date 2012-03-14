@@ -48,7 +48,7 @@ public class PitchProcessor implements AudioProcessor {
 			if (this == MPM ) {
 				detector = new McLeodPitchMethod(sampleRate, bufferSize);
 			} else if(this == DYNAMIC_WAVELET ) {
-				detector = new DynamicWavelet(sampleRate);
+				detector = new DynamicWavelet(sampleRate,bufferSize);
 			} else {
 				detector = new Yin(sampleRate, bufferSize);
 			}
