@@ -11,8 +11,28 @@
 
 package be.hogent.tarsos.dsp;
 
+/**
+ * The oscilloscope generates a float array with 
+ * array[i] an x coordinate in percentage
+ * array[i+1] the value of the amplitude in audio buffer 
+ * array[i+2] another x coordinate in percentage
+ * array[i+3] the next amplitude in the audio buffer
+ * 
+ * The implementation is based on the one by Dan Ellis found at http://www.ee.columbia.edu/~dpwe/resources/Processing/
+ * @author Dan Ellis
+ * @author Joren Six
+ *
+ */
 public class Oscilloscope implements AudioProcessor {
 	public static interface OscilloscopeEventHandler{
+		/**
+		 * @param data The data contains a float array with: 
+		 * array[i] an x coordinate in percentage
+		 * array[i+1] the value of the amplitude in audio buffer 
+		 * array[i+2] another x coordinate in percentage
+		 * array[i+3] the next amplitude in the audio buffer
+		 * @param event An audio Event.
+		 */
 		void handleEvent(float[] data, AudioEvent event);
 	}
 	float[] dataBuffer;

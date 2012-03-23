@@ -242,12 +242,4 @@ public class Player implements AudioProcessor {
 		 */
 		STOPPED
 	}
-
-
-
-	
-	
-
-
-
 }
