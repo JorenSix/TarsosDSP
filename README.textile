@@ -27,7 +27,7 @@ The source tree is divided in three directories:
 ** "UtterAsterisk":http://tarsos.0110.be/artikels/lees/TarsosDSP_sample_application%253A_Utter_Asterisk a game with the goal to sing as close to a melody a possible. Technically it shows real-time pitch detection with YIN or MPM.
 ** "Spectrogram in Java":http://tarsos.0110.be/artikels/lees/Spectrogram_in_Java_with_TarsosDSP shows a spectrogram and detected pitch, either live or from an audio file. It is interesting to see which frequencies are picked as fundamentals.
 ** "Goertzel DTMF(Dual tone multi frequency) decoding":http://tarsos.0110.be/artikels/lees/Dual-Tone_Multi-Frequency_%2528DTMF%2529_Decoding_with_the_Goertzel_Algorithm_in_Java an implementation of the Goertzel Algorithm. A fancy user interface shows what goes on under the hood.
-** "Audio Time Stretching - Implementation in Pure Java Using WSOLA":http://tarsos.0110.be/artikels/lees/Audio_Time_Stretching_-_Implementation_in_Pure_Java_Using_WSOLA(Waveform Similarity Overlap Add) an implementation of the a time stretching algorithm. By using WSOLA(Waveform Similarity Overlap Add) it is possilbe to change the playback speed while audio is playing.
+** "Audio Time Stretching - Implementation in Pure Java Using WSOLA":http://tarsos.0110.be/artikels/lees/Audio_Time_Stretching_-_Implementation_in_Pure_Java_Using_WSOLA an implementation of the a time stretching algorithm. By using WSOLA(Waveform Similarity Overlap Add) it is possilbe to change the playback speed while audio is playing.
 
 
 
