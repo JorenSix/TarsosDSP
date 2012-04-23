@@ -16,6 +16,20 @@ dispatcher.addAudioProcessor(new WaveformWriter(format,stepSize, overlap, "filte
 dispatcher.run();
 </code></pre>
 
+h2. Quickly Getting Started with TarsosDSP
+
+If you have "Apache Ant":http://ant.apache.org/ and "git":http://git-scm.com/ installed on your system the following code gets you started quickly:
+<pre><code>
+git clone https://JorenSix@github.com/JorenSix/TarsosDSP.git
+cd TarsosDSP/build
+ant tarsos_dsp_library #Builds the core TarsosDSP library
+ant build_examples #Builds all the TarsosDSP examples
+ant javadoc #Creates the documentation in TarsosDSP/doc
+</code></pre>
+When everything runs correctly you should be able to run all example applications and have the latest version of the Tarsos DSP library for inclusion in your projects. Also the Javadoc documentation for the API should be available in TarsosDSP/doc. Drop me a line if you use TarsosDSP in your project. Always nice to hear how this software is used.
+ 
+h2. Source Code Organization and Examples of TarsosDSP 
+
 The source tree is divided in three directories: 
 * @src@ contains the source files of the core DSP libraries. 
 * @test@ contains unit tests for some of the DSP functionality.
