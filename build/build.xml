@@ -89,6 +89,22 @@
 
 	<target name="build_examples" depends="example_advanced_audio_player,example_delay_effect,example_goertzel_algorithm,example_oscilloscope,example_percussion_detector,example_pitch_detector,example_spectrogram,example_sound_detector,example_time_stretch,example_utter_asterisk" />
 
+	<target name="release" depends="javadoc,tarsos_dsp_library,example_advanced_audio_player,example_delay_effect,example_goertzel_algorithm,example_oscilloscope,example_percussion_detector,example_pitch_detector,example_spectrogram,example_sound_detector,example_time_stretch,example_utter_asterisk">
+
+		<copy todir="TarsosDSP-${version}-Documentation">
+			<fileset dir="../doc" />
+		</copy>
+
+		<mkdir dir="TarsosDSP-${version}-Examples" />
+		<move todir="TarsosDSP-${version}-Examples">
+			<fileset dir=".">
+				<include name="*.jar" />
+				<exclude name="TarsosDSP-${version}-bin.jar" />
+				<exclude name="TarsosDSP-${version}.jar" />
+			</fileset>
+		</move>
+	</target>
+
 	<target name="example_advanced_audio_player" depends="compile">
 		<jar destfile="AdvancedAudioPlayer-${version}.jar" filesetmanifest="mergewithoutmain">
 			<manifest>

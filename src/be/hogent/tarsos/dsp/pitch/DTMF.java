@@ -42,7 +42,7 @@ public class DTMF {
 
 	/**
 	 * Generate a DTMF - tone for a valid DTMF character. 
-	 * @param character a valid DTMF character (present in {@link DTMF.DTMF_CHARACTERS}}
+	 * @param character a valid DTMF character (present in DTMF_CHARACTERS}
 	 * @return a float buffer of predefined length (7168 samples) with the correct DTMF tone representing the character.
 	 */
 	public static float[] generateDTMFTone(char character){
@@ -55,17 +55,17 @@ public class DTMF {
 					secondFrequency = DTMF_FREQUENCIES[col + 4];
 				}
 			}
-		}	
+		}
 		return DTMF.audioBufferDTMF(firstFrequency,secondFrequency,7168);
 	}
 	
 	/**
-	 * Checks if the given character is present in {@link DTMF.DTMF_CHARACTERS}.
+	 * Checks if the given character is present in DTMF_CHARACTERS.
 	 * 
 	 * @param character
 	 *            the character to check.
 	 * @return True if the given character is present in
-	 *         {@link DTMF.DTMF_CHARACTERS}, false otherwise.
+	 *         DTMF_CHARACTERS, false otherwise.
 	 */
 	public static boolean isDTMFCharacter(char character){
 		double firstFrequency = -1;

@@ -55,7 +55,6 @@ public class WaveformSimilarityBasedOverlapAdd implements AudioProcessor {
 	
 	/**
 	 * Create a new instance based on algorithm parameters for a certain audio format.
-	 * @param format The format to use.
 	 * @param params The parameters for the algorithm.
 	 */
 	public WaveformSimilarityBasedOverlapAdd(Parameters  params){

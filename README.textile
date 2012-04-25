@@ -6,8 +6,7 @@ Its aim is to provide a simple interface to some audio (signal) processing algor
 
 The following example filters a band of frequencies of an input file @testFile@. It keeps the frequencies form @startFrequency@ to @stopFrequency@. 
 
-<pre><code>
-AudioInputStream inputStream = AudioSystem.getAudioInputStream(testFile);
+<pre><code>AudioInputStream inputStream = AudioSystem.getAudioInputStream(testFile);
 AudioDispatcher dispatcher = new AudioDispatcher(inputStream,stepSize,overlap);
 dispatcher.addAudioProcessor(new HighPass(startFrequency, sampleRate, overlap));
 dispatcher.addAudioProcessor(new LowPassFS(stopFrequency, sampleRate, overlap));
@@ -18,15 +17,14 @@ dispatcher.run();
 
 h2. Quickly Getting Started with TarsosDSP
 
-If you have "Apache Ant":http://ant.apache.org/ and "git":http://git-scm.com/ installed on your system the following code gets you started quickly:
-<pre><code>
-git clone https://JorenSix@github.com/JorenSix/TarsosDSP.git
+Head over to the "TarsosDSP release repository":http://tarsos.0110.be/releases/TarsosDSP/ and download the latest "TarsosDSP library":http://tarsos.0110.be/releases/TarsosDSP/TarsosDSP-1.0.jar. To get up to speed quickly, check the "TarsosDSP Example applications":http://tarsos.0110.be/releases/TarsosDSP/TarsosDSP-1.0-Examples/ for inspiration and consult the "API documentation":http://tarsos.0110.be/releases/TarsosDSP/TarsosDSP-1.0-Documentation/. If you, for some reason, want to build from source, you need "Apache Ant":http://ant.apache.org/ and "git":http://git-scm.com/ installed on your system. The following commands fetch the source and build the library and example jars: 
+<pre><code>git clone https://JorenSix@github.com/JorenSix/TarsosDSP.git
 cd TarsosDSP/build
 ant tarsos_dsp_library #Builds the core TarsosDSP library
 ant build_examples #Builds all the TarsosDSP examples
 ant javadoc #Creates the documentation in TarsosDSP/doc
 </code></pre>
-When everything runs correctly you should be able to run all example applications and have the latest version of the Tarsos DSP library for inclusion in your projects. Also the Javadoc documentation for the API should be available in TarsosDSP/doc. Drop me a line if you use TarsosDSP in your project. Always nice to hear how this software is used.
+When everything runs correctly you should be able to run all example applications and have the latest version of the TarsosDSP library for inclusion in your projects. Also the Javadoc documentation for the API should be available in TarsosDSP/doc. Drop me a line if you use TarsosDSP in your project. Always nice to hear how this software is used.
  
 h2. Source Code Organization and Examples of TarsosDSP 
 
@@ -42,7 +40,6 @@ The source tree is divided in three directories:
 ** "Spectrogram in Java":http://tarsos.0110.be/artikels/lees/Spectrogram_in_Java_with_TarsosDSP shows a spectrogram and detected pitch, either live or from an audio file. It is interesting to see which frequencies are picked as fundamentals.
 ** "Goertzel DTMF(Dual tone multi frequency) decoding":http://tarsos.0110.be/artikels/lees/Dual-Tone_Multi-Frequency_%2528DTMF%2529_Decoding_with_the_Goertzel_Algorithm_in_Java an implementation of the Goertzel Algorithm. A fancy user interface shows what goes on under the hood.
 ** "Audio Time Stretching - Implementation in Pure Java Using WSOLA":http://tarsos.0110.be/artikels/lees/Audio_Time_Stretching_-_Implementation_in_Pure_Java_Using_WSOLA an implementation of a time stretching algorithm. WSOLA(Waveform Similarity Overlap Add) makes it possible to change the play back speed of audio without changing the pitch. The play back speed can be changed at any moment, even when there is audio playing.
-
 
 
 h2. Credits
@@ -61,3 +58,7 @@ The Dynamic Wavlet pitch estimation algorithm is described in "Real-Time Time-Do
 The audio time stretching algorithm is described in "An Overlap-Add Technique Based on Waveform Similarity  (WSOLA) For Hight Quality Time-Scale Modifications of speech":http://mir.cs.nthu.edu.tw/users/litbee/RelatedPaper/[WSOLA]An%20overlap-add%20technique%20based%20on%20waveform%20similarity%20(WSOLA)%20for%20high-quality%20time-scale%20modifications%20of%20speech.pdf by Werner Verhelst and Marc Roelands. As a reference implementation the WSOLA implementation by Olli Parviainen in the "SoundTouch - an open-source audio processing library":http://www.surina.net/soundtouch/ was used.
 
 The FFT implementation used within TarsosDSP is by Piotr Wendykier and is included in his "JTransforms library":https://sites.google.com/site/piotrwendykier/software/jtransforms. JTransforms is the first, open source, multithreaded FFT library written in pure Java. 
+
+h2. Changelog
+
+<dt>Version 1.0</dt><dd>2012-04-24</dd> First release which includes several pitch trackers and a time stretching algorithm, amongst other things. Downloads and javadoc API can be found at the "TarsosDSP release directory":http://tarsos.0110.be/releases/TarsosDSP/

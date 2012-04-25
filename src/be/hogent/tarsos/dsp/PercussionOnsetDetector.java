@@ -132,8 +132,6 @@ public class PercussionOnsetDetector implements AudioProcessor {
 	 *            The sample rate in Hz (used to calculate timestamps)
 	 * @param bufferSize
 	 *            The size of the buffer in samples.
-	 * @param bufferOverlap
-	 *            The overlap of buffers in samples.
 	 * @param handler
 	 *            An interface implementor to handle percussion onset events.
 	 * @param sensitivity

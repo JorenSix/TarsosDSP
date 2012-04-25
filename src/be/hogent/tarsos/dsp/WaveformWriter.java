@@ -62,8 +62,6 @@ public class WaveformWriter implements AudioProcessor {
 	/**
 	 * Initialize the writer.
 	 * @param format The format of the received bytes.
-	 * @param bufferSize The size of a received buffer (in samples, not bytes).
-	 * @param overlap The overlap of two consecutive buffers (in samples, not bytes).
 	 * @param fileName The name of the wav file to store.
 	 */
 	public WaveformWriter(final AudioFormat format,final String fileName){

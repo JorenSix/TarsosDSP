@@ -99,11 +99,6 @@ public class PitchProcessor implements AudioProcessor {
 	 *            The sample rate of the buffer (Hz).
 	 * @param bufferSize
 	 *            The size of the buffer in samples.
-	 * @param bufferOverlap
-	 *            The size of the overlap between two consecutive buffers (in
-	 *            samples).
-	 * @param totalLengthInSamples
-	 *            The total length of the stream (in samples).
 	 * @param handler
 	 *            The handler handles detected pitch.
 	 */
