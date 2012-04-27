@@ -221,6 +221,7 @@ public final class AudioDispatcher implements Runnable {
 			// as long as the stream has not ended or the number of bytes
 			// processed is smaller than the number of bytes to process: process
 			// bytes.
+		audioLoop:
 			while (bytesRead != -1 && !stopped) {
 				
 				//Makes sure the right buffers are processed, they can be changed by audio processors.
@@ -230,7 +231,7 @@ public final class AudioDispatcher implements Runnable {
 				
 				for (final AudioProcessor processor : audioProcessors) {
 					if(!processor.process(audioEvent)){
-						break;
+						break audioLoop;
 					}
 				}
 								

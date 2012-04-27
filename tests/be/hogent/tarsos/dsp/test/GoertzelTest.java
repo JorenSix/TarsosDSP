@@ -117,7 +117,7 @@ public class GoertzelTest {
 		
 		final float[][] floatSinBuffers = {DTMF.generateDTMFTone('1'),DTMF.generateDTMFTone('2'),DTMF.generateDTMFTone('3'),DTMF.generateDTMFTone('4'),DTMF.generateDTMFTone('5'),DTMF.generateDTMFTone('6'),DTMF.generateDTMFTone('7'),DTMF.generateDTMFTone('8'),DTMF.generateDTMFTone('9')};
 		final float[] floatBuffer = appendBuffers(floatSinBuffers);
-		final int stepSize = 256;
+		final int stepSize = 512;
 		final AudioFormat format = new AudioFormat(44100, 16, 1, true, false);
 		final AudioFloatConverter converter = AudioFloatConverter.getConverter(format);
 		final byte[] byteBuffer = new byte[floatBuffer.length * format.getFrameSize()];
@@ -159,8 +159,9 @@ public class GoertzelTest {
 				}));
 		//dispatcher.addAudioProcessor(new BlockingAudioPlayer(format, stepSize, 0));
 		dispatcher.run();
-		assertEquals("Length should be 9", 9, data.length());
 		assertEquals("Decoded string should be 123456789", "123456789", data.toString());
+		assertEquals("Length should be 9", 9, data.length());
+		
 	}
 
 }

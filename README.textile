@@ -8,10 +8,9 @@ The following example filters a band of frequencies of an input file @testFile@.
 
 <pre><code>AudioInputStream inputStream = AudioSystem.getAudioInputStream(testFile);
 AudioDispatcher dispatcher = new AudioDispatcher(inputStream,stepSize,overlap);
-dispatcher.addAudioProcessor(new HighPass(startFrequency, sampleRate, overlap));
-dispatcher.addAudioProcessor(new LowPassFS(stopFrequency, sampleRate, overlap));
-dispatcher.addAudioProcessor(new FloatConverter(format));
-dispatcher.addAudioProcessor(new WaveformWriter(format,stepSize, overlap, "filtered.wav"));
+dispatcher.addAudioProcessor(new LowPassFS(stopFrequency, 44100));
+dispatcher.addAudioProcessor(new HighPass(startFrequency, 44100));
+dispatcher.addAudioProcessor(new WaveformWriter(format, "filtered.wav"));
 dispatcher.run();
 </code></pre>
 

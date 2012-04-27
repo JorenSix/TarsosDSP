@@ -56,7 +56,7 @@ public class DTMF {
 				}
 			}
 		}
-		return DTMF.audioBufferDTMF(firstFrequency,secondFrequency,7168);
+		return DTMF.audioBufferDTMF(firstFrequency,secondFrequency,512*2*10);
 	}
 	
 	/**

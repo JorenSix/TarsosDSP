@@ -2,7 +2,7 @@
 <project default="tarsos_dsp_library" name="Create Runnable Time Stretch Jar">
 
 	<!-- Configuration -->
-	<property name="version"   value="1.0"/>
+	<property name="version"   value="1.1"/>
 	<property name="built_by"  value="${user.name}"/>
 	<property name="junit_jar" value="/opt/eclipse/plugins/org.junit_4.8.1.v4_8_1_v20100427-1100/junit.jar:/opt/eclipse/plugins/org.hamcrest.core_1.1.0.v20090501071000.jar"/>
 
