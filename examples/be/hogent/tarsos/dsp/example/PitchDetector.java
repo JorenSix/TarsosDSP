@@ -12,14 +12,14 @@
 package be.hogent.tarsos.dsp.example;
 
 import java.awt.GridLayout;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 import java.lang.reflect.InvocationTargetException;
-import java.util.ArrayList;
 
 import javax.sound.sampled.AudioFormat;
 import javax.sound.sampled.AudioInputStream;
-import javax.sound.sampled.Clip;
 import javax.sound.sampled.DataLine;
 import javax.sound.sampled.LineUnavailableException;
 import javax.sound.sampled.Mixer;
@@ -33,7 +33,6 @@ import javax.swing.SwingUtilities;
 import javax.swing.UIManager;
 
 import be.hogent.tarsos.dsp.AudioDispatcher;
-import be.hogent.tarsos.dsp.AudioPlayer;
 import be.hogent.tarsos.dsp.pitch.PitchProcessor;
 import be.hogent.tarsos.dsp.pitch.PitchProcessor.DetectedPitchHandler;
 import be.hogent.tarsos.dsp.pitch.PitchProcessor.PitchEstimationAlgorithm;
@@ -46,10 +45,25 @@ public class PitchDetector extends JFrame implements DetectedPitchHandler {
 	private static final long serialVersionUID = 3501426880288136245L;
 
 	private final JTextArea textArea;
-	ArrayList<Clip> clipList;
-	int counter;
-	AudioDispatcher dispatcher;
-	Mixer currentMixer;
+
+	private AudioDispatcher dispatcher;
+	private Mixer currentMixer;
+	
+	private PitchEstimationAlgorithm algo;	
+	private ActionListener algoChangeListener = new ActionListener(){
+		@Override
+		public void actionPerformed(final ActionEvent e) {
+			String name = e.getActionCommand();
+			PitchEstimationAlgorithm newAlgo = PitchEstimationAlgorithm.valueOf(name);
+			algo = newAlgo;
+			try {
+				setNewMixer(currentMixer);
+			} catch (LineUnavailableException e1) {
+				e1.printStackTrace();
+			} catch (UnsupportedAudioFileException e1) {
+				e1.printStackTrace();
+			}
+	}};
 
 	public PitchDetector() {
 		this.setLayout(new GridLayout(0, 1));
@@ -73,6 +87,12 @@ public class PitchDetector extends JFrame implements DetectedPitchHandler {
 						}
 					}
 				});
+		
+		algo = PitchEstimationAlgorithm.YIN;
+		
+		JPanel pitchDetectionPanel = new PitchDetectionPanel(algoChangeListener);
+		
+		add(pitchDetectionPanel);
 	
 		
 		textArea = new JTextArea();
@@ -91,7 +111,7 @@ public class PitchDetector extends JFrame implements DetectedPitchHandler {
 		currentMixer = mixer;
 		
 		float sampleRate = 44100;
-		int bufferSize = 512;
+		int bufferSize = 1024;
 		int overlap = 0;
 		
 		textArea.append("Started listening with " + mixer.getMixerInfo().getName() + "\n");
@@ -112,14 +132,8 @@ public class PitchDetector extends JFrame implements DetectedPitchHandler {
 				overlap);
 
 		// add a processor
-		//dispatcher.addAudioProcessor(new PitchProcessor(PitchEstimationAlgorithm.YIN, sampleRate, bufferSize, this));
+		dispatcher.addAudioProcessor(new PitchProcessor(algo, sampleRate, bufferSize, this));
 		
-		dispatcher.addAudioProcessor(new PitchProcessor(PitchEstimationAlgorithm.DYNAMIC_WAVELET, sampleRate, bufferSize, this));
-		
-		dispatcher.addAudioProcessor(new AudioPlayer(format));
-		
-
-		// run the dispatcher (on a new thread).
 		new Thread(dispatcher,"Audio dispatching").start();
 	}
 
