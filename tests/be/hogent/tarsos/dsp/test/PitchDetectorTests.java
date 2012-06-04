@@ -98,5 +98,5 @@ public class PitchDetectorTests {
 			//assertEquals("Expected about 1975.53Hz for " + algorithm,1975.53,pitch,30);
 		}
 		System.out.println();
-	}
+	}	
 }

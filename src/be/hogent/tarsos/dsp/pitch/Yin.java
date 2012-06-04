@@ -174,23 +174,24 @@ public final class Yin implements PitchDetector {
 		int tau;
 		// first two positions in yinBuffer are always 1
 		// So start at the third (index 2)
-		for (tau = 2; tau < yinBuffer.length; tau++) {
-			if (yinBuffer[tau] < threshold) {
-				while (tau + 1 < yinBuffer.length && yinBuffer[tau + 1] < yinBuffer[tau]) {
-					tau++;
-				}
-				// found tau, exit loop and return
-				// store the probability
-				// From the YIN paper: The threshold determines the list of
-				// candidates admitted to the set, and can be interpreted as the
-				// proportion of aperiodic power tolerated
-				// within a periodic signal.
-				//
-				// Since we want the periodicity and and not aperiodicity:
-				// periodicity = 1 - aperiodicity
-				probability = 1 - yinBuffer[tau];
-				break;
+		for (tau = 2; tau < yinBuffer.length; tau++) {			
+			while (tau + 1 < yinBuffer.length && yinBuffer[tau + 1] < yinBuffer[tau]) {
+				tau++;
 			}
+			// found tau, exit loop and return
+			// store the probability
+			// From the YIN paper: The threshold determines the list of
+			// candidates admitted to the set, and can be interpreted as the
+			// proportion of aperiodic power tolerated
+			// within a periodic signal.
+			//
+			// Since we want the periodicity and and not aperiodicity:
+			// periodicity = 1 - aperiodicity
+			probability = 1 - yinBuffer[tau];		
+		}
+		
+		if (yinBuffer[tau] < threshold) {
+			//unpitched!
 		}
 
 		// if no pitch found, tau => -1
