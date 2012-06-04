@@ -15,7 +15,7 @@ package be.hogent.tarsos.dsp.pitch;
  * Joren Six.
  * </p>
  * 
- * @author Eder de Souza (ederwander on github)
+ * @author Eder Souza (ederwander on github)
  * @author Joren Six
  */
 public class AMDF implements PitchDetector{

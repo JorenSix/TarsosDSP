@@ -50,6 +50,8 @@ The onset detector implementation is based on a "VAMP plugin example":http://vam
 
 For the implementation of the YIN pitch tracking algorithm. Both the  "the YIN paper":http://recherche.ircam.fr/equipes/pcm/cheveign/ps/2002_JASA_YIN_proof.pdf and the "aubio implementation":http://aubio.org were used as a reference. __Matthias Mauch__ (of Queen Mary University, London) kindly provided the FastYin implementation which uses an FFT to calculate the difference function, it makes the algorithm up to 3 times faster.
 
+The Average Magnitude Difference (AMDF) pitch estimation algorithm is implemented by __Eder Souza__ and adapted for TarsosDSP by myself.
+
 For the MPM pitch tracking algorithm, the paper titled "A Smarter Way To Find Pitch":http://miracle.otago.ac.nz/tartini/papers/A_Smarter_Way_to_Find_Pitch.pdf by __Philip McLeod__ and __Geoff Wyvill__ was used. 
 
 The Dynamic Wavlet pitch estimation algorithm is described in "Real-Time Time-Domain Pitch Tracking Using Wavelets":http://online.physics.uiuc.edu/courses/phys193/NSF_REU_Reports/2005_reu/Real-Time_Time-Domain_Pitch_Tracking_Using_Wavelets.pdf by Eric Larson and Ross Maddox. The implementation within TarsosDSP is based on the implementation in the "Dynamic Wavelet Algorithm Pitch Tracking library":http://www.schmittmachine.com/dywapitchtrack.html by __Antoine Schmitt__, which is released under the MIT open source licence.
@@ -64,4 +66,5 @@ h2. Changelog
 
 <dt>Version 1.1</dt><dd>2012-06-4</dd> 
 Changed how the audio dispatcher stops. Added StopAudioProcessor.
-Added FastYin implementation
+Added FastYin implementation by Matthias Mauch
+Added AMDF pitch estimator by Eder Souza
