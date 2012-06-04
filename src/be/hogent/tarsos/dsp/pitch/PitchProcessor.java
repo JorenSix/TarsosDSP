@@ -46,7 +46,6 @@ public class PitchProcessor implements AudioProcessor {
 		 * >the YIN article</a>.
 		 */
 		FFT_YIN,
-		
 		/**
 		 * An implementation of a dynamic wavelet pitch detection algorithm (See
 		 * {@link DynamicWavelet}), described in a paper by Eric Larson and Ross
@@ -55,8 +54,20 @@ public class PitchProcessor implements AudioProcessor {
 		 * -Time_Time-Domain_Pitch_Tracking_Using_Wavelets.pdf">"Real-Time
 		 * Time-Domain Pitch Tracking Using Wavelets</a>
 		 */
-		DYNAMIC_WAVELET;
+		DYNAMIC_WAVELET,
+		/**
+		 * A pitch extractor that extracts the Average Magnitude Difference
+		 * (AMDF) from an audio buffer. This is a good measure of the Pitch (f0)
+		 * of a signal.
+		 */
+		AMDF;
 		
+		/**
+		 * Returns a new instance of a pitch detector object based on the provided values.
+		 * @param sampleRate The sample rate of the audio buffer.
+		 * @param bufferSize The size (in samples) of the audio buffer.
+		 * @return A new pitch detector object.
+		 */
 		public PitchDetector getDetector(float sampleRate,int bufferSize){
 			PitchDetector detector;
 			if (this == MPM ) {
@@ -65,6 +76,8 @@ public class PitchProcessor implements AudioProcessor {
 				detector = new DynamicWavelet(sampleRate,bufferSize);
 			} else if(this == FFT_YIN){
 				detector = new FastYin(sampleRate, bufferSize);
+			} else if(this==AMDF){
+				detector = new AMDF(sampleRate, bufferSize);
 			} else {
 				detector = new Yin(sampleRate, bufferSize);
 			}
@@ -101,11 +114,9 @@ public class PitchProcessor implements AudioProcessor {
 	/**
 	 * The underlying pitch detector;
 	 */
-	final PitchDetector detector;
-
-	final float sampleRate;
+	private final PitchDetector detector;
 	
-	final DetectedPitchHandler handler;
+	private final DetectedPitchHandler handler;
 	
 	/**
 	 * Initialize a new pitch processor.
@@ -122,10 +133,8 @@ public class PitchProcessor implements AudioProcessor {
 	public PitchProcessor(PitchEstimationAlgorithm algorithm, float sampleRate,
 			int bufferSize,
 			DetectedPitchHandler handler) {
-		this.sampleRate = sampleRate;
 		detector = algorithm.getDetector(sampleRate, bufferSize);
-		this.handler = handler;
-		
+		this.handler = handler;	
 	}
 	
 	@Override
