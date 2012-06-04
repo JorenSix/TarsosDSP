@@ -20,7 +20,7 @@ import be.hogent.tarsos.dsp.util.FloatFFT;
  * calculate the difference function. This makes calculating the difference
  * function more performant. See <a href=
  * "http://recherche.ircam.fr/equipes/pcm/cheveign/ps/2002_JASA_YIN_proof.pdf"
- * >the YIN paper.</a> This implementation is done by <a href="">Matthias Mauch</a> and is
+ * >the YIN paper.</a> This implementation is done by <a href="mailto:matthias.mauch@elec.qmul.ac.uk">Matthias Mauch</a> and is
  * based on {@link Yin} which is based on the implementation found in <a
  * href="http://aubio.org">aubio</a> by Paul Brossier.
  * 
@@ -59,17 +59,34 @@ public final class FastYin implements PitchDetector {
 	 * The buffer that stores the calculated values. It is exactly half the size
 	 * of the input buffer.
 	 */
-	private final float[] yinBuffer;
+	private final float[] yinBuffer;	
+	
+	/**
+	 * The probability of the last detected pitch.
+	 */
+	private float probability;
+	
+	//------------------------ FFT instance members
+	
+	/**
+	 * Holds the FFT data, twice the length of the audio buffer.
+	 */
+	private final float[] audioBufferFFT;
+	
+	/**
+	 * Half of the data, disguised as a convolution kernel.
+	 */
+	private final  float[] kernel;
+	
+	/**
+	 * Buffer to allow convolution via complex multiplication. It calculates the auto correlation function (ACF).
+	 */
+	private final float[] yinStyleACF;
 	
 	/**
 	 * An FFT object to quickly calculate the difference function.
 	 */
 	private final FloatFFT fft;
-
-	/**
-	 * The probability of the last detected pitch.
-	 */
-	private float probability;
 
 	/**
 	 * Create a new pitch detector for a stream with the defined sample rate.
@@ -100,6 +117,10 @@ public final class FastYin implements PitchDetector {
 		this.sampleRate = audioSampleRate;
 		this.threshold = yinThreshold;
 		yinBuffer = new float[bufferSize / 2];
+		//Initializations for FFT difference step
+		audioBufferFFT = new float[2*bufferSize];
+		kernel = new float[2*bufferSize];
+		yinStyleACF = new float[2*bufferSize];
 		fft = new FloatFFT(bufferSize);
 	}
 
@@ -157,22 +178,18 @@ public final class FastYin implements PitchDetector {
 		}
 		// now iteratively calculate all others (saves a few multiplications)
 		for (int tau = 1; tau < yinBuffer.length; ++tau) {
-			powerTerms[tau] = powerTerms[tau-1] 
-					- audioBuffer[tau-1]*audioBuffer[tau-1] + 
-					audioBuffer[tau+yinBuffer.length]*audioBuffer[tau+yinBuffer.length];  
+			powerTerms[tau] = powerTerms[tau-1] - audioBuffer[tau-1] * audioBuffer[tau-1] + audioBuffer[tau+yinBuffer.length] * audioBuffer[tau+yinBuffer.length];  
 		}
 
 		// YIN-STYLE AUTOCORRELATION via FFT
 		// 1. data
-		float[] audioBuffer2 = new float[2*audioBuffer.length];
 		for (int j = 0; j < audioBuffer.length; ++j) {
-			audioBuffer2[2*j] = audioBuffer[j];
-			audioBuffer2[2*j+1] = 0;
+			audioBufferFFT[2*j] = audioBuffer[j];
+			audioBufferFFT[2*j+1] = 0;
 		}
-		fft.complexForward(audioBuffer2);
+		fft.complexForward(audioBufferFFT);
 		
 		// 2. half of the data, disguised as a convolution kernel
-		float[] kernel = new float[2*audioBuffer.length];
 		for (int j = 0; j < yinBuffer.length; ++j) {
 			kernel[2*j] = audioBuffer[(yinBuffer.length-1)-j];
 			kernel[2*j+1] = 0;
@@ -182,18 +199,17 @@ public final class FastYin implements PitchDetector {
 		fft.complexForward(kernel);
 
 		// 3. convolution via complex multiplication
-		float[] yin_style_acf = new float[2*audioBuffer.length];
 		for (int j = 0; j < audioBuffer.length; ++j) {
-			yin_style_acf[2*j]   = audioBuffer2[2*j]*kernel[2*j] - audioBuffer2[2*j+1]*kernel[2*j+1]; // real
-			yin_style_acf[2*j+1] = audioBuffer2[2*j+1]*kernel[2*j] + audioBuffer2[2*j]*kernel[2*j+1]; // imaginary
+			yinStyleACF[2*j]   = audioBufferFFT[2*j]*kernel[2*j] - audioBufferFFT[2*j+1]*kernel[2*j+1]; // real
+			yinStyleACF[2*j+1] = audioBufferFFT[2*j+1]*kernel[2*j] + audioBufferFFT[2*j]*kernel[2*j+1]; // imaginary
 		}
-		fft.complexInverse(yin_style_acf, true);
+		fft.complexInverse(yinStyleACF, true);
 		
 		// CALCULATION OF difference function
 		// ... according to (7) in the Yin paper.
 		for (int j = 0; j < yinBuffer.length; ++j) {
 			// taking only the real part
-			yinBuffer[j] = powerTerms[0] + powerTerms[j] - 2 * yin_style_acf[2 * (yinBuffer.length - 1 + j)];
+			yinBuffer[j] = powerTerms[0] + powerTerms[j] - 2 * yinStyleACF[2 * (yinBuffer.length - 1 + j)];
 		}
 	}
 
