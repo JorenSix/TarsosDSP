@@ -97,8 +97,8 @@ public class DTMF {
 	public static float[] audioBufferDTMF(final double f0, final double f1,
 			int size) {
 		final double sampleRate = 44100.0;
-		final double amplitudeF0 = 0.5;
-		final double amplitudeF1 = 0.5;
+		final double amplitudeF0 = 0.4;
+		final double amplitudeF1 = 0.4;
 		final double twoPiF0 = 2 * Math.PI * f0;
 		final double twoPiF1 = 2 * Math.PI * f1;
 		final float[] buffer = new float[size];
