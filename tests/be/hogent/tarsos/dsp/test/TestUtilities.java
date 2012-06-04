@@ -57,11 +57,31 @@ public class TestUtilities {
 	
 	/**
 	 * @return a 4096 samples long 44.1kHz sampled float buffer with the sound
+	 *         of a flute played double forte at B6 (theoretically 1975.53Hz) without vibrato
+	 */
+	public static float[] audioBufferHighFlute() {
+		int lengthInSamples = 4096;
+		String file = "/be/hogent/tarsos/dsp/test/resources/flute.novib.ff.B6.wav";
+		return audioBufferFile(file,lengthInSamples);
+	}
+	
+	/**
+	 * @return a 4096 samples long 44.1kHz sampled float buffer with the sound
 	 *         of a piano played double forte at A4 (theoretically 440Hz)
 	 */
 	public static float[] audioBufferPiano() {
 		int lengthInSamples = 4096;
 		String file = "/be/hogent/tarsos/dsp/test/resources/piano.ff.A4.wav";
+		return audioBufferFile(file,lengthInSamples);
+	}
+	
+	/**
+	 	 * @return a 4096 samples long 44.1kHz sampled float buffer with the sound
+	 *         of a piano played double forte at C3 (theoretically 130.81Hz)
+	 */
+	public static float[] audioBufferLowPiano() {
+		int lengthInSamples = 4096;
+		String file = "/be/hogent/tarsos/dsp/test/resources/piano.ff.C3.wav";
 		return audioBufferFile(file,lengthInSamples);
 	}
 	
