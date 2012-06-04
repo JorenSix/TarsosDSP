@@ -46,20 +46,22 @@ h2. Credits
 "Tarsos":http://tarsos.0110.be and "TarsosDSP":http://tarsos.0110.be/tag/TarsosDSP are developed at University College Ghent, Faculty of Music
 "http://cons.hogent.be":http://cons.hogent.be
 
-The onset detector implementation is based on a "VAMP plugin example":http://vamp-plugins.org/code-doc/PercussionOnsetDetector_8cpp-source.html by Chris Cannam at Queen Mary, London.
+The onset detector implementation is based on a "VAMP plugin example":http://vamp-plugins.org/code-doc/PercussionOnsetDetector_8cpp-source.html by __Chris Cannam__ at Queen Mary University, London.
 
-For the implementation of the YIN pitch tracking algorithm. Both the  "the YIN paper":http://recherche.ircam.fr/equipes/pcm/cheveign/ps/2002_JASA_YIN_proof.pdf and the "aubio implementation":http://aubio.org were used as a reference.
+For the implementation of the YIN pitch tracking algorithm. Both the  "the YIN paper":http://recherche.ircam.fr/equipes/pcm/cheveign/ps/2002_JASA_YIN_proof.pdf and the "aubio implementation":http://aubio.org were used as a reference. __Matthias Mauch__ (of Queen Mary University, London) kindly provided the FastYin implementation which uses an FFT to calculate the difference function, it makes the algorithm up to 3 times faster.
 
-For the MPM pitch tracking algorithm, the paper titled "A Smarter Way To Find Pitch":http://miracle.otago.ac.nz/tartini/papers/A_Smarter_Way_to_Find_Pitch.pdf by Philip McLeod and Geoff Wyvill was used. 
+For the MPM pitch tracking algorithm, the paper titled "A Smarter Way To Find Pitch":http://miracle.otago.ac.nz/tartini/papers/A_Smarter_Way_to_Find_Pitch.pdf by __Philip McLeod__ and __Geoff Wyvill__ was used. 
 
-The Dynamic Wavlet pitch estimation algorithm is described in "Real-Time Time-Domain Pitch Tracking Using Wavelets":http://online.physics.uiuc.edu/courses/phys193/NSF_REU_Reports/2005_reu/Real-Time_Time-Domain_Pitch_Tracking_Using_Wavelets.pdf by Eric Larson and Ross Maddox. The implementation within TarsosDSP is based on the implementation in the "Dynamic Wavelet Algorithm Pitch Tracking library":http://www.schmittmachine.com/dywapitchtrack.html by Antoine Schmitt, which is released under the MIT open source licence.
+The Dynamic Wavlet pitch estimation algorithm is described in "Real-Time Time-Domain Pitch Tracking Using Wavelets":http://online.physics.uiuc.edu/courses/phys193/NSF_REU_Reports/2005_reu/Real-Time_Time-Domain_Pitch_Tracking_Using_Wavelets.pdf by Eric Larson and Ross Maddox. The implementation within TarsosDSP is based on the implementation in the "Dynamic Wavelet Algorithm Pitch Tracking library":http://www.schmittmachine.com/dywapitchtrack.html by __Antoine Schmitt__, which is released under the MIT open source licence.
 
-The audio time stretching algorithm is described in "An Overlap-Add Technique Based on Waveform Similarity  (WSOLA) For Hight Quality Time-Scale Modifications of speech":http://mir.cs.nthu.edu.tw/users/litbee/RelatedPaper/[WSOLA]An%20overlap-add%20technique%20based%20on%20waveform%20similarity%20(WSOLA)%20for%20high-quality%20time-scale%20modifications%20of%20speech.pdf by Werner Verhelst and Marc Roelands. As a reference implementation the WSOLA implementation by Olli Parviainen in the "SoundTouch - an open-source audio processing library":http://www.surina.net/soundtouch/ was used.
+The audio time stretching algorithm is described in "An Overlap-Add Technique Based on Waveform Similarity  (WSOLA) For Hight Quality Time-Scale Modifications of speech":http://mir.cs.nthu.edu.tw/users/litbee/RelatedPaper/[WSOLA]An%20overlap-add%20technique%20based%20on%20waveform%20similarity%20(WSOLA)%20for%20high-quality%20time-scale%20modifications%20of%20speech.pdf by Werner Verhelst and Marc Roelands. As a reference implementation the WSOLA implementation by __Olli Parviainen__ in the "SoundTouch - an open-source audio processing library":http://www.surina.net/soundtouch/ was used.
 
-The FFT implementation used within TarsosDSP is by Piotr Wendykier and is included in his "JTransforms library":https://sites.google.com/site/piotrwendykier/software/jtransforms. JTransforms is the first, open source, multithreaded FFT library written in pure Java. 
+The FFT implementation used within TarsosDSP is by __Piotr Wendykier__ and is included in his "JTransforms library":https://sites.google.com/site/piotrwendykier/software/jtransforms. JTransforms is the first, open source, multithreaded FFT library written in pure Java. 
 
 h2. Changelog
 
 <dt>Version 1.0</dt><dd>2012-04-24</dd> First release which includes several pitch trackers and a time stretching algorithm, amongst other things. Downloads and javadoc API can be found at the "TarsosDSP release directory":http://tarsos.0110.be/releases/TarsosDSP/
 
-<dt>Version 1.1</dt><dd>2012-04-27</dd> Changed how the audio dispatcher stops. Added StopAudioProcessor.
+<dt>Version 1.1</dt><dd>2012-06-4</dd> 
+Changed how the audio dispatcher stops. Added StopAudioProcessor.
+Added FastYin implementation
