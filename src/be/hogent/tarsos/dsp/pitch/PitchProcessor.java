@@ -40,7 +40,21 @@ public class PitchProcessor implements AudioProcessor {
 		 * >A Smarter Way to Find Pitch</a>".
 		 */
 		MPM,
+		/**
+		 * A YIN implementation with a faster  {@link FastYin} for the implementation. Or see <a href=
+		 * "http://recherche.ircam.fr/equipes/pcm/cheveign/ps/2002_JASA_YIN_proof.pdf"
+		 * >the YIN article</a>.
+		 */
+		FFT_YIN,
 		
+		/**
+		 * An implementation of a dynamic wavelet pitch detection algorithm (See
+		 * {@link DynamicWavelet}), described in a paper by Eric Larson and Ross
+		 * Maddox <a href= http://online.physics.uiuc
+		 * .edu/courses/phys498pom/NSF_REU_Reports/2005_reu/Real
+		 * -Time_Time-Domain_Pitch_Tracking_Using_Wavelets.pdf">"Real-Time
+		 * Time-Domain Pitch Tracking Using Wavelets</a>
+		 */
 		DYNAMIC_WAVELET;
 		
 		public PitchDetector getDetector(float sampleRate,int bufferSize){
@@ -49,6 +63,8 @@ public class PitchProcessor implements AudioProcessor {
 				detector = new McLeodPitchMethod(sampleRate, bufferSize);
 			} else if(this == DYNAMIC_WAVELET ) {
 				detector = new DynamicWavelet(sampleRate,bufferSize);
+			} else if(this == FFT_YIN){
+				detector = new FastYin(sampleRate, bufferSize);
 			} else {
 				detector = new Yin(sampleRate, bufferSize);
 			}
@@ -88,6 +104,7 @@ public class PitchProcessor implements AudioProcessor {
 	final PitchDetector detector;
 
 	final float sampleRate;
+	
 	final DetectedPitchHandler handler;
 	
 	/**
