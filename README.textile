@@ -1,6 +1,6 @@
 h1. TarsosDSP
 
-TarsosDSP is a collection of classes to do simple audio processing. It features an implementation of a percussion onset detector and two pitch detection algorithms: Yin and the Mcleod Pitch method. Also included is a Goertzel DTMF(Dual tone multi frequency) decoding algorithm and a time stretch algorithm (WSOLA).
+TarsosDSP is a collection of classes to do simple audio processing. It features an implementation of a percussion onset detector and three pitch detection algorithms: YIN, the Mcleod Pitch method and a "Dynamic Wavelet Algorithm Pitch Tracking" algorithm. Also included is a Goertzel DTMF(Dual tone multi frequency) decoding algorithm and a time stretch algorithm (WSOLA).
  
 Its aim is to provide a simple interface to some audio (signal) processing algorithms implemented in pure JAVA. Some "TarsosDSP example applications":http://tarsos.0110.be/tag/TarsosDSP are available. 
 
@@ -61,3 +61,5 @@ The FFT implementation used within TarsosDSP is by Piotr Wendykier and is includ
 h2. Changelog
 
 <dt>Version 1.0</dt><dd>2012-04-24</dd> First release which includes several pitch trackers and a time stretching algorithm, amongst other things. Downloads and javadoc API can be found at the "TarsosDSP release directory":http://tarsos.0110.be/releases/TarsosDSP/
+
+<dt>Version 1.1</dt><dd>2012-04-27</dd> Changed how the audio dispatcher stops. Added StopAudioProcessor.
