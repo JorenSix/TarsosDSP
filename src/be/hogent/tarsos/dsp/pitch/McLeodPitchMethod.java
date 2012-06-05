@@ -118,9 +118,9 @@ public final class McLeodPitchMethod implements PitchDetector {
 	private final List<Float> ampEstimates = new ArrayList<Float>();
 
 	/**
-	 * The probability of the last detected pitch.
+	 * The result of the pitch detection iteration.
 	 */
-	private float probability;
+	private final PitchDetectionResult result;
 
 	/**
 	 * Initializes the normalized square difference value array and stores the
@@ -160,7 +160,7 @@ public final class McLeodPitchMethod implements PitchDetector {
 		this.sampleRate = audioSampleRate;
 		nsdf = new float[audioBufferSize];
 		this.cutoff = cutoffMPM;
-		probability = 0;
+		result = new PitchDetectionResult();
 	}
 
 	/**
@@ -188,7 +188,7 @@ public final class McLeodPitchMethod implements PitchDetector {
 	 * 
 	 * @see be.hogent.tarsos.pitch.pure.PurePitchDetector#getPitch(float[])
 	 */
-	public float getPitch(final float[] audioBuffer) {
+	public PitchDetectionResult getPitch(final float[] audioBuffer) {
 		final float pitch;
 
 		// 0. Clear previous results (Is this faster than initializing a list
@@ -245,9 +245,11 @@ public final class McLeodPitchMethod implements PitchDetector {
 			}
 
 		}
-		probability = (float) highestAmplitude;
-
-		return pitch;
+		result.setProbability((float) highestAmplitude);
+		result.setPitch(pitch);
+		result.setPitched(pitch != -1);
+		
+		return result;
 	}
 
 	/**
@@ -379,15 +381,5 @@ public final class McLeodPitchMethod implements PitchDetector {
 		if (curMaxPos > 0) { // if there was a maximum in the last part
 			maxPositions.add(curMaxPos); // add it to the vector of maxima
 		}
-	}
-
-	/* (non-Javadoc)
-	 * @see be.hogent.tarsos.dsp.pitch.PitchDetector#getProbability()
-	 */
-	public float getProbability() {
-		if (probability > 1.0) {
-			probability = 1;
-		}
-		return probability;
 	}
 }

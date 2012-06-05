@@ -2,7 +2,7 @@
 <project default="tarsos_dsp_library" name="Create Runnable Time Stretch Jar">
 
 	<!-- Configuration -->
-	<property name="version"   value="1.1"/>
+	<property name="version"   value="1.2"/>
 	<property name="built_by"  value="${user.name}"/>
 	<property name="junit_jar" value="/opt/eclipse/plugins/org.junit_4.8.1.v4_8_1_v20100427-1100/junit.jar:/opt/eclipse/plugins/org.hamcrest.core_1.1.0.v20090501071000.jar"/>
 
@@ -261,7 +261,7 @@
 	<target name="example_pitch_detector" depends="compile">
 		<jar destfile="PitchDetector-${version}.jar" filesetmanifest="mergewithoutmain">
 			<manifest>
-				<attribute name="Main-Class" value="be.hogent.tarsos.dsp.example.PitchDetector"/>
+				<attribute name="Main-Class" value="be.hogent.tarsos.dsp.example.PitchDetectorExample"/>
 				<attribute name="Class-Path" value="."/>
 
 				<!-- Standard manifest attributes -->

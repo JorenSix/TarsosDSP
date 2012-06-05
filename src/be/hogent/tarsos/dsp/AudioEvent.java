@@ -151,7 +151,7 @@ public class AudioEvent {
 		for (int i = 0; i < floatBuffer.length; i++) {
 			rms =+ floatBuffer[i] * floatBuffer[i];
 		}
-		rms = rms / floatBuffer.length;
+		rms = rms / Double.valueOf(floatBuffer.length);
 		rms = Math.sqrt(rms);
 		return rms;
 	}

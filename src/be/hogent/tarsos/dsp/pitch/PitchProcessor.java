@@ -87,36 +87,11 @@ public class PitchProcessor implements AudioProcessor {
 	};
 	
 	/**
-	 * An interface to handle detected pitch.
-	 * 
-	 * @author Joren Six
-	 */
-	public interface DetectedPitchHandler {
-		/**
-		 * Handle a detected pitch.
-		 * 
-		 * @param pitch
-		 *            The pitch in Hz. -1 is returned if no pitch is detected.
-		 * @param probability
-		 *            The probability (a value between 0 and 1) represents how
-		 *            periodic the signal is.
-		 * @param timeStamp
-		 *            A time stamp associated with the detection.
-		 * @param progress
-		 *            If the length of the stream is known beforehand (a file) a
-		 *            progress indication is possible. It is a percentage. If a
-		 *            stream is analyzed a negative value is returned.
-		 */
-		void handlePitch(float pitch, float probability, float timeStamp,
-				float progress);
-	}
-	
-	/**
 	 * The underlying pitch detector;
 	 */
 	private final PitchDetector detector;
 	
-	private final DetectedPitchHandler handler;
+	private final PitchDetectionHandler handler;
 	
 	/**
 	 * Initialize a new pitch processor.
@@ -132,7 +107,7 @@ public class PitchProcessor implements AudioProcessor {
 	 */
 	public PitchProcessor(PitchEstimationAlgorithm algorithm, float sampleRate,
 			int bufferSize,
-			DetectedPitchHandler handler) {
+			PitchDetectionHandler handler) {
 		detector = algorithm.getDetector(sampleRate, bufferSize);
 		this.handler = handler;	
 	}
@@ -141,12 +116,10 @@ public class PitchProcessor implements AudioProcessor {
 	public boolean process(AudioEvent audioEvent) {
 		float[] audioFloatBuffer = audioEvent.getFloatBuffer();
 		
-		float pitch = detector.getPitch(audioFloatBuffer);
-		float probability = detector.getProbability();
-		float timeStamp = (float) audioEvent.getTimeStamp();
-		float progress = (float) audioEvent.getProgress();
+		PitchDetectionResult result = detector.getPitch(audioFloatBuffer);
 		
-		handler.handlePitch(pitch, probability, timeStamp, progress);
+		
+		handler.handlePitch(result,audioEvent);
 		return true;
 	}
 

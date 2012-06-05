@@ -70,6 +70,11 @@ public class DynamicWavelet implements PitchDetector{
 	private final int differenceLevelsN = 3;
 	private final double maximaThresholdRatio = 0.75;
 	
+	/**
+	 * The result of the pitch detection iteration.
+	 */
+	private final PitchDetectionResult result;
+	
 	private final float sampleRate;
 	
 	int[] distances; 
@@ -82,10 +87,11 @@ public class DynamicWavelet implements PitchDetector{
 		distances = new int[bufferSize];
 		mins = new int[bufferSize];
 		maxs = new int[bufferSize];
+		result = new PitchDetectionResult();
 	}
 	
 	@Override
-	public float getPitch(float[] audioBuffer) {
+	public PitchDetectionResult getPitch(float[] audioBuffer) {
 		float pitchF = -1.0f;
 		
 		int curSamNb = audioBuffer.length;
@@ -285,16 +291,10 @@ public class DynamicWavelet implements PitchDetector{
 			curSamNb /= 2;
 		}		
 		
-		return pitchF;
+		result.setPitch(pitchF);
+		result.setPitched(-1!=pitchF);
+		result.setProbability(-1);
+		
+		return result;
 	}
-
-	/* (non-Javadoc)
-	 * @see be.hogent.tarsos.dsp.pitch.PitchDetector#getProbability()
-	 */
-	@Override
-	public float getProbability() {
-		// TODO Auto-generated method stub
-		return -1.0f;
-	}
-
 }

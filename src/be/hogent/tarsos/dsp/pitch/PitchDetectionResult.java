@@ -1,6 +1,5 @@
 package be.hogent.tarsos.dsp.pitch;
 
-import be.hogent.tarsos.dsp.AudioEvent;
 
 /**
  * A class with information about the result of a pitch detection on a block of
@@ -13,9 +12,7 @@ import be.hogent.tarsos.dsp.AudioEvent;
  * <li>A probability (noisiness, (a)periodicity, salience, voicedness or clarity
  * measure) for the detected pitch. This is somewhat similar to the term voiced
  * which is used in speech recognition. This probability should be calculated
- * together with the pitch but is returned using a call to this method. So if
- * you want the probability of a buffer: first call getPitch(buffer) and then
- * getProbability().</li>
+ * together with the pitch. The exact meaning of the value depends on the detector used.</li>
  * <li>A way to calculate the RMS of the signal.</li>
  * <li>A boolean that indicates if the algorithm thinks the signal is pitched or
  * not.</li>
@@ -25,16 +22,14 @@ import be.hogent.tarsos.dsp.AudioEvent;
  * E.g. if the algorithm detects 220Hz in a noisy signal it may respond with
  * 220Hz "unpitched".
  * 
+ * <p>
+ * For performance reasons the object is reused. Please create a copy of the object
+ * if you want to use it on an other thread.
+ * 
  * 
  * @author Joren Six
  */
-public class PitchInfo {
-	
-	/**
-	 * The audio data encoded in floats from -1.0 to 1.0.
-	 */
-	private float[] floatBuffer;
-	
+public class PitchDetectionResult {	
 	/**
 	 * The pitch in Hertz.
 	 */
@@ -44,7 +39,16 @@ public class PitchInfo {
 	
 	private boolean pitched;
 	
+	public PitchDetectionResult(){
+		pitch = -1;
+		probability = -1;
+		pitched = false;
+	}
+		 
 	
+	/**
+	 * @return The pitch in Hertz.
+	 */
 	public float getPitch() {
 		return pitch;
 	}
@@ -53,6 +57,13 @@ public class PitchInfo {
 		this.pitch = pitch;
 	}
 
+	/**
+	 * @return A probability (noisiness, (a)periodicity, salience, voicedness or
+	 *         clarity measure) for the detected pitch. This is somewhat similar
+	 *         to the term voiced which is used in speech recognition. This
+	 *         probability should be calculated together with the pitch. The
+	 *         exact meaning of the value depends on the detector used.
+	 */
 	public float getProbability() {
 		return probability;
 	}
@@ -61,31 +72,16 @@ public class PitchInfo {
 		this.probability = probability;
 	}
 
+	/**
+	 * @return Whether the algorithm thinks the block of audio is pitched. Keep
+	 *         in mind that an algorithm can come up with a best guess for a
+	 *         pitch even when isPitched() is false.
+	 */
 	public boolean isPitched() {
 		return pitched;
 	}
 
 	public void setPitched(boolean pitched) {
 		this.pitched = pitched;
-	}
-
-	public void setFloatBuffer(float[] floatBuffer) {
-		this.floatBuffer = floatBuffer;
-	}
-	
-	public float[] getFloatBuffer(){
-		return floatBuffer;
-	}
-	
-	/**
-	 * Calculates and returns the root mean square of the signal. Please
-	 * cache the result since it is calculated every time.
-	 * @return The <a
-	 *         href="http://en.wikipedia.org/wiki/Root_mean_square">RMS</a> of
-	 *         the signal present in the current buffer.
-	 */
-	public double getRMS() {
-		return AudioEvent.calculateRMS(floatBuffer);
-	}
-	
+	}	
 }

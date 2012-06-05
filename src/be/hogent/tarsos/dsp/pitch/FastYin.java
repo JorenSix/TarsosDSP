@@ -62,9 +62,9 @@ public final class FastYin implements PitchDetector {
 	private final float[] yinBuffer;	
 	
 	/**
-	 * The probability of the last detected pitch.
+	 * The result of the pitch detection iteration.
 	 */
-	private float probability;
+	private final PitchDetectionResult result;
 	
 	//------------------------ FFT instance members
 	
@@ -122,6 +122,7 @@ public final class FastYin implements PitchDetector {
 		kernel = new float[2*bufferSize];
 		yinStyleACF = new float[2*bufferSize];
 		fft = new FloatFFT(bufferSize);
+		result = new PitchDetectionResult();
 	}
 
 	/**
@@ -130,7 +131,7 @@ public final class FastYin implements PitchDetector {
 	 * 
 	 * @return a pitch value in Hz or -1 if no pitch is detected.
 	 */
-	public float getPitch(final float[] audioBuffer) {
+	public PitchDetectionResult getPitch(final float[] audioBuffer) {
 
 		final int tauEstimate;
 		final float pitchInHertz;
@@ -161,8 +162,9 @@ public final class FastYin implements PitchDetector {
 			pitchInHertz = -1;
 		}
 		
+		result.setPitch(pitchInHertz);
 
-		return pitchInHertz;
+		return result;
 	}
 
 	/**
@@ -253,15 +255,19 @@ public final class FastYin implements PitchDetector {
 				//
 				// Since we want the periodicity and and not aperiodicity:
 				// periodicity = 1 - aperiodicity
-				probability = 1 - yinBuffer[tau];
+				result.setProbability(1 - yinBuffer[tau]);
 				break;
 			}
 		}
 
+		
 		// if no pitch found, tau => -1
 		if (tau == yinBuffer.length || yinBuffer[tau] >= threshold) {
 			tau = -1;
-			probability = 0;
+			result.setProbability(0);
+			result.setPitched(false);	
+		} else {
+			result.setPitched(true);
 		}
 
 		return tau;
@@ -316,14 +322,4 @@ public final class FastYin implements PitchDetector {
 		}
 		return betterTau;
 	}
-
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see be.hogent.tarsos.sampled.pitch.PurePitchDetector#getProbability()
-	 */
-	public float getProbability() {
-		return probability;
-	}
-
 }

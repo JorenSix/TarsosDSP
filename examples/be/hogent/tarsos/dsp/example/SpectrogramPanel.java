@@ -107,8 +107,6 @@ public class SpectrogramPanel extends JComponent implements ComponentListener{
         bufferedGraphics.setColor(Color.WHITE);
         bufferedGraphics.drawString(currentPitch, 20, 20);
         
-        
-        
         for(int i = 100 ; i < 500; i += 100){
         	int bin = frequencyToBin(i);
 			bufferedGraphics.drawLine(0, bin, 5, bin);

@@ -33,11 +33,13 @@ import javax.swing.SwingUtilities;
 import javax.swing.UIManager;
 
 import be.hogent.tarsos.dsp.AudioDispatcher;
+import be.hogent.tarsos.dsp.AudioEvent;
+import be.hogent.tarsos.dsp.pitch.PitchDetectionHandler;
+import be.hogent.tarsos.dsp.pitch.PitchDetectionResult;
 import be.hogent.tarsos.dsp.pitch.PitchProcessor;
-import be.hogent.tarsos.dsp.pitch.PitchProcessor.DetectedPitchHandler;
 import be.hogent.tarsos.dsp.pitch.PitchProcessor.PitchEstimationAlgorithm;
 
-public class PitchDetector extends JFrame implements DetectedPitchHandler {
+public class PitchDetectorExample extends JFrame implements PitchDetectionHandler {
 
 	/**
 	 * 
@@ -65,7 +67,7 @@ public class PitchDetector extends JFrame implements DetectedPitchHandler {
 			}
 	}};
 
-	public PitchDetector() {
+	public PitchDetectorExample() {
 		this.setLayout(new GridLayout(0, 1));
 		this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		this.setTitle("Pitch Detector");
@@ -147,7 +149,7 @@ public class PitchDetector extends JFrame implements DetectedPitchHandler {
 				} catch (Exception e) {
 					//ignore failure to set default look en feel;
 				}
-				JFrame frame = new PitchDetector();
+				JFrame frame = new PitchDetectorExample();
 				frame.pack();
 				frame.setVisible(true);
 			}
@@ -156,10 +158,13 @@ public class PitchDetector extends JFrame implements DetectedPitchHandler {
 
 
 	@Override
-	public void handlePitch(float pitch, float probability, float timeStamp,
-			float progress) {
-		if(pitch != -1){
-			String message = String.format("Pitch detected at %.2fs: %.2fHz ( %.2f probability )\n", timeStamp,pitch,probability);
+	public void handlePitch(PitchDetectionResult pitchDetectionResult,AudioEvent audioEvent) {
+		if(pitchDetectionResult.getPitch() != -1){
+			double timeStamp = audioEvent.getTimeStamp();
+			float pitch = pitchDetectionResult.getPitch();
+			float probability = pitchDetectionResult.getProbability();
+			double rms = audioEvent.getRMS() * 100;
+			String message = String.format("Pitch detected at %.2fs: %.2fHz ( %.2f probability, RMS: %.5f )\n", timeStamp,pitch,probability,rms);
 			textArea.append(message);
 			textArea.setCaretPosition(textArea.getDocument().getLength());
 		}

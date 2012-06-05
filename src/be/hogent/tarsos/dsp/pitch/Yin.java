@@ -52,11 +52,11 @@ public final class Yin implements PitchDetector {
 	 * of the input buffer.
 	 */
 	private final float[] yinBuffer;
-
+	
 	/**
-	 * The probability of the last detected pitch.
+	 * The result of the pitch detection iteration.
 	 */
-	private float probability;
+	private final PitchDetectionResult result;
 
 	/**
 	 * Create a new pitch detector for a stream with the defined sample rate.
@@ -87,6 +87,7 @@ public final class Yin implements PitchDetector {
 		this.sampleRate = audioSampleRate;
 		this.threshold = yinThreshold;
 		yinBuffer = new float[bufferSize / 2];
+		result = new PitchDetectionResult();
 	}
 
 	/**
@@ -95,7 +96,7 @@ public final class Yin implements PitchDetector {
 	 * 
 	 * @return a pitch value in Hz or -1 if no pitch is detected.
 	 */
-	public float getPitch(final float[] audioBuffer) {
+	public PitchDetectionResult getPitch(final float[] audioBuffer) {
 
 		final int tauEstimate;
 		final float pitchInHertz;
@@ -126,8 +127,9 @@ public final class Yin implements PitchDetector {
 			pitchInHertz = -1;
 		}
 		
+		result.setPitch(pitchInHertz);
 
-		return pitchInHertz;
+		return result;
 	}
 
 	/**
@@ -174,30 +176,33 @@ public final class Yin implements PitchDetector {
 		int tau;
 		// first two positions in yinBuffer are always 1
 		// So start at the third (index 2)
-		for (tau = 2; tau < yinBuffer.length; tau++) {			
-			while (tau + 1 < yinBuffer.length && yinBuffer[tau + 1] < yinBuffer[tau]) {
-				tau++;
+		for (tau = 2; tau < yinBuffer.length; tau++) {
+			if (yinBuffer[tau] < threshold) {
+				while (tau + 1 < yinBuffer.length && yinBuffer[tau + 1] < yinBuffer[tau]) {
+					tau++;
+				}
+				// found tau, exit loop and return
+				// store the probability
+				// From the YIN paper: The threshold determines the list of
+				// candidates admitted to the set, and can be interpreted as the
+				// proportion of aperiodic power tolerated
+				// within a periodic signal.
+				//
+				// Since we want the periodicity and and not aperiodicity:
+				// periodicity = 1 - aperiodicity
+				result.setProbability(1 - yinBuffer[tau]);
+				break;
 			}
-			// found tau, exit loop and return
-			// store the probability
-			// From the YIN paper: The threshold determines the list of
-			// candidates admitted to the set, and can be interpreted as the
-			// proportion of aperiodic power tolerated
-			// within a periodic signal.
-			//
-			// Since we want the periodicity and and not aperiodicity:
-			// periodicity = 1 - aperiodicity
-			probability = 1 - yinBuffer[tau];		
-		}
-		
-		if (yinBuffer[tau] < threshold) {
-			//unpitched!
 		}
 
+		
 		// if no pitch found, tau => -1
 		if (tau == yinBuffer.length || yinBuffer[tau] >= threshold) {
 			tau = -1;
-			probability = 0;
+			result.setProbability(0);
+			result.setPitched(false);	
+		} else {
+			result.setPitched(true);
 		}
 
 		return tau;
@@ -252,14 +257,4 @@ public final class Yin implements PitchDetector {
 		}
 		return betterTau;
 	}
-
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see be.hogent.tarsos.sampled.pitch.PurePitchDetector#getProbability()
-	 */
-	public float getProbability() {
-		return probability;
-	}
-
 }

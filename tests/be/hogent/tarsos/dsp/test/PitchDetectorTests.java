@@ -18,17 +18,17 @@ public class PitchDetectorTests {
 			float[] shortAudioBuffer = new float[1024];
 			
 			System.arraycopy(audioBuffer, 0, shortAudioBuffer, 0, shortAudioBuffer.length);
-			pitch = detector.getPitch(shortAudioBuffer);
+			pitch = detector.getPitch(shortAudioBuffer).getPitch();
 			System.out.println(String.format("%15s %8.3f Hz", algorithm, pitch));
 			assertEquals("Expected about 440Hz for " + algorithm,440,pitch,1.5);
 			
 			System.arraycopy(audioBuffer, 1024, shortAudioBuffer, 0, shortAudioBuffer.length);
-			pitch = detector.getPitch(shortAudioBuffer);
+			pitch = detector.getPitch(shortAudioBuffer).getPitch();
 			System.out.println(String.format("%15s %8.3f Hz", algorithm, pitch));
 			assertEquals("Expected about 440Hz for " + algorithm,440,pitch,1.5);
 			
 			System.arraycopy(audioBuffer, 2048, shortAudioBuffer, 0, shortAudioBuffer.length);
-			pitch = detector.getPitch(shortAudioBuffer);
+			pitch = detector.getPitch(shortAudioBuffer).getPitch();
 			System.out.println(String.format("%15s %8.3f Hz", algorithm, pitch));
 			assertEquals("Expected about 440Hz for " + algorithm,440,pitch,1.5);	
 		}
@@ -44,7 +44,7 @@ public class PitchDetectorTests {
 			float[] shortAudioBuffer = new float[1024];
 			
 			System.arraycopy(audioBuffer, 2048, shortAudioBuffer, 0, shortAudioBuffer.length);
-			pitch = detector.getPitch(shortAudioBuffer);
+			pitch = detector.getPitch(shortAudioBuffer).getPitch();
 			System.out.println(String.format("%15s %8.3f Hz", algorithm, pitch));
 			assertEquals("Expected about 440Hz for " + algorithm,442,pitch,2);
 		}
@@ -60,7 +60,7 @@ public class PitchDetectorTests {
 			float[] shortAudioBuffer = new float[1024];
 			
 			System.arraycopy(audioBuffer, 0, shortAudioBuffer, 0, shortAudioBuffer.length);
-			pitch = detector.getPitch(shortAudioBuffer);
+			pitch = detector.getPitch(shortAudioBuffer).getPitch();
 			System.out.println(String.format("%15s %8.3f Hz", algorithm, pitch));
 			assertEquals("Expected about 440Hz for " + algorithm,443,pitch,3);
 		}
@@ -76,7 +76,7 @@ public class PitchDetectorTests {
 			float[] shortAudioBuffer = new float[1024];
 			
 			System.arraycopy(audioBuffer, 0, shortAudioBuffer, 0, shortAudioBuffer.length);
-			pitch = detector.getPitch(shortAudioBuffer);
+			pitch = detector.getPitch(shortAudioBuffer).getPitch();
 			System.out.println(String.format("%15s %8.3f Hz", algorithm, pitch));
 			assertEquals("Expected about 130.81Hz for " + algorithm,130.81,pitch,2);
 		}
@@ -92,7 +92,7 @@ public class PitchDetectorTests {
 			float[] shortAudioBuffer = new float[1024];
 			
 			System.arraycopy(audioBuffer, 3000, shortAudioBuffer, 0, shortAudioBuffer.length);
-			pitch = detector.getPitch(shortAudioBuffer);
+			pitch = detector.getPitch(shortAudioBuffer).getPitch();
 			System.out.println(String.format("%15s %8.3f Hz", algorithm, pitch));
 			//this fails with dynamic wavelet and amdf
 			//assertEquals("Expected about 1975.53Hz for " + algorithm,1975.53,pitch,30);

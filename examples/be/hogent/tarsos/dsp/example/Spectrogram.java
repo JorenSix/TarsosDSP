@@ -39,12 +39,13 @@ import be.hogent.tarsos.dsp.AudioDispatcher;
 import be.hogent.tarsos.dsp.AudioEvent;
 import be.hogent.tarsos.dsp.AudioProcessor;
 import be.hogent.tarsos.dsp.AudioPlayer;
+import be.hogent.tarsos.dsp.pitch.PitchDetectionHandler;
+import be.hogent.tarsos.dsp.pitch.PitchDetectionResult;
 import be.hogent.tarsos.dsp.pitch.PitchProcessor;
-import be.hogent.tarsos.dsp.pitch.PitchProcessor.DetectedPitchHandler;
 import be.hogent.tarsos.dsp.pitch.PitchProcessor.PitchEstimationAlgorithm;
 import be.hogent.tarsos.dsp.util.FFT;
 
-public class Spectrogram extends JFrame implements DetectedPitchHandler {
+public class Spectrogram extends JFrame implements PitchDetectionHandler {
 	
 	/**
 	 * 
@@ -152,14 +153,10 @@ public class Spectrogram extends JFrame implements DetectedPitchHandler {
 			}
 		}
 		currentMixer = mixer;
-		
-		
 
 		// add a processor, handle pitch event.
 		dispatcher.addAudioProcessor(new PitchProcessor(algo, sampleRate, bufferSize, this));
 		dispatcher.addAudioProcessor(fftProcessor);
-		
-		
 
 		// run the dispatcher (on a new thread).
 		new Thread(dispatcher,"Audio dispatching").start();
@@ -183,15 +180,20 @@ public class Spectrogram extends JFrame implements DetectedPitchHandler {
 			fft.forwardTransform(transformbuffer);
 			fft.modulus(transformbuffer, amplitudes);
 			panel.drawFFT(pitch, amplitudes,fft);
-			return false;
+			panel.repaint();
+			return true;
 		}
 		
 	};
 	
 	@Override
-	public void handlePitch(float pitch, float probability, float timeStamp,
-			float progress) {
-		this.pitch = pitch;
+	public void handlePitch(PitchDetectionResult pitchDetectionResult,AudioEvent audioEvent) {
+		if(pitchDetectionResult.isPitched()){
+			pitch = pitchDetectionResult.getPitch();
+		} else {
+			pitch = -1;
+		}
+		
 	}
 	
 	public static void main(final String... strings) throws InterruptedException,

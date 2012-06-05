@@ -33,11 +33,13 @@ import javax.swing.UIManager;
 import javax.swing.border.TitledBorder;
 
 import be.hogent.tarsos.dsp.AudioDispatcher;
+import be.hogent.tarsos.dsp.AudioEvent;
+import be.hogent.tarsos.dsp.pitch.PitchDetectionHandler;
+import be.hogent.tarsos.dsp.pitch.PitchDetectionResult;
 import be.hogent.tarsos.dsp.pitch.PitchProcessor;
-import be.hogent.tarsos.dsp.pitch.PitchProcessor.DetectedPitchHandler;
 import be.hogent.tarsos.dsp.pitch.PitchProcessor.PitchEstimationAlgorithm;
 
-public class UtterAsterisk extends JFrame implements DetectedPitchHandler {
+public class UtterAsterisk extends JFrame implements PitchDetectionHandler {
 	
 	private final UtterAsteriskPanel panel;
 	private AudioDispatcher dispatcher;
@@ -161,9 +163,10 @@ public class UtterAsterisk extends JFrame implements DetectedPitchHandler {
 	}
 
 	@Override
-	public void handlePitch(float pitch, float probability, float timeStamp,
-			float progress) {
-		panel.setMarker(timeStamp,pitch);
+	public void handlePitch(PitchDetectionResult pitchDetectionResult,AudioEvent audioEvent) {
+		double timeStamp = audioEvent.getTimeStamp();
+		float pitch = pitchDetectionResult.getPitch();
+		panel.setMarker(timeStamp, pitch);		
 	}
 
 }
