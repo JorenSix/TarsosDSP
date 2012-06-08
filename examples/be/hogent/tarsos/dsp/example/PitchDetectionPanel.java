@@ -41,7 +41,7 @@ public class PitchDetectionPanel extends JPanel {
 			add(button);
 			group.add(button);
 			button.setSelected(value == algo);
-			button.setActionCommand(algo.name());
+			button.setActionCommand(value.name());
 			button.addActionListener(algoChangedListener);
 		}
 	}
