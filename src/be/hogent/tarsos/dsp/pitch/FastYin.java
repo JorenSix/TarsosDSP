@@ -262,7 +262,7 @@ public final class FastYin implements PitchDetector {
 
 		
 		// if no pitch found, tau => -1
-		if (tau == yinBuffer.length || yinBuffer[tau] >= threshold) {
+		if (tau == yinBuffer.length || yinBuffer[tau] >= threshold || result.getProbability() > 1.0) {
 			tau = -1;
 			result.setProbability(0);
 			result.setPitched(false);	
