@@ -18,7 +18,7 @@ public class MFCC implements AudioProcessor {
     //Er zijn evenveel mfccs als er frames zijn!?
     //Per frame zijn er dan CEPSTRA coëficienten
     private float[] mfcc;
-    private FFT fft;
+
     
     private int samplesPerFrame; 
     private int sampleRate;
@@ -39,8 +39,7 @@ public class MFCC implements AudioProcessor {
         this.sampleRate = sampleRate;
         this.overlap = overlap;
         
-        fft = new FFT();
-        
+       
         w = new float[samplesPerFrame];
         for (int n = 0; n < samplesPerFrame; n++) {
             w[n] = (float) (0.54 - 0.46 * Math.cos((2 * Math.PI * n) / (samplesPerFrame - 1)));
@@ -113,12 +112,12 @@ public class MFCC implements AudioProcessor {
         float magSpectrum[] = new float[frame.length];
         
         // calculate FFT for current frame
-        fft.computeFFT(frame);
+        FFT.computeFFT(frame);
         
         // calculate magnitude spectrum
         for (int k = 0; k < frame.length; k++){
             //stelling van pitagoras
-            magSpectrum[k] = (float) Math.pow(fft.real[k] * fft.real[k] + fft.imag[k] * fft.imag[k], 0.5);
+            magSpectrum[k] = (float) Math.pow(FFT.real[k] * FFT.real[k] + FFT.imag[k] * FFT.imag[k], 0.5);
         }
 
         return magSpectrum;
@@ -174,6 +173,7 @@ public class MFCC implements AudioProcessor {
      * Calculate the output of the mel filter<br>
      * calls: none
      * called by: featureExtraction
+     * @return 
      */
     public float[] melFilter(float bin[], int cbin[]){
         float temp[] = new float[MELFILTERS + 2];
@@ -268,5 +268,9 @@ public class MFCC implements AudioProcessor {
     protected static float log10(float value){
         return (float) (Math.log(value) / Math.log(10));
     }
+
+	public float[] getMFCC() {
+		return mfcc;
+	}
 
 }
