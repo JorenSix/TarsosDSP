@@ -11,7 +11,6 @@
 
 package be.hogent.tarsos.dsp.test;
 
-import java.io.File;
 import java.io.IOException;
 
 import javax.sound.sampled.AudioFormat;
@@ -78,7 +77,7 @@ public class PercussionOnsetTest {
 	
 	@Test
 	public void testOnset() throws UnsupportedAudioFileException, IOException{
-		
+		/*
 		String file = "/home/joren/Desktop/Fingerprinting/07. Pleasant Shadow Song_original.wav.semitone_up.wav";
 		
 		AudioFormat format = AudioSystem.getAudioInputStream(new File(file)).getFormat();
@@ -93,6 +92,7 @@ public class PercussionOnsetTest {
 			}
 		},44,4));
 		dispatcher.run();
+		*/
 	}
 	
 }

@@ -73,7 +73,8 @@ public class TestFilters {
 	@Test
 	public void testFilterOnFile() throws UnsupportedAudioFileException,
 			LineUnavailableException, IOException {
-		File testFile = new File("viv.wav");
+		File testFile = TestUtilities.fluteFile();
+		
 		AudioFormat format = AudioSystem.getAudioFileFormat(testFile).getFormat();
 		int stepSize = 2048;//samples
 		int overlap = 0; //samples;

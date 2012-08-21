@@ -11,7 +11,10 @@
 
 package be.hogent.tarsos.dsp.test;
 
+import java.io.File;
 import java.io.IOException;
+import java.net.URI;
+import java.net.URISyntaxException;
 import java.net.URL;
 
 import javax.sound.sampled.AudioFormat;
@@ -53,6 +56,16 @@ public class TestUtilities {
 		int lengthInSamples = 4096;
 		String file = "/be/hogent/tarsos/dsp/test/resources/flute.novib.ff.A4.wav";
 		return audioBufferFile(file,lengthInSamples);
+	}
+	
+	public static File fluteFile(){
+		String file = "/be/hogent/tarsos/dsp/test/resources/flute.novib.ff.A4.wav";
+		final URL url = TestUtilities.class.getResource(file);
+		try {
+			return new File(new URI(url.toString()));
+		} catch (URISyntaxException e) {
+			return null;
+		}
 	}
 	
 	/**

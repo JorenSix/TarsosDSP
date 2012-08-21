@@ -40,7 +40,7 @@ public class WaveformWriterTest {
 
 		// available mixers
 		int index = 0;
-		int selectedMixerIndex = 3;
+		int selectedMixerIndex = 4;
 		for (Mixer.Info mixer : AudioSystem.getMixerInfo()) {
 			System.out.println(index + ": " + mixer.toString());
 			index++;
@@ -51,7 +51,7 @@ public class WaveformWriterTest {
 		// open a line
 		final Mixer mixer = AudioSystem.getMixer(selectedMixer);
 		final AudioFormat format = new AudioFormat(sampleRate, 16, 1, true,
-				false);
+				true);
 		final DataLine.Info dataLineInfo = new DataLine.Info(
 				TargetDataLine.class, format);
 		TargetDataLine line;
@@ -74,13 +74,13 @@ public class WaveformWriterTest {
 		// another thread).
 		new Thread(dispatcher).start();
 
-		Thread.sleep(5000);
+		Thread.sleep(3000);
 		
 		dispatcher.removeAudioProcessor(writer);
 		writer = new WaveformWriter(format,"02.file.wav");
 		dispatcher.addAudioProcessor(writer);
 		
-		Thread.sleep(5000);
+		Thread.sleep(3000);
 		
 		dispatcher.stop();
 	}
