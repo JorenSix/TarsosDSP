@@ -22,7 +22,7 @@ public class MFCC implements AudioProcessor {
     
     private int samplesPerFrame; 
     private int sampleRate;
-    private int overlap;
+    //private int overlap;
     
     float w[]; 
     //private FFT fourier;
@@ -37,7 +37,7 @@ public class MFCC implements AudioProcessor {
     public MFCC(int samplesPerFrame,int sampleRate,int overlap) {
         this.samplesPerFrame = samplesPerFrame; 
         this.sampleRate = sampleRate;
-        this.overlap = overlap;
+        //this.overlap = overlap;
         
        
         w = new float[samplesPerFrame];
@@ -68,7 +68,6 @@ public class MFCC implements AudioProcessor {
 
 	@Override
 	public void processingFinished() {
-		// TODO Auto-generated method stub
 
 	}
 	
@@ -173,7 +172,9 @@ public class MFCC implements AudioProcessor {
      * Calculate the output of the mel filter<br>
      * calls: none
      * called by: featureExtraction
-     * @return 
+     * @param bin 
+     * @param cbin 
+     * @return output of the mel filter
      */
     public float[] melFilter(float bin[], int cbin[]){
         float temp[] = new float[MELFILTERS + 2];

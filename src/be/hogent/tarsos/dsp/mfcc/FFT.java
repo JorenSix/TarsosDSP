@@ -56,13 +56,13 @@ public class FFT {
         }
 
         // perform FFT using the real & imag array
-        FFT();
+        fastFourierTransform();
     }
 
     /**
      * performs Fast Fourier Transformation<br> calls: none<br> called by: fft
      */
-    private static void FFT() {
+    private static void fastFourierTransform() {
         if (numPoints == 1) {
             return;
         }
