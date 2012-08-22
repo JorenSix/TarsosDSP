@@ -69,5 +69,6 @@ Changed how the audio dispatcher stops. Added StopAudioProcessor.
 Added FastYin implementation by Matthias Mauch
 Added AMDF pitch estimator by Eder Souza
 
-<dt>Version 1.2</dt><dd>2012-06-5</dd> 
+<dt>Version 1.2</dt><dd>2012-08-21</dd> 
 Modified the interface of PitchDetector to return a more elaborate result structure with pitch, probability and a boolean "is pitched".
+Added an implementation of an envelope follower or envelope detector.
