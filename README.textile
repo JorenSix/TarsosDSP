@@ -16,7 +16,7 @@ dispatcher.run();
 
 h2. Quickly Getting Started with TarsosDSP
 
-Head over to the "TarsosDSP release repository":http://tarsos.0110.be/releases/TarsosDSP/ and download the latest "TarsosDSP library":http://tarsos.0110.be/releases/TarsosDSP/TarsosDSP-1.2/TarsosDSP-1.2.jar. To get up to speed quickly, check the "TarsosDSP Example applications":http://tarsos.0110.be/releases/TarsosDSP/TarsosDSP-1.2/TarsosDSP-1.2-Examples/ for inspiration and consult the "API documentation":http://tarsos.0110.be/releases/TarsosDSP/TarsosDSP-1.2/TarsosDSP-1.2-Documentation/. If you, for some reason, want to build from source, you need "Apache Ant":http://ant.apache.org/ and "git":http://git-scm.com/ installed on your system. The following commands fetch the source and build the library and example jars: 
+Head over to the "TarsosDSP release repository":http://tarsos.0110.be/releases/TarsosDSP/ and download the latest "TarsosDSP library":http://tarsos.0110.be/releases/TarsosDSP/TarsosDSP-latest/TarsosDSP-latest.jar. To get up to speed quickly, check the "TarsosDSP Example applications":http://tarsos.0110.be/releases/TarsosDSP/TarsosDSP-latest/TarsosDSP-latest-Examples/ for inspiration and consult the "API documentation":http://tarsos.0110.be/releases/TarsosDSP/TarsosDSP-latest/TarsosDSP-latest-Documentation/. If you, for some reason, want to build from source, you need "Apache Ant":http://ant.apache.org/ and "git":http://git-scm.com/ installed on your system. The following commands fetch the source and build the library and example jars: 
 <pre><code>git clone https://JorenSix@github.com/JorenSix/TarsosDSP.git
 cd TarsosDSP/build
 ant tarsos_dsp_library #Builds the core TarsosDSP library
