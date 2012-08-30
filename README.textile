@@ -16,7 +16,7 @@ dispatcher.run();
 
 h2. Quickly Getting Started with TarsosDSP
 
-Head over to the "TarsosDSP release repository":http://tarsos.0110.be/releases/TarsosDSP/ and download the latest "TarsosDSP library":http://tarsos.0110.be/releases/TarsosDSP/TarsosDSP-1.0.jar. To get up to speed quickly, check the "TarsosDSP Example applications":http://tarsos.0110.be/releases/TarsosDSP/TarsosDSP-1.0-Examples/ for inspiration and consult the "API documentation":http://tarsos.0110.be/releases/TarsosDSP/TarsosDSP-1.0-Documentation/. If you, for some reason, want to build from source, you need "Apache Ant":http://ant.apache.org/ and "git":http://git-scm.com/ installed on your system. The following commands fetch the source and build the library and example jars: 
+Head over to the "TarsosDSP release repository":http://tarsos.0110.be/releases/TarsosDSP/ and download the latest "TarsosDSP library":http://tarsos.0110.be/releases/TarsosDSP/TarsosDSP-1.2/TarsosDSP-1.2.jar. To get up to speed quickly, check the "TarsosDSP Example applications":http://tarsos.0110.be/releases/TarsosDSP/TarsosDSP-1.2/TarsosDSP-1.2-Examples/ for inspiration and consult the "API documentation":http://tarsos.0110.be/releases/TarsosDSP/TarsosDSP-1.2/TarsosDSP-1.2-Documentation/. If you, for some reason, want to build from source, you need "Apache Ant":http://ant.apache.org/ and "git":http://git-scm.com/ installed on your system. The following commands fetch the source and build the library and example jars: 
 <pre><code>git clone https://JorenSix@github.com/JorenSix/TarsosDSP.git
 cd TarsosDSP/build
 ant tarsos_dsp_library #Builds the core TarsosDSP library
@@ -46,7 +46,7 @@ h2. Credits
 "Tarsos":http://tarsos.0110.be and "TarsosDSP":http://tarsos.0110.be/tag/TarsosDSP are developed at University College Ghent, Faculty of Music
 "http://cons.hogent.be":http://cons.hogent.be
 
-The onset detector implementation is based on a "VAMP plugin example":http://vamp-plugins.org/code-doc/PercussionOnsetDetector_8cpp-source.html by __Chris Cannam__ at Queen Mary University, London.
+The onset detector implementation is based on a "VAMP plugin example":http://vamp-plugins.org/code-doc/PercussionOnsetDetector_8cpp-source.html by __Chris Cannam__ at Queen Mary University, London. The method is described in "Drum Source Separation using Percussive Feature Detection and Spectral Modulation":http://eprints.nuim.ie/699/1/ELE-Bob9.pdf by Dan Barry, Derry Fitzgerald, Eugene Coyle and Bob Lawlor, ISSC 2005.
 
 For the implementation of the YIN pitch tracking algorithm. Both the  "the YIN paper":http://recherche.ircam.fr/equipes/pcm/cheveign/ps/2002_JASA_YIN_proof.pdf and the "aubio implementation":http://aubio.org were used as a reference. __Matthias Mauch__ (of Queen Mary University, London) kindly provided the FastYin implementation which uses an FFT to calculate the difference function, it makes the algorithm up to 3 times faster.
 
