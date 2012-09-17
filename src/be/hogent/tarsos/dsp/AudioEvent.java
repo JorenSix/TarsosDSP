@@ -11,6 +11,8 @@
 
 package be.hogent.tarsos.dsp;
 
+import java.util.Arrays;
+
 import javax.sound.sampled.AudioFormat;
 
 import be.hogent.tarsos.dsp.util.AudioFloatConverter;
@@ -154,6 +156,10 @@ public class AudioEvent {
 		rms = rms / Double.valueOf(floatBuffer.length);
 		rms = Math.sqrt(rms);
 		return rms;
+	}
+
+	public void clearFloatBuffer() {
+		Arrays.fill(floatBuffer, 0);
 	}
 	
 }

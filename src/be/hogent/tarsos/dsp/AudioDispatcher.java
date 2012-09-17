@@ -100,6 +100,12 @@ public final class AudioDispatcher implements Runnable {
 	private long bytesProcessed;
 	
 	
+	/**
+	 * Has this dispatcher a source? A dispatcher without source can be used for synthesis.
+	 */
+	private final boolean hasSource;
+	
+	
 	private final AudioEvent audioEvent;
 	
 	/**
@@ -137,6 +143,28 @@ public final class AudioDispatcher implements Runnable {
 		
 		bytesToSkip = 0;
 		bytesProcessed=0;
+		
+		hasSource = true;
+	}
+	
+	public AudioDispatcher(final int audioBufferSize) {
+		audioProcessors = new ArrayList<AudioProcessor>();
+		audioInputStream = null;
+		format = new AudioFormat(44100, 16, 1, true, false);
+		audioEvent = new AudioEvent(format, 0);
+		audioFloatBuffer = new float[audioBufferSize];
+		
+		floatOverlap = 0;
+		floatStepSize = audioFloatBuffer.length - floatOverlap;
+		audioByteBuffer = new byte[audioFloatBuffer.length * format.getFrameSize()];
+		byteOverlap = floatOverlap * format.getFrameSize();
+		byteStepSize = floatStepSize * format.getFrameSize();
+		
+		converter = AudioFloatConverter.getConverter(format);
+		stopped = false;
+		bytesToSkip = 0;
+		bytesProcessed = 0;
+		hasSource = false;
 	}
 	
 	/**
@@ -208,6 +236,14 @@ public final class AudioDispatcher implements Runnable {
 	 * @see java.lang.Runnable#run()
 	 */
 	public void run() {
+		if(hasSource){
+			runSourcedDispatcher();
+		}else{
+			runNonSourcedDispatcher();
+		}
+	}
+	
+	private void runSourcedDispatcher(){
 		try {
 			int bytesRead;
 			
@@ -252,6 +288,21 @@ public final class AudioDispatcher implements Runnable {
 		} catch (final IOException e) {
 			LOG.log(Level.SEVERE, "Error while reading data from audio stream.", e);
 		}
+	}
+	
+	private void runNonSourcedDispatcher(){
+		audioFloatBuffer = new float[floatStepSize];
+		audioEvent.setBytesProcessed(bytesProcessed);
+		audioEvent.setFloatBuffer(audioFloatBuffer);
+		audioLoop:
+			while(!stopped){
+				audioEvent.clearFloatBuffer();
+				for (final AudioProcessor processor : audioProcessors) {
+					if(!processor.process(audioEvent)){
+						break audioLoop;
+					}
+				}
+			}
 	}
 	
 	private int processFirstBuffer() throws IOException{
