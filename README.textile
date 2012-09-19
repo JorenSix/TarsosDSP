@@ -1,12 +1,12 @@
 <pre>
-           _______                       _____   _____ _____  
-          |__   __|                     |  __ \ / ____|  __ \ 
-             | | __ _ _ __ ___  ___  ___| |  | | (___ | |__) |
-             | |/ _` | '__/ __|/ _ \/ __| |  | |\___ \|  ___/ 
-             | | (_| | |  \__ \ (_) \__ \ |__| |____) | |     
-             |_|\__,_|_|  |___/\___/|___/_____/|_____/|_|     
+                               _______                       _____   _____ _____  
+                              |__   __|                     |  __ \ / ____|  __ \ 
+                                 | | __ _ _ __ ___  ___  ___| |  | | (___ | |__) |
+                                 | |/ _` | '__/ __|/ _ \/ __| |  | |\___ \|  ___/ 
+                                 | | (_| | |  \__ \ (_) \__ \ |__| |____) | |     
+                                 |_|\__,_|_|  |___/\___/|___/_____/|_____/|_|     
                                                          
-----------------------------------------------------------------------
+---------------------------------*************************************************-----------------------------------
 </pre>
 
 TarsosDSP is a collection of classes to do simple audio processing. It features an implementation of a percussion onset detector and three pitch detection algorithms: YIN, the Mcleod Pitch method and a "Dynamic Wavelet Algorithm Pitch Tracking" algorithm. Also included is a Goertzel DTMF(Dual tone multi frequency) decoding algorithm and a time stretch algorithm (WSOLA).
