@@ -72,3 +72,8 @@ Added AMDF pitch estimator by Eder Souza
 <dt>Version 1.2</dt><dd>2012-08-21</dd> 
 Modified the interface of PitchDetector to return a more elaborate result structure with pitch, probability and a boolean "is pitched".
 Added an implementation of an envelope follower or envelope detector.
+
+<dt>Version 1.3</dt><dd>2012-09-19</dd> 
+TarsosDSP can do audio synthesis now. The first simple unit generators are included in the library.
+It has a new audio feature extraction feature, implemented in the FeatureExtractor example. 
+Added ASCII-art to the source code (this is the main TarsosDSP 1.3 feature). 
