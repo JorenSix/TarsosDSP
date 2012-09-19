@@ -1,40 +1,6 @@
-<!DOCTYPE html>
-<html>
-
-  <head>
-    <meta charset='utf-8' />
-    <meta http-equiv="X-UA-Compatible" content="chrome=1" />
-    <meta name="description" content="TarsosDSP : A set of audio signal processing algorithms in JAVA." />
-
-    <link rel="stylesheet" type="text/css" media="screen" href="stylesheets/stylesheet.css">
-
-    <title>TarsosDSP</title>
-  </head>
-
-  <body>
-
-    <!-- HEADER -->
-    <div id="header_wrap" class="outer">
-        <header class="inner">
-          <a id="forkme_banner" href="https://github.com/JorenSix/TarsosDSP">View on GitHub</a>
-
-          <h1 id="project_title">TarsosDSP</h1>
-          <h2 id="project_tagline">A set of audio signal processing algorithms in JAVA.</h2>
-
-            <section id="downloads">
-              <a class="zip_download_link" href="https://github.com/JorenSix/TarsosDSP/zipball/master">Download this project as a .zip file</a>
-              <a class="tar_download_link" href="https://github.com/JorenSix/TarsosDSP/tarball/master">Download this project as a tar.gz file</a>
-            </section>
-        </header>
-    </div>
-
-    <!-- MAIN CONTENT -->
-    <div id="main_content_wrap" class="outer">
-      <section id="main_content" class="inner">
-
 <h1>TarsosDSP</h1>
 <p>TarsosDSP is a collection of classes to do simple audio processing. It features an implementation of a percussion onset detector and three pitch detection algorithms: <span class="caps">YIN</span>, the Mcleod Pitch method and a &#8220;Dynamic Wavelet Algorithm Pitch Tracking&#8221; algorithm. Also included is a Goertzel <acronym title="Dual tone multi frequency"><span class="caps">DTMF</span></acronym> decoding algorithm and a time stretch algorithm (<span class="caps">WSOLA</span>).</p>
-<p>Its aim is to provide a simple interface to some audio (signal) processing algorithms implemented in pure <span class="caps">JAVA</span>. Some <a href="http://tarsos.0110.be/tag/TarsosDSP">TarsosDSP example applications</a> are available.</p>
+<p>Its aim is to provide a simple interface to some audio (signal) processing algorithms implemented in pure <span class="caps">JAVA</span>, without any external dependencies. Some <a href="http://tarsos.0110.be/tag/TarsosDSP">TarsosDSP example applications</a> are available. Head over to the <a href="http://tarsos.0110.be/releases/TarsosDSP/">TarosDSP release directory</a> for freshly baked binaries.</p>
 <p>The following example filters a band of frequencies of an input file <code>testFile</code>. It keeps the frequencies form <code>startFrequency</code> to <code>stopFrequency</code>.</p>
 <pre><code>AudioInputStream inputStream = AudioSystem.getAudioInputStream(testFile);
 AudioDispatcher dispatcher = new AudioDispatcher(inputStream,stepSize,overlap);
@@ -52,22 +18,26 @@ ant build_examples #Builds all the TarsosDSP examples
 ant javadoc #Creates the documentation in TarsosDSP/doc
 </code></pre><br />
 When everything runs correctly you should be able to run all example applications and have the latest version of the TarsosDSP library for inclusion in your projects. Also the Javadoc documentation for the <span class="caps">API</span> should be available in TarsosDSP/doc. Drop me a line if you use TarsosDSP in your project. Always nice to hear how this software is used.</p>
-<h2>Source Code Organization and Examples of TarsosDSP</h2>
+<h2>Source Code Organization</h2>
 <p>The source tree is divided in three directories:</p>
 <ul>
 	<li><code>src</code> contains the source files of the core <span class="caps">DSP</span> libraries.</li>
 	<li><code>test</code> contains unit tests for some of the <span class="caps">DSP</span> functionality.</li>
 	<li><code>build</code> contains <span class="caps">ANT</span> build files. Either to build Java documentation or runnable <span class="caps">JAR</span>-files for the example applications.</li>
-	<li><code>examples</code> contains a couple of example applications with a Java Swing user interface:
-	<ul>
-		<li><a href="http://tarsos.0110.be/artikels/lees/TarsosDSP%253A_a_small_JAVA_audio_processing_library">SoundDetector</a> show how you loudness calculations can be done. When input sound is over a defined limit an event is fired.</li>
-		<li><a href="http://tarsos.0110.be/artikels/lees/TarsosDSP%253A_a_small_JAVA_audio_processing_library">PitchDetector</a> this demo application shows real-time pitch detection. When pitch is detected the hertz value is printed together with a probability.</li>
-		<li><a href="http://tarsos.0110.be/artikels/lees/TarsosDSP%253A_a_small_JAVA_audio_processing_library">PercussionDetector</a> show the percussion (onset) dectection. Clapping your hands causes an event. This demo application also shows the influence of the two parameters on the algorithm.</li>
-		<li><a href="http://tarsos.0110.be/artikels/lees/TarsosDSP_sample_application%253A_Utter_Asterisk">UtterAsterisk</a> a game with the goal to sing as close to a melody a possible. Technically it shows real-time pitch detection with <span class="caps">YIN</span> or <span class="caps">MPM</span>.</li>
-		<li><a href="http://tarsos.0110.be/artikels/lees/Spectrogram_in_Java_with_TarsosDSP">Spectrogram in Java</a> shows a spectrogram and detected pitch, either live or from an audio file. It is interesting to see which frequencies are picked as fundamentals.</li>
-		<li><a href="http://tarsos.0110.be/artikels/lees/Dual-Tone_Multi-Frequency_%2528DTMF%2529_Decoding_with_the_Goertzel_Algorithm_in_Java">Goertzel <acronym title="Dual tone multi frequency"><span class="caps">DTMF</span></acronym> decoding</a> an implementation of the Goertzel Algorithm. A fancy user interface shows what goes on under the hood.</li>
-		<li><a href="http://tarsos.0110.be/artikels/lees/Audio_Time_Stretching_-_Implementation_in_Pure_Java_Using_WSOLA">Audio Time Stretching &#8211; Implementation in Pure Java Using <span class="caps">WSOLA</span></a> an implementation of a time stretching algorithm. <acronym title="Waveform Similarity Overlap Add"><span class="caps">WSOLA</span></acronym> makes it possible to change the play back speed of audio without changing the pitch. The play back speed can be changed at any moment, even when there is audio playing.</li>
-	</ul></li>
+	<li><code>examples</code> contains a couple of example applications with a Java Swing user interface.</li>
+</ul>
+<h3>TarsosDSP Example Applications</h3>
+<p>TarsosDSP contains some ready made example applications. Most have a Java Swing user interface. They show which functionality is present in the library and how to use it.</p>
+<ul>
+	<li><a href="http://tarsos.0110.be/artikels/lees/TarsosDSP%253A_a_small_JAVA_audio_processing_library">SoundDetector</a> show how you loudness calculations can be done. When input sound is over a defined limit an event is fired.</li>
+	<li><a href="http://tarsos.0110.be/artikels/lees/TarsosDSP%253A_a_small_JAVA_audio_processing_library">PitchDetector</a> this demo application shows real-time pitch detection. When pitch is detected the hertz value is printed together with a probability.</li>
+	<li><a href="http://tarsos.0110.be/artikels/lees/TarsosDSP%253A_a_small_JAVA_audio_processing_library">PercussionDetector</a> show the percussion (onset) dectection. Clapping your hands causes an event. This demo application also shows the influence of the two parameters on the algorithm.</li>
+	<li><a href="http://tarsos.0110.be/artikels/lees/TarsosDSP_sample_application%253A_Utter_Asterisk">UtterAsterisk</a> a game with the goal to sing as close to a melody a possible. Technically it shows real-time pitch detection with <span class="caps">YIN</span> or <span class="caps">MPM</span>.</li>
+	<li><a href="http://tarsos.0110.be/artikels/lees/Spectrogram_in_Java_with_TarsosDSP">Spectrogram in Java</a> shows a spectrogram and detected pitch, either live or from an audio file. It is interesting to see which frequencies are picked as fundamentals.</li>
+	<li><a href="http://tarsos.0110.be/artikels/lees/Dual-Tone_Multi-Frequency_%2528DTMF%2529_Decoding_with_the_Goertzel_Algorithm_in_Java">Goertzel <acronym title="Dual tone multi frequency"><span class="caps">DTMF</span></acronym> decoding</a> an implementation of the Goertzel Algorithm. A fancy user interface shows what goes on under the hood.</li>
+	<li><a href="http://tarsos.0110.be/artikels/lees/Audio_Time_Stretching_-_Implementation_in_Pure_Java_Using_WSOLA">Audio Time Stretching &#8211; Implementation in Pure Java Using <span class="caps">WSOLA</span></a> an implementation of a time stretching algorithm. <acronym title="Waveform Similarity Overlap Add"><span class="caps">WSOLA</span></acronym> makes it possible to change the play back speed of audio without changing the pitch. The play back speed can be changed at any moment, even when there is audio playing.</li>
+	<li><a href="http://tarsos.0110.be/releases/TarsosDSP/TarsosDSP-1.3/TarsosDSP-1.3-Examples/FeatureExtractor-1.3.jar">Audio Feature Extraction</a> a command line application to do simple feature extraction.</li>
+	<li><a href="http://tarsos.0110.be/releases/TarsosDSP/TarsosDSP-1.3/TarsosDSP-1.3-Examples/Synthesis-1.3.jar">Audio Synthesis</a> a command line application to do simple audio synthesis.</li>
 </ul>
 <h2>Credits</h2>
 <p><a href="http://tarsos.0110.be">Tarsos</a> and <a href="http://tarsos.0110.be/tag/TarsosDSP">TarsosDSP</a> are developed at University College Ghent, Faculty of Music<br />
@@ -91,16 +61,4 @@ Added an implementation of an envelope follower or envelope detector.</p>
 <dt>Version 1.3</dt><dd>2012-09-19</dd> 
 <p>TarsosDSP can do audio synthesis now. The first simple unit generators are included in the library.<br />
 It has a new audio feature extraction feature, implemented in the FeatureExtractor example. <br />
-Added <span class="caps">ASCII</span>-art to the source code (this is the main TarsosDSP 1.3 feature).</p>      </section>
-    </div>
-
-    <!-- FOOTER  -->
-    <div id="footer_wrap" class="outer">
-      <footer class="inner">
-        <p class="copyright">TarsosDSP maintained by <a href="https://github.com/JorenSix">JorenSix</a></p>
-        <p>Published with <a href="http://pages.github.com">GitHub Pages</a></p>
-      </footer>
-    </div>
-  </body>
-</html>
-
+Added <span class="caps">ASCII</span>-art to the source code (this is the main TarsosDSP 1.3 feature).</p>
