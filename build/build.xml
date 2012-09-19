@@ -2,17 +2,17 @@
 <project default="tarsos_dsp_library" name="Create Runnable Time Stretch Jar">
 
 	<!-- Configuration -->
-	<property name="version"   value="1.2"/>
-	<property name="built_by"  value="${user.name}"/>
-	<property name="junit_jar" value="/opt/eclipse/plugins/org.hamcrest.core_1.1.0.v20090501071000.jar:/opt/eclipse/plugins/org.junit_4.8.1.v4_8_1_v20100427-1100/junit.jar"/>
+	<property name="version" value="1.3" />
+	<property name="built_by" value="${user.name}" />
+	<property name="junit_jar" value="/opt/eclipse/plugins/org.hamcrest.core_1.1.0.v20090501071000.jar:/opt/eclipse/plugins/org.junit_4.8.1.v4_8_1_v20100427-1100/junit.jar" />
 
 	<!-- run the ant timestamp task -->
-	<tstamp/>
+	<tstamp />
 
 	<!-- Clean the build system -->
 	<target name="clean">
-		<delete dir="../bin"/>
-		<delete dir="../doc"/>
+		<delete dir="../bin" />
+		<delete dir="../doc" />
 	</target>
 
 	<!-- Compiles the java files to bytecode and copy required resources -->
@@ -31,19 +31,7 @@
 
 	<!-- Creates javadoc in doc directory -->
 	<target name="javadoc">
-		<javadoc access="public" author="true" classpath="${junit_jar}" 
-			destdir="../doc" 
-			doctitle="TarsosDSP API ${version}-${DSTAMP}" 
-			nodeprecated="false" 
-			nodeprecatedlist="false" 
-			noindex="false" 
-			nonavbar="false" 
-			notree="false" 
-			packagenames="be.hogent.tarsos.dsp.test,be.hogent.tarsos.dsp.util,be.hogent.tarsos.dsp,be.hogent.tarsos.dsp.pitch" 
-			source="1.6" 
-			sourcepath="../src" 
-			splitindex="true" 
-			use="true" version="true"/>
+		<javadoc access="public" author="true" classpath="${junit_jar}" destdir="../doc" doctitle="TarsosDSP API ${version}-${DSTAMP}" nodeprecated="false" nodeprecatedlist="false" noindex="false" nonavbar="false" notree="false" packagenames="be.hogent.tarsos.dsp.test,be.hogent.tarsos.dsp.util,be.hogent.tarsos.dsp,be.hogent.tarsos.dsp.pitch" source="1.6" sourcepath="../src" splitindex="true" use="true" version="true" />
 	</target>
 
 	<!-- Creates the TarsosDSP jar library both with and withouth source code -->
@@ -53,22 +41,22 @@
 		<jar destfile="TarsosDSP-${version}.jar" filesetmanifest="mergewithoutmain">
 			<manifest>
 				<!-- Standard manifest attributes -->
-				<attribute name="Implementation-Version" value="${version}-${DSTAMP}"/>
-				<attribute name="Built-By" value="${built_by}"/>
-				<attribute name="Created-By" value="${built_by}"/>
-				<attribute name="Built-Date" value="${TODAY}"/>
+				<attribute name="Implementation-Version" value="${version}-${DSTAMP}" />
+				<attribute name="Built-By" value="${built_by}" />
+				<attribute name="Created-By" value="${built_by}" />
+				<attribute name="Built-Date" value="${TODAY}" />
 			</manifest>
 
 			<!-- exclude everything except src dir -->
 			<fileset dir="../bin">
-				<exclude name="**/*.wav"/>
-				<exclude name="**/test/**"/>
-				<exclude name="**/example/**"/>
+				<exclude name="**/*.wav" />
+				<exclude name="**/test/**" />
+				<exclude name="**/example/**" />
 			</fileset>
 
 			<!-- include source files -->
 			<fileset dir="../src">
-				<include name="**/*.java"/>
+				<include name="**/*.java" />
 			</fileset>
 		</jar>
 
@@ -92,10 +80,10 @@
 	</target>
 
 	<!-- builds all examples -->
-	<target name="build_examples" depends="example_advanced_audio_player,example_delay_effect,example_goertzel_algorithm,example_oscilloscope,example_percussion_detector,example_pitch_detector,example_spectrogram,example_sound_detector,example_time_stretch,example_utter_asterisk" />
+	<target name="build_examples" depends="example_advanced_audio_player,example_delay_effect,example_goertzel_algorithm,example_oscilloscope,example_percussion_detector,example_pitch_detector,example_spectrogram,example_sound_detector,example_time_stretch,example_utter_asterisk,example_feature_extractor,example_synthesis" />
 
 	<!-- builds a release: all examples, documentation and library in the correct folders-->
-	<target name="release" depends="javadoc,tarsos_dsp_library,example_advanced_audio_player,example_delay_effect,example_goertzel_algorithm,example_oscilloscope,example_percussion_detector,example_pitch_detector,example_spectrogram,example_sound_detector,example_time_stretch,example_utter_asterisk">
+	<target name="release" depends="javadoc,tarsos_dsp_library,example_advanced_audio_player,example_delay_effect,example_goertzel_algorithm,example_oscilloscope,example_percussion_detector,example_pitch_detector,example_spectrogram,example_sound_detector,example_time_stretch,example_utter_asterisk,example_feature_extractor,example_synthesis">
 
 		<copy todir="TarsosDSP-${version}-Documentation">
 			<fileset dir="../doc" />
@@ -113,14 +101,14 @@
 
 	<!-- Compiles the junit classes -->
 	<target name="compile_with_tests" depends="compile">
-		<javac srcdir="../tests" destdir="../bin" classpath="${junit_jar}"  debug="true"/>
+		<javac srcdir="../tests" destdir="../bin" classpath="${junit_jar}" debug="true" />
 		<copy todir="../bin/be/hogent/tarsos/dsp/test/resources">
 			<fileset dir="../tests/be/hogent/tarsos/dsp/test/resources" />
 		</copy>
 	</target>
 
-	<target name="junit"  depends="compile_with_tests">
-		<junit printsummary="true"  showoutput="true" failureproperty="junit.failure">
+	<target name="junit" depends="compile_with_tests">
+		<junit printsummary="true" showoutput="true" failureproperty="junit.failure">
 			<test name='be.hogent.tarsos.dsp.tests.AudioPlayerTest' />
 			<test name='be.hogent.tarsos.dsp.test.EnvelopeFollowerTest' />
 			<test name='be.hogent.tarsos.dsp.test.FFTTest' />
@@ -151,29 +139,29 @@
 	<target name="example_advanced_audio_player" depends="compile">
 		<jar destfile="AdvancedAudioPlayer-${version}.jar" filesetmanifest="mergewithoutmain">
 			<manifest>
-				<attribute name="Main-Class" value="be.hogent.tarsos.dsp.example.AdvancedAudioPlayer"/>
+				<attribute name="Main-Class" value="be.hogent.tarsos.dsp.example.AdvancedAudioPlayer" />
 
 				<!-- Standard manifest attributes -->
-				<attribute name="Implementation-Version" value="${version}-${DSTAMP}"/>
-				<attribute name="Built-By" value="${built_by}"/>
-				<attribute name="Created-By" value="${built_by}"/>
-				<attribute name="Built-Date" value="${TODAY}"/>
+				<attribute name="Implementation-Version" value="${version}-${DSTAMP}" />
+				<attribute name="Built-By" value="${built_by}" />
+				<attribute name="Created-By" value="${built_by}" />
+				<attribute name="Built-Date" value="${TODAY}" />
 			</manifest>
 
 			<!-- exclude wav and test files -->
 			<fileset dir="../bin">
-				<exclude name="**/*.wav"/>
-				<exclude name="**/test/**"/>
+				<exclude name="**/*.wav" />
+				<exclude name="**/test/**" />
 			</fileset>
 
 			<!-- include source files -->
 			<fileset dir="../src">
-				<include name="**/*.java"/>
+				<include name="**/*.java" />
 			</fileset>
 
 			<fileset dir="../examples">
-				<exclude name="**/*.wav"/>
-				<include name="**/*.java"/>
+				<exclude name="**/*.wav" />
+				<include name="**/*.java" />
 			</fileset>
 		</jar>
 	</target>
@@ -182,29 +170,29 @@
 	<target name="example_delay_effect" depends="compile">
 		<jar destfile="Delay-${version}.jar" filesetmanifest="mergewithoutmain">
 			<manifest>
-				<attribute name="Main-Class" value="be.hogent.tarsos.dsp.example.Delay"/>
-				<attribute name="Class-Path" value="."/>
+				<attribute name="Main-Class" value="be.hogent.tarsos.dsp.example.Delay" />
+				<attribute name="Class-Path" value="." />
 
 				<!-- Standard manifest attributes -->
-				<attribute name="Implementation-Version" value="${version}-${DSTAMP}"/>
-				<attribute name="Built-By" value="${built_by}"/>
-				<attribute name="Created-By" value="${built_by}"/>
-				<attribute name="Built-Date" value="${TODAY}"/>
+				<attribute name="Implementation-Version" value="${version}-${DSTAMP}" />
+				<attribute name="Built-By" value="${built_by}" />
+				<attribute name="Created-By" value="${built_by}" />
+				<attribute name="Built-Date" value="${TODAY}" />
 			</manifest>
 
 			<!-- exclude wav and test files -->
 			<fileset dir="../bin">
-				<exclude name="**/*.wav"/>
-				<exclude name="**/test/**"/>
+				<exclude name="**/*.wav" />
+				<exclude name="**/test/**" />
 			</fileset>
 
 			<!-- include source files -->
 			<fileset dir="../src">
-				<include name="**/*.java"/>
+				<include name="**/*.java" />
 			</fileset>
 			<fileset dir="../examples">
-				<exclude name="**/*.wav"/>
-				<include name="**/*.java"/>
+				<exclude name="**/*.wav" />
+				<include name="**/*.java" />
 			</fileset>
 		</jar>
 	</target>
@@ -213,29 +201,29 @@
 	<target name="example_goertzel_algorithm" depends="compile">
 		<jar destfile="GoertzelDTMF-${version}.jar" filesetmanifest="mergewithoutmain">
 			<manifest>
-				<attribute name="Main-Class" value="be.hogent.tarsos.dsp.example.GoertzelDTMF"/>
-				<attribute name="Class-Path" value="."/>
+				<attribute name="Main-Class" value="be.hogent.tarsos.dsp.example.GoertzelDTMF" />
+				<attribute name="Class-Path" value="." />
 
 				<!-- Standard manifest attributes -->
-				<attribute name="Implementation-Version" value="${version}-${DSTAMP}"/>
-				<attribute name="Built-By" value="${built_by}"/>
-				<attribute name="Created-By" value="${built_by}"/>
-				<attribute name="Built-Date" value="${TODAY}"/>
+				<attribute name="Implementation-Version" value="${version}-${DSTAMP}" />
+				<attribute name="Built-By" value="${built_by}" />
+				<attribute name="Created-By" value="${built_by}" />
+				<attribute name="Built-Date" value="${TODAY}" />
 			</manifest>
 
 			<!-- include class files -->
 			<fileset dir="../bin">
-				<exclude name="**/*.wav"/>
-				<exclude name="**/test/**"/>
+				<exclude name="**/*.wav" />
+				<exclude name="**/test/**" />
 			</fileset>
 
 			<!-- include source files -->
 			<fileset dir="../src">
-				<include name="**/*.java"/>
+				<include name="**/*.java" />
 			</fileset>
 			<fileset dir="../examples">
-				<exclude name="**/*.wav"/>
-				<include name="**/*.java"/>
+				<exclude name="**/*.wav" />
+				<include name="**/*.java" />
 			</fileset>
 		</jar>
 	</target>
@@ -245,29 +233,29 @@
 	<target name="example_oscilloscope" depends="compile">
 		<jar destfile="Oscilloscope-${version}.jar" filesetmanifest="mergewithoutmain">
 			<manifest>
-				<attribute name="Main-Class" value="be.hogent.tarsos.dsp.example.OscilloscopeExample"/>
-				<attribute name="Class-Path" value="."/>
+				<attribute name="Main-Class" value="be.hogent.tarsos.dsp.example.OscilloscopeExample" />
+				<attribute name="Class-Path" value="." />
 
 				<!-- Standard manifest attributes -->
-				<attribute name="Implementation-Version" value="${version}-${DSTAMP}"/>
-				<attribute name="Built-By" value="${built_by}"/>
-				<attribute name="Created-By" value="${built_by}"/>
-				<attribute name="Built-Date" value="${TODAY}"/>
+				<attribute name="Implementation-Version" value="${version}-${DSTAMP}" />
+				<attribute name="Built-By" value="${built_by}" />
+				<attribute name="Created-By" value="${built_by}" />
+				<attribute name="Built-Date" value="${TODAY}" />
 			</manifest>
 
 			<!-- exclude wav and test files -->
 			<fileset dir="../bin">
-				<exclude name="**/*.wav"/>
-				<exclude name="**/test/**"/>
+				<exclude name="**/*.wav" />
+				<exclude name="**/test/**" />
 			</fileset>
 
 			<!-- include source files -->
 			<fileset dir="../src">
-				<include name="**/*.java"/>
+				<include name="**/*.java" />
 			</fileset>
 			<fileset dir="../examples">
-				<exclude name="**/*.wav"/>
-				<include name="**/*.java"/>
+				<exclude name="**/*.wav" />
+				<include name="**/*.java" />
 			</fileset>
 		</jar>
 	</target>
@@ -277,29 +265,29 @@
 	<target name="example_percussion_detector" depends="compile">
 		<jar destfile="PercussionDetector-${version}.jar" filesetmanifest="mergewithoutmain">
 			<manifest>
-				<attribute name="Main-Class" value="be.hogent.tarsos.dsp.example.PercussionDetector"/>
-				<attribute name="Class-Path" value="."/>
+				<attribute name="Main-Class" value="be.hogent.tarsos.dsp.example.PercussionDetector" />
+				<attribute name="Class-Path" value="." />
 
 				<!-- Standard manifest attributes -->
-				<attribute name="Implementation-Version" value="${version}-${DSTAMP}"/>
-				<attribute name="Built-By" value="${built_by}"/>
-				<attribute name="Created-By" value="${built_by}"/>
-				<attribute name="Built-Date" value="${TODAY}"/>
+				<attribute name="Implementation-Version" value="${version}-${DSTAMP}" />
+				<attribute name="Built-By" value="${built_by}" />
+				<attribute name="Created-By" value="${built_by}" />
+				<attribute name="Built-Date" value="${TODAY}" />
 			</manifest>
 
 			<!-- include class files -->
 			<fileset dir="../bin">
-				<exclude name="**/test/**"/>
+				<exclude name="**/test/**" />
 			</fileset>
 
 
 			<!-- include source files -->
 			<fileset dir="../src">
-				<include name="**/*.java"/>
+				<include name="**/*.java" />
 
 			</fileset>
 			<fileset dir="../examples">
-				<include name="**/*.java"/>
+				<include name="**/*.java" />
 			</fileset>
 		</jar>
 	</target>
@@ -308,29 +296,29 @@
 	<target name="example_pitch_detector" depends="compile">
 		<jar destfile="PitchDetector-${version}.jar" filesetmanifest="mergewithoutmain">
 			<manifest>
-				<attribute name="Main-Class" value="be.hogent.tarsos.dsp.example.PitchDetectorExample"/>
-				<attribute name="Class-Path" value="."/>
+				<attribute name="Main-Class" value="be.hogent.tarsos.dsp.example.PitchDetectorExample" />
+				<attribute name="Class-Path" value="." />
 
 				<!-- Standard manifest attributes -->
-				<attribute name="Implementation-Version" value="${version}-${DSTAMP}"/>
-				<attribute name="Built-By" value="${built_by}"/>
-				<attribute name="Created-By" value="${built_by}"/>
-				<attribute name="Built-Date" value="${TODAY}"/>
+				<attribute name="Implementation-Version" value="${version}-${DSTAMP}" />
+				<attribute name="Built-By" value="${built_by}" />
+				<attribute name="Created-By" value="${built_by}" />
+				<attribute name="Built-Date" value="${TODAY}" />
 			</manifest>
 
 			<!-- include class files -->
 			<fileset dir="../bin">
-				<exclude name="**/*.wav"/>
-				<exclude name="**/test/**"/>
+				<exclude name="**/*.wav" />
+				<exclude name="**/test/**" />
 			</fileset>
 
 			<!-- include source files -->
 			<fileset dir="../src">
-				<include name="**/*.java"/>
+				<include name="**/*.java" />
 			</fileset>
 			<fileset dir="../examples">
-				<exclude name="**/*.wav"/>
-				<include name="**/*.java"/>
+				<exclude name="**/*.wav" />
+				<include name="**/*.java" />
 			</fileset>
 		</jar>
 	</target>
@@ -369,29 +357,29 @@
 	<target name="example_sound_detector" depends="compile">
 		<jar destfile="SoundDetector-${version}.jar" filesetmanifest="mergewithoutmain">
 			<manifest>
-				<attribute name="Main-Class" value="be.hogent.tarsos.dsp.example.SoundDetector"/>
-				<attribute name="Class-Path" value="."/>
+				<attribute name="Main-Class" value="be.hogent.tarsos.dsp.example.SoundDetector" />
+				<attribute name="Class-Path" value="." />
 
 				<!-- Standard manifest attributes -->
-				<attribute name="Implementation-Version" value="${version}-${DSTAMP}"/>
-				<attribute name="Built-By" value="${built_by}"/>
-				<attribute name="Created-By" value="${built_by}"/>
-				<attribute name="Built-Date" value="${TODAY}"/>
+				<attribute name="Implementation-Version" value="${version}-${DSTAMP}" />
+				<attribute name="Built-By" value="${built_by}" />
+				<attribute name="Created-By" value="${built_by}" />
+				<attribute name="Built-Date" value="${TODAY}" />
 			</manifest>
 
 			<!-- include class files -->
 			<fileset dir="../bin">
-				<exclude name="**/*.wav"/>
-				<exclude name="**/test/**"/>
+				<exclude name="**/*.wav" />
+				<exclude name="**/test/**" />
 			</fileset>
 
 			<!-- include source files -->
 			<fileset dir="../src">
-				<include name="**/*.java"/>
+				<include name="**/*.java" />
 			</fileset>
 			<fileset dir="../examples">
-				<exclude name="**/*.wav"/>
-				<include name="**/*.java"/>
+				<exclude name="**/*.wav" />
+				<include name="**/*.java" />
 			</fileset>
 		</jar>
 	</target>
@@ -400,30 +388,30 @@
 	<target name="example_time_stretch" depends="compile">
 		<jar destfile="TimeStretch-${version}.jar" filesetmanifest="mergewithoutmain">
 			<manifest>
-				<attribute name="Main-Class" value="be.hogent.tarsos.dsp.example.TimeStretch"/>
-				<attribute name="Class-Path" value="."/>
+				<attribute name="Main-Class" value="be.hogent.tarsos.dsp.example.TimeStretch" />
+				<attribute name="Class-Path" value="." />
 
 
 				<!-- Standard manifest attributes -->
-				<attribute name="Implementation-Version" value="${version}-${DSTAMP}"/>
-				<attribute name="Built-By" value="${built_by}"/>
-				<attribute name="Created-By" value="${built_by}"/>
-				<attribute name="Built-Date" value="${TODAY}"/>
+				<attribute name="Implementation-Version" value="${version}-${DSTAMP}" />
+				<attribute name="Built-By" value="${built_by}" />
+				<attribute name="Created-By" value="${built_by}" />
+				<attribute name="Built-Date" value="${TODAY}" />
 			</manifest>
 
 			<!-- exclude wav and test files -->
 			<fileset dir="../bin">
-				<exclude name="**/*.wav"/>
-				<exclude name="**/test/**"/>
+				<exclude name="**/*.wav" />
+				<exclude name="**/test/**" />
 			</fileset>
 
 			<!-- include source files -->
 			<fileset dir="../src">
-				<include name="**/*.java"/>
+				<include name="**/*.java" />
 			</fileset>
 			<fileset dir="../examples">
-				<exclude name="**/*.wav"/>
-				<include name="**/*.java"/>
+				<exclude name="**/*.wav" />
+				<include name="**/*.java" />
 			</fileset>
 		</jar>
 	</target>
@@ -432,30 +420,91 @@
 	<target name="example_utter_asterisk" depends="compile">
 		<jar destfile="UtterAsterisk-${version}.jar" filesetmanifest="mergewithoutmain">
 			<manifest>
-				<attribute name="Main-Class" value="be.hogent.tarsos.dsp.example.UtterAsterisk"/>
-				<attribute name="Class-Path" value="."/>
+				<attribute name="Main-Class" value="be.hogent.tarsos.dsp.example.UtterAsterisk" />
+				<attribute name="Class-Path" value="." />
 
 				<!-- Standard manifest attributes -->
-				<attribute name="Implementation-Version" value="${version}-${DSTAMP}"/>
-				<attribute name="Built-By" value="${built_by}"/>
-				<attribute name="Created-By" value="${built_by}"/>
-				<attribute name="Built-Date" value="${TODAY}"/>
+				<attribute name="Implementation-Version" value="${version}-${DSTAMP}" />
+				<attribute name="Built-By" value="${built_by}" />
+				<attribute name="Created-By" value="${built_by}" />
+				<attribute name="Built-Date" value="${TODAY}" />
 			</manifest>
 
 			<!-- include class files -->
 			<fileset dir="../bin">
-				<exclude name="**/*.wav"/>
-				<exclude name="**/test/**"/>
+				<exclude name="**/*.wav" />
+				<exclude name="**/test/**" />
 			</fileset>
 
 			<!-- include source files -->
 			<fileset dir="../src">
-				<include name="**/*.java"/>
+				<include name="**/*.java" />
 			</fileset>
 			<fileset dir="../examples">
-				<exclude name="**/*.wav"/>
-				<include name="**/*.java"/>
+				<exclude name="**/*.wav" />
+				<include name="**/*.java" />
 			</fileset>
 		</jar>
 	</target>
+
+	<!-- Builds an example -->
+	<target name="example_feature_extractor" depends="compile">
+		<jar destfile="FeatureExtractor-${version}.jar" filesetmanifest="mergewithoutmain">
+			<manifest>
+				<attribute name="Main-Class" value="be.hogent.tarsos.dsp.example.FeatureExtractor" />
+				<attribute name="Class-Path" value="." />
+
+				<!-- Standard manifest attributes -->
+				<attribute name="Implementation-Version" value="${version}-${DSTAMP}" />
+				<attribute name="Built-By" value="${built_by}" />
+				<attribute name="Created-By" value="${built_by}" />
+				<attribute name="Built-Date" value="${TODAY}" />
+			</manifest>
+
+			<!-- include class files -->
+			<fileset dir="../bin">
+				<exclude name="**/*.wav" />
+				<exclude name="**/test/**" />
+			</fileset>
+
+			<!-- include source files -->
+			<fileset dir="../src">
+				<include name="**/*.java" />
+			</fileset>
+			<fileset dir="../examples">
+				<exclude name="**/*.wav" />
+				<include name="**/*.java" />
+			</fileset>
+		</jar>
+	</target>
+	
+	<target name="example_synthesis" depends="compile">
+			<jar destfile="Synthesis-${version}.jar" filesetmanifest="mergewithoutmain">
+				<manifest>
+					<attribute name="Main-Class" value="be.hogent.tarsos.dsp.example.SynthesisExample" />
+					<attribute name="Class-Path" value="." />
+
+					<!-- Standard manifest attributes -->
+					<attribute name="Implementation-Version" value="${version}-${DSTAMP}" />
+					<attribute name="Built-By" value="${built_by}" />
+					<attribute name="Created-By" value="${built_by}" />
+					<attribute name="Built-Date" value="${TODAY}" />
+				</manifest>
+
+				<!-- include class files -->
+				<fileset dir="../bin">
+					<exclude name="**/*.wav" />
+					<exclude name="**/test/**" />
+				</fileset>
+
+				<!-- include source files -->
+				<fileset dir="../src">
+					<include name="**/*.java" />
+				</fileset>
+				<fileset dir="../examples">
+					<exclude name="**/*.wav" />
+					<include name="**/*.java" />
+				</fileset>
+			</jar>
+		</target>
 </project>
