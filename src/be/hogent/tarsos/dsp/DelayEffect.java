@@ -31,7 +31,7 @@ public class DelayEffect implements AudioProcessor {
 	/**
 	 * @param echoLength in seconds
 	 * @param sampleRate the sample rate in Hz.
-	 * @param decay The decay of the echo, a value between 0 and 1.
+	 * @param decay The decay of the echo, a value between 0 and 1. 1 meaning no decay, 0 means immediate decay (not echo effect).
 	 */
 	public DelayEffect(double echoLength,double decay,double sampleRate) {
 		this.sampleRate = sampleRate;

@@ -3,21 +3,22 @@ package be.hogent.tarsos.dsp.synthesis;
 import be.hogent.tarsos.dsp.AudioEvent;
 import be.hogent.tarsos.dsp.AudioProcessor;
 
-public class SineGenerator implements AudioProcessor{
+public class AmplitudeLFO implements AudioProcessor {
 	
-	private double gain;
 	private double frequency;
+	private double scaleParameter;
 	private double phase;
 	
-	public SineGenerator(){
-		this(1.0,440);
+	public AmplitudeLFO(){
+		this(1.5,0.75);
 	}
 	
-	public SineGenerator(double gain,double frequency){
-		this.gain = gain;
+	public AmplitudeLFO(double frequency, double scaleParameter){
 		this.frequency = frequency;
-		this.phase = 0;
+		this.scaleParameter = scaleParameter;
+		phase = 0;
 	}
+	
 
 	@Override
 	public boolean process(AudioEvent audioEvent) {
@@ -27,7 +28,8 @@ public class SineGenerator implements AudioProcessor{
 		double time = 0;
 		for(int i = 0 ; i < buffer.length ; i++){
 			time = i / sampleRate;
-			buffer[i] += (float) (gain * Math.sin(twoPiF * time + phase));
+			float gain =  (float) (scaleParameter * Math.sin(twoPiF * time + phase));
+			buffer[i] = gain * buffer[i];
 		}
 		phase = twoPiF * buffer.length / sampleRate + phase;
 		return true;
@@ -36,4 +38,5 @@ public class SineGenerator implements AudioProcessor{
 	@Override
 	public void processingFinished() {
 	}
+
 }
