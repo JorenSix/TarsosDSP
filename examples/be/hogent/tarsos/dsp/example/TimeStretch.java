@@ -53,6 +53,7 @@ import be.hogent.tarsos.dsp.AudioPlayer;
 import be.hogent.tarsos.dsp.GainProcessor;
 import be.hogent.tarsos.dsp.WaveformSimilarityBasedOverlapAdd;
 import be.hogent.tarsos.dsp.WaveformSimilarityBasedOverlapAdd.Parameters;
+import be.hogent.tarsos.dsp.WaveformWriter;
 
 public class TimeStretch extends JFrame{
 
@@ -211,15 +212,51 @@ public class TimeStretch extends JFrame{
 	}
 	
 
-	public static void main(String[] argv)
-			throws UnsupportedAudioFileException, IOException,
-			LineUnavailableException, InterruptedException, InvocationTargetException {
+	public static void main(String[] argv) {
 		if (argv.length == 3) {
-			startCli(argv[1],argv[2],Double.parseDouble(argv[0]));
-		} else {
-			startGui();
+			try {
+				startCli(argv[0],argv[1],Double.parseDouble(argv[2]));
+			} catch (NumberFormatException e) {
+				printHelp("Please provide a well formatted number for the time stretching factor. See Synopsis.");
+			} catch (UnsupportedAudioFileException e) {
+				printHelp("Unsupported audio file, please check if the input is 16bit 44.1kHz mono PCM wav.");
+			} catch (IOException e) {
+				printHelp("IO error, could not read from or write to the audio file, does it exist?");
+			}
+		} else if(argv.length!=0){
+			printHelp("Please provide exactly 3 arguments, see Synopsis.");
+		}else{
+			try {
+				startGui();
+			} catch (InterruptedException e) {
+				e.printStackTrace();
+				throw new Error(e);
+			} catch (InvocationTargetException e) {
+				e.printStackTrace();
+				throw new Error(e);
+			}
 		}
 	}
+	
+	private static final void printHelp(String error){
+		SharedCommandLineUtilities.printPrefix();
+		System.err.println("Name:");
+		System.err.println("\tTarsosDSP Time stretch utility.");
+		SharedCommandLineUtilities.printLine();
+		System.err.println("Synopsis:");
+		System.err.println("\tjava -jar TimeStretch.jar source.wav target.wav factor");
+		SharedCommandLineUtilities.printLine();
+		System.err.println("Description:");
+		System.err.println("\tChange the play back speed of audio without changing the pitch.\n");
+		System.err.println("\t\tsource.wav\tA readable, mono wav file.");
+		System.err.println("\t\ttarget.wav\tTarget location for the time stretched file.");
+		System.err.println("\t\tfactor\t\tTime stretching factor: 2.0 means double the length, 0.5 half. 1.0 is no change.");
+		if(!error.isEmpty()){
+			SharedCommandLineUtilities.printLine();
+			System.err.println("Error:");
+			System.err.println("\t" + error);
+		}
+    }
 	
 	private static void startGui() throws InterruptedException, InvocationTargetException{
 		SwingUtilities.invokeAndWait(new Runnable() {
@@ -239,16 +276,15 @@ public class TimeStretch extends JFrame{
 	}
 	
 	private static void startCli(String source,String target,double tempo) throws UnsupportedAudioFileException, IOException{
-		/*
 		File inputFile = new File(source);
 		AudioFormat format = AudioSystem.getAudioFileFormat(inputFile).getFormat();	
-		WaveformSimilarityBasedOverlapAdd wsola = new WaveformSimilarityBasedOverlapAdd(format,Parameters.slowdownDefaults(tempo,format.getSampleRate()));
-		wsola.setWaveFormWriter(new WaveformWriter(format, wsola.getOutputBufferSize(), 0, target));
+		WaveformSimilarityBasedOverlapAdd wsola = new WaveformSimilarityBasedOverlapAdd(Parameters.slowdownDefaults(tempo,format.getSampleRate()));
+		WaveformWriter writer = new WaveformWriter(format,target);
 		AudioDispatcher dispatcher = AudioDispatcher.fromFile(inputFile,wsola.getInputBufferSize(),wsola.getOverlap());
 		wsola.setDispatcher(dispatcher);
 		dispatcher.addAudioProcessor(wsola);
+		dispatcher.addAudioProcessor(writer);
 		dispatcher.run();
-		*/
 	}
 
 }

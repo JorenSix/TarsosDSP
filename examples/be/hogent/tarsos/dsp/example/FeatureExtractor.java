@@ -74,12 +74,12 @@ public class FeatureExtractor {
 					}
 				} catch (UnsupportedAudioFileException e) {
 					printHelp(appToExecute);
-					printLine();
+					SharedCommandLineUtilities.printLine();
 					System.err.println("Error:");
 					System.err.println("\tThe audio file is not supported!");
 				} catch (IOException e) {
 					printHelp(appToExecute);
-					printLine();
+					SharedCommandLineUtilities.printLine();
 					System.err.println("Current error:");
 					System.err.println("\tIO error, maybe the audio file is not found or not supported!");
 				}
@@ -88,13 +88,13 @@ public class FeatureExtractor {
 	}
 	
 	private final void printError(){
-		printPrefix();
+		SharedCommandLineUtilities.printPrefix();
 		System.err.println("Name:");
 		System.err.println("\tTarsosDSP feature extractor");
-		printLine();
+		SharedCommandLineUtilities.printLine();
 		System.err.println("Synopsis:");
 		System.err.println("\tjava -jar FeatureExtractor.jar SUB_COMMAND [options...]");
-		printLine();
+		SharedCommandLineUtilities.printLine();
 		System.err.println("Description:");
 		System.err.println("\t Extracts features from an audio file, SUB_COMMAND needs\n\tto be one of the following:");
 		for (FeatureExtractorApp app : featureExtractors) {
@@ -102,32 +102,16 @@ public class FeatureExtractor {
 		}
     }
 	
-	private final void printPrefix(){
-		 System.err.println(" _______                       _____   _____ _____  ");
-		 System.err.println("|__   __|                     |  __ \\ / ____|  __ \\ ");
-		 System.err.println("   | | __ _ _ __ ___  ___  ___| |  | | (___ | |__) |");
-		 System.err.println("   | |/ _` | '__/ __|/ _ \\/ __| |  | |\\___ \\|  ___/ ");
-		 System.err.println("   | | (_| | |  \\__ \\ (_) \\__ \\ |__| |____) | |     ");
-		 System.err.println("   |_|\\__,_|_|  |___/\\___/|___/_____/|_____/|_|     ");
-		 System.err.println("                                                    ");
-		 printLine();
-	}
-	
-	public static void printLine(){
-		System.err.println("----------------------------------------------------");
-	}
-	
 	private final void printHelp(FeatureExtractorApp appToExecute){
-		printPrefix();
+		SharedCommandLineUtilities.printPrefix();
 		System.err.println("Name:");
 		System.err.println("\tTarsosDSP " + appToExecute.name() + " feature extractor");
-		printLine();
+		SharedCommandLineUtilities.printLine();
 		System.err.println("Synopsis:");
 		System.err.println("\tjava -jar FeatureExtractor.jar " + appToExecute.name() + " " + appToExecute.synopsis());
-		printLine();
+		SharedCommandLineUtilities.printLine();
 		System.err.println("Description:");
 		System.err.println(appToExecute.description());
-
     }
 
 	/**
