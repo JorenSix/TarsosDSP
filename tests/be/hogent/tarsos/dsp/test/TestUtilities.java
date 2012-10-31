@@ -49,7 +49,7 @@ public class TestUtilities {
 		final double sampleRate = 44100.0;
 		final double f0 = 440.0;
 		final double amplitudeF0 = 0.5;
-		final double seconds = 2.0;
+		final double seconds = 4.0;
 		final float[] buffer = new float[(int) (seconds * sampleRate)];
 		for (int sample = 0; sample < buffer.length; sample++) {
 			final double time = sample / sampleRate;
@@ -136,7 +136,4 @@ public class TestUtilities {
 		final float[] buffer = new float[(int) (seconds * sampleRate)];
 		return buffer;
 	}
-	
-	
-
 }
