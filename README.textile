@@ -66,6 +66,8 @@ The audio time stretching algorithm is described in "An Overlap-Add Technique Ba
 
 The FFT implementation used within TarsosDSP is by __Piotr Wendykier__ and is included in his "JTransforms library":https://sites.google.com/site/piotrwendykier/software/jtransforms. JTransforms is the first, open source, multithreaded FFT library written in pure Java. 
 
+The sample rate conversion feature is implemented by __Laszlo systems__ in the "libresample4j":https://github.com/dnault-laszlo/libresample4j library. 
+
 h2. Changelog
 
 <dt>Version 1.0</dt><dd>2012-04-24</dd> First release which includes several pitch trackers and a time stretching algorithm, amongst other things. Downloads and javadoc API can be found at the "TarsosDSP release directory":http://tarsos.0110.be/releases/TarsosDSP/
@@ -83,3 +85,7 @@ Added an implementation of an envelope follower or envelope detector.
 TarsosDSP can do audio synthesis now. The first simple unit generators are included in the library.
 It has a new audio feature extraction feature, implemented in the FeatureExtractor example. 
 Added ASCII-art to the source code (this is the main TarsosDSP 1.3 feature). 
+
+<dt>Version 1.4</dt><dd>2012-10-31</dd>
+Included a resample feature, implemented by libresample4j. Together with the WSOLA implementation, it can be used for pitch shifting. A pitch shifting example is added in the 1.4 version of the TarsosDSP library as well. 
+

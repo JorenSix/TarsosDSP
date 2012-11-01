@@ -2,7 +2,7 @@
 <project default="tarsos_dsp_library" name="Create Runnable Time Stretch Jar">
 
 	<!-- Configuration -->
-	<property name="version" value="1.3" />
+	<property name="version" value="1.4" />
 	<property name="built_by" value="${user.name}" />
 	<property name="junit_jar" value="/opt/eclipse/plugins/org.hamcrest.core_1.1.0.v20090501071000.jar:/opt/eclipse/plugins/org.junit_4.8.1.v4_8_1_v20100427-1100/junit.jar" />
 
@@ -80,10 +80,10 @@
 	</target>
 
 	<!-- builds all examples -->
-	<target name="build_examples" depends="example_advanced_audio_player,example_delay_effect,example_goertzel_algorithm,example_oscilloscope,example_percussion_detector,example_pitch_detector,example_spectrogram,example_sound_detector,example_time_stretch,example_utter_asterisk,example_feature_extractor,example_synthesis" />
+	<target name="build_examples" depends="example_advanced_audio_player,example_delay_effect,example_goertzel_algorithm,example_oscilloscope,example_percussion_detector,example_pitch_detector,example_spectrogram,example_sound_detector,example_time_stretch,example_utter_asterisk,example_feature_extractor,example_synthesis,example_pitch_shift" />
 
 	<!-- builds a release: all examples, documentation and library in the correct folders-->
-	<target name="release" depends="javadoc,tarsos_dsp_library,example_advanced_audio_player,example_delay_effect,example_goertzel_algorithm,example_oscilloscope,example_percussion_detector,example_pitch_detector,example_spectrogram,example_sound_detector,example_time_stretch,example_utter_asterisk,example_feature_extractor,example_synthesis">
+	<target name="release" depends="javadoc,tarsos_dsp_library,example_advanced_audio_player,example_delay_effect,example_goertzel_algorithm,example_oscilloscope,example_percussion_detector,example_pitch_detector,example_spectrogram,example_sound_detector,example_time_stretch,example_utter_asterisk,example_feature_extractor,example_synthesis,example_pitch_shift">
 
 		<copy todir="TarsosDSP-${version}-Documentation">
 			<fileset dir="../doc" />
@@ -171,6 +171,36 @@
 		<jar destfile="Delay-${version}.jar" filesetmanifest="mergewithoutmain">
 			<manifest>
 				<attribute name="Main-Class" value="be.hogent.tarsos.dsp.example.Delay" />
+				<attribute name="Class-Path" value="." />
+
+				<!-- Standard manifest attributes -->
+				<attribute name="Implementation-Version" value="${version}-${DSTAMP}" />
+				<attribute name="Built-By" value="${built_by}" />
+				<attribute name="Created-By" value="${built_by}" />
+				<attribute name="Built-Date" value="${TODAY}" />
+			</manifest>
+
+			<!-- exclude wav and test files -->
+			<fileset dir="../bin">
+				<exclude name="**/*.wav" />
+				<exclude name="**/test/**" />
+			</fileset>
+
+			<!-- include source files -->
+			<fileset dir="../src">
+				<include name="**/*.java" />
+			</fileset>
+			<fileset dir="../examples">
+				<exclude name="**/*.wav" />
+				<include name="**/*.java" />
+			</fileset>
+		</jar>
+	</target>
+	
+	<target name="example_pitch_shift" depends="compile">
+		<jar destfile="PitchShift-${version}.jar" filesetmanifest="mergewithoutmain">
+			<manifest>
+				<attribute name="Main-Class" value="be.hogent.tarsos.dsp.example.PitchShiftingExample" />
 				<attribute name="Class-Path" value="." />
 
 				<!-- Standard manifest attributes -->
