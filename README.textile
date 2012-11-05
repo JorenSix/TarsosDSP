@@ -35,7 +35,7 @@ The source tree is divided in three directories:
 
 h3. TarsosDSP Example Applications
 
-TarsosDSP contains some ready made example applications. Most have a Java Swing user interface. They show which functionality is present in the library and how to use it. 
+TarsosDSP contains some ready made example applications. Most have a Java Swing user interface. They show which functionality is present in the library and how to use it.
 
 * "SoundDetector":http://tarsos.0110.be/artikels/lees/TarsosDSP%253A_a_small_JAVA_audio_processing_library show how you loudness calculations can be done. When input sound is over a defined limit an event is fired.
 * "PitchDetector":http://tarsos.0110.be/artikels/lees/TarsosDSP%253A_a_small_JAVA_audio_processing_library this demo application shows real-time pitch detection. When pitch is detected the hertz value is printed together with a probability.
@@ -46,6 +46,7 @@ TarsosDSP contains some ready made example applications. Most have a Java Swing 
 * "Audio Time Stretching - Implementation in Pure Java Using WSOLA":http://tarsos.0110.be/artikels/lees/Audio_Time_Stretching_-_Implementation_in_Pure_Java_Using_WSOLA an implementation of a time stretching algorithm. WSOLA(Waveform Similarity Overlap Add) makes it possible to change the play back speed of audio without changing the pitch. The play back speed can be changed at any moment, even when there is audio playing.
 * "Audio Feature Extraction":http://tarsos.0110.be/releases/TarsosDSP/TarsosDSP-1.3/TarsosDSP-1.3-Examples/FeatureExtractor-1.3.jar a command line application to do simple feature extraction.
 * "Audio Synthesis":http://tarsos.0110.be/releases/TarsosDSP/TarsosDSP-1.3/TarsosDSP-1.3-Examples/Synthesis-1.3.jar a command line application to do simple audio synthesis.
+* "Pitch Shifting":http://tarsos.0110.be/artikels/lees/Pitch_Shifting_-_Implementation_in_Pure_Java_with_Resampling_and_Time_Stretsching an example application that does pitch shifting, either in real-time on a microphone input, or on recorded audio. Also included is a command line application to do pitch shifting. 
 
 h2. Credits
 
@@ -66,7 +67,7 @@ The audio time stretching algorithm is described in "An Overlap-Add Technique Ba
 
 The FFT implementation used within TarsosDSP is by __Piotr Wendykier__ and is included in his "JTransforms library":https://sites.google.com/site/piotrwendykier/software/jtransforms. JTransforms is the first, open source, multithreaded FFT library written in pure Java. 
 
-The sample rate conversion feature is implemented by __Laszlo systems__ in the "libresample4j":https://github.com/dnault-laszlo/libresample4j library. 
+The sample rate conversion feature is implemented by __Laszlo systems__ in the "libresample4j":https://github.com/dnault-laszlo/libresample4j library. libresample4j is a Java port of Dominic Mazzoni's libresample 0.1.3, which is in turn based on "Julius Smith's Resample 1.7 library":http://www-ccrma.stanford.edu/~jos/resample/.
 
 h2. Changelog
 
@@ -87,5 +88,5 @@ It has a new audio feature extraction feature, implemented in the FeatureExtract
 Added ASCII-art to the source code (this is the main TarsosDSP 1.3 feature). 
 
 <dt>Version 1.4</dt><dd>2012-10-31</dd>
-Included a resample feature, implemented by libresample4j. Together with the WSOLA implementation, it can be used for pitch shifting. A pitch shifting example is added in the 1.4 version of the TarsosDSP library as well. 
+Included a resample feature, implemented by libresample4j. Together with the WSOLA implementation, it can be used for pitch shifting (similar to Phase Vocoding). A pitch shifting example (both with a CLI and a UI) is added in the 1.4 version of the TarsosDSP library as well. 
 

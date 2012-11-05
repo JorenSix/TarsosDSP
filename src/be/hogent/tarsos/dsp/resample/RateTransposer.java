@@ -44,7 +44,7 @@ public class RateTransposer implements AudioProcessor {
 		float[] src = audioEvent.getFloatBuffer();
 		//Creation of float array in loop could be prevented if src.length is known beforehand...
 		//Possible optimization is to instantiate it outside the loop and get a pointer to the 
-		//array in the process (this) method.
+		//array here, in the process method method.
 		float[] out = new float[(int) (src.length * factor)];
 		r.process(factor, src, 0, src.length, false, out, 0, out.length);
 		//The size of the output buffer changes (according to factor). 

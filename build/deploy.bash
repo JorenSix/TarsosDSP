@@ -34,14 +34,23 @@ scp -r TarsosDSP-* joren@0110.be:$deploy_location
 filename=$(basename TarsosDSP-*-bin.jar)
 version=${filename:10:3}
 
-deploy_dir="/var/www/be.0110/current/public/releases/TarsosDSP/"
-deploy_location=$deploy_dir"TarsosDSP-$version/"
+deploy_dir="/var/www/be.0110/current/public/releases/TarsosDSP"
+deploy_location=$deploy_dir/TarsosDSP-$version
 
-ssh joren@0110.be rm -R $deploy_dir"TarsosDSP-latest"
-ssh joren@0110.be mkdir $deploy_dir"TarsosDSP-latest"
-ssh joren@0110.be ln -s -f $deploy_location/TarsosDSP-$version.jar $deploy_dir"TarsosDSP-latest/TarsosDSP-latest.jar"
-ssh joren@0110.be ln -s -f $deploy_location/TarsosDSP-$version-bin.jar $deploy_dir"TarsosDSP-latest/TarsosDSP-latest-bin.jar"
-ssh joren@0110.be ln -s -f $deploy_location/TarsosDSP-$version-Manual.pdf $deploy_dir"TarsosDSP-latest/TarsosDSP-latest-Manual.pdf"
-ssh joren@0110.be ln -s -f $deploy_location/TarsosDSP-$version-Documentation $deploy_dir"TarsosDSP-latest/TarsosDSP-latest-Documentation"
-ssh joren@0110.be ln -s -f $deploy_location/TarsosDSP-$version-Examples $deploy_dir"TarsosDSP-latest/TarsosDSP-latest-Examples"
-ssh joren@0110.be ln -s -f $deploy_location/TarsosDSP-$version-Readme.html $deploy_dir"TarsosDSP-latest/TarsosDSP-latest-Readme.html"
+ssh joren@0110.be rm -R $deploy_dir/TarsosDSP-latest
+ssh joren@0110.be mkdir $deploy_dir/TarsosDSP-latest
+ssh joren@0110.be ln -s -f $deploy_location/TarsosDSP-$version.jar $deploy_dir/TarsosDSP-latest/TarsosDSP-latest.jar
+ssh joren@0110.be ln -s -f $deploy_location/TarsosDSP-$version-bin.jar $deploy_dir/TarsosDSP-latest/TarsosDSP-latest-bin.jar
+ssh joren@0110.be ln -s -f $deploy_location/TarsosDSP-$version-Manual.pdf $deploy_dir/TarsosDSP-latest/TarsosDSP-latest-Manual.pdf
+ssh joren@0110.be ln -s -f $deploy_location/TarsosDSP-$version-Documentation $deploy_dir/TarsosDSP-latest/TarsosDSP-latest-Documentation
+ssh joren@0110.be ln -s -f $deploy_location/TarsosDSP-$version-Readme.html $deploy_dir/TarsosDSP-latest/TarsosDSP-latest-Readme.html
+
+ssh joren@0110.be mkdir $deploy_dir/TarsosDSP-latest/TarsosDSP-latest-Examples 
+
+for f in TarsosDSP-$version-Examples/*.jar
+do 
+	name=`basename $f`
+	new_name=${name/1.4/latest}
+	ssh joren@0110.be ln -s -f $deploy_location/TarsosDSP-$version-Examples/$name  $deploy_dir/TarsosDSP-latest/TarsosDSP-latest-Examples/$new_name
+done
+
