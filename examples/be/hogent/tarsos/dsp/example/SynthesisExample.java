@@ -9,13 +9,18 @@
 * -----------------------------------------------------------
 *
 *  TarsosDSP is developed by Joren Six at 
-*  The Royal Academy of Fine Arts & Royal Conservatory,
+*  The School of Arts,
 *  University College Ghent,
 *  Hoogpoort 64, 9000 Ghent - Belgium
 *  
-*  http://tarsos.0110.be/tag/TarsosDSP
-*  https://github.com/JorenSix/TarsosDSP
-*  http://tarsos.0110.be/releases/TarsosDSP/
+* -----------------------------------------------------------
+*
+*  Info: http://tarsos.0110.be/tag/TarsosDSP
+*  Github: https://github.com/JorenSix/TarsosDSP
+*  Releases: http://tarsos.0110.be/releases/TarsosDSP/
+*  
+*  TarsosDSP includes modified source code by various authors,
+*  for credits and info, see README.
 * 
 */
 package be.hogent.tarsos.dsp.example;
