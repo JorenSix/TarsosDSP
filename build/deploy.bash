@@ -1,7 +1,7 @@
 #!/bin/bash
 
-#manual_location="/home/joren/workspace/TarsosTex/sound_and_java.pdf"
-manual_location="/Users/joren/Documents/workspace/TarsosTex/sound_and_java.pdf"
+manual_location="../../TarsosTex/sound_and_java.pdf"
+#manual_location="/Users/joren/Documents/workspace/TarsosTex/sound_and_java.pdf"
 
 #Remove old releases
 rm -R TarsosDSP-*
