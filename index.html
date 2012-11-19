@@ -1,3 +1,37 @@
+<!DOCTYPE html>
+<html>
+
+  <head>
+    <meta charset='utf-8' />
+    <meta http-equiv="X-UA-Compatible" content="chrome=1" />
+    <meta name="description" content="TarsosDSP : A set of audio signal processing algorithms in JAVA." />
+
+    <link rel="stylesheet" type="text/css" media="screen" href="stylesheets/stylesheet.css">
+
+    <title>TarsosDSP</title>
+  </head>
+
+  <body>
+
+    <!-- HEADER -->
+    <div id="header_wrap" class="outer">
+        <header class="inner">
+          <a id="forkme_banner" href="https://github.com/JorenSix/TarsosDSP">View on GitHub</a>
+
+          <h1 id="project_title">TarsosDSP</h1>
+          <h2 id="project_tagline">A set of audio signal processing algorithms in JAVA.</h2>
+
+            <section id="downloads">
+              <a class="zip_download_link" href="https://github.com/JorenSix/TarsosDSP/zipball/master">Download this project as a .zip file</a>
+              <a class="tar_download_link" href="https://github.com/JorenSix/TarsosDSP/tarball/master">Download this project as a tar.gz file</a>
+            </section>
+        </header>
+    </div>
+
+    <!-- MAIN CONTENT -->
+    <div id="main_content_wrap" class="outer">
+      <section id="main_content" class="inner">
+
 <h1>TarsosDSP</h1>
 <p>TarsosDSP is a collection of classes to do simple audio processing. It features an implementation of a percussion onset detector and three pitch detection algorithms: <span class="caps">YIN</span>, the Mcleod Pitch method and a &#8220;Dynamic Wavelet Algorithm Pitch Tracking&#8221; algorithm. Also included is a Goertzel <acronym title="Dual tone multi frequency"><span class="caps">DTMF</span></acronym> decoding algorithm and a time stretch algorithm (<span class="caps">WSOLA</span>).</p>
 <p>Its aim is to provide a simple interface to some audio (signal) processing algorithms implemented in pure <span class="caps">JAVA</span>, without any external dependencies. Some <a href="http://tarsos.0110.be/tag/TarsosDSP">TarsosDSP example applications</a> are available. Head over to the <a href="http://tarsos.0110.be/releases/TarsosDSP/">TarosDSP release directory</a> for freshly baked binaries.</p>
@@ -38,7 +72,6 @@ When everything runs correctly you should be able to run all example application
 	<li><a href="http://tarsos.0110.be/artikels/lees/Audio_Time_Stretching_-_Implementation_in_Pure_Java_Using_WSOLA">Audio Time Stretching &#8211; Implementation in Pure Java Using <span class="caps">WSOLA</span></a> an implementation of a time stretching algorithm. <acronym title="Waveform Similarity Overlap Add"><span class="caps">WSOLA</span></acronym> makes it possible to change the play back speed of audio without changing the pitch. The play back speed can be changed at any moment, even when there is audio playing.</li>
 	<li><a href="http://tarsos.0110.be/releases/TarsosDSP/TarsosDSP-1.3/TarsosDSP-1.3-Examples/FeatureExtractor-1.3.jar">Audio Feature Extraction</a> a command line application to do simple feature extraction.</li>
 	<li><a href="http://tarsos.0110.be/releases/TarsosDSP/TarsosDSP-1.3/TarsosDSP-1.3-Examples/Synthesis-1.3.jar">Audio Synthesis</a> a command line application to do simple audio synthesis.</li>
-	<li><a href="http://tarsos.0110.be/artikels/lees/Pitch_Shifting_-_Implementation_in_Pure_Java_with_Resampling_and_Time_Stretsching">Pitch Shifting</a> an example application that does pitch shifting, either in real-time on a microphone input, or on recorded audio. Also included is a command line application to do pitch shifting.</li>
 </ul>
 <h2>Credits</h2>
 <p><a href="http://tarsos.0110.be">Tarsos</a> and <a href="http://tarsos.0110.be/tag/TarsosDSP">TarsosDSP</a> are developed at University College Ghent, Faculty of Music<br />
@@ -50,7 +83,6 @@ When everything runs correctly you should be able to run all example application
 <p>The Dynamic Wavlet pitch estimation algorithm is described in <a href="http://online.physics.uiuc.edu/courses/phys193/NSF_REU_Reports/2005_reu/Real-Time_Time-Domain_Pitch_Tracking_Using_Wavelets.pdf">Real-Time Time-Domain Pitch Tracking Using Wavelets</a> by Eric Larson and Ross Maddox. The implementation within TarsosDSP is based on the implementation in the <a href="http://www.schmittmachine.com/dywapitchtrack.html">Dynamic Wavelet Algorithm Pitch Tracking library</a> by <i>Antoine Schmitt</i>, which is released under the <span class="caps">MIT</span> open source licence.</p>
 <p>The audio time stretching algorithm is described in <a href="http://mir.cs.nthu.edu.tw/users/litbee/RelatedPaper/[WSOLA]An%20overlap-add%20technique%20based%20on%20waveform%20similarity%20(WSOLA)%20for%20high-quality%20time-scale%20modifications%20of%20speech.pdf">An Overlap-Add Technique Based on Waveform Similarity  (<span class="caps">WSOLA</span>) For Hight Quality Time-Scale Modifications of speech</a> by Werner Verhelst and Marc Roelands. As a reference implementation the <span class="caps">WSOLA</span> implementation by <i>Olli Parviainen</i> in the <a href="http://www.surina.net/soundtouch/">SoundTouch &#8211; an open-source audio processing library</a> was used.</p>
 <p>The <span class="caps">FFT</span> implementation used within TarsosDSP is by <i>Piotr Wendykier</i> and is included in his <a href="https://sites.google.com/site/piotrwendykier/software/jtransforms">JTransforms library</a>. JTransforms is the first, open source, multithreaded <span class="caps">FFT</span> library written in pure Java.</p>
-<p>The sample rate conversion feature is implemented by <i>Laszlo systems</i> in the <a href="https://github.com/dnault-laszlo/libresample4j">libresample4j</a> library. libresample4j is a Java port of Dominic Mazzoni&#8217;s libresample 0.1.3, which is in turn based on <a href="http://www-ccrma.stanford.edu/~jos/resample/">Julius Smith&#8217;s Resample 1.7 library</a>.</p>
 <h2>Changelog</h2>
 <dt>Version 1.0</dt><dd>2012-04-24</dd> <p>First release which includes several pitch trackers and a time stretching algorithm, amongst other things. Downloads and javadoc <span class="caps">API</span> can be found at the <a href="http://tarsos.0110.be/releases/TarsosDSP/">TarsosDSP release directory</a></p>
 <dt>Version 1.1</dt><dd>2012-06-4</dd> 
@@ -63,6 +95,16 @@ Added an implementation of an envelope follower or envelope detector.</p>
 <dt>Version 1.3</dt><dd>2012-09-19</dd> 
 <p>TarsosDSP can do audio synthesis now. The first simple unit generators are included in the library.<br />
 It has a new audio feature extraction feature, implemented in the FeatureExtractor example. <br />
-Added <span class="caps">ASCII</span>-art to the source code (this is the main TarsosDSP 1.3 feature).</p>
-<dt>Version 1.4</dt><dd>2012-10-31</dd>
-<p>Included a resample feature, implemented by libresample4j. Together with the <span class="caps">WSOLA</span> implementation, it can be used for pitch shifting (similar to Phase Vocoding). A pitch shifting example (both with a <span class="caps">CLI</span> and a UI) is added in the 1.4 version of the TarsosDSP library as well.</p>
+Added <span class="caps">ASCII</span>-art to the source code (this is the main TarsosDSP 1.3 feature).</p>      </section>
+    </div>
+
+    <!-- FOOTER  -->
+    <div id="footer_wrap" class="outer">
+      <footer class="inner">
+        <p class="copyright">TarsosDSP maintained by <a href="https://github.com/JorenSix">JorenSix</a></p>
+        <p>Published with <a href="http://pages.github.com">GitHub Pages</a></p>
+      </footer>
+    </div>
+  </body>
+</html>
+
