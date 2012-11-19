@@ -10,9 +10,9 @@ version=${filename:10:3}
 git fetch origin
 git checkout gh-pages
 
-cat build/header.html > index.html
+cat header.html > index.html
 cat build/TarsosDSP-$version-Readme.html >> index.html
-cat build/footer.html >> index.html
+cat footer.html >> index.html
 
 git add index.html
 git commit -m "Updated index html file."
