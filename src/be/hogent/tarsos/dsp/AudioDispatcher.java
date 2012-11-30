@@ -37,6 +37,9 @@ import java.util.logging.Logger;
 import javax.sound.sampled.AudioFormat;
 import javax.sound.sampled.AudioInputStream;
 import javax.sound.sampled.AudioSystem;
+import javax.sound.sampled.DataLine;
+import javax.sound.sampled.LineUnavailableException;
+import javax.sound.sampled.TargetDataLine;
 import javax.sound.sampled.UnsupportedAudioFileException;
 
 import be.hogent.tarsos.dsp.util.AudioFloatConverter;
@@ -454,6 +457,29 @@ public final class AudioDispatcher implements Runnable {
 		final ByteArrayInputStream bais = new ByteArrayInputStream(byteArray);
 		final long length = byteArray.length / audioFormat.getFrameSize();
 		final AudioInputStream stream = new AudioInputStream(bais, audioFormat, length);
+		return new AudioDispatcher(stream, audioBufferSize, bufferOverlap);
+	}
+	
+	/**
+	 * Create a new AudioDispatcher connected to the default microphone. The default is defined by the 
+	 * Java runtime by calling <pre>AudioSystem.getTargetDataLine(format)</pre>. 
+	 * The microphone must support the format: 44100Hz sample rate, 16bits mono, signed big endian.   
+	 * @param audioBufferSize
+	 *            The size of the buffer defines how much samples are processed
+	 *            in one step. Common values are 1024,2048.
+	 * @param bufferOverlap
+	 *            How much consecutive buffers overlap (in samples). Half of the
+	 *            AudioBufferSize is common.
+	 * @return
+	 * @throws UnsupportedAudioFileException
+	 * @throws LineUnavailableException
+	 */
+	public static AudioDispatcher fromDefaultMicrophone(final int audioBufferSize, final int bufferOverlap) throws UnsupportedAudioFileException, LineUnavailableException {
+		final AudioFormat format = new AudioFormat(44100, 16, 1, true,true);
+		TargetDataLine line =  AudioSystem.getTargetDataLine(format);
+		line.open(format, audioBufferSize);
+		line.start();
+		AudioInputStream stream = new AudioInputStream(line);
 		return new AudioDispatcher(stream, audioBufferSize, bufferOverlap);
 	}
 	

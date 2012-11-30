@@ -33,7 +33,7 @@ package be.hogent.tarsos.dsp;
  */
 public class StopAudioProcessor implements AudioProcessor {
 
-	private final double stopTime;
+	private double stopTime;
 	public StopAudioProcessor(double stopTime){
 		this.stopTime = stopTime;
 	}
@@ -46,5 +46,13 @@ public class StopAudioProcessor implements AudioProcessor {
 	@Override
 	public void processingFinished() {
 		
+	}
+
+	public double getStopAt() {
+		return stopTime;
+	}
+
+	public void setStopTime(double stopTime) {
+		this.stopTime = stopTime;		
 	}
 }
