@@ -220,7 +220,7 @@ public class PitchShiftingExample extends JFrame {
 		
 	}
 	
-	private static double centToFactor(double cents){
+	public static double centToFactor(double cents){
 		return 1 / Math.pow(Math.E,cents*Math.log(2)/1200/Math.log(Math.E)); 
 	}
 	private static double factorToCents(double factor){

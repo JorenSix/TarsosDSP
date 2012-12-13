@@ -50,7 +50,7 @@ ssh joren@0110.be mkdir $deploy_dir/TarsosDSP-latest/TarsosDSP-latest-Examples
 for f in TarsosDSP-$version-Examples/*.jar
 do 
 	name=`basename $f`
-	new_name=${name/1.4/latest}
+	new_name=${name/$version/latest}
 	ssh joren@0110.be ln -s -f $deploy_location/TarsosDSP-$version-Examples/$name  $deploy_dir/TarsosDSP-latest/TarsosDSP-latest-Examples/$new_name
 done
 
