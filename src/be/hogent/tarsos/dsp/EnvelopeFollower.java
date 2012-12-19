@@ -105,6 +105,11 @@ public class EnvelopeFollower implements AudioProcessor {
 	@Override
 	public boolean process(AudioEvent audioEvent) {
 		float[] buffer = audioEvent.getFloatBuffer();
+		calculateEnvelope(buffer);
+		return true;
+	}
+	
+	public void calculateEnvelope(float[] buffer){
 		for(int i = 0 ; i < buffer.length ; i++){
 			float envelopeIn = Math.abs(buffer[i]);
 			if(envelopeOut < envelopeIn){
@@ -114,7 +119,6 @@ public class EnvelopeFollower implements AudioProcessor {
 			}
 			buffer[i] = envelopeOut;
 		}
-		return true;
 	}
 
 	@Override
