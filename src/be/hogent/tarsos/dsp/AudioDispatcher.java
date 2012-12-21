@@ -37,7 +37,6 @@ import java.util.logging.Logger;
 import javax.sound.sampled.AudioFormat;
 import javax.sound.sampled.AudioInputStream;
 import javax.sound.sampled.AudioSystem;
-import javax.sound.sampled.DataLine;
 import javax.sound.sampled.LineUnavailableException;
 import javax.sound.sampled.TargetDataLine;
 import javax.sound.sampled.UnsupportedAudioFileException;
@@ -470,7 +469,7 @@ public final class AudioDispatcher implements Runnable {
 	 * @param bufferOverlap
 	 *            How much consecutive buffers overlap (in samples). Half of the
 	 *            AudioBufferSize is common.
-	 * @return
+	 * @return An audio dispatcher connected to the default microphone.
 	 * @throws UnsupportedAudioFileException
 	 * @throws LineUnavailableException
 	 */
