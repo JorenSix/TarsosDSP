@@ -196,7 +196,7 @@
 			</fileset>
 		</jar>
 	</target>
-	
+
 	<target name="example_pitch_shift" depends="compile">
 		<jar destfile="PitchShift-${version}.jar" filesetmanifest="mergewithoutmain">
 			<manifest>
@@ -308,6 +308,7 @@
 			<!-- include class files -->
 			<fileset dir="../bin">
 				<exclude name="**/test/**" />
+				<exclude name="be/hogent/tarsos/dsp/example/catify/resources/*" />
 			</fileset>
 
 
@@ -507,121 +508,122 @@
 			</fileset>
 		</jar>
 	</target>
-	
+
 	<target name="example_synthesis" depends="compile">
-			<jar destfile="Synthesis-${version}.jar" filesetmanifest="mergewithoutmain">
-				<manifest>
-					<attribute name="Main-Class" value="be.hogent.tarsos.dsp.example.SynthesisExample" />
-					<attribute name="Class-Path" value="." />
+		<jar destfile="Synthesis-${version}.jar" filesetmanifest="mergewithoutmain">
+			<manifest>
+				<attribute name="Main-Class" value="be.hogent.tarsos.dsp.example.SynthesisExample" />
+				<attribute name="Class-Path" value="." />
 
-					<!-- Standard manifest attributes -->
-					<attribute name="Implementation-Version" value="${version}-${DSTAMP}" />
-					<attribute name="Built-By" value="${built_by}" />
-					<attribute name="Created-By" value="${built_by}" />
-					<attribute name="Built-Date" value="${TODAY}" />
-				</manifest>
+				<!-- Standard manifest attributes -->
+				<attribute name="Implementation-Version" value="${version}-${DSTAMP}" />
+				<attribute name="Built-By" value="${built_by}" />
+				<attribute name="Created-By" value="${built_by}" />
+				<attribute name="Built-Date" value="${TODAY}" />
+			</manifest>
 
-				<!-- include class files -->
-				<fileset dir="../bin">
-					<exclude name="**/*.wav" />
-					<exclude name="**/test/**" />
-				</fileset>
+			<!-- include class files -->
+			<fileset dir="../bin">
+				<exclude name="**/*.wav" />
+				<exclude name="**/test/**" />
+			</fileset>
 
-				<!-- include source files -->
-				<fileset dir="../src">
-					<include name="**/*.java" />
-				</fileset>
-				<fileset dir="../examples">
-					<exclude name="**/*.wav" />
-					<include name="**/*.java" />
-				</fileset>
-			</jar>
-		</target>
-	
+			<!-- include source files -->
+			<fileset dir="../src">
+				<include name="**/*.java" />
+			</fileset>
+			<fileset dir="../examples">
+				<exclude name="**/*.wav" />
+				<include name="**/*.java" />
+			</fileset>
+		</jar>
+	</target>
+
 	<target name="example_sample_extractor" depends="compile">
-			<jar destfile="SampleExtractor-${version}.jar" filesetmanifest="mergewithoutmain">
-				<manifest>
-					<attribute name="Main-Class" value="be.hogent.tarsos.dsp.example.SampleExtractor" />
-					<attribute name="Class-Path" value="." />
+		<jar destfile="SampleExtractor-${version}.jar" filesetmanifest="mergewithoutmain">
+			<manifest>
+				<attribute name="Main-Class" value="be.hogent.tarsos.dsp.example.SampleExtractor" />
+				<attribute name="Class-Path" value="." />
 
-					<!-- Standard manifest attributes -->
-					<attribute name="Implementation-Version" value="${version}-${DSTAMP}" />
-					<attribute name="Built-By" value="${built_by}" />
-					<attribute name="Created-By" value="${built_by}" />
-					<attribute name="Built-Date" value="${TODAY}" />
-				</manifest>
+				<!-- Standard manifest attributes -->
+				<attribute name="Implementation-Version" value="${version}-${DSTAMP}" />
+				<attribute name="Built-By" value="${built_by}" />
+				<attribute name="Created-By" value="${built_by}" />
+				<attribute name="Built-Date" value="${TODAY}" />
+			</manifest>
 
-				<!-- exclude wav and test files -->
-				<fileset dir="../bin">
-					<exclude name="**/3*.wav" />
-					<exclude name="**/5*.wav" />
-					<exclude name="**/h*.wav" />
-					<exclude name="**/test/**" />
-				</fileset>
+			<!-- exclude wav and test files -->
+			<fileset dir="../bin">
+				<exclude name="be/hogent/tarsos/dsp/example/catify/resources/*" />
+				<exclude name="**/3*.wav" />
+				<exclude name="**/5*.wav" />
+				<exclude name="**/h*.wav" />
+				<exclude name="**/test/**" />
+			</fileset>
 
-				<!-- include source files -->
-				<fileset dir="../src">
-					<include name="**/*.java" />
-				</fileset>
-				<fileset dir="../examples">
-					<exclude name="**/*.wav" />
-					<include name="**/*.java" />
-				</fileset>
-			</jar>
-		</target>
-	
-		<target name="example_resynthesizer" depends="compile">
-				<jar destfile="Resynthesizer-${version}.jar" filesetmanifest="mergewithoutmain">
-					<manifest>
-						<attribute name="Main-Class" value="be.hogent.tarsos.dsp.example.Resynthesizer" />
-						<attribute name="Class-Path" value="." />
+			<!-- include source files -->
+			<fileset dir="../src">
+				<include name="**/*.java" />
+			</fileset>
+			<fileset dir="../examples">
+				<exclude name="**/*.wav" />
+				<include name="**/*.java" />
+			</fileset>
+		</jar>
+	</target>
 
-						<!-- Standard manifest attributes -->
-						<attribute name="Implementation-Version" value="${version}-${DSTAMP}" />
-						<attribute name="Built-By" value="${built_by}" />
-						<attribute name="Created-By" value="${built_by}" />
-						<attribute name="Built-Date" value="${TODAY}" />
-					</manifest>
+	<target name="example_resynthesizer" depends="compile">
+		<jar destfile="Resynthesizer-${version}.jar" filesetmanifest="mergewithoutmain">
+			<manifest>
+				<attribute name="Main-Class" value="be.hogent.tarsos.dsp.example.Resynthesizer" />
+				<attribute name="Class-Path" value="." />
 
-					<!-- include class files -->
-					<fileset dir="../bin">
-						<exclude name="**/*.wav" />
-						<exclude name="**/test/**" />
-					</fileset>
+				<!-- Standard manifest attributes -->
+				<attribute name="Implementation-Version" value="${version}-${DSTAMP}" />
+				<attribute name="Built-By" value="${built_by}" />
+				<attribute name="Created-By" value="${built_by}" />
+				<attribute name="Built-Date" value="${TODAY}" />
+			</manifest>
 
-					<!-- include source files -->
-					<fileset dir="../src">
-						<include name="**/*.java" />
-					</fileset>
-					<fileset dir="../examples">
-						<exclude name="**/*.wav" />
-						<include name="**/*.java" />
-					</fileset>
-				</jar>
-			</target>
+			<!-- include class files -->
+			<fileset dir="../bin">
+				<exclude name="**/*.wav" />
+				<exclude name="**/test/**" />
+			</fileset>
+
+			<!-- include source files -->
+			<fileset dir="../src">
+				<include name="**/*.java" />
+			</fileset>
+			<fileset dir="../examples">
+				<exclude name="**/*.wav" />
+				<include name="**/*.java" />
+			</fileset>
+		</jar>
+	</target>
 	<target name="example_catify" depends="compile">
-					<jar destfile="Catify-${version}.jar" filesetmanifest="mergewithoutmain">
-						<manifest>
-							<attribute name="Main-Class" value="be.hogent.tarsos.dsp.example.catify.Catify" />
-							<attribute name="Class-Path" value="." />
+		<jar destfile="Catify-${version}.jar" filesetmanifest="mergewithoutmain">
+			<manifest>
+				<attribute name="Main-Class" value="be.hogent.tarsos.dsp.example.catify.Catify" />
+				<attribute name="Class-Path" value="." />
 
-							<!-- Standard manifest attributes -->
-							<attribute name="Implementation-Version" value="${version}-${DSTAMP}" />
-							<attribute name="Built-By" value="${built_by}" />
-							<attribute name="Created-By" value="${built_by}" />
-							<attribute name="Built-Date" value="${TODAY}" />
-						</manifest>
+				<!-- Standard manifest attributes -->
+				<attribute name="Implementation-Version" value="${version}-${DSTAMP}" />
+				<attribute name="Built-By" value="${built_by}" />
+				<attribute name="Created-By" value="${built_by}" />
+				<attribute name="Built-Date" value="${TODAY}" />
+			</manifest>
 
-						<!-- include class files -->
-						<fileset dir="../bin">
-							<exclude name="**/*.wav" />
-							<exclude name="**/test/**" />
-						</fileset>
+			<!-- include class files -->
+			<fileset dir="../bin">
+				<exclude name="be/hogent/tarsos/dsp/example/resources/*.wav" />
+				<exclude name="**/test/**" />
+			</fileset>
 
-						<!-- include source files -->
-						<fileset dir="../src">
-							<include name="**/*.java" />
-						</fileset>
-					</jar>
-				</target>	
+			<!-- include source files -->
+			<fileset dir="../src">
+				<include name="**/*.java" />
+			</fileset>
+		</jar>
+	</target>
 </project>
