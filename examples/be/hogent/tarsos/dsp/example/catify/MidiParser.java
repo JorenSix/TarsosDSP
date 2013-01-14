@@ -47,8 +47,7 @@ public class MidiParser {
 				double time = (msb4 + (((currentTempo / seq.getResolution()) / 1000) * (tick - tickOfTempoChange)));
 				int stop = (int) (time + 0.5);
 				int midiNote = ((int) nextEvent.getMessage().getMessage()[1] & 0xFF);
-				//System.out.println("track=" + currentTrack + " tick=" + tick + " time=" + stop + "ms " + " note " + midiNote 	+ " off");
-				
+					
 				MidiNoteInfo midiNoteInfo = null;
 				for(MidiNoteInfo s : temporaryMidiNotes){
 					if(s.getMidiNote()==midiNote){
@@ -68,10 +67,7 @@ public class MidiParser {
 				int midiNote = ((int) nextEvent.getMessage().getMessage()[1] & 0xFF);
 				int velocity = ((int) nextEvent.getMessage().getMessage()[2] & 0xFF);
 				
-				System.out.println("track=" + currentTrack + " tick=" + tick
-						+ " time=" + start  + "ms " + " note "
-						+ midiNote
-						+ " on" + " velocity " + velocity);
+				//System.out.println("track=" + currentTrack + " tick=" + tick + " time=" + start  + "ms " + " note " + midiNote + " on" + " velocity " + velocity);
 				temporaryMidiNotes.add(new MidiNoteInfo(start,midiNote, velocity));
 			} else if (changeTemp(nextEvent)) {
 				String a = (Integer.toHexString((int) nextEvent.getMessage()

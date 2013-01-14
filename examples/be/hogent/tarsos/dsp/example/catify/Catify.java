@@ -4,6 +4,7 @@ import java.io.ByteArrayInputStream;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
+import java.io.FilenameFilter;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
@@ -37,18 +38,26 @@ public class Catify {
 		try {
 			if (args.length == 0) {
 				final String tempDir = System.getProperty("java.io.tmpdir");
-				String path = new File(tempDir, "jingle_bells.mid")
-						.getAbsolutePath();
+				String path = new File(tempDir, "jingle_bells.mid").getAbsolutePath();
 				String resource = "/be/hogent/tarsos/dsp/example/catify/resources/jingle_bells.mid";
 				copyFileFromJar(resource, path);
-				Catify c = new Catify(new File(path), new File("out.wav"));
+				Catify c = new Catify(new File(path), new File("out.wav"),null);
 				c.catify();
 			} else if (args.length == 1) {
-				Catify c = new Catify(new File(args[0]), new File("out.wav"));
+				Catify c = new Catify(new File(args[0]), new File("out.wav"),null);
 				c.catify();
 			} else if (args.length == 2) {
-				Catify c = new Catify(new File(args[0]), new File(args[1]));
+				Catify c = new Catify(new File(args[0]), new File(args[1]),null);
 				c.catify();
+			}else if (args.length == 3) {
+				File dir = new File(args[2]);
+				if(dir.isDirectory()){
+					Catify c = new Catify(new File(args[0]), new File(args[1]),dir);
+					c.catify();
+				}else{
+					System.err.println("Third argument should be a directory containing wav files.");
+					new IllegalArgumentException("Third argument should be a directory containing wav files.");
+				}
 			}
 		} catch (Exception e) {
 			printDescription();
@@ -61,23 +70,29 @@ public class Catify {
 		System.err.println("\tTarsosDSP catify");
 		SharedCommandLineUtilities.printLine();
 		System.err.println("Synopsis:");
-		System.err.println("\tjava -jar catify-latest.jar input.mid output.wav");
+		System.err.println("\tjava -jar catify-latest.jar input.mid output.wav [dir]");
+		System.err.println("\t\tinput.mid\tA midi file to render with the audio samples.");
+		System.err.println("\t\toutput.wav\tA name of a wav file to render the midi to.");
+		System.err.println("\t\tdir\tAn optional directory with audio samples used to render the midi. By default a cat sample is used");
 		SharedCommandLineUtilities.printLine();
 		System.err.println("Description:");
-		System.err.println("\tCatifys the midi file defined in input.mid.");
+		System.err.println("\tCatifys the midi file defined in input.mid. It renders the midi with audio samples in either a directory or using a cat sample.");
 	}
 	
 	List<MidiNoteInfo> processedSamples;
-	public Catify(File midiFile,File outputFile) throws InvalidMidiDataException, IOException{
+	File sampleDirectory;
+	private ArrayList<CatSample> catSamples;
+	
+	public Catify(File midiFile,File outputFile,File sampleDirectory) throws InvalidMidiDataException, IOException{
 		MidiParser p = new MidiParser(midiFile);
 		processedSamples = p.generateNoteInfo();
+		this.sampleDirectory=sampleDirectory;
 	}
 	
 	public void catify() throws UnsupportedAudioFileException, IOException, LineUnavailableException{
 		Collections.sort(processedSamples);
 		int maxVelocity=0;
 		for(MidiNoteInfo s: processedSamples){
-			System.out.println(s.toString());
 			maxVelocity = Math.max(maxVelocity, s.getVelocity());
 		}
 		for(MidiNoteInfo s: processedSamples){
@@ -85,48 +100,35 @@ public class Catify {
 		}
 		buildSamples();
 		generateSound();
-		//ffmpegify();
 	}
 	
 	
+
 	
 	
-	public void ffmpegify(){
-		for(int i = 0 ; i < processedSamples.size() -1 ; i++){
-			MidiNoteInfo current = processedSamples.get(i);
-			MidiNoteInfo next = processedSamples.get(i+1);
-			if(current.getStart()==next.getStart()){
-				if(next.getDuration() > current.getDuration()){
-					processedSamples.remove(next);
-				}else{
-					processedSamples.remove(current);
-				}
-			}
-		}
-		System.out.println("*********");
-		for(int i = 0 ; i < processedSamples.size() -1 ; i++){
-			MidiNoteInfo current = processedSamples.get(i);
-			MidiNoteInfo next = processedSamples.get(i+1);
-			double duration = next.getStart() - current.getStart();
-			if(duration != 0){
-				System.out.println(String.format("[ -f vout_%.4f.mpg ] || ffmpeg -sameq  -t %.7f -i Miaauw.mpg -vcodec copy -an -y vout_%.4f.mpg", duration, duration,duration));
-				System.out.println(String.format("cat vout_%.4f.mpg >> out.mpg ", duration));
-			}
-		}
-		int i = processedSamples.size() -1;
-		MidiNoteInfo last = processedSamples.get(i);
-		System.out.println(String.format("[ -f vout_%.4f.mpg ] ||  ffmpeg -sameq  -t %.7f -i Miaauw.mpg -vcodec copy -an -y vout_%.4f.mpg", last.getDuration(), last.getDuration(),last.getDuration()));
-		System.out.println(String.format("cat vout_%.4f.mpg >> out.mpg ", last.getDuration()));
-	}
-	
-	private ArrayList<CatSample> catSamples;
 	public void buildSamples(){
 		catSamples = new ArrayList<CatSample>();
-		final String tempDir = System.getProperty("java.io.tmpdir");
-		String path = new File(tempDir,"4915__noisecollector__cat3_mod.wav").getAbsolutePath();
-		String resource = "/be/hogent/tarsos/dsp/example/catify/resources/4915__noisecollector__cat3_mod.wav";
-		copyFileFromJar(resource,path);
-		catSamples.add(new CatSample(new File(path)));
+		//default cat sample
+		if(sampleDirectory==null){
+			final String tempDir = System.getProperty("java.io.tmpdir");
+			String path = new File(tempDir,"4915__noisecollector__cat3_mod.wav").getAbsolutePath();
+			String resource = "/be/hogent/tarsos/dsp/example/catify/resources/4915__noisecollector__cat3_mod.wav";
+			copyFileFromJar(resource,path);
+			catSamples.add(new CatSample(new File(path)));
+		} else {
+			File[] samples = sampleDirectory.listFiles(new FilenameFilter() {
+				@Override
+				public boolean accept(File arg0, String arg1) {
+					return arg1.toLowerCase().endsWith(".wav");
+				}
+			});
+			if(samples.length==0){
+				System.err.println("No audio samples found!!!!\n\n");
+			}
+			for(File sample:samples){
+				catSamples.add(new CatSample(sample));	
+			}
+		}
 	}
 	
 	/**
@@ -151,9 +153,9 @@ public class Catify {
 			out.close();
 			inputStream.close();
 		} catch (final FileNotFoundException e) {
-			
+			System.err.println("File not foud: " +  e.getMessage());
 		} catch (final IOException e) {
-			
+			System.err.println("IO error: " + e.getMessage());
 		}
 	}
 	
