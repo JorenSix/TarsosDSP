@@ -51,8 +51,8 @@ import javax.swing.event.ChangeListener;
 
 import be.hogent.tarsos.dsp.AudioDispatcher;
 import be.hogent.tarsos.dsp.AudioPlayer;
-import be.hogent.tarsos.dsp.DelayEffect;
 import be.hogent.tarsos.dsp.GainProcessor;
+import be.hogent.tarsos.dsp.effects.DelayEffect;
 
 public class Delay extends JFrame {
 	

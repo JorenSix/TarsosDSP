@@ -101,7 +101,7 @@ public class AudioEvent {
 	
 	/**
 	 * Calculates and returns the time stamp at the beginning of this audio event.
-	 * @return The time stamp at the beginning of the event.
+	 * @return The time stamp at the beginning of the event in seconds.
 	 */
 	public double getTimeStamp(){
 		return bytesProcessed / format.getFrameSize() / format.getSampleRate();

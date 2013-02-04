@@ -30,7 +30,7 @@ import javax.sound.sampled.LineUnavailableException;
 
 import be.hogent.tarsos.dsp.AudioDispatcher;
 import be.hogent.tarsos.dsp.AudioPlayer;
-import be.hogent.tarsos.dsp.DelayEffect;
+import be.hogent.tarsos.dsp.effects.DelayEffect;
 import be.hogent.tarsos.dsp.filters.LowPassFS;
 import be.hogent.tarsos.dsp.synthesis.AmplitudeLFO;
 import be.hogent.tarsos.dsp.synthesis.NoiseGenerator;
