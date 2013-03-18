@@ -228,7 +228,7 @@ public class PercussionDetector extends JFrame implements PercussionHandler {
 		int bufferSize = 512;
 		int overlap = 0;
 		
-		textArea.append("Started listening with " + Shared.toLocalString(mixer.getMixerInfo().getName()) + "\n\tparams: " + sensitivity + "%, " + threshold + "dB\n");
+		textArea.append("Started listening with " + mixer.getMixerInfo().getName() + "\n\tparams: " + sensitivity + "%, " + threshold + "dB\n");
 
 		final AudioFormat format = new AudioFormat(sampleRate, 16, 1, true,
 				true);
