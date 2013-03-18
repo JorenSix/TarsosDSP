@@ -56,7 +56,7 @@ public class InputPanel extends JPanel {
 		ButtonGroup group = new ButtonGroup();
 		for(Mixer.Info info : Shared.getMixerInfo(false, true)){
 			JRadioButton button = new JRadioButton();
-			button.setText(info.toString());
+			button.setText(Shared.toLocalString(info));
 			buttonPanel.add(button);
 			group.add(button);
 			button.setActionCommand(info.toString());
@@ -75,6 +75,7 @@ public class InputPanel extends JPanel {
 					Mixer newValue = AudioSystem.getMixer(info);
 					InputPanel.this.firePropertyChange("mixer", mixer, newValue);
 					InputPanel.this.mixer = newValue;
+					break;
 				}
 			}
 		}

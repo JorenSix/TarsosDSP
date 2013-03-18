@@ -254,7 +254,7 @@ public class SoundDetector extends JFrame implements AudioProcessor {
 		int bufferSize = 512;
 		int overlap = 0;
 		
-		textArea.append("Started listening with " + mixer.getMixerInfo().getName() + "\n\tparams: " + threshold + "dB\n");
+		textArea.append("Started listening with " + Shared.toLocalString(mixer.getMixerInfo().getName()) + "\n\tparams: " + threshold + "dB\n");
 
 		final AudioFormat format = new AudioFormat(sampleRate, 16, 1, true,
 				true);
