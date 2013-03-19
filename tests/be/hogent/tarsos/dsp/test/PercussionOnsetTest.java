@@ -56,11 +56,11 @@ public class PercussionOnsetTest {
 		int index = 0;
 		int selectedMixerIndex = 3;
 		for(Mixer.Info mixer : AudioSystem.getMixerInfo()){
-			System.out.println(index + ": " + mixer.toString());
+			System.out.println(index + ": " + Shared.toLocalString(mixer));
 			index++;
 		}
 		Mixer.Info selectedMixer = AudioSystem.getMixerInfo()[selectedMixerIndex];
-		System.out.println("Selected mixer: " + selectedMixer.toString());
+		System.out.println("Selected mixer: " + Shared.toLocalString(selectedMixer));
 		
 		//open a line
 		final Mixer mixer = AudioSystem.getMixer(selectedMixer);		
