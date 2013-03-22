@@ -131,7 +131,7 @@ public class PitchDetectorExample extends JFrame implements PitchDetectionHandle
 		int bufferSize = 1024;
 		int overlap = 0;
 		
-		textArea.append("Started listening with " + mixer.getMixerInfo().getName() + "\n");
+		textArea.append("Started listening with " + Shared.toLocalString(mixer.getMixerInfo().getName()) + "\n");
 
 		final AudioFormat format = new AudioFormat(sampleRate, 16, 1, true,
 				true);
