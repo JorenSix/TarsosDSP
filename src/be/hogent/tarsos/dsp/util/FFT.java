@@ -26,9 +26,11 @@
 
 package be.hogent.tarsos.dsp.util;
 
+
 /**
  * Wrapper for calling a hopefully Fast Fourier transform. Makes it easy to
  * switch FFT algorithm with minimal overhead.
+ * Support for window functions is also present.
  * 
  * @author Joren Six
  */
@@ -38,12 +40,24 @@ public final class FFT {
 	 * Forward FFT.
 	 */
 	private final FloatFFT fft;
-
+	private final WindowFunction windowFunction;
 	private final int fftSize;
 
 	public FFT(final int size) {
+		this(size,null);
+	}
+	
+	/**
+	 * Create a new fft of the specified size. Apply the specified window on the samples before a forward transform. 
+	 * arning: the window is not applied in reverse when a backwards transform is requested.
+	 * @param size The size of the fft.
+	 * @param windowFunction Apply the specified window on the samples before a forward transform. 
+	 * arning: the window is not applied in reverse when a backwards transform is requested.
+	 */
+	public FFT(final int size, final WindowFunction windowFunction){
 		fft = new FloatFFT(size);
 		fftSize = size;
+		this.windowFunction = windowFunction;
 	}
 
 	/**
@@ -53,12 +67,15 @@ public final class FFT {
 	 *            data to transform.
 	 */
 	public void forwardTransform(final float[] data) {
+		if(windowFunction!=null){
+			windowFunction.apply(data);
+		}
 		fft.realForward(data);
 	}
 
 	/**
 	 * Computes inverse DFT.
-	 * 
+	 * Warning, does not reverse the window function.
 	 * @param data
 	 *            data to transform
 	 */

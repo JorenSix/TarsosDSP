@@ -142,7 +142,7 @@ class FilterKit {
      * @param Xp_index Current sample index
      * @param Ph Phase
      * @param Inc increment (1 for right wing or -1 for left)
-     * @return
+     * @return v.
      */
     public static float lrsFilterUp(float Imp[], float ImpD[], int Nwing, boolean Interp, float[] Xp_array, int Xp_index, double Ph,
             int Inc) {
@@ -210,7 +210,7 @@ class FilterKit {
      * @param Ph Phase
      * @param Inc increment (1 for right wing or -1 for left)
      * @param dhb filter sampling period
-     * @return
+     * @return v.
      */
     public static float lrsFilterUD(float Imp[], float ImpD[], int Nwing, boolean Interp, float[] Xp_array, int Xp_index, double Ph,
             int Inc, double dhb) {

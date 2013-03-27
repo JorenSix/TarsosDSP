@@ -374,6 +374,8 @@ class Resampler {
      * @param inBufferLen    number of valid elements in the inputBuffer
      * @param lastBatch      pass true if this is the last batch of samples
      * @param outBuffer      array to hold the resampled data
+     * @param outBufferOffset Offset in the output buffer.
+     * @param outBufferLen    Output buffer length.
      * @return the number of samples consumed and generated
      */
     public Result process(double factor, float[] inBuffer, int inBufferOffset, int inBufferLen, boolean lastBatch, float[] outBuffer, int outBufferOffset, int outBufferLen) {
