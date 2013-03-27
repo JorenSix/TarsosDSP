@@ -40,3 +40,17 @@ Thumbs.db
 
 # Folder config file
 Desktop.ini
+
+############
+## Binaries
+############
+
+doc/
+happy.wav
+*.wav
+build/*.jar
+prepender.rb
+*_prefix.txt
+experimental/
+build/TarsosDSP-*
+
