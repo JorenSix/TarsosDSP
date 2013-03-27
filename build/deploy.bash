@@ -30,10 +30,6 @@ ssh joren@0110.be mkdir $deploy_location
 #Deploy to the server 
 scp -r TarsosDSP-* joren@0110.be:$deploy_location
 
-#Find the current version
-filename=$(basename TarsosDSP-*-bin.jar)
-version=${filename:10:3}
-
 deploy_dir="/var/www/be.0110/current/public/releases/TarsosDSP"
 deploy_location=$deploy_dir/TarsosDSP-$version
 
