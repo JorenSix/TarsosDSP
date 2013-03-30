@@ -16,7 +16,7 @@ dispatcher.run();
 
 h2. Quickly Getting Started with TarsosDSP
 
-The original version of TarsosDSP was built using "Apache Ant":http://ant.apache.org/. But it was decided to move it to "Apache Maven":http://maven.apache.org/ and publish in main Maven repository. Such a library can be widely used and it will be much easily from a piblic maven repository.
+The original version of TarsosDSP was built using "Apache Ant":http://ant.apache.org/. But it was decided to move it to "Apache Maven":http://maven.apache.org/ and publish in main Maven repository. Such a library can be widely used and it will be easier from a piblic maven repository.
 
 The original version is on Ant still, it will be changed as fast as the main developer will became used to Maven. The code in the both versions is the same. 
 
