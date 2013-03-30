@@ -37,14 +37,17 @@ import javax.sound.sampled.Mixer;
 import javax.sound.sampled.TargetDataLine;
 import javax.sound.sampled.UnsupportedAudioFileException;
 
+import org.junit.Ignore;
 import org.junit.Test;
 
 import be.hogent.tarsos.dsp.AudioDispatcher;
 import be.hogent.tarsos.dsp.SilenceDetector;
 import be.hogent.tarsos.dsp.WaveformWriter;
+import be.hogent.tarsos.dsp.util.Shared;
 
 public class WaveformWriterTest {
 
+	@Ignore
 	@Test
 	public void testSilenceWriter() throws UnsupportedAudioFileException,
 			InterruptedException, LineUnavailableException,

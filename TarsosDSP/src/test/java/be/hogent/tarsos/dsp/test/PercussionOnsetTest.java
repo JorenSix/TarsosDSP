@@ -42,6 +42,7 @@ import org.junit.Test;
 import be.hogent.tarsos.dsp.AudioDispatcher;
 import be.hogent.tarsos.dsp.PercussionOnsetDetector;
 import be.hogent.tarsos.dsp.PercussionOnsetDetector.PercussionHandler;
+import be.hogent.tarsos.dsp.util.Shared;
 
 public class PercussionOnsetTest {
 	
