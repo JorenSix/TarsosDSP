@@ -29,11 +29,10 @@ The following commands fetch the source and build the library and example jars:
 <pre><code>git clone https://github.com/rikkimongoose/TarsosDSP.git
 cd TarsosDSP/TarsosDSP
 mvn install #Builds the core TarsosDSP library
+mvn javadoc:javadoc #Builds the javadoc for TarsosDSP library
 cd ../TarsosDSPExamples
 mvn install #Builds all the TarsosDSP examples
 </code></pre>
-
-javadoc support will be added soon.
 
 "Malaryta" release is provided to you by "RikkiMongoose":http://github.com/rikkimongoose (idea, documents, git things) and "Ultar":http://github.com/ultar (converting to maven, refactoring).
 
@@ -60,7 +59,8 @@ h3. Malaryta release
 The library is separated to 2 projects: TarsosDSP (main core) and TarsosDSPExamples (examples). They have different POM's and are built independently.
 
 * @TarsosDSP/src@ contains the source files of the core DSP libraries. 
-* @TarsosDSP/test@ contains unit tests for some of the DSP functionality.. 
+* @TarsosDSP/test@ contains unit tests for some of the DSP functionality.
+* @TarsosDSP/target/site/apidocs@ contains help documentation for DSP library
 * @TarsosDSP/target@ contains MAVEN build files.
 * @TarsosDSPExamples/src/main@ contains a couple of example applications with a Java Swing user interface.
 * @TarsosDSPExamples/target@ contains builded versions example applications.
