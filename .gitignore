@@ -41,7 +41,6 @@ Thumbs.db
 # Folder config file
 Desktop.ini
 
-<<<<<<< HEAD
 ############
 ## Binaries
 ############
@@ -55,7 +54,6 @@ prepender.rb
 experimental/
 build/TarsosDSP-*
 
-=======
 ###########
 # Maven
 ###########
@@ -73,5 +71,3 @@ target/
 # Project-specific
 ###########
 
-*.wav
->>>>>>> baf9e08bde5ee8947f231384b74163fdb8362e91
