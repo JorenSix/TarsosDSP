@@ -1,79 +1,17 @@
-h1. TarsosDSP "Malaryta" distribution
+h1. TarsosDSP
 
-TarsosDSP is a Java library for audio processing. Its aim is to provide an easy-to-use interface to practical audio (signal) processing algorithms implemented, as simply as possible, in pure Java and without any other external dependencies. TarsosDSP features an implementation of a percussion onset detector and a number of pitch detection algorithms: YIN, the Mcleod Pitch method and a "Dynamic Wavelet Algorithm Pitch Tracking" algorithm. Also included is a Goertzel DTMF(Dual tone multi frequency) decoding algorithm, a time stretch algorithm (WSOLA), resampling, filters, simple synthesis, some audio effects, and a pitch shifting algorithm.
- 
+TarsosDSP is a Java library for audio processing. Its aim is to provide an easy-to-use interface to practical music  processing algorithms implemented, as simply as possible, in pure Java and without any other external dependencies. TarsosDSP features an implementation of a percussion onset detector and a number of pitch detection algorithms: YIN, the Mcleod Pitch method and a "Dynamic Wavelet Algorithm Pitch Tracking" algorithm. Also included is a Goertzel DTMF(Dual tone multi frequency) decoding algorithm, a time stretch algorithm (WSOLA), resampling, filters, simple synthesis, some audio effects, and a pitch shifting algorithm.
+
 To show the capabilities of the library, "TarsosDSP example applications":http://tarsos.0110.be/tag/TarsosDSP are available. Head over to the "TarosDSP release directory":http://tarsos.0110.be/releases/TarsosDSP/ for freshly baked binaries and code smell free (that is the goal anyway), oven-fresh sources.
 
-The following example filters a band of frequencies of an input file @testFile@. It keeps the frequencies form @startFrequency@ to @stopFrequency@. 
-
-<pre><code>AudioInputStream inputStream = AudioSystem.getAudioInputStream(testFile);
-AudioDispatcher dispatcher = new AudioDispatcher(inputStream,stepSize,overlap);
-dispatcher.addAudioProcessor(new LowPassFS(stopFrequency, 44100));
-dispatcher.addAudioProcessor(new HighPass(startFrequency, 44100));
-dispatcher.addAudioProcessor(new WaveformWriter(format, "filtered.wav"));
-dispatcher.run();
-</code></pre>
 
 h2. Quickly Getting Started with TarsosDSP
 
-The original version of TarsosDSP was built using "Apache Ant":http://ant.apache.org/. But it was decided to move it to "Apache Maven":http://maven.apache.org/ and publish in main Maven repository. Such a library can be widely used and it will be easier from a piblic maven repository.
+Head over to the "TarsosDSP release repository":http://tarsos.0110.be/releases/TarsosDSP/ and download the latest "TarsosDSP library":http://tarsos.0110.be/releases/TarsosDSP/TarsosDSP-latest/TarsosDSP-latest.jar. To get up to speed quickly, check the "TarsosDSP Example applications":http://tarsos.0110.be/releases/TarsosDSP/TarsosDSP-latest/TarsosDSP-latest-Examples/ for inspiration and consult the "API documentation":http://tarsos.0110.be/releases/TarsosDSP/TarsosDSP-latest/TarsosDSP-latest-Documentation/.
 
-The original version is on Ant still, it will be changed as fast as the main developer will became used to Maven. The code in the both versions is the same. 
+TarsosDSP is also published in the main Maven repository. This makes it easier to use TarsosDSP in Maven projects.
 
-h3. Getting the Malaryta version
-
-"Malaryta" release is built only from source code. To build from source, you need "Apache Maven":http://maven.apache.org/ and "git":http://git-scm.com/ installed on your system. 
-
-The following commands fetch the source and build the library and example jars: 
-
-<pre><code>git clone https://github.com/rikkimongoose/TarsosDSP.git
-cd TarsosDSP/TarsosDSP
-mvn install #Builds the core TarsosDSP library
-mvn javadoc:javadoc #Builds the javadoc for TarsosDSP library
-cd ../TarsosDSPExamples
-mvn install #Builds all the TarsosDSP examples
-</code></pre>
-
-"Malaryta" release is provided to you by "RikkiMongoose":http://github.com/rikkimongoose (idea, documents, git things) and "Ultar":http://github.com/ultar (converting to maven, refactoring).
-
-We hope it will became the main branch as soon as possible.
-
-Talking about the title - Malaryta is the capital of Malaryta Raion of Brest Region in Republic of Belarus. Both of developers spent their childhood in Brest, and we think that title Maloryta is as strange as Ubuntu or Whistler.
-
-h3. Getting the original version
-
-Head over to the "TarsosDSP release repository":http://tarsos.0110.be/releases/TarsosDSP/ and download the latest "TarsosDSP library":http://tarsos.0110.be/releases/TarsosDSP/TarsosDSP-latest/TarsosDSP-latest.jar. To get up to speed quickly, check the "TarsosDSP Example applications":http://tarsos.0110.be/releases/TarsosDSP/TarsosDSP-latest/TarsosDSP-latest-Examples/ for inspiration and consult the "API documentation":http://tarsos.0110.be/releases/TarsosDSP/TarsosDSP-latest/TarsosDSP-latest-Documentation/. If you, for some reason, want to build from source, you need "Apache Ant":http://ant.apache.org/ and "git":http://git-scm.com/ installed on your system. The following commands fetch the source and build the library and example jars: 
-<pre><code>git clone https://JorenSix@github.com/JorenSix/TarsosDSP.git
-cd TarsosDSP/build
-ant tarsos_dsp_library #Builds the core TarsosDSP library
-ant build_examples #Builds all the TarsosDSP examples
-ant javadoc #Creates the documentation in TarsosDSP/doc
-</code></pre>
-When everything runs correctly you should be able to run all example applications and have the latest version of the TarsosDSP library for inclusion in your projects. Also the Javadoc documentation for the API should be available in TarsosDSP/doc. Drop me a line if you use TarsosDSP in your project. Always nice to hear how this software is used.
- 
- 
-h2. Source Code Organization 
-
-h3. Malaryta release
-
-The library is separated to 2 projects: TarsosDSP (main core) and TarsosDSPExamples (examples). They have different POM's and are built independently.
-
-* @TarsosDSP/src@ contains the source files of the core DSP libraries. 
-* @TarsosDSP/test@ contains unit tests for some of the DSP functionality.
-* @TarsosDSP/target/site/apidocs@ contains help documentation for DSP library
-* @TarsosDSP/target@ contains MAVEN build files.
-* @TarsosDSPExamples/src/main@ contains a couple of example applications with a Java Swing user interface.
-* @TarsosDSPExamples/target@ contains builded versions example applications.
-
-h3. Original verison
-
-The source tree is divided in three directories: 
-* @src@ contains the source files of the core DSP libraries. 
-* @test@ contains unit tests for some of the DSP functionality.
-* @build@ contains ANT build files. Either to build Java documentation or runnable JAR-files for the example applications.  
-* @examples@ contains a couple of example applications with a Java Swing user interface.
-
-h3. TarsosDSP Example Applications
+h2. TarsosDSP Example Applications
 
 TarsosDSP contains some ready made example applications. Most have a Java Swing user interface. They show which functionality is present in the library and how to use it.
 
@@ -87,6 +25,60 @@ TarsosDSP contains some ready made example applications. Most have a Java Swing 
 * "Audio Feature Extraction":http://tarsos.0110.be/releases/TarsosDSP/TarsosDSP-1.3/TarsosDSP-1.3-Examples/FeatureExtractor-1.3.jar a command line application to do simple feature extraction.
 * "Audio Synthesis":http://tarsos.0110.be/releases/TarsosDSP/TarsosDSP-1.3/TarsosDSP-1.3-Examples/Synthesis-1.3.jar a command line application to do simple audio synthesis.
 * "Pitch Shifting":http://tarsos.0110.be/artikels/lees/Pitch_Shifting_-_Implementation_in_Pure_Java_with_Resampling_and_Time_Stretsching an example application that does pitch shifting, either in real-time on a microphone input, or on recorded audio. Also included is a command line application to do pitch shifting. 
+
+
+h2. Developing TarsosDSP
+
+If you want to build from source, or want to improve TarsosDSP follow the instructions below. Contributions to TarsosDSP are more than welcome, if you have a an algorithm to add or find a bug, do not hesitate to send me a message.
+
+TarsosDSP is in the transition between "Apache Maven":http://maven.apache.org/ and "Apache Ant":http://ant.apache.org/ and currently supports both. The instructions below detail how you can build from source. Which build system you use is upto you. I find Ant a bit simpler. When everything runs correctly you should be able to run all example applications and have the latest version of the TarsosDSP library for inclusion in your projects. Also the Javadoc documentation for the API should be available.
+
+
+h3. TarsosDSP with Ant
+
+To  you need "Apache Ant":http://ant.apache.org/ and "git":http://git-scm.com/ installed on your system. The following commands fetch the source and build the library and example jars: 
+<pre><code>git clone https://JorenSix@github.com/JorenSix/TarsosDSP.git
+cd TarsosDSP
+#link the source files at the expected locations
+test -f src || ln -s TarsosDSP/src/main/java/ src
+test -f examples || ln -s TarsosDSPExamples/src/main/java/ examples
+test -f tests || ln -s TarsosDSP/src/test/java tests 
+cd build
+ant tarsos_dsp_library #Builds the core TarsosDSP library
+ant build_examples #Builds all the TarsosDSP examples
+ant javadoc #Creates the documentation in TarsosDSP/doc
+</code></pre>
+
+h3. TarsosDSP with Maven
+
+To build from source, you need "Apache Maven":http://maven.apache.org/ and "git":http://git-scm.com/ installed on your system. The following commands fetch the source and build the library and example jars: 
+
+<pre><code>git clone https://JorenSix@github.com/JorenSix/TarsosDSP.git
+cd TarsosDSP/TarsosDSP
+mvn install #Builds the core TarsosDSP library
+mvn javadoc:javadoc #Builds the javadoc for TarsosDSP library
+cd ../TarsosDSPExamples
+mvn install #Builds all the TarsosDSP examples
+</code></pre>
+
+ 
+ 
+h2. Source Code Organization 
+
+The library is separated to 2 projects: TarsosDSP (main core) and TarsosDSPExamples (examples). They have different POM's and are built independently.
+
+* @TarsosDSP/src@ contains the source files of the core DSP libraries. 
+* @TarsosDSP/test@ contains unit tests for some of the DSP functionality.
+* @TarsosDSP/target/site/apidocs@ contains help documentation for DSP library
+* @TarsosDSP/target@ contains MAVEN build files.
+* @TarsosDSPExamples/src/main@ contains a couple of example applications with a Java Swing user interface.
+* @TarsosDSPExamples/target@ contains builded versions example applications.
+* @build@ contains ANT build files. Either to build Java documentation or runnable JAR-files for the example applications.  
+
+<pre><code>
+
+</code></pre>
+
 
 h2. Credits
 
@@ -109,6 +101,8 @@ The FFT implementation used within TarsosDSP is by __Piotr Wendykier__ and is in
 
 The sample rate conversion feature is implemented by __Laszlo systems__ in the "libresample4j":https://github.com/dnault-laszlo/libresample4j library. libresample4j is a Java port of Dominic Mazzoni's libresample 0.1.3, which is in turn based on "Julius Smith's Resample 1.7 library":http://www-ccrma.stanford.edu/~jos/resample/.
 
+Various FFT window functions are done by Damien Di Fede and Corban Brook for the GPL'd "Minim":http://code.compartmental.net/tools/minim/ project.
+
 h2. Changelog
 
 <dt>Version 1.0</dt><dd>2012-04-24</dd> First release which includes several pitch trackers and a time stretching algorithm, amongst other things. Downloads and javadoc API can be found at the "TarsosDSP release directory":http://tarsos.0110.be/releases/TarsosDSP/
@@ -129,4 +123,9 @@ Added ASCII-art to the source code (this is the main TarsosDSP 1.3 feature).
 
 <dt>Version 1.4</dt><dd>2012-10-31</dd>
 Included a resample feature, implemented by libresample4j. Together with the WSOLA implementation, it can be used for pitch shifting (similar to Phase Vocoding). A pitch shifting example (both with a CLI and a UI) is added in the 1.4 version of the TarsosDSP library as well. 
+
+
+<dt>Version 1.5</dt><dd>2013-04-30</dd>
+Converted TarsosDSP to maven. This is known as the Malaryta-release. The "Malaryta" release is provided to you by "RikkiMongoose":http://github.com/rikkimongoose (idea, documents, git things) and "Ultar":http://github.com/ultar (converting to maven, refactoring). Malaryta is the capital of Malaryta Raion, Brest Region in the Republic of Belarus. Both of developers spent their childhood in Brest, and think that title Malaryta is as strange as Ubuntu or Whistler. The 1.5 release also includes various FFT window functions from the cool "Minim project":http://code.compartmental.net/tools/minim/: by Damien Di Fede. 
+
 
