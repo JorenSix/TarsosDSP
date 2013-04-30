@@ -32,6 +32,10 @@ import java.net.URI;
 import java.net.URISyntaxException;
 import java.net.URL;
 
+import static org.junit.Assert.assertEquals;
+
+import org.junit.Test;
+
 import javax.sound.sampled.AudioFormat;
 import javax.sound.sampled.AudioInputStream;
 import javax.sound.sampled.AudioSystem;
@@ -140,5 +144,11 @@ public class TestUtilities {
 		final double seconds = 0.5;
 		final float[] buffer = new float[(int) (seconds * sampleRate)];
 		return buffer;
+	}
+
+	@Test
+	public void testNothing(){
+		//a test to please maven
+		assertEquals(true,true);
 	}
 }
