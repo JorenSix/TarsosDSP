@@ -6,6 +6,13 @@ manual_location="../../TarsosTex/sound_and_java.pdf"
 #Remove old releases
 rm -R TarsosDSP-*
 
+#link the source files at the expected locations
+cd ..
+test -f src || ln -s TarsosDSP/src/main/java/ src
+test -f examples || ln -s TarsosDSPExamples/src/main/java/ examples
+test -f tests || ln -s TarsosDSP/src/test/java tests 
+cd build
+
 #Build the new release
 ant release
 
