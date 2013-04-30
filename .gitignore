@@ -68,6 +68,9 @@ log/
 target/
 
 ###########
-# Project-specific
+# ignore symlinks
 ###########
 
+src
+tests
+examples
