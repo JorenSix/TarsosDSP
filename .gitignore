@@ -72,5 +72,5 @@ target/
 ###########
 
 /src
-/tests/
+/tests
 /examples
