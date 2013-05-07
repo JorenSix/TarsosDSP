@@ -26,20 +26,24 @@
 
 package be.hogent.tarsos.dsp.test;
 
+import static org.junit.Assert.assertEquals;
+
+import java.io.BufferedReader;
 import java.io.File;
+import java.io.FileReader;
 import java.io.IOException;
+import java.io.InputStreamReader;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.net.URL;
-
-import static org.junit.Assert.assertEquals;
-
-import org.junit.Test;
+import java.net.URLConnection;
 
 import javax.sound.sampled.AudioFormat;
 import javax.sound.sampled.AudioInputStream;
 import javax.sound.sampled.AudioSystem;
 import javax.sound.sampled.UnsupportedAudioFileException;
+
+import org.junit.Test;
 
 import be.hogent.tarsos.dsp.util.AudioFloatConverter;
 
@@ -87,6 +91,16 @@ public class TestUtilities {
 		}
 	}
 	
+	public static File onsetsAudioFile(){
+		String file = "/be/hogent/tarsos/dsp/test/resources/NR45.wav";
+		final URL url = TestUtilities.class.getResource(file);
+		try {
+			return new File(new URI(url.toString()));
+		} catch (URISyntaxException e) {
+			return null;
+		}
+	}
+	
 	/**
 	 * @return a 4096 samples long 44.1kHz sampled float buffer with the sound
 	 *         of a flute played double forte at B6 (theoretically 1975.53Hz) without vibrato
@@ -95,6 +109,67 @@ public class TestUtilities {
 		int lengthInSamples = 4096;
 		String file = "/be/hogent/tarsos/dsp/test/resources/flute.novib.ff.B6.wav";
 		return audioBufferFile(file,lengthInSamples);
+	}
+	
+	/**
+	 * Reads the contents of a file.
+	 * 
+	 * @param name
+	 *            the name of the file to read
+	 * @return the contents of the file if successful, an empty string
+	 *         otherwise.
+	 */
+	public static String readFile(final String name) {
+		FileReader fileReader = null;
+		final StringBuilder contents = new StringBuilder();
+		try {
+			final File file = new File(name);
+			if (!file.exists()) {
+				throw new IllegalArgumentException("File " + name + " does not exist");
+			}
+			fileReader = new FileReader(file);
+			final BufferedReader reader = new BufferedReader(fileReader);
+			String inputLine = reader.readLine();
+			while (inputLine != null) {
+				contents.append(inputLine).append("\n");
+				inputLine = reader.readLine();
+			}
+			reader.close();
+		} catch (final IOException i1) {
+			throw new RuntimeException(i1);
+		}
+		return contents.toString();
+	}
+	
+	/**
+	 * Reads the contents of a file in a jar.
+	 * 
+	 * @param path
+	 *            the path to read e.g. /package/name/here/help.html
+	 * @return the contents of the file when successful, an empty string
+	 *         otherwise.
+	 */
+	public static String readFileFromJar(final String path) {
+		final StringBuilder contents = new StringBuilder();
+		final URL url = TestUtilities.class.getResource(path);
+		URLConnection connection;
+		try {
+			connection = url.openConnection();
+			final InputStreamReader inputStreamReader = new InputStreamReader(connection.getInputStream());
+			final BufferedReader reader = new BufferedReader(inputStreamReader);
+			String inputLine;
+			inputLine = reader.readLine();
+			while (inputLine != null) {
+				contents.append(new String(inputLine.getBytes(), "UTF-8")).append("\n");
+				inputLine = reader.readLine();
+			}
+			reader.close();
+		} catch (final IOException e) {
+			throw new RuntimeException(e);
+		} catch (final NullPointerException e) {
+			throw new RuntimeException(e);
+		}
+		return contents.toString();
 	}
 	
 	/**

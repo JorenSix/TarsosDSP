@@ -129,6 +129,12 @@ public final class AudioDispatcher implements Runnable {
 	 * If true the dispatcher stops dispatching audio.
 	 */
 	private boolean stopped;
+	
+	/**
+	 * if zero pad is true then the first buffer is only filled up to  buffer size - hop size
+	 * E.g. if the buffer is 2048 and the hop size is 48 then you get 2000x0 and 48 filled audio samples
+	 */
+	private boolean zeroPad;
 
 	/**
 	 * Create a new dispatcher from a stream.
@@ -192,6 +198,16 @@ public final class AudioDispatcher implements Runnable {
 		return audioInputStream.getFrameLength() / format.getSampleRate();
 	}
 	
+	/**
+	 * Returns the length of the stream, expressed in sample frames rather than bytes. 
+	 * @return The length of the stream, expressed in sample frames rather than bytes.
+	 */
+	public long durationInFrames(){
+		return audioInputStream.getFrameLength() ;
+	}
+	
+	
+	
 	
 	/**
 	 * Skip a number of seconds before processing the stream.
@@ -222,6 +238,15 @@ public final class AudioDispatcher implements Runnable {
 		audioByteBuffer = new byte[audioFloatBuffer.length * format.getFrameSize()];
 		byteOverlap = floatOverlap * format.getFrameSize();
 		byteStepSize = floatStepSize * format.getFrameSize();
+	}
+	
+	/**
+	 * if zero pad is true then the first buffer is only filled up to  buffer size - hop size
+	 * E.g. if the buffer is 2048 and the hop size is 48 then you get 2000x0 and 48 filled audio samples
+	 * @param zeroPad true if the buffer should be zeropadded, false otherwise.
+	 */
+	public void setZeroPad(boolean zeroPad){
+		this.zeroPad = zeroPad;		
 	}
 
 	/**
@@ -262,14 +287,17 @@ public final class AudioDispatcher implements Runnable {
 	
 	private void runSourcedDispatcher(){
 		try {
-			int bytesRead;
+			int bytesRead = 0;
 			
 			if(bytesToSkip!=0){
 				audioInputStream.skip(bytesToSkip);
 				bytesProcessed += bytesToSkip;
 			}
-			
-			bytesRead = processFirstBuffer();
+			if(zeroPad){
+				bytesRead = slideBuffer();
+			}else {
+				bytesRead = processFirstBuffer();
+			}
 
 			// as long as the stream has not ended or the number of bytes
 			// processed is smaller than the number of bytes to process: process
