@@ -4,7 +4,7 @@
 
   <groupId>be.hogent.tarsos.dsp.example</groupId>
   <artifactId>TarsosDSPExamples</artifactId>
-  <version>1.4</version>
+  <version>1.5</version>
   <packaging>jar</packaging>
 
   <name>TarsosDSPExamples</name>
@@ -348,7 +348,7 @@
     <dependency>
 	  <groupId>be.hogent.tarsos.dsp</groupId>
 	  <artifactId>TarsosDSP</artifactId>
-	  <version>1.4</version>
+	  <version>1.5</version>
 	  <type>jar</type>
 	  <scope>compile</scope>
     </dependency>
