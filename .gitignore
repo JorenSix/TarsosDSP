@@ -71,6 +71,6 @@ target/
 # ignore symlinks
 ###########
 
-src
-tests
-examples
+/src
+/tests/
+/examples

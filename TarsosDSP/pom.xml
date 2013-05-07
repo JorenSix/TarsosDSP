@@ -12,9 +12,12 @@
       implemented in pure Java and without any external dependencies.
       It contains algorithms for pitch detection, time stretching, resampling and pitch shifting amongst others.   
   </description>
-
   <name>TarsosDSP</name>
-  <url>http://maven.apache.org</url>
+  <url>http://tarsos.0110.be/tag/TarsosDSP</url>
+  
+  <scm>
+    <url>https://github.com/JorenSix/TarsosDSP.git</url>
+  </scm>
 	
 	<build>
 	    <plugins>
