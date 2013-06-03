@@ -58,8 +58,8 @@ import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
 
 import be.hogent.tarsos.dsp.AudioDispatcher;
-import be.hogent.tarsos.dsp.PercussionOnsetDetector;
-import be.hogent.tarsos.dsp.PercussionOnsetDetector.PercussionHandler;
+import be.hogent.tarsos.dsp.onsets.PercussionOnsetDetector;
+import be.hogent.tarsos.dsp.onsets.PercussionOnsetDetector.PercussionHandler;
 
 public class PercussionDetector extends JFrame implements PercussionHandler {
 

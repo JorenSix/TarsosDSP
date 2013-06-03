@@ -176,5 +176,48 @@ public class AudioEvent {
 	public void clearFloatBuffer() {
 		Arrays.fill(floatBuffer, 0);
 	}
+
+		/**
+	 * Returns the dBSPL for a buffer.
+	 * 
+	 * @param buffer
+	 *            The buffer with audio information.
+	 * @return The dBSPL level for the buffer.
+	 */
+	private double soundPressureLevel(final float[] buffer) {
+		double value = Math.pow(localEnergy(buffer), 0.5);
+		value = value / buffer.length;
+		return linearToDecibel(value);
+	}
+	
+	/**
+	 * Calculates the local (linear) energy of an audio buffer.
+	 * 
+	 * @param buffer
+	 *            The audio buffer.
+	 * @return The local (linear) energy of an audio buffer.
+	 */
+	private double localEnergy(final float[] buffer) {
+		double power = 0.0D;
+		for (float element : buffer) {
+			power += element * element;
+		}
+		return power;
+	}
+	
+	/**
+	 * Converts a linear to a dB value.
+	 * 
+	 * @param value
+	 *            The value to convert.
+	 * @return The converted value.
+	 */
+	private double linearToDecibel(final double value) {
+		return 20.0 * Math.log10(value);
+	}
+
+	public boolean isSilence(double silenceThreshold) {
+		return soundPressureLevel(floatBuffer) < silenceThreshold;
+	}
 	
 }

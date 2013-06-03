@@ -24,8 +24,10 @@
 * 
 */
 
-package be.hogent.tarsos.dsp;
+package be.hogent.tarsos.dsp.onsets;
 
+import be.hogent.tarsos.dsp.AudioEvent;
+import be.hogent.tarsos.dsp.AudioProcessor;
 import be.hogent.tarsos.dsp.util.FFT;
 
 /**

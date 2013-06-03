@@ -29,6 +29,7 @@ package be.hogent.tarsos.dsp;
 import java.io.ByteArrayInputStream;
 import java.io.File;
 import java.io.IOException;
+import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.logging.Level;
@@ -357,7 +358,14 @@ public final class AudioDispatcher implements Runnable {
 		audioEvent.setBytesProcessed(bytesProcessed);
 		
 		// Read, convert and process the first full buffer.
-		int bytesRead = audioInputStream.read(audioByteBuffer);
+		//Always read a full byte buffer!
+		int bytesRead = 0;
+		int currentBytesRead = 0;
+		while(bytesRead != -1 && currentBytesRead<audioByteBuffer.length){
+			bytesRead = audioInputStream.read(audioByteBuffer, currentBytesRead , audioByteBuffer.length - currentBytesRead);
+			currentBytesRead += bytesRead;
+		}
+		bytesRead = currentBytesRead;
 		
 		if (bytesRead != -1 && !stopped) {
 			converter.toFloatArray(audioByteBuffer, audioFloatBuffer);
@@ -423,17 +431,21 @@ public final class AudioDispatcher implements Runnable {
 		//Is array copy faster to shift an array? Probably..
 		System.arraycopy(audioFloatBuffer, floatStepSize, audioFloatBuffer,0 ,floatOverlap);
 		
-		final int bytesRead;
+		int bytesRead=0;
 		
 		//Check here if the dispatcher is stopped to prevent reading from a closed audio stream.
 		if(stopped){
 			bytesRead = -1;
-		}else{	
-			bytesRead = audioInputStream.read(audioByteBuffer, byteOverlap, byteStepSize);
+		}else{
+			int currentBytesRead = 0;
+			//Always read a full byte buffer!
+			while(bytesRead != -1 && currentBytesRead<byteStepSize){
+				bytesRead = audioInputStream.read(audioByteBuffer, byteOverlap + currentBytesRead , byteStepSize - currentBytesRead);
+				currentBytesRead += bytesRead;
+			}
+			bytesRead = currentBytesRead;
 			converter.toFloatArray(audioByteBuffer, byteOverlap, audioFloatBuffer, floatOverlap, floatStepSize);
 		}
-		
-
 		return bytesRead;
 	}
 	
@@ -460,6 +472,30 @@ public final class AudioDispatcher implements Runnable {
 		final AudioInputStream stream = AudioSystem.getAudioInputStream(audioFile);
 		return new AudioDispatcher(stream, size, overlap);
 	}
+	
+	
+	/**
+	 * Create a stream from an URL and use that to create a new AudioDispatcher
+	 * 
+	 * @param audioStream
+	 *            The URL describing the stream..
+	 * @param size
+	 *            The number of samples used in the buffer.
+	 * @param overlap 
+	 * @return A new audio processor.
+	 * @throws UnsupportedAudioFileException
+	 *             If the audio file is not supported.
+	 * @throws IOException
+	 *             When an error occurs reading the file.
+	 */
+	public static AudioDispatcher fromURL(final URL audioStream, final int size,final int overlap)
+	throws UnsupportedAudioFileException, IOException {
+		final AudioInputStream stream = AudioSystem.getAudioInputStream(audioStream);
+		return new AudioDispatcher(stream, size, overlap);
+	}
+	
+	
+	
 
 	/**
 	 * Create a stream from an array of bytes and use that to create a new

@@ -72,6 +72,13 @@ public final class FFT {
 		}
 		fft.realForward(data);
 	}
+	
+	public void complexForwardTransform(final float[] data) {
+		if(windowFunction!=null){
+			windowFunction.apply(data);
+		}
+		fft.complexForward(data);
+	}
 
 	/**
 	 * Computes inverse DFT.
@@ -103,7 +110,7 @@ public final class FFT {
 		final int realIndex = 2*index;
 		final int imgIndex = 2 * index + 1;
 		final float modulus = data[realIndex] * data[realIndex] + data[imgIndex] * data[imgIndex];
-		return (float) Math.pow(modulus, 0.5);
+		return (float) Math.sqrt(modulus);
 	}
 
 	/**
@@ -121,4 +128,33 @@ public final class FFT {
 			amplitudes[i] = modulus(data, i);
 		}
 	}
+	
+	/**
+	 * Computes an FFT and converts the results to polar coordinates (power and
+	 * phase). Both the power and phase arrays must be the same length, data
+	 * should be double the length.
+	 * 
+	 * @param data
+	 *            The input signal.
+	 * @param power
+	 *            The power (modulus) of the data.
+	 * @param phase
+	 *            The phase of the data
+	 */
+	public void powerPhaseFFT(float[] data,float[] power, float[] phase) {
+		assert data.length / 2 == power.length;
+		assert data.length / 2 == phase.length;
+		if(windowFunction!=null){
+			windowFunction.apply(data);
+		}
+		fft.realForward(data);
+		phase[0] = (float) Math.PI;
+		power[0] = -data[0];
+		for (int i = 1; i < power.length; i++) {
+			int realIndex = 2 * i;
+			int imgIndex  = 2 * i + 1;
+			power[i] = (float) Math.pow(data[realIndex] * data[realIndex] + data[imgIndex] * data[imgIndex],0.5);
+			phase[i] = (float) Math.atan2(data[imgIndex], data[realIndex]);
+		}
+	}	
 }
