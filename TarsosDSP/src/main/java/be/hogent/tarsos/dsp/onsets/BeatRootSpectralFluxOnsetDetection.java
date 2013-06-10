@@ -1,4 +1,4 @@
-package be.hogent.tarsos.dsp.beatroot;
+package be.hogent.tarsos.dsp.onsets;
 
 import java.util.Arrays;
 import java.util.Iterator;
@@ -7,8 +7,18 @@ import java.util.LinkedList;
 import be.hogent.tarsos.dsp.AudioDispatcher;
 import be.hogent.tarsos.dsp.AudioEvent;
 import be.hogent.tarsos.dsp.AudioProcessor;
+import be.hogent.tarsos.dsp.beatroot.Peaks;
+import be.hogent.tarsos.dsp.util.FFT;
+import be.hogent.tarsos.dsp.util.ScaledHammingWindow;
 
-public class BeatRootProcessor implements AudioProcessor {
+/**
+ * A non real-time spectral flux onset detection method, as implemented in the
+ * BeatRoot system of Centre for Digital Music, Queen Mary, University of London.
+ * 
+ * @author Joren Six
+ * @author Simon Dixon
+ */
+public class BeatRootSpectralFluxOnsetDetection implements AudioProcessor {
 	/** RMS amplitude of the current frame. */
 	private double frameRMS;
 	
@@ -18,17 +28,13 @@ public class BeatRootProcessor implements AudioProcessor {
 	/** Long term average frame energy (in frequency domain representation). */
 	private double ltAverage;
 
-
-	/** The window function for the STFT, currently a Hamming window. */
-	private double[] window;
-
 	/** The real part of the data for the in-place FFT computation.
 	 *  Since input data is real, this initially contains the input data. */
-	private double[] reBuffer;
+	private float[] reBuffer;
 
 	/** The imaginary part of the data for the in-place FFT computation.
 	 *  Since input data is real, this initially contains zeros. */
-	private double[] imBuffer;
+	private float[] imBuffer;
 
 	/** Spectral flux onset detection function, indexed by frame. */
 	private double[] spectralFlux;
@@ -48,7 +54,7 @@ public class BeatRootProcessor implements AudioProcessor {
 
 	/** The magnitude spectrum of the most recent frame.
 	 *  Used for calculating the spectral flux. */
-	private double[] prevFrame;
+	private float[] prevFrame;
 	
 	/** The magnitude spectrum of the current frame. */
 	private double[] newFrame;
@@ -65,7 +71,6 @@ public class BeatRootProcessor implements AudioProcessor {
 	/** The size of an FFT frame in samples (see <code>fftTime</code>) */
 	protected int fftSize;
 
-	
 	/** Total number of audio frames if known, or -1 for live or compressed input. */
 	private int totalFrames;
 	
@@ -91,42 +96,43 @@ public class BeatRootProcessor implements AudioProcessor {
 	
 	private OnsetHandler handler;
 	
-	double hopTime;
+	private double hopTime;
 	
-	public BeatRootProcessor(AudioDispatcher d,int fftSize, int hopSize){
+	private final FFT fft;
+	
+	public BeatRootSpectralFluxOnsetDetection(AudioDispatcher d,int fftSize, int hopSize){
 		this.hopSize = hopSize; 
 		this.hopTime = hopSize/d.getFormat().getSampleRate();
+		this.fftSize = fftSize;
 		//no overlap
 		totalFrames = (int)(d.durationInFrames() / hopSize) + 4;
 		energy = new double[totalFrames*energyOversampleFactor];
 		spectralFlux = new double[totalFrames];
-		this.fftSize = fftSize;
-		reBuffer = new double[fftSize];
-		imBuffer = new double[fftSize];
-		prevFrame = new double[fftSize];
-		window = FFT.makeWindow(FFT.HAMMING, fftSize, fftSize);
-		for (int i=0; i < fftSize; i++)
-			window[i] *= Math.sqrt(fftSize);
+		
+		reBuffer = new float[fftSize/2];
+		imBuffer = new float[fftSize/2];
+		prevFrame = new float[fftSize/2];
 		
 		makeFreqMap(fftSize, d.getFormat().getSampleRate());
+		
 		newFrame = new double[freqMapSize];
 		frames = new double[totalFrames][freqMapSize];
-		
 		handler = new PrintOnsetHandler();
+		fft = new FFT(fftSize,new ScaledHammingWindow());
 	}
 
 	@Override
 	public boolean process(AudioEvent audioEvent) {
 		frameRMS = audioEvent.getRMS()/2.0;
-		float[] audioBuffer = audioEvent.getFloatBuffer();
-		for (int i = 0; i < fftSize; i++) {
-			reBuffer[i] = window[i] * audioBuffer[i];
-		}
+		
+		float[] audioBuffer = audioEvent.getFloatBuffer().clone();
+	
 		Arrays.fill(imBuffer, 0);
-		FFT.magnitudePhaseFFT(reBuffer, imBuffer);
+		fft.powerPhaseFFTBeatRootOnset(audioBuffer, reBuffer, imBuffer);
 		Arrays.fill(newFrame, 0);
+		
 		double flux = 0;
-		for (int i = 0; i <= fftSize/2; i++) {
+		for (int i = 0; i < fftSize/2; i++) {
 			if (reBuffer[i] > prevFrame[i])
 				flux += reBuffer[i] - prevFrame[i];
 			newFrame[freqMap[i]] += reBuffer[i];
@@ -170,14 +176,15 @@ public class BeatRootProcessor implements AudioProcessor {
 			}
 		}
 
-		double[] tmp = prevFrame;
+		float[] tmp = prevFrame;
 		prevFrame = reBuffer;
 		reBuffer = tmp;
 		frameCount++;
 		return true;
 	}
 	
-	/** Creates a map of FFT frequency bins to comparison bins.
+	/** 
+	 *  Creates a map of FFT frequency bins to comparison bins.
 	 *  Where the spacing of FFT bins is less than 0.5 semitones, the mapping is
 	 *  one to one. Where the spacing is greater than 0.5 semitones, the FFT
 	 *  energy is mapped into semitone-wide bins. No scaling is performed; that
@@ -207,6 +214,7 @@ public class BeatRootProcessor implements AudioProcessor {
 	public void findOnsets(double p1, double p2){
 		LinkedList<Integer> peaks = Peaks.findPeaks(spectralFlux, (int)Math.round(0.06 / hopTime), p1, p2, true);
 		Iterator<Integer> it = peaks.iterator();
+	
 		double minSalience = Peaks.min(spectralFlux);
 		for (int i = 0; i < peaks.size(); i++) {
 			int index = it.next();
@@ -216,21 +224,9 @@ public class BeatRootProcessor implements AudioProcessor {
 		}
 	}
 	
-	public static interface OnsetHandler{
-		public void handleOnset(double time, double salience);
-	}
-	
 	public void setHandler(OnsetHandler handler) {
 		this.handler = handler;
-	}
-	
-	public class PrintOnsetHandler implements OnsetHandler{
-		@Override
-		public void handleOnset(double time, double salience) {
-			System.out.println(String.format("%0.4f;%.4f", time,salience));	
-		}		
-	}
-	
+	}	
 
 	@Override
 	public void processingFinished() {
@@ -238,7 +234,5 @@ public class BeatRootProcessor implements AudioProcessor {
 		double p2 = 0.84;
 		Peaks.normalise(spectralFlux);
 		findOnsets(p1, p2);
-
 	}
-
 }

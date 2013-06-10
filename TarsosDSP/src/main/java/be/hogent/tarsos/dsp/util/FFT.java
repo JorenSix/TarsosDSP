@@ -153,8 +153,13 @@ public final class FFT {
 		for (int i = 1; i < power.length; i++) {
 			int realIndex = 2 * i;
 			int imgIndex  = 2 * i + 1;
-			power[i] = (float) Math.pow(data[realIndex] * data[realIndex] + data[imgIndex] * data[imgIndex],0.5);
+			power[i] = (float) Math.sqrt(data[realIndex] * data[realIndex] + data[imgIndex] * data[imgIndex]);
 			phase[i] = (float) Math.atan2(data[imgIndex], data[realIndex]);
 		}
-	}	
+	}
+	
+	public void powerPhaseFFTBeatRootOnset(float[] data,float[] power, float[] phase) {
+		powerPhaseFFT(data, power, phase);
+		power[0] = (float) Math.sqrt(data[0] * data[0] + data[1] * data[1]);
+	}
 }

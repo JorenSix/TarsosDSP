@@ -32,6 +32,7 @@ public class Peaks {
 	 *  @param data input data
 	 *  @param peaks list of peak indexes
 	 *  @param width minimum distance between peaks
+	 * @return The number of peaks found.
 	 */
 	public static int findPeaks(double[] data, int[] peaks, int width) {
 		int peakCount = 0;

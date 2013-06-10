@@ -1,19 +1,12 @@
 package be.hogent.tarsos.dsp.onsets;
 
-import java.io.File;
-import java.io.IOException;
-
-import javax.sound.sampled.UnsupportedAudioFileException;
-
-import be.hogent.tarsos.dsp.AudioDispatcher;
 import be.hogent.tarsos.dsp.AudioEvent;
 import be.hogent.tarsos.dsp.AudioProcessor;
 import be.hogent.tarsos.dsp.util.FFT;
 import be.hogent.tarsos.dsp.util.HannWindow;
 
-
 /**
- * Complex Domain Method onset detection function
+ * A complex Domain Method onset detection function
  * 
  * Christopher Duxbury, Mike E. Davies, and Mark B. Sandler. Complex domain
  * onset detection for musical signals. In Proceedings of the Digital Audio
