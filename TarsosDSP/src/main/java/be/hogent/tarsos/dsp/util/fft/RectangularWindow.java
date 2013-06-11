@@ -16,24 +16,24 @@
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  */
 
-package be.hogent.tarsos.dsp.util;
+package be.hogent.tarsos.dsp.util.fft;
 
 /**
- * A Triangular window function.
+ * A Rectangular window function A Rectangular window is equivalent to using no
+ * window at all.
  * 
  * @author Damien Di Fede
  * @author Corban Brook
  * @see <a
- *      href="http://en.wikipedia.org/wiki/Window_function#Triangular_window_.28non-zero_end-points.29">The
- *      Triangular Window</a>
+ *      href="http://en.wikipedia.org/wiki/Window_function#Rectangular_window">The
+ *      Rectangular Window</a>
  */
-public class TriangularWindow extends WindowFunction {
-	/** Constructs a Triangular window. */
-	public TriangularWindow() {
+public class RectangularWindow extends WindowFunction {
+	/** Constructs a Rectangular window. */
+	public RectangularWindow() {
 	}
 
 	protected float value(int length, int index) {
-		return 2f / length
-				* (length / 2f - Math.abs(index - (length - 1) / 2f));
+		return 1f;
 	}
 }

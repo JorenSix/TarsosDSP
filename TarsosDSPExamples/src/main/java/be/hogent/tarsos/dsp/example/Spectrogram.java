@@ -58,7 +58,7 @@ import be.hogent.tarsos.dsp.pitch.PitchDetectionHandler;
 import be.hogent.tarsos.dsp.pitch.PitchDetectionResult;
 import be.hogent.tarsos.dsp.pitch.PitchProcessor;
 import be.hogent.tarsos.dsp.pitch.PitchProcessor.PitchEstimationAlgorithm;
-import be.hogent.tarsos.dsp.util.FFT;
+import be.hogent.tarsos.dsp.util.fft.FFT;
 
 public class Spectrogram extends JFrame implements PitchDetectionHandler {
 	

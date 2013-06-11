@@ -16,25 +16,25 @@
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  */
 
-package be.hogent.tarsos.dsp.util; 
+package be.hogent.tarsos.dsp.util.fft; 
 
 /**
- * A Bartlett window function.
+ * A Bartlett-Hann window function.
  *
  * @author Damien Di Fede
  * @author Corban Brook
- * @see   <a href="http://en.wikipedia.org/wiki/Window_function#Bartlett_window_.28zero_valued_end-points.29">The Bartlett Window</a>
+ * @see   <a href="http://en.wikipedia.org/wiki/Window_function#Bartlett.E2.80.93Hann_window">The Bartlett-Hann Window</a>
  */
-public class BartlettWindow extends WindowFunction
+public class BartlettHannWindow extends WindowFunction
 {
-  /** Constructs a Bartlett window. */
-  public BartlettWindow()
+  /** Constructs a Bartlett-Hann window. */
+  public BartlettHannWindow()
   {
   }
 
   protected float value(int length, int index) 
   {
-      return 2f / (length - 1) * ((length - 1) / 2f - Math.abs(index - (length - 1) / 2f));
+    return (float) (0.62 - 0.48 * Math.abs(index / (length - 1) - 0.5) - 0.38 * Math.cos(TWO_PI * index / (length - 1)));
   }
 }
 

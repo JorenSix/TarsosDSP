@@ -16,25 +16,24 @@
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  */
 
-package be.hogent.tarsos.dsp.util;
+package be.hogent.tarsos.dsp.util.fft;
 
 /**
- * A Hamming window function.
+ * A Triangular window function.
  * 
  * @author Damien Di Fede
  * @author Corban Brook
  * @see <a
- *      href="http://en.wikipedia.org/wiki/Window_function#Hamming_window">The
- *      Hamming Window</a>
- * 
+ *      href="http://en.wikipedia.org/wiki/Window_function#Triangular_window_.28non-zero_end-points.29">The
+ *      Triangular Window</a>
  */
-public class HammingWindow extends WindowFunction {
-	/** Constructs a Hamming window. */
-	public HammingWindow() {
+public class TriangularWindow extends WindowFunction {
+	/** Constructs a Triangular window. */
+	public TriangularWindow() {
 	}
 
 	protected float value(int length, int index) {
-		return 0.54f - 0.46f * (float) Math.cos(TWO_PI * index / (length - 1));
+		return 2f / length
+				* (length / 2f - Math.abs(index - (length - 1) / 2f));
 	}
 }
-

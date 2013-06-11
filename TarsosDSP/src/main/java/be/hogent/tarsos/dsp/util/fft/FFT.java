@@ -24,7 +24,7 @@
 * 
 */
 
-package be.hogent.tarsos.dsp.util;
+package be.hogent.tarsos.dsp.util.fft;
 
 
 /**

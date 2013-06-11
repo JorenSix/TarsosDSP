@@ -28,11 +28,12 @@ public class Peaks {
 	public static int pre = 3;
 	public static int post = 1;
 	
-	/** General peak picking method for finding n local maxima in an array
+	/** 
+	 * General peak picking method for finding n local maxima in an array
 	 *  @param data input data
 	 *  @param peaks list of peak indexes
 	 *  @param width minimum distance between peaks
-	 * @return The number of peaks found.
+	 *  @return The number of peaks found
 	 */
 	public static int findPeaks(double[] data, int[] peaks, int width) {
 		int peakCount = 0;

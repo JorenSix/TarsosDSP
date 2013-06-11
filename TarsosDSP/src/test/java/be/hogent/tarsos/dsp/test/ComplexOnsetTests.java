@@ -10,7 +10,7 @@ import javax.sound.sampled.UnsupportedAudioFileException;
 import org.junit.Test;
 
 import be.hogent.tarsos.dsp.AudioDispatcher;
-import be.hogent.tarsos.dsp.onsets.ComplexOnsetDetection;
+import be.hogent.tarsos.dsp.onsets.ComplexOnsetDetector;
 import be.hogent.tarsos.dsp.onsets.OnsetHandler;
 
 public class ComplexOnsetTests {
@@ -28,7 +28,7 @@ public class ComplexOnsetTests {
 		}
 		AudioDispatcher d = AudioDispatcher.fromFile(audioFile, 512, 256);
 		//use the same default params as aubio: 
-		ComplexOnsetDetection cod = new ComplexOnsetDetection(512, 0.3,256.0/44100.0*4.0,-70);
+		ComplexOnsetDetector cod = new ComplexOnsetDetector(512, 0.3,256.0/44100.0*4.0,-70);
 		d.addAudioProcessor(cod);
 		cod.setHandler(new OnsetHandler() {
 			int i = 1;

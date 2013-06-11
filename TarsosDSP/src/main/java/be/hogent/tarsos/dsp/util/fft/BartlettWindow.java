@@ -16,24 +16,25 @@
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  */
 
-package be.hogent.tarsos.dsp.util;
+package be.hogent.tarsos.dsp.util.fft; 
 
 /**
- * A Lanczos window function.
- * 
+ * A Bartlett window function.
+ *
  * @author Damien Di Fede
  * @author Corban Brook
- * @see <a
- *      href="http://en.wikipedia.org/wiki/Window_function#Lanczos_window">The
- *      Lanczos Window</a>
+ * @see   <a href="http://en.wikipedia.org/wiki/Window_function#Bartlett_window_.28zero_valued_end-points.29">The Bartlett Window</a>
  */
-public class LanczosWindow extends WindowFunction {
-	/** Constructs a Lanczos window. */
-	public LanczosWindow() {
-	}
+public class BartlettWindow extends WindowFunction
+{
+  /** Constructs a Bartlett window. */
+  public BartlettWindow()
+  {
+  }
 
-	protected float value(int length, int index) {
-		float x = 2 * index / (float) (length - 1) - 1;
-		return (float) (Math.sin(Math.PI * x) / (Math.PI * x));
-	}
+  protected float value(int length, int index) 
+  {
+      return 2f / (length - 1) * ((length - 1) / 2f - Math.abs(index - (length - 1) / 2f));
+  }
 }
+

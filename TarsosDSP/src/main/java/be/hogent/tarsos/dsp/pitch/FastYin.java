@@ -38,7 +38,7 @@
 
 package be.hogent.tarsos.dsp.pitch;
 
-import be.hogent.tarsos.dsp.util.FloatFFT;
+import be.hogent.tarsos.dsp.util.fft.FloatFFT;
 
 /**
  * An implementation of the YIN pitch tracking algorithm which uses an FFT to

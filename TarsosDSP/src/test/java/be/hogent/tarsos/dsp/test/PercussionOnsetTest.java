@@ -41,7 +41,7 @@ import org.junit.Test;
 
 import be.hogent.tarsos.dsp.AudioDispatcher;
 import be.hogent.tarsos.dsp.onsets.PercussionOnsetDetector;
-import be.hogent.tarsos.dsp.onsets.PercussionOnsetDetector.PercussionHandler;
+import be.hogent.tarsos.dsp.onsets.PrintOnsetHandler;
 import be.hogent.tarsos.dsp.util.Shared;
 
 public class PercussionOnsetTest {
@@ -79,13 +79,7 @@ public class PercussionOnsetTest {
 		AudioDispatcher dispatcher = new AudioDispatcher(stream, bufferSize, overlap);
 		
 		//add a processor, handle percussion event.
-		dispatcher.addAudioProcessor(new PercussionOnsetDetector(sampleRate, bufferSize,
-				overlap, new PercussionHandler() {
-					@Override
-					public void handlePercussion(double timestamp) {
-						System.out.println(timestamp + "s");
-					}
-				}));
+		dispatcher.addAudioProcessor(new PercussionOnsetDetector(sampleRate, bufferSize,overlap, new PrintOnsetHandler()));
 		
 		//run the dispatcher (on the same thread, use start() to run it on another thread). 
 		dispatcher.run();

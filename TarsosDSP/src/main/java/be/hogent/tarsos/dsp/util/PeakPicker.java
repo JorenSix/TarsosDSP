@@ -1,9 +1,15 @@
-package be.hogent.tarsos.dsp.onsets;
+package be.hogent.tarsos.dsp.util;
 
 import java.util.Arrays;
 
 /**
  * Implements a moving mean adaptive threshold peak picker.
+ * 
+ * The implementation is a translation of peakpicker.c from Aubio, Copyright (C)
+ * 2003-2009 Paul Brossier <piem@aubio.org>
+ * 
+ * @author Joren Six
+ * @auhror Paul Brossiers
  */
 public class PeakPicker {
 	/** thresh: offset threshold [0.033 or 0.01] */
@@ -13,7 +19,7 @@ public class PeakPicker {
 	/** pre: median filter window (anti-causal part) [post-1] */
 	private int win_pre;
 	
-	/** biquad lowpass filter */
+	/** biquad low pass filter */
 	private BiQuadFilter biquad;
 	
 	/** original onsets */
@@ -28,10 +34,14 @@ public class PeakPicker {
 	private float lastPeekValue;
 	
 	/**
+	 * Initializes a new moving mean adaptive threshold peak picker.
 	 * 
 	 * @param threshold
+	 *            The threshold defines when a peak is selected. It should be
+	 *            between zero and one, 0.3 is a reasonable value. If too many
+	 *            peaks are detected go to 0.5 - 0.8.
 	 */
-	public PeakPicker(double threshold){
+	public PeakPicker(double threshold) {
 		/* Low-pass filter cutoff [0.34, 1] */		
 		biquad = new BiQuadFilter(0.1600,0.3200,0.1600,-0.5949,0.2348);
 		this.threshold = threshold;
@@ -44,14 +54,28 @@ public class PeakPicker {
 		onset_peek = new float[3];		
 	}
 	
-	/** 
-	 * Modified version for real time, moving mean adaptive threshold this method
-	 * is slightly more permissive than the off-line one, and yields to an increase
-	 * of false positives.
-	 * @param onset The new onset value.
-	 * @return  True if a peak is detected, false otherwise.
+	/**
+	 * Sets a new threshold.
+	 * 
+	 * @param threshold
+	 *            The threshold defines when a peak is selected. It should be
+	 *            between zero and one, 0.3 is a reasonable value. If too many
+	 *            peaks are detected go to 0.5 - 0.8.
+	 */
+	public void setThreshold(double threshold) {
+		this.threshold = threshold;
+	}
+	
+	/**
+	 * Modified version for real time, moving mean adaptive threshold this
+	 * method is slightly more permissive than the off-line one, and yields to
+	 * an increase of false positives.
+	 * 
+	 * @param onset
+	 *            The new onset value.
+	 * @return True if a peak is detected, false otherwise.
 	 **/
-	public boolean doPeakPicking(float onset){
+	public boolean pickPeak(float onset) {
 		float mean = 0.f;
 		float median = 0.f;
 		
@@ -93,26 +117,28 @@ public class PeakPicker {
 		
 		boolean isPeak = isPeak(1);
 		lastPeekValue = onset;
-		//System.out.println(onset + ";" + isPeak + ";" + median + ";" + mean + ";" + onset_peek[2]);
-		
+	
 		return isPeak;
 	}
 	
 	/**
-	 * @return The value of the last detected peak, or zero.
+	 * 
+	 * @return The value of the last detected peak, or zero. 
 	 */
-	public float getLastPeekValue(){
+	public float getLastPeekValue() {
 		return lastPeekValue;
 	}
 	
 	/**
 	 * Returns true if the onset is a peak.
-	 * @param index the index in onset_peak to check.
+	 * 
+	 * @param index
+	 *            the index in onset_peak to check.
 	 * @return True if the onset is a peak, false otherwise.
 	 */
-	private boolean  isPeak(int index) {
-		return (onset_peek[index] > onset_peek[index-1]
-				&&  onset_peek[index] > onset_peek[index+1]
-				&&	onset_peek[index] > 0.);
+	private boolean isPeak(int index) {
+		return (	onset_peek[index] > onset_peek[index - 1] &&
+					onset_peek[index] > onset_peek[index + 1] && 
+					onset_peek[index] > 0.);
 	}
 }

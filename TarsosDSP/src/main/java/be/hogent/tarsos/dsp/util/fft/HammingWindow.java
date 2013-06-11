@@ -16,23 +16,25 @@
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  */
 
-package be.hogent.tarsos.dsp.util;
+package be.hogent.tarsos.dsp.util.fft;
 
 /**
- * A Hann window function.
+ * A Hamming window function.
  * 
  * @author Damien Di Fede
  * @author Corban Brook
- * @see <a href="http://en.wikipedia.org/wiki/Window_function#Hann_window">The
- *      Hann Window</a>
+ * @see <a
+ *      href="http://en.wikipedia.org/wiki/Window_function#Hamming_window">The
+ *      Hamming Window</a>
+ * 
  */
-public class HannWindow extends WindowFunction {
-	/** Constructs a Hann window. */
-	public HannWindow() {
+public class HammingWindow extends WindowFunction {
+	/** Constructs a Hamming window. */
+	public HammingWindow() {
 	}
 
 	protected float value(int length, int index) {
-		//equal to 0.5 - 0.5 * Math.cos (TWO_PI * index / (length-1f));
-		return 0.5f * (1f - (float) Math.cos(TWO_PI * index / (length - 1f)));
+		return 0.54f - 0.46f * (float) Math.cos(TWO_PI * index / (length - 1));
 	}
 }
+

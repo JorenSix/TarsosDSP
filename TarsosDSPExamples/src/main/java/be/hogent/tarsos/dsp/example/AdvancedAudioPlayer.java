@@ -52,7 +52,7 @@ import javax.swing.event.ChangeListener;
 import be.hogent.tarsos.dsp.AudioEvent;
 import be.hogent.tarsos.dsp.AudioProcessor;
 import be.hogent.tarsos.dsp.example.Player.PlayerState;
-import be.hogent.tarsos.dsp.util.FFT;
+import be.hogent.tarsos.dsp.util.fft.FFT;
 
 public class AdvancedAudioPlayer extends JFrame {
 

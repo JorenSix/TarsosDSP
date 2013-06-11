@@ -28,7 +28,7 @@ package be.hogent.tarsos.dsp.onsets;
 
 import be.hogent.tarsos.dsp.AudioEvent;
 import be.hogent.tarsos.dsp.AudioProcessor;
-import be.hogent.tarsos.dsp.util.FFT;
+import be.hogent.tarsos.dsp.util.fft.FFT;
 
 /**
  * <p>
@@ -79,7 +79,7 @@ import be.hogent.tarsos.dsp.util.FFT;
  * @author Joren Six
  * @author Chris Cannam
  */
-public class PercussionOnsetDetector implements AudioProcessor {
+public class PercussionOnsetDetector implements AudioProcessor, OnsetDetector {
 
 	public static final double DEFAULT_THRESHOLD = 8;
 	
@@ -92,7 +92,7 @@ public class PercussionOnsetDetector implements AudioProcessor {
 
 	private float dfMinus1, dfMinus2;
 
-	private final PercussionHandler handler;
+	private OnsetHandler handler;
 
 	private final float sampleRate;//samples per second (Hz)
 	private long processedSamples;//in samples
@@ -111,20 +111,6 @@ public class PercussionOnsetDetector implements AudioProcessor {
 	private final double threshold;
 
 	/**
-	 * Describes a simple interface to handle percussion onsets: a time stamp (in
-	 * seconds) signifies the onset.
-	 * 
-	 * @author Joren Six
-	 */
-	public interface PercussionHandler {
-		/**
-		 * Is called when a percussion onset is detected.
-		 * @param timestamp a time stamp in seconds.
-		 */
-		void handlePercussion(double timestamp);
-	}
-
-	/**
 	 * Create a new percussion onset detector. With a default sensitivity and threshold.
 	 * 
 	 * @param sampleRate
@@ -137,7 +123,7 @@ public class PercussionOnsetDetector implements AudioProcessor {
 	 *            An interface implementor to handle percussion onset events.
 	 */
 	public PercussionOnsetDetector(float sampleRate, int bufferSize,
-			int bufferOverlap, PercussionHandler handler) {
+			int bufferOverlap, OnsetHandler handler) {
 		this(sampleRate, bufferSize, handler,
 				DEFAULT_SENSITIVITY, DEFAULT_THRESHOLD);
 	}
@@ -158,7 +144,7 @@ public class PercussionOnsetDetector implements AudioProcessor {
 	 *            Energy rise within a frequency bin necessary to count toward
 	 *            broadband total (dB). In [0-20].
 	 */
-	public PercussionOnsetDetector(float sampleRate, int bufferSize, PercussionHandler handler, double sensitivity, double threshold) {
+	public PercussionOnsetDetector(float sampleRate, int bufferSize, OnsetHandler handler, double sensitivity, double threshold) {
 		fft = new FFT(bufferSize / 2);
 		this.threshold = threshold;
 		this.sensitivity = sensitivity;
@@ -193,7 +179,7 @@ public class PercussionOnsetDetector implements AudioProcessor {
 				&& dfMinus1 >= binsOverThreshold
 				&& dfMinus1 > ((100 - sensitivity) * audioFloatBuffer.length) / 200) {
 			float timeStamp = processedSamples / sampleRate;
-			handler.handlePercussion(timeStamp);
+			handler.handleOnset(timeStamp,-1);
 		}
 
 		dfMinus2 = dfMinus1;
@@ -204,5 +190,10 @@ public class PercussionOnsetDetector implements AudioProcessor {
 
 	@Override
 	public void processingFinished() {
+	}
+
+	@Override
+	public void setHandler(OnsetHandler handler) {
+		this.handler = handler;
 	}
 }

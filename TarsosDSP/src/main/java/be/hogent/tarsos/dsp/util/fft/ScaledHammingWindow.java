@@ -1,4 +1,4 @@
-package be.hogent.tarsos.dsp.util;
+package be.hogent.tarsos.dsp.util.fft;
 
 public class ScaledHammingWindow extends WindowFunction {
 

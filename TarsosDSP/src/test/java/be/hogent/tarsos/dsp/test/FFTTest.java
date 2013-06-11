@@ -44,7 +44,7 @@ import be.hogent.tarsos.dsp.AudioEvent;
 import be.hogent.tarsos.dsp.AudioPlayer;
 import be.hogent.tarsos.dsp.AudioProcessor;
 import be.hogent.tarsos.dsp.util.AudioFloatConverter;
-import be.hogent.tarsos.dsp.util.FFT;
+import be.hogent.tarsos.dsp.util.fft.FFT;
 
 public class FFTTest {
 	/**

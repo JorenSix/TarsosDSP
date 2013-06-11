@@ -8,17 +8,25 @@ import be.hogent.tarsos.dsp.AudioDispatcher;
 import be.hogent.tarsos.dsp.AudioEvent;
 import be.hogent.tarsos.dsp.AudioProcessor;
 import be.hogent.tarsos.dsp.beatroot.Peaks;
-import be.hogent.tarsos.dsp.util.FFT;
-import be.hogent.tarsos.dsp.util.ScaledHammingWindow;
+import be.hogent.tarsos.dsp.util.fft.FFT;
+import be.hogent.tarsos.dsp.util.fft.ScaledHammingWindow;
 
 /**
+ * <p>
  * A non real-time spectral flux onset detection method, as implemented in the
- * BeatRoot system of Centre for Digital Music, Queen Mary, University of London.
+ * BeatRoot system of Centre for Digital Music, Queen Mary, University of
+ * London.
+ * </p>
+ * 
+ * <p>
+ * This onset detection function does not, NOT work in real-time. It analyzes an
+ * audio-stream and detects onsets during a post processing step.
+ * </p>
  * 
  * @author Joren Six
  * @author Simon Dixon
  */
-public class BeatRootSpectralFluxOnsetDetection implements AudioProcessor {
+public class BeatRootSpectralFluxOnsetDetector implements AudioProcessor, OnsetDetector {
 	/** RMS amplitude of the current frame. */
 	private double frameRMS;
 	
@@ -75,7 +83,7 @@ public class BeatRootSpectralFluxOnsetDetection implements AudioProcessor {
 	private int totalFrames;
 	
 	/** RMS frame energy below this value results in the frame being set to zero,
-	 *  so that normalisation does not have undesired side-effects. */
+	 *  so that normalization does not have undesired side-effects. */
 	public static double silenceThreshold = 0.0004;
 	
 	/** For dynamic range compression, this value is added to the log magnitude
@@ -83,10 +91,10 @@ public class BeatRootSpectralFluxOnsetDetection implements AudioProcessor {
 	 */
 	public static double rangeThreshold = 10;
 	
-	/** Determines method of normalisation. Values can be:<ul>
-	 *  <li>0: no normalisation</li>
-	 *  <li>1: normalisation by current frame energy</li>
-	 *  <li>2: normalisation by exponential average of frame energy</li>
+	/** Determines method of normalization. Values can be:<ul>
+	 *  <li>0: no normalization</li>
+	 *  <li>1: normalization by current frame energy</li>
+	 *  <li>2: normalization by exponential average of frame energy</li>
 	 *  </ul>
 	 */
 	public static int normaliseMode = 2;
@@ -100,7 +108,7 @@ public class BeatRootSpectralFluxOnsetDetection implements AudioProcessor {
 	
 	private final FFT fft;
 	
-	public BeatRootSpectralFluxOnsetDetection(AudioDispatcher d,int fftSize, int hopSize){
+	public BeatRootSpectralFluxOnsetDetector(AudioDispatcher d,int fftSize, int hopSize){
 		this.hopSize = hopSize; 
 		this.hopTime = hopSize/d.getFormat().getSampleRate();
 		this.fftSize = fftSize;
@@ -211,7 +219,7 @@ public class BeatRootSpectralFluxOnsetDetection implements AudioProcessor {
 	} // makeFreqMap()
 	
 	
-	public void findOnsets(double p1, double p2){
+	private void findOnsets(double p1, double p2){
 		LinkedList<Integer> peaks = Peaks.findPeaks(spectralFlux, (int)Math.round(0.06 / hopTime), p1, p2, true);
 		Iterator<Integer> it = peaks.iterator();
 	
@@ -226,7 +234,7 @@ public class BeatRootSpectralFluxOnsetDetection implements AudioProcessor {
 	
 	public void setHandler(OnsetHandler handler) {
 		this.handler = handler;
-	}	
+	}
 
 	@Override
 	public void processingFinished() {

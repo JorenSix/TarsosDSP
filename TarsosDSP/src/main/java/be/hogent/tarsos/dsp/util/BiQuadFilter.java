@@ -1,5 +1,16 @@
-package be.hogent.tarsos.dsp.onsets;
+package be.hogent.tarsos.dsp.util;
 
+/**
+ * Implements a <a
+ * href="http://en.wikipedia.org/wiki/Digital_biquad_filter">BiQuad filter</a>,
+ * which can be used for e.g. low pass filtering.
+ * 
+ * The implementation is a translation of biquad.c from Aubio, Copyright (C)
+ * 2003-2009 Paul Brossier <piem@aubio.org>
+ * 
+ * @author Joren Six
+ * @auhror Paul Brossiers
+ */
 public class BiQuadFilter {
 
 	private double i1;
@@ -33,8 +44,9 @@ public class BiQuadFilter {
 		  /* apply filtering */
 		  doBiQuad(in);
 		  /* invert  */
-		  for (int j = 0; j < in.length; j++)
+		  for (int j = 0; j < in.length; j++){
 		    tmp[in.length-j-1] = in[j];
+		  }
 		  /* mirror again */
 		  mir = 2*tmp[0];
 		  i1 = mir - tmp[2];
@@ -42,17 +54,15 @@ public class BiQuadFilter {
 		  /* apply filtering */
 		  doBiQuad(tmp);
 		  /* invert back */
-		  for (int j = 0; j < in.length; j++)
+		  for (int j = 0; j < in.length; j++){
 		    in[j] = tmp[in.length-j-1];
+		  }
 	}
 
-	public void doBiQuad(float[] in) {
-		
-
+	private void doBiQuad(float[] in) {
 		for (int j = 0; j < in.length; j++) {
 			double i0 = in[j];
-			double o0 = b1 * i0 + b2 * i1 + b3 * i2 - a2 * o1 - a3 * o2;// +
-																		// 1e-37;
+			double o0 = b1 * i0 + b2 * i1 + b3 * i2 - a2 * o1 - a3 * o2;
 			in[j] = (float) o0;
 			i2 = i1;
 			i1 = i0;

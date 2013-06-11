@@ -2,8 +2,9 @@ package be.hogent.tarsos.dsp.onsets;
 
 import be.hogent.tarsos.dsp.AudioEvent;
 import be.hogent.tarsos.dsp.AudioProcessor;
-import be.hogent.tarsos.dsp.util.FFT;
-import be.hogent.tarsos.dsp.util.HannWindow;
+import be.hogent.tarsos.dsp.util.PeakPicker;
+import be.hogent.tarsos.dsp.util.fft.FFT;
+import be.hogent.tarsos.dsp.util.fft.HannWindow;
 
 /**
  * A complex Domain Method onset detection function
@@ -12,9 +13,13 @@ import be.hogent.tarsos.dsp.util.HannWindow;
  * onset detection for musical signals. In Proceedings of the Digital Audio
  * Effects Conference, DAFx-03, pages 90-93, London, UK, 2003
  * 
+ * The implementation is a translation of onset.c from Aubio, Copyright (C)
+ * 2003-2009 Paul Brossier <piem@aubio.org>
+ * 
  * @author Joren Six
+ * @author Paul Brossiers
  */
-public class ComplexOnsetDetection implements AudioProcessor{
+public class ComplexOnsetDetector implements AudioProcessor, OnsetDetector{
 	
 	
 	/**
@@ -68,7 +73,7 @@ public class ComplexOnsetDetection implements AudioProcessor{
 	 * @param silenceThreshold The threshold that defines when a buffer is silent. Default is -70dBSPL. -90 is also used.
 	 * @param minimumInterOnsetInterval The minimum inter-onset-interval in seconds. When two onsets are detected within this interval the last one does not count. Default is 0.004 seconds.
 	 */
-	public ComplexOnsetDetection(int fftSize,double peakThreshold,double minimumInterOnsetInterval,double silenceThreshold){
+	public ComplexOnsetDetector(int fftSize,double peakThreshold,double minimumInterOnsetInterval,double silenceThreshold){
 		fft = new FFT(fftSize,new HannWindow());
 		this.silenceThreshold = silenceThreshold;
 		this.minimumInterOnsetInterval = minimumInterOnsetInterval;
@@ -84,20 +89,18 @@ public class ComplexOnsetDetection implements AudioProcessor{
 		handler = new PrintOnsetHandler();
 	}
 	
-	public ComplexOnsetDetection(int fftSize){
+	public ComplexOnsetDetector(int fftSize){
 		this(fftSize,0.3);
 	}
 	
-	public ComplexOnsetDetection(int fftSize,double peakThreshold){
+	public ComplexOnsetDetector(int fftSize,double peakThreshold){
 		this(fftSize,peakThreshold,0.03);
 	}
 	
-	public ComplexOnsetDetection(int fftSize,double peakThreshold,double minimumInterOnsetInterval){
+	public ComplexOnsetDetector(int fftSize,double peakThreshold,double minimumInterOnsetInterval){
 		this(fftSize,peakThreshold,minimumInterOnsetInterval,-70.0);
 	}
-	
-	
-	
+
 	@Override
 	public boolean process(AudioEvent audioEvent) {
 		onsetDetection(audioEvent);
@@ -114,8 +117,6 @@ public class ComplexOnsetDetection implements AudioProcessor{
 		
 		float onsetValue = 0;
 		
-
-
 		for(int j = 0 ; j < power.length ; j++){
 			//int imgIndex = (power.length - 1) * 2 - j;
 			
@@ -124,8 +125,7 @@ public class ComplexOnsetDetection implements AudioProcessor{
 			
 			// compute the euclidean distance in the complex domain
 		    // sqrt ( r_1^2 + r_2^2 - 2 * r_1 * r_2 * \cos ( \phi_1 - \phi_2 ) )
-			onsetValue += Math.sqrt(Math.abs(Math.pow(oldmag[j],2) + Math.pow(power[j],2) 
-					- 2. * oldmag[j] *power[j] * Math.cos(dev1[j] - phase[j])));
+			onsetValue += Math.sqrt(Math.abs(Math.pow(oldmag[j],2) + Math.pow(power[j],2) - 2. * oldmag[j] *power[j] * Math.cos(dev1[j] - phase[j])));
 					
 			/* swap old phase data (need to remember 2 frames behind)*/
 			theta2[j] = theta1[j];
@@ -136,11 +136,11 @@ public class ComplexOnsetDetection implements AudioProcessor{
 		}
 		
 		
-		boolean isOnset = peakPicker.doPeakPicking(onsetValue);
+		boolean isOnset = peakPicker.pickPeak(onsetValue);
 		if(isOnset){
 			if(audioEvent.isSilence(silenceThreshold)){
 				isOnset = false;
-			}else{				
+			} else {				
 				double delay = ((audioEvent.getOverlap()  * 4.3 ))/ audioEvent.getSampleRate(); 
 				double onsetTime = audioEvent.getTimeStamp() - delay;
 				if(onsetTime - lastOnset > minimumInterOnsetInterval){
@@ -154,6 +154,10 @@ public class ComplexOnsetDetection implements AudioProcessor{
 	public void setHandler(OnsetHandler handler) {
 		this.handler = handler;
 	}	
+	
+	public void setThreshold(double threshold){
+		this.peakPicker.setThreshold(threshold);
+	}
 
 	@Override
 	public void processingFinished() {

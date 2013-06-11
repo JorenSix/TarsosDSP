@@ -58,11 +58,11 @@ import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
 
 import be.hogent.tarsos.dsp.AudioDispatcher;
+import be.hogent.tarsos.dsp.onsets.ComplexOnsetDetector;
 import be.hogent.tarsos.dsp.onsets.OnsetHandler;
-import be.hogent.tarsos.dsp.onsets.PercussionOnsetDetector;
 
 
-public class PercussionDetector extends JFrame implements OnsetHandler {
+public class OnsetDetector extends JFrame implements OnsetHandler {
 
 	/**
 	 * 
@@ -72,10 +72,9 @@ public class PercussionDetector extends JFrame implements OnsetHandler {
 	private final JTextArea textArea;
 	ArrayList<Clip> clipList;
 	int counter;
-	double sensitivity;
-	double threshold;
+	double threshold = 0.4;
 
-	public PercussionDetector() {
+	public OnsetDetector() {
 		this.setLayout(new BorderLayout());
 		this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		this.setTitle("Percussion Detector");
@@ -97,20 +96,15 @@ public class PercussionDetector extends JFrame implements OnsetHandler {
 					}
 				});
 		
-		
-		JSlider sensitivitySlider = initializeSensitivitySlider();		
+			
 		JSlider thresholdSlider = initialzeThresholdSlider();		
 		JPanel params = new JPanel(new GridLayout(0,1));
 		params.setBorder(new TitledBorder("2. Set the algorithm parameters"));
 		
 		JLabel label = new JLabel("Threshold");
-		label.setToolTipText("Energy rise within a frequency bin necessary to count toward broadband total (dB).");
+		label.setToolTipText("Peak picking threshold.");
 		params.add(label);
 		params.add(thresholdSlider);
-		label = new JLabel("Sensitivity");
-		label.setToolTipText("Sensitivity of peak detector applied to broadband detection function (%).");
-		params.add(label);
-		params.add(sensitivitySlider);
 		
 		JPanel paramsAndInputPanel = new JPanel(new GridLayout(1,0));
 		paramsAndInputPanel.add(inputPanel);
@@ -129,59 +123,26 @@ public class PercussionDetector extends JFrame implements OnsetHandler {
 	}
 	
 	private JSlider initialzeThresholdSlider() {
-		JSlider thresholdSlider = new JSlider(0,20);
+		JSlider thresholdSlider = new JSlider(0,100);
 		thresholdSlider.setValue((int)threshold);
 		thresholdSlider.setPaintLabels(true);
 		thresholdSlider.setPaintTicks(true);
-		thresholdSlider.setMajorTickSpacing(5);
-		thresholdSlider.setMinorTickSpacing(1);
+		thresholdSlider.setMajorTickSpacing(20);
+		thresholdSlider.setMinorTickSpacing(10);
+		thresholdSlider.setValue(25);
 		thresholdSlider.addChangeListener(new ChangeListener(){
 			@Override
 			public void stateChanged(ChangeEvent e) {
 				JSlider source = (JSlider) e.getSource();
 			    if (!source.getValueIsAdjusting()) {
-			        threshold = source.getValue();
-			        try {
-						setNewMixer(currentMixer);
-					} catch (LineUnavailableException e1) {
-						// TODO Auto-generated catch block
-						e1.printStackTrace();
-					} catch (UnsupportedAudioFileException e1) {
-						// TODO Auto-generated catch block
-						e1.printStackTrace();
-					}
+			       threshold = source.getValue()/100.0;
+			       if(onsetDetector!=null){
+			    	   onsetDetector.setThreshold(threshold);
+			       }
 			    }
 			}
 		});
 		return thresholdSlider;
-	}
-
-	private JSlider initializeSensitivitySlider(){
-		JSlider sensitivitySlider = new JSlider(0,100);
-		sensitivitySlider.setValue((int)sensitivity);
-		sensitivitySlider.setPaintLabels(true);
-		sensitivitySlider.setPaintTicks(true);
-		sensitivitySlider.setMajorTickSpacing(20);
-		sensitivitySlider.setMinorTickSpacing(10);
-		sensitivitySlider.addChangeListener(new ChangeListener(){
-			@Override
-			public void stateChanged(ChangeEvent e) {
-				JSlider source = (JSlider) e.getSource();
-			    if (!source.getValueIsAdjusting()) {
-			        sensitivity = source.getValue();
-			        try {
-						setNewMixer(currentMixer);
-					} catch (LineUnavailableException e1) {
-						// TODO Auto-generated catch block
-						e1.printStackTrace();
-					} catch (UnsupportedAudioFileException e1) {
-						// TODO Auto-generated catch block
-						e1.printStackTrace();
-					}
-			    }
-			}
-		});
-		return sensitivitySlider;
 	}
 	
 	private void addClips(){
@@ -212,6 +173,7 @@ public class PercussionDetector extends JFrame implements OnsetHandler {
 		}
 	}
 
+	ComplexOnsetDetector onsetDetector;
 	AudioDispatcher dispatcher;
 	Mixer currentMixer;
 	private void setNewMixer(Mixer mixer) throws LineUnavailableException,
@@ -226,7 +188,7 @@ public class PercussionDetector extends JFrame implements OnsetHandler {
 		int bufferSize = 512;
 		int overlap = 0;
 		
-		textArea.append("Started listening with " + Shared.toLocalString(mixer.getMixerInfo().getName()) + "\n\tparams: " + sensitivity + "%, " + threshold + "dB\n");
+		textArea.append("Started listening with " + Shared.toLocalString(mixer.getMixerInfo().getName()) + "\n\tparams: " + threshold + "dB\n");
 
 		final AudioFormat format = new AudioFormat(sampleRate, 16, 1, true,
 				true);
@@ -243,16 +205,13 @@ public class PercussionDetector extends JFrame implements OnsetHandler {
 		dispatcher = new AudioDispatcher(stream, bufferSize,
 				overlap);
 
+		onsetDetector = new ComplexOnsetDetector(bufferSize, threshold,0.07,-60);
+		onsetDetector.setHandler(this);
 		// add a processor, handle percussion event.
-		dispatcher.addAudioProcessor(new PercussionOnsetDetector(sampleRate,
-				bufferSize, this,sensitivity,threshold));
+		dispatcher.addAudioProcessor(onsetDetector);
 
 		// run the dispatcher (on a new thread).
 		new Thread(dispatcher,"Audio dispatching").start();
-	}
-
-	public void handlePercussion(double timestamp) {
-		
 	}
 
 	public static void main(String... strings) throws InterruptedException,
@@ -265,7 +224,7 @@ public class PercussionDetector extends JFrame implements OnsetHandler {
 				} catch (Exception e) {
 					//ignore failure to set default look en feel;
 				}
-				JFrame frame = new PercussionDetector();
+				JFrame frame = new OnsetDetector();
 				frame.pack();
 				frame.setSize(640, 480);
 				frame.setVisible(true);

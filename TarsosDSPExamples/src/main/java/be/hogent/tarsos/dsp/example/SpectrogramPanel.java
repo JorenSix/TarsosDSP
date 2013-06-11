@@ -35,7 +35,7 @@ import java.awt.image.BufferedImage;
 
 import javax.swing.JComponent;
 
-import be.hogent.tarsos.dsp.util.FFT;
+import be.hogent.tarsos.dsp.util.fft.FFT;
 
 public class SpectrogramPanel extends JComponent implements ComponentListener{
 	/**
