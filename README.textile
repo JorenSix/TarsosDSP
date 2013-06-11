@@ -106,6 +106,10 @@ The sample rate conversion feature is implemented by __Laszlo systems__ in the "
 
 Various FFT window functions are done by Damien Di Fede and Corban Brook for the GPL'd "Minim":http://code.compartmental.net/tools/minim/ project.
 
+Beat induction based on onsets and saliences is done using code from "Simon Dixon's BeatRoot system":http://www.eecs.qmul.ac.uk/~simond/beatroot/ the algorithm is documented in the 2001 JNMR paper "__Automatic Extraction of Tempo and Beat From Expressive Performances__":http://www.tandfonline.com/doi/abs/10.1076/jnmr.30.1.39.7119#.UbcsROcW0r0 and in the 2007 JNMR article "__Evaluation of the Audio Beat Tracking System BeatRoot__":http://www.tandfonline.com/doi/full/10.1080/09298210701653310#.UbcsgecW0r0
+
+A complex domain onset detection function is implemented using Aubio as an inspiration. Aubio, by __Paul Brossiers__ contains very clean object oriented c-code, the cleanest c-code I have ever seen. The algorithm is described in "__Complex Domain Onset Detection for Musical Signals__":http://www-student.elec.qmul.ac.uk/people/juan/Documents/Duxbury-DAFx-2003.pdf by Christopher Duxbury, Mike E. Davies, and Mark B. Sandler, in Proceedings of the Digital Audio Effects Conference, DAFx-03, pages 90-93, London, UK, 2003
+
 h2. Changelog
 
 <dt>Version 1.0</dt><dd>2012-04-24</dd> First release which includes several pitch trackers and a time stretching algorithm, amongst other things. Downloads and javadoc API can be found at the "TarsosDSP release directory":http://tarsos.0110.be/releases/TarsosDSP/
@@ -131,4 +135,5 @@ Included a resample feature, implemented by libresample4j. Together with the WSO
 <dt>Version 1.5</dt><dd>2013-04-30</dd>
 Converted TarsosDSP to maven. This is known as the Malaryta-release. The "Malaryta" release is provided to you by "RikkiMongoose":http://github.com/rikkimongoose (idea, documents, git things) and "Ultar":http://github.com/ultar (converting to maven, refactoring). Malaryta is the capital of Malaryta Raion, Brest Region in the Republic of Belarus. Both of developers spent their childhood in Brest, and think that title Malaryta is as strange as Ubuntu or Whistler. The 1.5 release also includes various FFT window functions from the cool "Minim project":http://code.compartmental.net/tools/minim/ by Damien Di Fede. 
 
-
+<dt>Version 1.6</dt><dd>2013-06-12</dd>
+This release features practical onset and beat detection algorithms. A complex domain onset detection and a spectral flux onset detection algorithm are added. This release also includes a way to guess a beat from onsets. Parts of the Beatroot system, by Simon Dixon, are included to this end.
