@@ -26,6 +26,25 @@
 			<fileset dir="../examples/be/hogent/tarsos/dsp/example/resources" />
 		</copy>
 	</target>
+	
+	<target name="compile-debug">
+		<mkdir dir="../bin" />
+		<javac 
+		    srcdir="../src" 
+		    debug="true"
+  			debuglevel="lines,vars,source"
+  			destdir="../bin" />
+		<javac 
+		    srcdir="../examples" 
+		    debug="true"
+  			debuglevel="lines,vars,source"
+		    destdir="../bin" />
+
+		<!-- copy all needed resources to bin dir -->
+		<copy todir="../bin/be/hogent/tarsos/dsp/example/resources">
+			<fileset dir="../examples/be/hogent/tarsos/dsp/example/resources" />
+		</copy>
+	</target>
 
 
 
@@ -34,8 +53,8 @@
 		<javadoc access="public" author="true" classpath="${junit_jar}" destdir="../doc" doctitle="TarsosDSP API ${version}-${DSTAMP}" nodeprecated="false" nodeprecatedlist="false" noindex="false" nonavbar="false" notree="false" packagenames="be.hogent.tarsos.dsp.test,be.hogent.tarsos.dsp.util,be.hogent.tarsos.dsp,be.hogent.tarsos.dsp.pitch" source="1.6" sourcepath="../src" splitindex="true" use="true" version="true" />
 	</target>
 
-	<!-- Creates the TarsosDSP jar library both with and withouth source code -->
-	<target name="tarsos_dsp_library" depends="compile">
+	<!-- Creates the TarsosDSP jar library both with and without source code -->
+	<target name="tarsos_dsp_library" depends="compile-debug">
 
 		<!-- with source code -->
 		<jar destfile="TarsosDSP-${version}.jar" filesetmanifest="mergewithoutmain">
