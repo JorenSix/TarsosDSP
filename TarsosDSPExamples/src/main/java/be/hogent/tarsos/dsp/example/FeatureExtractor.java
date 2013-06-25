@@ -37,6 +37,9 @@ import be.hogent.tarsos.dsp.AudioDispatcher;
 import be.hogent.tarsos.dsp.AudioEvent;
 import be.hogent.tarsos.dsp.AudioProcessor;
 import be.hogent.tarsos.dsp.SilenceDetector;
+import be.hogent.tarsos.dsp.beatroot.BeatRootOnsetEventHandler;
+import be.hogent.tarsos.dsp.onsets.ComplexOnsetDetector;
+import be.hogent.tarsos.dsp.onsets.OnsetHandler;
 import be.hogent.tarsos.dsp.pitch.PitchDetectionHandler;
 import be.hogent.tarsos.dsp.pitch.PitchDetectionResult;
 import be.hogent.tarsos.dsp.pitch.PitchProcessor;
@@ -55,6 +58,8 @@ public class FeatureExtractor {
 		featureExtractors.add(new SoundPressureLevelExtractor());
 		featureExtractors.add(new PitchExtractor());
 		featureExtractors.add(new RootMeanSquareExtractor());
+		featureExtractors.add(new OnsetExtractor());
+		featureExtractors.add(new BeatExtractor());
 		
 		checkArgumentsAndRun(arguments);
 	}
@@ -275,7 +280,6 @@ public class FeatureExtractor {
 			dispatcher.addAudioProcessor(new PitchProcessor(algo, samplerate, size, this));
 			dispatcher.run();
 			return true;
-			
 		}
 
 		@Override
@@ -288,6 +292,94 @@ public class FeatureExtractor {
 		}
 	}
 	
-	
+	private class OnsetExtractor implements FeatureExtractorApp, OnsetHandler{
 
+		@Override
+		public String name() {
+			return "onset";
+		}
+
+		@Override
+		public String description() {
+			String descr = "\tCalculates onsets using a complex domain onset detector. " +
+					"\n\tThe output is a semicolon separated list of a timestamp, and a salliance. ";
+			descr += "\n\n\tinput.wav\t\ta readable wav file.";
+			descr += "";
+			return descr;
+		}
+
+		@Override
+		public String synopsis() {
+			String helpString = "input.wav";			
+			return helpString;
+		}
+
+		@Override
+		public boolean run(String... args) throws UnsupportedAudioFileException, IOException {
+			String inputFile = args[1];
+			File audioFile = new File(inputFile);
+			int size = 512;
+			int overlap = 256;
+			AudioDispatcher dispatcher = AudioDispatcher.fromFile(audioFile, size, overlap);
+			ComplexOnsetDetector detector = new ComplexOnsetDetector(size);
+			detector.setHandler(this);
+			dispatcher.addAudioProcessor(detector);
+			
+			dispatcher.run();
+			return true;
+		}
+
+		@Override
+		public void handleOnset(double time, double salience) {
+			System.out.println(time + ";" + salience);
+		}
+	}
+	
+	private class BeatExtractor implements FeatureExtractorApp, OnsetHandler{
+
+		@Override
+		public String name() {
+			return "beat";
+		}
+
+		@Override
+		public String description() {
+			String descr = "\tCalculates onsets using a complex domain onset detector. " +
+					"\n\tThe output is a semicolon separated list of a timestamp, and a salliance. ";
+			descr += "\n\n\tinput.wav\t\ta readable wav file.";
+			descr += "";
+			return descr;
+		}
+
+		@Override
+		public String synopsis() {
+			String helpString = "input.wav";			
+			return helpString;
+		}
+
+		@Override
+		public boolean run(String... args) throws UnsupportedAudioFileException, IOException {
+			String inputFile = args[1];
+			File audioFile = new File(inputFile);
+			int size = 512;
+			int overlap = 256;
+			AudioDispatcher dispatcher = AudioDispatcher.fromFile(audioFile, size, overlap);
+			
+			ComplexOnsetDetector detector = new ComplexOnsetDetector(size);
+			BeatRootOnsetEventHandler handler = new BeatRootOnsetEventHandler();
+			detector.setHandler(handler);
+			
+			dispatcher.addAudioProcessor(detector);
+			dispatcher.run();
+			
+			handler.trackBeats(this);
+			
+			return true;
+		}
+		
+		@Override
+		public void handleOnset(double time, double salience) {
+			System.out.println(time);
+		}
+	}
 }
