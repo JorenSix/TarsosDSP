@@ -110,6 +110,11 @@ Beat induction based on onsets and saliences is done using code from "Simon Dixo
 
 A complex domain onset detection function is implemented using Aubio as an inspiration. Aubio, by __Paul Brossiers__ contains very clean object oriented c-code, the cleanest c-code I have ever seen. The algorithm is described in "__Complex Domain Onset Detection for Musical Signals__":http://www-student.elec.qmul.ac.uk/people/juan/Documents/Duxbury-DAFx-2003.pdf by Christopher Duxbury, Mike E. Davies, and Mark B. Sandler, in Proceedings of the Digital Audio Effects Conference, DAFx-03, pages 90-93, London, UK, 2003
 
+An implementation of the Constant-Q transform by Karl Helgason for the <a href="http://rasmusdsp.sourceforge.ne">RasmusDSP</a> project has been adapted for use in TarsosDSP. References: 
+Judith C. Brown, "Calculation of a constant Q spectral transform":http://www.wellesley.edu/Physics/brown/pubs/cq1stPaper.pdf, J. Acoust. Soc. Am., 89(1): 425-434, 1991.
+Judith C. Brown and Miller S. Puckette, "An efficient algorithm for the calculation of a constant Q transform":http://www.wellesley.edu/Physics/brown/pubs/effalgV92P2698-P2701.pdf,  J. Acoust. Soc. Am.,Vol. 92, No. 5, November 1992
+Benjamin Blankertz, "The Constant Q Transform":http://wwwmath1.uni-muenster.de/logik/org/staff/blankertz/constQ/constQ.pdf
+
 h2. Changelog
 
 <dt>Version 1.0</dt><dd>2012-04-24</dd> First release which includes several pitch trackers and a time stretching algorithm, amongst other things. Downloads and javadoc API can be found at the "TarsosDSP release directory":http://tarsos.0110.be/releases/TarsosDSP/
@@ -136,4 +141,4 @@ Included a resample feature, implemented by libresample4j. Together with the WSO
 Converted TarsosDSP to maven. This is known as the Malaryta-release. The "Malaryta" release is provided to you by "RikkiMongoose":http://github.com/rikkimongoose (idea, documents, git things) and "Ultar":http://github.com/ultar (converting to maven, refactoring). Malaryta is the capital of Malaryta Raion, Brest Region in the Republic of Belarus. Both of developers spent their childhood in Brest, and think that title Malaryta is as strange as Ubuntu or Whistler. The 1.5 release also includes various FFT window functions from the cool "Minim project":http://code.compartmental.net/tools/minim/ by Damien Di Fede. 
 
 <dt>Version 1.6</dt><dd>2013-06-12</dd>
-This release features practical onset and beat detection algorithms. A complex domain onset detection and a spectral flux onset detection algorithm are added. This release also includes a way to guess a beat from onsets. Parts of the "BeatRoot system":http://www.eecs.qmul.ac.uk/~simond/beatroot/, by Simon Dixon, are included to this end.
+This release features practical onset and beat detection algorithms. A complex domain onset detection and a spectral flux onset detection algorithm are added. This release also includes a way to guess a beat from onsets. Parts of the "BeatRoot system":http://www.eecs.qmul.ac.uk/~simond/beatroot/, by Simon Dixon, are included to this end. Also included in this release is an implementation of the Constant-Q transform.
