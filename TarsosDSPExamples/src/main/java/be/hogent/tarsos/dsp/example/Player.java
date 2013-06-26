@@ -37,7 +37,6 @@ import javax.sound.sampled.AudioSystem;
 import javax.sound.sampled.LineUnavailableException;
 import javax.sound.sampled.UnsupportedAudioFileException;
 
-
 import be.hogent.tarsos.dsp.AudioDispatcher;
 import be.hogent.tarsos.dsp.AudioEvent;
 import be.hogent.tarsos.dsp.AudioPlayer;
@@ -45,7 +44,6 @@ import be.hogent.tarsos.dsp.AudioProcessor;
 import be.hogent.tarsos.dsp.GainProcessor;
 import be.hogent.tarsos.dsp.WaveformSimilarityBasedOverlapAdd;
 import be.hogent.tarsos.dsp.WaveformSimilarityBasedOverlapAdd.Parameters;
-import be.hogent.tarsos.dsp.effects.FlangerEffect;
 
 public class Player implements AudioProcessor {
 	
@@ -133,7 +131,6 @@ public class Player implements AudioProcessor {
 				dispatcher.skip(startTime);
 				
 				dispatcher.addAudioProcessor(this);
-				dispatcher.addAudioProcessor(new FlangerEffect(0.05, 0.8, 44100, 1));
 				dispatcher.addAudioProcessor(beforeWSOLAProcessor);
 				dispatcher.addAudioProcessor(wsola);
 				dispatcher.addAudioProcessor(afterWSOLAProcessor);

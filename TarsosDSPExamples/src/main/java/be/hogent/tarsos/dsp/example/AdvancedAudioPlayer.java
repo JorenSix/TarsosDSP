@@ -27,7 +27,7 @@
 package be.hogent.tarsos.dsp.example;
 
 import java.awt.BorderLayout;
-import java.awt.Dimension;
+import java.awt.Component;
 import java.awt.GridLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -44,6 +44,7 @@ import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JSlider;
+import javax.swing.JSplitPane;
 import javax.swing.SwingUtilities;
 import javax.swing.border.TitledBorder;
 import javax.swing.event.ChangeEvent;
@@ -102,17 +103,18 @@ public class AdvancedAudioPlayer extends JFrame {
 
 	
 	public AdvancedAudioPlayer(){
-		this.setLayout(new GridLayout(0,1));
+		this.setLayout(new BorderLayout());
 		this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		this.setTitle("Advanced Audio AdvancedAudioPlayer (AAP)");
-		this.add(createGainPanel());
-		this.add(createTempoPanel());
-		this.add(createProgressPanel());
-		this.add(createButtonPanel());
-		JFrame frame =  new JFrame();
-		frame.setSize(new Dimension(600,800));
-		frame.add(panel);
-		frame.setVisible(true);
+		
+		JPanel subPanel = new JPanel(new GridLayout(0,1));
+		
+		subPanel.add(createGainPanel());
+		subPanel.add(createTempoPanel());
+		subPanel.add(createProgressPanel());
+		subPanel.add(createButtonPanel());
+		
+		this.add(new JSplitPane(JSplitPane.VERTICAL_SPLIT, subPanel, createSpectrogramPanel()));
 		
 		player = new Player(processor,fftProcessor);
 		player.addPropertyChangeListener(new PropertyChangeListener() {
@@ -127,6 +129,10 @@ public class AdvancedAudioPlayer extends JFrame {
 		reactToPlayerState(player.getState());
 	}
 	
+	private Component createSpectrogramPanel() {
+		return panel;
+	}
+
 	private void reactToPlayerState(PlayerState newState){
 		positionSlider.setEnabled(newState != PlayerState.NO_FILE_LOADED);
 		playButton.setEnabled(newState != PlayerState.PLAYING && newState != PlayerState.NO_FILE_LOADED);
@@ -334,10 +340,9 @@ public class AdvancedAudioPlayer extends JFrame {
 		SwingUtilities.invokeAndWait(new Runnable() {
 			@Override
 			public void run() {
-		
 				JFrame frame = new AdvancedAudioPlayer();
 				frame.pack();
-				frame.setSize(400,350);
+				frame.setSize(450,650);
 				frame.setVisible(true);
 			}
 		});

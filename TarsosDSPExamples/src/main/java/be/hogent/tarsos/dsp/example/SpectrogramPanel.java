@@ -49,7 +49,7 @@ public class SpectrogramPanel extends JComponent implements ComponentListener{
 	private int position;
 	    
 	public SpectrogramPanel(){
-		bufferedImage = new BufferedImage(640,480, BufferedImage.TYPE_INT_RGB);
+		bufferedImage = new BufferedImage(640*4,480*4, BufferedImage.TYPE_INT_RGB);
 		bufferedGraphics = bufferedImage.createGraphics();
 		this.addComponentListener(this);
 	}
