@@ -85,7 +85,8 @@ public class ConstantQ implements AudioProcessor {
 
 
 	/**
-	 * The minimum frequency, in Hertz. The Constant-Q factors are calculated starting from this frequency.
+	 * The minimum frequency, in Hertz. The Constant-Q factors are calculated
+	 * starting from this frequency.
 	 */
 	private final float minimumFrequency ;
 
@@ -125,15 +126,11 @@ public class ConstantQ implements AudioProcessor {
 	 * octaves = 24 places in the output buffer.
 	 */
 	private final float[] magnitudes;
-	
-	
 
 	/**
 	 * The underlying FFT object.
 	 */
 	private FFT fft;
-	
-	
 
 	public ConstantQ(float sampleRate, float minFreq, float maxFreq,float binsPerOctave) {
 		this(sampleRate,minFreq,maxFreq,binsPerOctave,0.001f,1.0f);

@@ -24,7 +24,7 @@
 * 
 */
 
-package be.hogent.tarsos.dsp.example;
+package be.hogent.tarsos.dsp.example.constantq;
 
 import java.beans.PropertyChangeListener;
 import java.beans.PropertyChangeSupport;
@@ -42,8 +42,6 @@ import be.hogent.tarsos.dsp.AudioEvent;
 import be.hogent.tarsos.dsp.AudioPlayer;
 import be.hogent.tarsos.dsp.AudioProcessor;
 import be.hogent.tarsos.dsp.GainProcessor;
-import be.hogent.tarsos.dsp.WaveformSimilarityBasedOverlapAdd;
-import be.hogent.tarsos.dsp.WaveformSimilarityBasedOverlapAdd.Parameters;
 
 public class Player implements AudioProcessor {
 	
@@ -54,25 +52,25 @@ public class Player implements AudioProcessor {
 	private File loadedFile;
 	private GainProcessor gainProcessor;
 	private AudioPlayer audioPlayer;
-	private WaveformSimilarityBasedOverlapAdd wsola;
 	private AudioDispatcher dispatcher;
 	
 	private double durationInSeconds;
 	private double currentTime;
 	private double pauzedAt;
 	
-	private final AudioProcessor beforeWSOLAProcessor;
-	private final AudioProcessor afterWSOLAProcessor;
+	private final AudioProcessor processor;
+	private final int stepSize;
+	private final int overlap;
+	
 	
 	private double gain;
-	private double tempo;
 	
-	public Player(AudioProcessor beforeWSOLAProcessor,AudioProcessor afterWSOLAProcessor){
+	public Player(AudioProcessor processor,int stepSize,int overlap){
 		state = PlayerState.NO_FILE_LOADED;
 		gain = 1.0;
-		tempo = 1.0;
-		this.beforeWSOLAProcessor = beforeWSOLAProcessor;
-		this.afterWSOLAProcessor = afterWSOLAProcessor;
+		this.processor = processor;
+		this.stepSize =stepSize;
+		this.overlap = overlap;
 	}
 	
 
@@ -123,22 +121,15 @@ public class Player implements AudioProcessor {
 				
 				gainProcessor = new GainProcessor(gain);
 				audioPlayer = new AudioPlayer(format);		
-				wsola = new WaveformSimilarityBasedOverlapAdd(Parameters.slowdownDefaults(tempo,format.getSampleRate()));
 				
-				dispatcher = AudioDispatcher.fromFile(loadedFile,wsola.getInputBufferSize(),wsola.getOverlap());
+				dispatcher = AudioDispatcher.fromFile(loadedFile,stepSize,overlap);
 				
-				wsola.setDispatcher(dispatcher);
 				dispatcher.skip(startTime);
-				
 				dispatcher.addAudioProcessor(this);
-				dispatcher.addAudioProcessor(beforeWSOLAProcessor);
-				dispatcher.addAudioProcessor(wsola);
-				dispatcher.addAudioProcessor(afterWSOLAProcessor);
+				dispatcher.addAudioProcessor(processor);
 				dispatcher.addAudioProcessor(gainProcessor);
-				
-				
 				dispatcher.addAudioProcessor(audioPlayer);
-
+				
 				Thread t = new Thread(dispatcher,"Audio Player Thread");
 				t.start();
 				setState(PlayerState.PLAYING);
@@ -180,13 +171,6 @@ public class Player implements AudioProcessor {
 		gain = newGain;
 		if(state == PlayerState.PLAYING ){
 			gainProcessor.setGain(gain);
-		}
-	}
-	
-	public void setTempo(double newTempo){
-		tempo = newTempo;
-		if(state == PlayerState.PLAYING ){
-			wsola.setParameters(Parameters.slowdownDefaults(tempo,dispatcher.getFormat().getSampleRate()));
 		}
 	}
 	
