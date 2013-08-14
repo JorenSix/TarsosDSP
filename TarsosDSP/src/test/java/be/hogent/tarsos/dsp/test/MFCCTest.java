@@ -36,14 +36,16 @@ import be.hogent.tarsos.dsp.mfcc.MFCC;
 
 public class MFCCTest {
 	
+//	private static int counter = 0;
+	
 	@Test
 	public void MFCCForSineTest() throws UnsupportedAudioFileException{
 		int sampleRate = 44100;
 		int bufferSize = 1024;
-		int bufferOverlap = 0;
+		int bufferOverlap = 128;
 		final float[] floatBuffer = TestUtilities.audioBufferSine();
 		final AudioDispatcher dispatcher = AudioDispatcher.fromFloatArray(floatBuffer, sampleRate, bufferSize, bufferOverlap);
-		final MFCC mfcc = new MFCC(bufferSize, sampleRate, bufferOverlap);
+		final MFCC mfcc = new MFCC(bufferSize, sampleRate, 40, 50, 300, 3000);
 		dispatcher.addAudioProcessor(mfcc);
 		dispatcher.addAudioProcessor(new AudioProcessor() {
 			
@@ -53,7 +55,15 @@ public class MFCCTest {
 			
 			@Override
 			public boolean process(AudioEvent audioEvent) {
-				System.out.println(mfcc.getMFCC()[0]);
+//				System.out.println("Frame " + counter);
+//				counter++;
+////				System.out.println(mfcc.getMFCC()[0]);
+//				float[] mfccs = mfcc.getMFCC();
+//				for (int i=0; i<mfccs.length; i++){
+//					System.out.println(mfcc.getMFCC()[i]);
+//				}
+//				System.out.print(mfcc.getMFCC()[0]);
+//				System.out.println();
 				return true;
 			}
 		});
