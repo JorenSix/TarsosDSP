@@ -27,62 +27,56 @@ package be.hogent.tarsos.dsp.mfcc;
 
 import be.hogent.tarsos.dsp.AudioEvent;
 import be.hogent.tarsos.dsp.AudioProcessor;
+import be.hogent.tarsos.dsp.util.fft.FFT;
+import be.hogent.tarsos.dsp.util.fft.HammingWindow;
+
 
 public class MFCC implements AudioProcessor {
 	
-    private final int AMOUNT_OF_CEPSTRUM_COEF = 14; //Number of MFCCs per frame
-    //private final static int FRAMELENGTH = 512;
-    //private final static int FRAMELENGTH = 2048; //Number of samples per frame
-    //private final int FFTLENGHT = FRAMELENGTH; //Must be power of 2; in jAudio = Number of samples per frame
-    protected final static int MELFILTERS = 23; //Number of mel filters (SPHINX-III uses 40)
-    protected final static float lowerFilterFreq = (float) 133.3334; //lower limit of filter (or 64 Hz?)
-    //protected final static float upperFilterFreq = (float) 6855.4976; //upper limit of filter (or half of sampling freq.?)
-    
+    private int amountOfCepstrumCoef; //Number of MFCCs per frame
+    protected int amountOfMelFilters; //Number of mel filters (SPHINX-III uses 40)
+    protected float lowerFilterFreq; //lower limit of filter (or 64 Hz?)
+    protected float upperFilterFreq; //upper limit of filter (or half of sampling freq.?)
     
     float[] audioFloatBuffer;
     //Er zijn evenveel mfccs als er frames zijn!?
     //Per frame zijn er dan CEPSTRA coëficienten
     private float[] mfcc;
+    
+    int centerFrequencies[];
 
-    
+    private FFT fft;
     private int samplesPerFrame; 
-    private int sampleRate;
-    //private int overlap;
+    private float sampleRate;
     
-    float w[]; 
-    //private FFT fourier;
-    
-    /**
-     * Pre-Emphasis Alpha (Set to 0 if no pre-emphasis should be performed)
-     */
-    private final static float PREEMPHASISALPHA = (float) 0.95;
-    
-	
-    //public MFCC(AudioFile audioFile) {
-    public MFCC(int samplesPerFrame,int sampleRate,int overlap) {
+    public MFCC(int samplesPerFrame, int sampleRate){
+    	this(samplesPerFrame, sampleRate, 30, 30, 133.3334f, ((float)sampleRate)/2f);
+    }
+
+    public MFCC(int samplesPerFrame, float sampleRate, int amountOfCepstrumCoef, int amountOfMelFilters, float lowerFilterFreq, float upperFilterFreq) {
         this.samplesPerFrame = samplesPerFrame; 
         this.sampleRate = sampleRate;
-        //this.overlap = overlap;
+        this.amountOfCepstrumCoef = amountOfCepstrumCoef;
+        this.amountOfMelFilters = amountOfMelFilters;
+        this.fft = new FFT(samplesPerFrame, new HammingWindow());
         
+        this.lowerFilterFreq = Math.max(lowerFilterFreq, 25);
+        this.upperFilterFreq = Math.min(upperFilterFreq, sampleRate / 2);
+        calculateFilterBanks();
        
-        w = new float[samplesPerFrame];
-        for (int n = 0; n < samplesPerFrame; n++) {
-            w[n] = (float) (0.54 - 0.46 * Math.cos((2 * Math.PI * n) / (samplesPerFrame - 1)));
-        }
     }
 
 	@Override
 	public boolean process(AudioEvent audioEvent) {
-		audioFloatBuffer = audioEvent.getFloatBuffer();
-		
-		hammingWindow(audioFloatBuffer);
-		
+		audioFloatBuffer = audioEvent.getFloatBuffer().clone();
+//		for (int i = 0; i< audioFloatBuffer.length; i++){
+//			System.out.print(Math.round(audioFloatBuffer[i]*100) + " - ");
+//		}
+		System.out.println();
         // Magnitude Spectrum
         float bin[] = magnitudeSpectrum(audioFloatBuffer);
-        // Mel Filtering
-        int cbin[] = fftBinIndices();
         // get Mel Filterbank
-        float fbank[] = melFilter(bin, cbin);
+        float fbank[] = melFilter(bin, centerFrequencies);
         // Non-linear transformation
         float f[] = nonLinearTransformation(fbank);
         // Cepstral coefficients
@@ -96,35 +90,6 @@ public class MFCC implements AudioProcessor {
 
 	}
 	
-    float[] preEmphase(float[] in){
-        float[] EmphasedSamples = new float[in.length];
-        for (int i = 1; i < in.length; i++){
-            EmphasedSamples[i] = (float) in[i] - PREEMPHASISALPHA * in[i - 1];
-        }
-        return EmphasedSamples;
-    }
-    
-	
-    void framing(float[] in){
-        float temp = (float) in.length / samplesPerFrame;
-        int numFrames = (int) temp;
-        
-        // unconditionally round up
-        if ((temp / numFrames) != 1) {
-            numFrames = numFrames + 1;
-        }
-        
-        mfcc = new float[AMOUNT_OF_CEPSTRUM_COEF];
-    }
-    
-	
-    void hammingWindow(float[] in){
-        for (int n = 0; n < samplesPerFrame; n++) {
-            in[n] *= w[n];
-        }        
-    }
-    
-	
     /**
      * computes the magnitude spectrum of the input frame<br>
      * calls: none<br>
@@ -136,39 +101,42 @@ public class MFCC implements AudioProcessor {
         float magSpectrum[] = new float[frame.length];
         
         // calculate FFT for current frame
-        FFT.computeFFT(frame);
+        
+        fft.forwardTransform(frame);
         
         // calculate magnitude spectrum
-        for (int k = 0; k < frame.length; k++){
-            //stelling van pitagoras
-            magSpectrum[k] = (float) Math.pow(FFT.real[k] * FFT.real[k] + FFT.imag[k] * FFT.imag[k], 0.5);
+        for (int k = 0; k < frame.length/2; k++){
+        	magSpectrum[frame.length/2+k] = fft.modulus(frame, frame.length/2-1-k);
+        	magSpectrum[frame.length/2-1-k] = magSpectrum[frame.length/2+k];        	
         }
 
         return magSpectrum;
     }
 	
     /**
-     * calculates the FFT bin indices<br>
-     * calls: none<br>
-     * called by: featureExtraction
-     * 
-     * 5-3-05 Daniel MCEnnis paramaterize sampling rate and frameSize
-     * 
+     * calculates the FFT bin indices<br> calls: none<br> called by:
+     * featureExtraction
+     *
      * @return array of FFT bin indices
      */
-    public int[] fftBinIndices(){
-        int cbin[] = new int[MELFILTERS + 2];
-        
-        cbin[0] = (int)Math.round(lowerFilterFreq / sampleRate * samplesPerFrame);
-        cbin[cbin.length - 1] = (int)(samplesPerFrame / 2);
-        
-        for (int i = 1; i <= MELFILTERS; i++){
-            float fc = centerFreq(i,sampleRate);
+    //@TODO: statisch (allemaal constanten)
+    public final void calculateFilterBanks() {
+        centerFrequencies = new int[amountOfMelFilters + 2];
 
-            cbin[i] = (int)Math.round(fc / sampleRate * samplesPerFrame);
-        }
+        centerFrequencies[0] = Math.round(lowerFilterFreq / sampleRate * samplesPerFrame);
+        centerFrequencies[centerFrequencies.length - 1] = (int) (samplesPerFrame / 2);
+
+        double mel[] = new double[2];
+        mel[0] = freqToMel(lowerFilterFreq);
+        mel[1] = freqToMel(upperFilterFreq);
         
-        return cbin;
+        float factor = (float)((mel[1] - mel[0]) / (amountOfMelFilters + 1));
+        //Calculates te centerfrequencies.
+        for (int i = 1; i <= amountOfMelFilters; i++) {
+            float fc = (inverseMel(mel[0] + factor * i) / sampleRate) * samplesPerFrame;
+            centerFrequencies[i - 1] = Math.round(fc);
+        }
+
     }
     
 	
@@ -194,32 +162,34 @@ public class MFCC implements AudioProcessor {
     }
     
     /**
-     * Calculate the output of the mel filter<br>
-     * calls: none
-     * called by: featureExtraction
-     * @param bin 
-     * @param cbin 
-     * @return output of the mel filter
+     * Calculate the output of the mel filter<br> calls: none called by:
+     * featureExtraction
      */
-    public float[] melFilter(float bin[], int cbin[]){
-        float temp[] = new float[MELFILTERS + 2];
+    public float[] melFilter(float bin[], int centerFrequencies[]) {
+        float temp[] = new float[amountOfMelFilters + 2];
 
-        for (int k = 1; k <= MELFILTERS; k++){
+        for (int k = 1; k <= amountOfMelFilters; k++) {
             float num1 = 0, num2 = 0;
 
-            for (int i = cbin[k - 1]; i <= cbin[k]; i++){
-                num1 += ((i - cbin[k - 1] + 1) / (cbin[k] - cbin[k-1] + 1)) * bin[i];
-            }
+            float den = (centerFrequencies[k] - centerFrequencies[k - 1] + 1);
 
-            for (int i = cbin[k] + 1; i <= cbin[k + 1]; i++){
-                num2 += (1 - ((i - cbin[k]) / (cbin[k + 1] - cbin[k] + 1))) * bin[i];
+            for (int i = centerFrequencies[k - 1]; i <= centerFrequencies[k]; i++) {
+                num1 += bin[i] * (i - centerFrequencies[k - 1] + 1);
+            }
+            num1 /= den;
+
+            den = (centerFrequencies[k + 1] - centerFrequencies[k] + 1);
+
+            for (int i = centerFrequencies[k] + 1; i <= centerFrequencies[k + 1]; i++) {
+                num2 += bin[i] * (1 - ((i - centerFrequencies[k]) / den));
             }
 
             temp[k] = num1 + num2;
         }
 
-        float fbank[] = new float[MELFILTERS];
-        for (int i = 0; i < MELFILTERS; i++){
+        float fbank[] = new float[amountOfMelFilters];
+        
+        for (int i = 0; i < amountOfMelFilters; i++) {
             fbank[i] = temp[i + 1];
         }
 
@@ -235,33 +205,33 @@ public class MFCC implements AudioProcessor {
      * @return Cepstral Coefficients
      */
     public float[] cepCoefficients(float f[]){
-        float cepc[] = new float[AMOUNT_OF_CEPSTRUM_COEF];
+        float cepc[] = new float[amountOfCepstrumCoef];
         
         for (int i = 0; i < cepc.length; i++){
-            for (int j = 1; j <= MELFILTERS; j++){
-                cepc[i] += f[j - 1] * Math.cos(Math.PI * i / MELFILTERS * (j - 0.5));
+            for (int j = 0; j < f.length; j++){
+                cepc[i] += f[j] * Math.cos(Math.PI * i / f.length * (j + 0.5));
             }
         }
         
         return cepc;
     }
     
-    /**
-     * calculates center frequency<br>
-     * calls: none<br>
-     * called by: featureExtraction
-     * @param i Index of mel filters
-     * @return Center Frequency
-     */
-    private static float centerFreq(int i,float samplingRate){
-        double mel[] = new double[2];
-        mel[0] = freqToMel(lowerFilterFreq);
-        mel[1] = freqToMel(samplingRate / 2);
-        
-        // take inverse mel of:
-        double temp = mel[0] + ((mel[1] - mel[0]) / (MELFILTERS + 1)) * i;
-        return inverseMel(temp);
-    }
+//    /**
+//     * calculates center frequency<br>
+//     * calls: none<br>
+//     * called by: featureExtraction
+//     * @param i Index of mel filters
+//     * @return Center Frequency
+//     */
+//    private static float centerFreq(int i,float samplingRate){
+//        double mel[] = new double[2];
+//        mel[0] = freqToMel(lowerFilterFreq);
+//        mel[1] = freqToMel(samplingRate / 2);
+//        
+//        // take inverse mel of:
+//        double temp = mel[0] + ((mel[1] - mel[0]) / (amountOfMelFilters + 1)) * i;
+//        return inverseMel(temp);
+//    }
     
     /**
      * convert frequency to mel-frequency<br>
@@ -279,9 +249,8 @@ public class MFCC implements AudioProcessor {
      * calls: none<br>
      * called by: featureExtraction
      */
-    private static float inverseMel(double x){
-        float temp = (float) Math.pow(10, x / 2595) - 1;
-        return 700 * (temp);
+    private static float inverseMel(double x) {
+        return (float) (700 * (Math.pow(10, x / 2595) - 1));
     }
     
     /**
@@ -296,7 +265,7 @@ public class MFCC implements AudioProcessor {
     }
 
 	public float[] getMFCC() {
-		return mfcc;
+		return mfcc.clone();
 	}
 
 }
