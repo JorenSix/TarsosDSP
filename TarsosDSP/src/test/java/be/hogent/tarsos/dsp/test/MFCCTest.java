@@ -55,15 +55,6 @@ public class MFCCTest {
 			
 			@Override
 			public boolean process(AudioEvent audioEvent) {
-//				System.out.println("Frame " + counter);
-//				counter++;
-////				System.out.println(mfcc.getMFCC()[0]);
-//				float[] mfccs = mfcc.getMFCC();
-//				for (int i=0; i<mfccs.length; i++){
-//					System.out.println(mfcc.getMFCC()[i]);
-//				}
-//				System.out.print(mfcc.getMFCC()[0]);
-//				System.out.println();
 				return true;
 			}
 		});
