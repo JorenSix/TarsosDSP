@@ -132,11 +132,14 @@ public class ConstantQ implements AudioProcessor {
 	 */
 	private FFT fft;
 
-	public ConstantQ(float sampleRate, float minFreq, float maxFreq,float binsPerOctave) {
-		this(sampleRate,minFreq,maxFreq,binsPerOctave,0.001f,1.0f);
+	//@TODO: minimum framesize berekenen!
+	public ConstantQ(int frameSize, float sampleRate, float minFreq, float maxFreq,float binsPerOctave) {
+		this(frameSize, sampleRate,minFreq,maxFreq,binsPerOctave,0.001f,1.0f);
 	}
 
-	public ConstantQ(float sampleRate, float minFreq, float maxFreq,float binsPerOctave, float threshold,float spread) {
+	
+	public ConstantQ(int frameSize, float sampleRate, float minFreq, float maxFreq,float binsPerOctave, float threshold,float spread) {
+		this.fftLength = frameSize;
 		this.minimumFrequency = minFreq;
 		this.maximumFreqency = maxFreq;
 		
@@ -152,9 +155,12 @@ public class ConstantQ implements AudioProcessor {
 		// Initialize the magnitudes array
 		magnitudes = new float[numberOfBins];
 
-		// Calculate length of FFT
-		float calc_fftlen = (float) Math.ceil(q * sampleRate / minimumFrequency);
-		fftLength = (int) Math.pow(2, Math.ceil(Math.log(calc_fftlen) / Math.log(2)));
+
+		//@TODO: FFTlengte = framesize?
+//		// Calculate length of FFT
+//		float calc_fftlen = (float) Math.ceil(q * sampleRate / minimumFrequency);
+//		fftLength = (int) Math.pow(2, Math.ceil(Math.log(calc_fftlen) / Math.log(2)));
+//		fftLength = 1024;
 
 		// Create FFT object
 		fft = new FFT(fftLength);
@@ -172,7 +178,8 @@ public class ConstantQ implements AudioProcessor {
 		    	frequencies[i] = (float) (minimumFrequency * Math.pow(2, i/binsPerOctave ));
 		    	
 		    	// Calculate length of window
-		    	int len = (int)Math.ceil( q * sampleRate / frequencies[i]);
+		    	int len = (int)Math.min(Math.ceil( q * sampleRate / frequencies[i]), frameSize);
+		    	
 		    	for (int j = 0; j < len; j++) {
 		    		
 		    		double window = -.5*Math.cos(2.*Math.PI*(double)j/(double)len)+.5;; // Hanning Window
