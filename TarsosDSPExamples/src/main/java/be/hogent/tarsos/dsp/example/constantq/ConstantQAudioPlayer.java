@@ -117,7 +117,7 @@ public class ConstantQAudioPlayer extends JFrame {
 		subPanel.add(createButtonPanel());
 		
 		this.add(new JSplitPane(JSplitPane.VERTICAL_SPLIT, subPanel, createConstantQ()));
-		constantQ = new ConstantQ(44100, 50, 3200, 60);
+		constantQ = new ConstantQ(32768, 44100, 50, 3200, 60);
 		player = new Player(cteQProcessor,constantQ.getFFTlength(),constantQ.getFFTlength()-4096);
 		player.addPropertyChangeListener(new PropertyChangeListener() {
 			@Override
