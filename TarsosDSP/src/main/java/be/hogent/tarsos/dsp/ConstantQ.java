@@ -132,14 +132,13 @@ public class ConstantQ implements AudioProcessor {
 	 */
 	private FFT fft;
 
-	//@TODO: minimum framesize berekenen!
-	public ConstantQ(int frameSize, float sampleRate, float minFreq, float maxFreq,float binsPerOctave) {
-		this(frameSize, sampleRate,minFreq,maxFreq,binsPerOctave,0.001f,1.0f);
+
+	public ConstantQ(float sampleRate, float minFreq, float maxFreq,float binsPerOctave) {
+		this(sampleRate,minFreq,maxFreq,binsPerOctave,0.001f,1.0f);
 	}
 
 	
-	public ConstantQ(int frameSize, float sampleRate, float minFreq, float maxFreq,float binsPerOctave, float threshold,float spread) {
-		this.fftLength = frameSize;
+	public ConstantQ(float sampleRate, float minFreq, float maxFreq,float binsPerOctave, float threshold,float spread) {
 		this.minimumFrequency = minFreq;
 		this.maximumFreqency = maxFreq;
 		
@@ -155,13 +154,18 @@ public class ConstantQ implements AudioProcessor {
 		// Initialize the magnitudes array
 		magnitudes = new float[numberOfBins];
 
+		
+		// Calculate the minimum length of the FFT to support the minimum
+		// frequency
+		float calc_fftlen = (float) Math.ceil(q * sampleRate / minimumFrequency);
+		
+		// No need to use power of 2 FFT length.
+		fftLength = (int) calc_fftlen; 
 
-		//@TODO: FFTlengte = framesize?
-//		// Calculate length of FFT
-//		float calc_fftlen = (float) Math.ceil(q * sampleRate / minimumFrequency);
-//		fftLength = (int) Math.pow(2, Math.ceil(Math.log(calc_fftlen) / Math.log(2)));
-//		fftLength = 1024;
+		// If the FFT algorithm only supports power of 2 lengths, use the following
+		// fftLength = (int) Math.pow(2, Math.ceil(Math.log(calc_fftlen) / Math.log(2)));
 
+		
 		// Create FFT object
 		fft = new FFT(fftLength);
 		qKernel = new float[numberOfBins][];
@@ -178,7 +182,7 @@ public class ConstantQ implements AudioProcessor {
 		    	frequencies[i] = (float) (minimumFrequency * Math.pow(2, i/binsPerOctave ));
 		    	
 		    	// Calculate length of window
-		    	int len = (int)Math.min(Math.ceil( q * sampleRate / frequencies[i]), frameSize);
+		    	int len = (int)Math.min(Math.ceil( q * sampleRate / frequencies[i]), fftLength);
 		    	
 		    	for (int j = 0; j < len; j++) {
 		    		
