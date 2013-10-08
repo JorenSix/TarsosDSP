@@ -27,6 +27,7 @@
 package be.hogent.tarsos.dsp.example.constantq;
 
 import java.awt.BorderLayout;
+import java.awt.Color;
 import java.awt.Component;
 import java.awt.GridLayout;
 import java.awt.event.ActionEvent;
@@ -35,7 +36,6 @@ import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 import java.io.File;
 import java.lang.reflect.InvocationTargetException;
-import java.util.Arrays;
 import java.util.Locale;
 
 import javax.swing.JButton;
@@ -53,9 +53,20 @@ import javax.swing.event.ChangeListener;
 
 import be.hogent.tarsos.dsp.AudioEvent;
 import be.hogent.tarsos.dsp.AudioProcessor;
-import be.hogent.tarsos.dsp.ConstantQ;
 import be.hogent.tarsos.dsp.example.constantq.Player.PlayerState;
-import be.hogent.tarsos.dsp.pitch.FastYin;
+import be.hogent.tarsos.dsp.example.visualisation.AxisUnit;
+import be.hogent.tarsos.dsp.example.visualisation.CoordinateSystem;
+import be.hogent.tarsos.dsp.example.visualisation.LinkedPanel;
+import be.hogent.tarsos.dsp.example.visualisation.ViewPort;
+import be.hogent.tarsos.dsp.example.visualisation.ViewPort.ViewPortChangedListener;
+import be.hogent.tarsos.dsp.example.visualisation.layers.AmplitudeAxisLayer;
+import be.hogent.tarsos.dsp.example.visualisation.layers.BackgroundLayer;
+import be.hogent.tarsos.dsp.example.visualisation.layers.ConstantQLayer;
+import be.hogent.tarsos.dsp.example.visualisation.layers.FrequencyAxisLayer;
+import be.hogent.tarsos.dsp.example.visualisation.layers.LegendLayer;
+import be.hogent.tarsos.dsp.example.visualisation.layers.PitchContourLayer;
+import be.hogent.tarsos.dsp.example.visualisation.layers.TimeAxisLayer;
+import be.hogent.tarsos.dsp.example.visualisation.layers.WaveFormLayer;
 
 public class ConstantQAudioPlayer extends JFrame {
 
@@ -73,16 +84,17 @@ public class ConstantQAudioPlayer extends JFrame {
 	private JLabel progressLabel;
 	private JLabel totalLabel;
 	
-	private JFileChooser fileChooser;
+	private LinkedPanel waveForm;
+	private LinkedPanel constantQ;
+	private CoordinateSystem waveFormCS;
+	private CoordinateSystem constantQCS;
 	
-	private final ConstantQ constantQ;
+	private JFileChooser fileChooser;
 	
 	//position value in the slider
 	private int newPositionValue;
 	
 	final Player player;
-	
-	final ConstantQPanel panel = new ConstantQPanel();
 	
 	final AudioProcessor processor = new AudioProcessor() {
 		
@@ -117,8 +129,8 @@ public class ConstantQAudioPlayer extends JFrame {
 		subPanel.add(createButtonPanel());
 		
 		this.add(new JSplitPane(JSplitPane.VERTICAL_SPLIT, subPanel, createConstantQ()));
-		constantQ = new ConstantQ(32768, 44100, 50, 3200, 60);
-		player = new Player(cteQProcessor,constantQ.getFFTlength(),constantQ.getFFTlength()-4096);
+		
+		player = new Player(processor,1024,0);
 		player.addPropertyChangeListener(new PropertyChangeListener() {
 			@Override
 			public void propertyChange(PropertyChangeEvent arg0) {
@@ -131,8 +143,56 @@ public class ConstantQAudioPlayer extends JFrame {
 		reactToPlayerState(player.getState());
 	}
 	
+	private CoordinateSystem getCoordinateSystem(AxisUnit yUnits) {
+		float minValue = -1000;
+		float maxValue = 1000;
+		if(yUnits == AxisUnit.FREQUENCY){
+			minValue = 200;
+			maxValue = 8000;
+		}
+		return new CoordinateSystem(yUnits, minValue, maxValue);
+	}
+	
 	private Component createConstantQ() {
-		return panel;
+		JSplitPane splitPane = new JSplitPane(JSplitPane.VERTICAL_SPLIT);
+	
+		waveFormCS = getCoordinateSystem(AxisUnit.AMPLITUDE);
+		waveForm = new LinkedPanel(waveFormCS);
+		waveForm.addLayer(new BackgroundLayer(waveFormCS));
+		waveForm.addLayer(new AmplitudeAxisLayer(waveFormCS));
+		waveForm.addLayer(new TimeAxisLayer(waveFormCS));
+		LegendLayer legend = new LegendLayer(waveFormCS,50);
+		waveForm.addLayer(legend);
+		legend.addEntry("Wave",Color.BLACK);
+		
+		
+		splitPane.add(waveForm, JSplitPane.TOP);
+		
+		constantQCS = getCoordinateSystem(AxisUnit.FREQUENCY);
+		constantQ = new LinkedPanel(constantQCS);
+		constantQ.addLayer(new BackgroundLayer(constantQCS));
+		constantQ.addLayer(new FrequencyAxisLayer(constantQCS));
+		constantQ.addLayer(new TimeAxisLayer(constantQCS));
+		legend = new LegendLayer(constantQCS,110);
+		constantQ.addLayer(legend);
+		legend.addEntry("ConstantQ",Color.BLACK);
+		legend.addEntry("Pitch estimations",Color.RED);
+		
+		splitPane.add(constantQ, JSplitPane.BOTTOM);
+		splitPane.setDividerLocation(150);
+		
+		ViewPortChangedListener listener = new ViewPortChangedListener() {
+			@Override
+			public void viewPortChanged(ViewPort newViewPort) {
+				waveForm.repaint();
+				constantQ.repaint();
+			}
+		};
+		
+		waveForm.getViewPort().addViewPortChangedListener(listener);
+		constantQ.getViewPort().addViewPortChangedListener(listener);
+		
+		return splitPane;
 	}
 
 	private void reactToPlayerState(PlayerState newState){
@@ -145,6 +205,29 @@ public class ConstantQAudioPlayer extends JFrame {
 			newPositionValue = 0;
 			positionSlider.setValue(0);
 			setProgressLabelText(0, player.getDurationInSeconds());
+		}
+		if(newState == PlayerState.FILE_LOADED){
+	
+			waveForm.removeLayers();
+			waveForm.addLayer(new BackgroundLayer(waveFormCS));
+			waveForm.addLayer(new AmplitudeAxisLayer(waveFormCS));
+			waveForm.addLayer(new TimeAxisLayer(waveFormCS));
+			waveForm.addLayer(new WaveFormLayer(waveFormCS, player.getLoadedFile()));
+			LegendLayer legend = new LegendLayer(waveFormCS,50);
+			waveForm.addLayer(legend);
+			legend.addEntry("Wave",Color.BLACK);
+			
+			constantQ.removeLayers();
+			constantQ.addLayer(new BackgroundLayer(constantQCS));
+			constantQ.addLayer(new ConstantQLayer(constantQCS,player.getLoadedFile(),2048,3600,10800,12));
+			constantQ.addLayer(new PitchContourLayer(constantQCS,player.getLoadedFile(),Color.red,2048,1024));
+			constantQ.addLayer(new FrequencyAxisLayer(constantQCS));
+			constantQ.addLayer(new TimeAxisLayer(constantQCS));
+			
+			legend = new LegendLayer(constantQCS,110);
+			constantQ.addLayer(legend);
+			legend.addEntry("ConstantQ",Color.BLACK);
+			legend.addEntry("Pitch estimations",Color.RED);
 		}
 	}
 	
@@ -197,7 +280,6 @@ public class ConstantQAudioPlayer extends JFrame {
 		panel.add(label,BorderLayout.NORTH);
 		panel.add(subPanel,BorderLayout.CENTER);
 		panel.setBorder(new TitledBorder("Progress control"));
-		
 
 		return panel;
 	}
@@ -285,37 +367,6 @@ public class ConstantQAudioPlayer extends JFrame {
 		gainPanel.setBorder(new TitledBorder("Volume control"));
 		return gainPanel;
 	}
-	
-	AudioProcessor cteQProcessor = new AudioProcessor(){
-
-		FastYin yin;
-		@Override
-		public boolean process(AudioEvent audioEvent) {
-			if(yin == null){
-				
-				yin = new FastYin(audioEvent.getSampleRate(), 4096);
-			}
-			float[] pitchBuffer = Arrays.copyOfRange(audioEvent.getFloatBuffer(), 4096*3 , 4096*4);
-			double pitch = yin.getPitch(pitchBuffer).getPitch();
-			constantQ.process(audioEvent);
-			
-			panel.drawMagnitudes(constantQ);
-			panel.drawPitch(constantQ,pitch);
-			double timeStamp =  audioEvent.getTimeStamp();
-			if(!positionSlider.getValueIsAdjusting()){
-				newPositionValue = (int) (audioEvent.getProgress() * 1000);
-				positionSlider.setValue(newPositionValue);
-				setProgressLabelText(timeStamp,player.getDurationInSeconds());
-			}
-			return true;
-		}
-		
-		@Override
-		public void processingFinished() {
-			// TODO Auto-generated method stub
-		}
-		
-	};
 	
 	
 	public static void main(String... args) throws InterruptedException, InvocationTargetException {

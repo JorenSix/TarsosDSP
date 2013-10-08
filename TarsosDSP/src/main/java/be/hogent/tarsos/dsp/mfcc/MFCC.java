@@ -118,9 +118,8 @@ public class MFCC implements AudioProcessor {
      * calculates the FFT bin indices<br> calls: none<br> called by:
      * featureExtraction
      *
-     * @return array of FFT bin indices
      */
-    //@TODO: statisch (allemaal constanten)
+ 
     public final void calculateFilterBanks() {
         centerFrequencies = new int[amountOfMelFilters + 2];
 
@@ -165,6 +164,9 @@ public class MFCC implements AudioProcessor {
     /**
      * Calculate the output of the mel filter<br> calls: none called by:
      * featureExtraction
+     * @param bin The bins.
+     * @param centerFrequencies  The frequency centers.
+     * @return Output of mel filter.
      */
     public float[] melFilter(float bin[], int centerFrequencies[]) {
         float temp[] = new float[amountOfMelFilters + 2];

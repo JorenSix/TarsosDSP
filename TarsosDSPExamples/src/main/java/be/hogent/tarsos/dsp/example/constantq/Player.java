@@ -73,6 +73,9 @@ public class Player implements AudioProcessor {
 		this.overlap = overlap;
 	}
 	
+	public void setStepSizeAndOverlap(int audioBufferSize,int bufferOverlap){
+		dispatcher.setStepSizeAndOverlap(audioBufferSize, bufferOverlap);
+	}	
 
 	
 	public void load(File file) {
@@ -211,6 +214,10 @@ public class Player implements AudioProcessor {
 		if(state==PlayerState.PLAYING){
 			setState(PlayerState.STOPPED);
 		}
+	}
+	
+	public File getLoadedFile(){
+		return loadedFile;
 	}
 
 	
