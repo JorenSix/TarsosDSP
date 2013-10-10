@@ -2,7 +2,7 @@
 <project default="tarsos_dsp_library" name="Create TarsosDSP JAR-files">
 
 	<!-- Configuration -->
-	<property name="version" value="1.6" />
+	<property name="version" value="1.7" />
 	<property name="built_by" value="${user.name}" />
 	<property name="junit_jar" value="/opt/eclipse/plugins/org.hamcrest.core_1.1.0.v20090501071000.jar:/opt/eclipse/plugins/org.junit_4.8.1.v4_8_1_v20100427-1100/junit.jar" />
 
@@ -99,10 +99,10 @@
 	</target>
 
 	<!-- builds all examples -->
-	<target name="build_examples" depends="example_advanced_audio_player,example_delay_effect,example_goertzel_algorithm,example_oscilloscope,example_percussion_detector,example_pitch_detector,example_spectrogram,example_sound_detector,example_time_stretch,example_utter_asterisk,example_feature_extractor,example_synthesis,example_pitch_shift,example_sample_extractor,example_resynthesizer,example_catify,example_flanging" />
+	<target name="build_examples" depends="example_advanced_audio_player,example_delay_effect,example_goertzel_algorithm,example_oscilloscope,example_percussion_detector,example_pitch_detector,example_spectrogram,example_sound_detector,example_time_stretch,example_utter_asterisk,example_feature_extractor,example_synthesis,example_pitch_shift,example_sample_extractor,example_resynthesizer,example_catify,example_flanging,example_constantq" />
 
 	<!-- builds a release: all examples, documentation and library in the correct folders-->
-	<target name="release" depends="javadoc,tarsos_dsp_library,example_advanced_audio_player,example_delay_effect,example_goertzel_algorithm,example_oscilloscope,example_percussion_detector,example_pitch_detector,example_spectrogram,example_sound_detector,example_time_stretch,example_utter_asterisk,example_feature_extractor,example_synthesis,example_pitch_shift,example_sample_extractor,example_resynthesizer,example_catify,example_flanging">
+	<target name="release" depends="javadoc,tarsos_dsp_library,example_advanced_audio_player,example_delay_effect,example_goertzel_algorithm,example_oscilloscope,example_percussion_detector,example_pitch_detector,example_spectrogram,example_sound_detector,example_time_stretch,example_utter_asterisk,example_feature_extractor,example_synthesis,example_pitch_shift,example_sample_extractor,example_resynthesizer,example_catify,example_flanging,example_constantq">
 
 		<copy todir="TarsosDSP-${version}-Documentation">
 			<fileset dir="../doc" />
@@ -648,6 +648,7 @@
 			</fileset>
 		</jar>
 	</target>
+	
 	<target name="example_flanging" depends="compile">
 			<jar destfile="Flanging-${version}.jar" filesetmanifest="mergewithoutmain">
 				<manifest>
@@ -677,4 +678,34 @@
 				</fileset>
 			</jar>
 		</target>
+		
+		<target name="example_constantq" depends="compile">
+			<jar destfile="ConstantQ-${version}.jar" filesetmanifest="mergewithoutmain">
+				<manifest>
+					<attribute name="Main-Class" value="be.hogent.tarsos.dsp.example.constantq.ConstantQAudioPlayer" />
+					<attribute name="Class-Path" value="." />
+
+					<!-- Standard manifest attributes -->
+					<attribute name="Implementation-Version" value="${version}-${DSTAMP}" />
+					<attribute name="Built-By" value="${built_by}" />
+					<attribute name="Created-By" value="${built_by}" />
+					<attribute name="Built-Date" value="${TODAY}" />
+				</manifest>
+
+				<!-- include class files -->
+				<fileset dir="../bin">
+					<exclude name="be/hogent/tarsos/dsp/example/resources/*.wav" />
+					<exclude name="**/test/**" />
+				</fileset>
+
+				<!-- include source files -->
+				<fileset dir="../src">
+					<include name="**/*.java" />
+				</fileset>
+				<fileset dir="../examples">
+					<exclude name="**/*.wav" />
+					<include name="**/*.java" />
+				</fileset>
+			</jar>
+	</target>
 </project>

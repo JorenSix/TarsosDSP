@@ -142,5 +142,5 @@ Converted TarsosDSP to maven. This is known as the Malaryta-release. The "Malary
 <dt>Version 1.6</dt><dd>2013-06-12</dd>
 This release features practical onset and beat detection algorithms. A complex domain onset detection and a spectral flux onset detection algorithm are added. This release also includes a way to guess a beat from onsets. Parts of the "BeatRoot system":http://www.eecs.qmul.ac.uk/~simond/beatroot/, by Simon Dixon, are included to this end. Also included in this release is an implementation of the Constant-Q transform.
 
-<dt>Version 1.7</dt><dd>2013-08-19</dd>
-This release adds the ability to extract the MFCC from an audio signal. 
+<dt>Version 1.7</dt><dd>2013-10-08</dd>
+This release adds the ability to extract the MFCC from an audio signal. Also an example of the Constant-Q transform is added, together with a reusable visualization class library.
