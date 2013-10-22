@@ -31,7 +31,7 @@ h2. Developing TarsosDSP
 
 If you want to build from source, or want to improve TarsosDSP follow the instructions below. Contributions to TarsosDSP are more than welcome, if you have a an algorithm to add or find a bug, do not hesitate to send me a message.
 
-TarsosDSP is in the transition between "Apache Maven":http://maven.apache.org/ and "Apache Ant":http://ant.apache.org/ and currently supports both. The instructions below detail how you can build from source. Which build system you use is upto you. I find Ant a bit simpler. When everything runs correctly you should be able to run all example applications and have the latest version of the TarsosDSP library for inclusion in your projects. Also the Javadoc documentation for the API should be available.
+TarsosDSP uses "Apache Ant":http://ant.apache.org/ as a build system. The instructions below detail how you can build from source. When everything runs correctly you should be able to run all example applications and have the latest version of the TarsosDSP library for inclusion in your projects. Also the Javadoc documentation for the API should be available.
 
 
 h3. TarsosDSP with Ant
@@ -39,54 +39,28 @@ h3. TarsosDSP with Ant
 To  you need "Apache Ant":http://ant.apache.org/ and "git":http://git-scm.com/ installed on your system. The following commands fetch the source and build the library and example jars: 
 <pre><code>git clone https://JorenSix@github.com/JorenSix/TarsosDSP.git
 cd TarsosDSP
-#link the source files at the expected locations
-test -f src || ln -s TarsosDSP/src/main/java/ src
-test -f examples || ln -s TarsosDSPExamples/src/main/java/ examples
-test -f tests || ln -s TarsosDSP/src/test/java tests 
 cd build
 ant tarsos_dsp_library #Builds the core TarsosDSP library
 ant build_examples #Builds all the TarsosDSP examples
 ant javadoc #Creates the documentation in TarsosDSP/doc
 </code></pre>
-
-h3. TarsosDSP with Maven
-
-To build from source, you need "Apache Maven":http://maven.apache.org/ and "git":http://git-scm.com/ installed on your system. The following commands fetch the source and build the library and example jars: 
-
-<pre><code>git clone https://JorenSix@github.com/JorenSix/TarsosDSP.git
-cd TarsosDSP/TarsosDSP
-mvn install #Builds the core TarsosDSP library
-mvn javadoc:javadoc #Builds the javadoc for TarsosDSP library
-cd ../TarsosDSPExamples
-mvn install #Builds all the TarsosDSP examples
-</code></pre>
-
- 
  
 h2. Source Code Organization & Developing
 
-The library is separated to 2 projects: TarsosDSP (main core) and TarsosDSPExamples (examples). They have different POM's and are built independently.
+The library is separated into three source folders: 1) the main core functionality in @src@, TarsosDSP example applications in @examples@ and unit tests in @test@.
 
-* @TarsosDSP/src@ contains the source files of the core DSP libraries. 
-* @TarsosDSP/test@ contains unit tests for some of the DSP functionality.
-* @TarsosDSP/target/site/apidocs@ contains help documentation for DSP library
-* @TarsosDSP/target@ contains MAVEN build files.
-* @TarsosDSPExamples/src/main@ contains a couple of example applications with a Java Swing user interface.
-* @TarsosDSPExamples/target@ contains builded versions example applications.
+* @src@ contains the source files of the core DSP libraries. 
+* @test@ contains unit tests for some of the DSP functionality.
+* @examples@ contains a couple of example applications with a Java Swing user interface.
 * @build@ contains ANT build files. Either to build Java documentation or runnable JAR-files for the example applications.  
 
-To make development with eclipse easy, symlink the following and make them source files in your TarsosDSP eclipse project.
-<pre><code>
-test -f src || ln -s TarsosDSP/src/main/java/ src
-test -f examples || ln -s TarsosDSPExamples/src/main/java/ examples
-test -f tests || ln -s TarsosDSP/src/test/java tests 
-</code></pre>
+To make development with Eclipse easy, make sure both test, src and examples are marked as source folders.
 
 
 h2. Credits
 
-"Tarsos":http://tarsos.0110.be and "TarsosDSP":http://tarsos.0110.be/tag/TarsosDSP are developed at University College Ghent, Faculty of Music
-"http://cons.hogent.be":http://cons.hogent.be
+"Tarsos":http://tarsos.0110.be and "TarsosDSP":http://tarsos.0110.be/tag/TarsosDSP are developed at University College Ghent, School of Arts
+"http://schoolofartsgent.be":http://schoolofartsgent.be
 
 The onset detector implementation is based on a "VAMP plugin example":http://vamp-plugins.org/code-doc/PercussionOnsetDetector_8cpp-source.html by __Chris Cannam__ at Queen Mary University, London. The method is described in "Drum Source Separation using Percussive Feature Detection and Spectral Modulation":http://eprints.nuim.ie/699/1/ELE-Bob9.pdf by Dan Barry, Derry Fitzgerald, Eugene Coyle and Bob Lawlor, ISSC 2005.
 
@@ -143,4 +117,4 @@ Converted TarsosDSP to maven. This is known as the Malaryta-release. The "Malary
 This release features practical onset and beat detection algorithms. A complex domain onset detection and a spectral flux onset detection algorithm are added. This release also includes a way to guess a beat from onsets. Parts of the "BeatRoot system":http://www.eecs.qmul.ac.uk/~simond/beatroot/, by Simon Dixon, are included to this end. Also included in this release is an implementation of the Constant-Q transform.
 
 <dt>Version 1.7</dt><dd>2013-10-08</dd>
-This release adds the ability to extract the MFCC from an audio signal. Also an example of the Constant-Q transform is added, together with a reusable visualization class library.
+This release adds the ability to extract the MFCC from an audio signal. Also an example of the Constant-Q transform is added, together with a reusable visualization class library. The build system is reverted back to pure ANT.

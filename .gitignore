@@ -67,10 +67,3 @@ build/TarsosDSP-*
 log/
 target/
 
-###########
-# ignore symlinks
-###########
-
-/src
-/tests
-/examples
