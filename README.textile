@@ -9,8 +9,6 @@ h2. Quickly Getting Started with TarsosDSP
 
 Head over to the "TarsosDSP release repository":http://tarsos.0110.be/releases/TarsosDSP/ and download the latest "TarsosDSP library":http://tarsos.0110.be/releases/TarsosDSP/TarsosDSP-latest/TarsosDSP-latest.jar. To get up to speed quickly, check the "TarsosDSP Example applications":http://tarsos.0110.be/releases/TarsosDSP/TarsosDSP-latest/TarsosDSP-latest-Examples/ for inspiration and consult the "API documentation":http://tarsos.0110.be/releases/TarsosDSP/TarsosDSP-latest/TarsosDSP-latest-Documentation/.
 
-TarsosDSP is also published in the main Maven repository. This makes it easier to use TarsosDSP in Maven projects.
-
 h2. TarsosDSP Example Applications
 
 TarsosDSP contains some ready made example applications. Most have a Java Swing user interface. They show which functionality is present in the library and how to use it.
