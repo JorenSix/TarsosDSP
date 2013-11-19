@@ -73,4 +73,35 @@ public class CoordinateSystem  {
 			yMin = value;
 		}
 	}
+	
+	
+	
+	//For selection Layer
+	private double startX =  Double.MAX_VALUE;
+	private double startY =  Double.MAX_VALUE;
+	private double endX =  Double.MAX_VALUE;
+	private double endY =  Double.MAX_VALUE;;
+	public void setStartPoint(double x,double y){
+		startX = x;
+		startY = y;
+	}
+	
+	public boolean hasStartPoint(){return startX != Double.MAX_VALUE;}
+	
+	public void setEndPoint(double x,double y){
+		endX=x;
+		endY=y;		
+	}
+	
+	public void clearPoints(){
+		startX = Double.MAX_VALUE;
+		startY = Double.MAX_VALUE;
+		endX = Double.MAX_VALUE;
+		endY = Double.MAX_VALUE;
+	}
+	
+	public double getStartX(){return startX;}
+	public double getStartY(){return startY;}
+	public double getEndY(){return endY;}
+	public double getEndX(){return endX;}
 }

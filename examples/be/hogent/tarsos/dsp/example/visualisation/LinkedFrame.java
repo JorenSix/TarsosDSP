@@ -16,6 +16,7 @@ import be.hogent.tarsos.dsp.example.visualisation.layers.ConstantQLayer;
 import be.hogent.tarsos.dsp.example.visualisation.layers.FrequencyAxisLayer;
 import be.hogent.tarsos.dsp.example.visualisation.layers.LegendLayer;
 import be.hogent.tarsos.dsp.example.visualisation.layers.PitchContourLayer;
+import be.hogent.tarsos.dsp.example.visualisation.layers.SelectionLayer;
 import be.hogent.tarsos.dsp.example.visualisation.layers.TimeAxisLayer;
 import be.hogent.tarsos.dsp.example.visualisation.layers.WaveFormLayer;
 
@@ -104,6 +105,7 @@ public class LinkedFrame extends JFrame implements ViewPortChangedListener {
 		panel.addLayer(new TimeAxisLayer(cs));
 		panel.addLayer(new WaveFormLayer(cs, audioFile));
 		panel.addLayer(new BeatLayer(cs,audioFile,true,true));
+		panel.addLayer(new SelectionLayer(cs));
 		LegendLayer legend = new LegendLayer(cs,50);
 		panel.addLayer(legend);
 		legend.addEntry("Onsets",Color.BLUE);
@@ -121,6 +123,7 @@ public class LinkedFrame extends JFrame implements ViewPortChangedListener {
 		panel.addLayer(new ConstantQLayer(cs,audioFile,2048,3600,10800,12));
 	//	panel.addLayer(new FFTLayer(cs,audioFile,2048,512));
 		panel.addLayer(new PitchContourLayer(cs,audioFile,Color.red,2048,1024));
+		panel.addLayer(new SelectionLayer(cs));
 		panel.addLayer(new FrequencyAxisLayer(cs));
 		panel.addLayer(new TimeAxisLayer(cs));
 		

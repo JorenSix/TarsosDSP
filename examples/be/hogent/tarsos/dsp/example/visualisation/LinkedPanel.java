@@ -14,6 +14,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import javax.swing.JPanel;
+import javax.swing.SwingUtilities;
 
 import be.hogent.tarsos.dsp.example.visualisation.layers.Layer;
 import be.hogent.tarsos.dsp.example.visualisation.layers.LayerUtilities;
@@ -80,16 +81,16 @@ public class LinkedPanel extends JPanel {
 		}
 		
 		@Override
-		public void mouseDragged(MouseEvent e) {
-			if (previousPoint != null) {
+		public void mouseDragged(final MouseEvent e) {
+			if(SwingUtilities.isLeftMouseButton(e)){
+				recordSelection(e);
+			} else if (previousPoint != null) {
+				
 				Graphics2D graphics = (Graphics2D) panel.getGraphics();
 				graphics.setTransform(panel.getTransform());
-				Point2D unitsCurrent = LayerUtilities.pixelsToUnits(graphics,
-						e.getX(), (int) previousPoint.getY());
-				Point2D unitsPrevious = LayerUtilities.pixelsToUnits(graphics,
-						(int) previousPoint.getX(), (int) previousPoint.getY());
-				float millisecondAmount = (float) (unitsPrevious.getX() - unitsCurrent
-						.getX());
+				Point2D unitsCurrent = LayerUtilities.pixelsToUnits(graphics,e.getX(), (int) previousPoint.getY());
+				Point2D unitsPrevious = LayerUtilities.pixelsToUnits(graphics,(int) previousPoint.getX(), (int) previousPoint.getY());
+				float millisecondAmount = (float) (unitsPrevious.getX() - unitsCurrent.getX());
 				previousPoint = e.getPoint();
 				viewPort.drag(millisecondAmount, 0);
 			}
@@ -108,38 +109,56 @@ public class LinkedPanel extends JPanel {
 		
 		@Override 
 		public void mouseClicked(MouseEvent e){
-	
+			if(e.getClickCount()==2){
+				panel.getViewPort().resetZoom();
+			}
 		}
 		
 		@Override
 		public void mousePressed(MouseEvent e) {
 			previousPoint = e.getPoint();
+			
 		}
 
 		@Override
 		public void mouseReleased(MouseEvent e) {
-			previousPoint = null;
+			if(SwingUtilities.isLeftMouseButton(e)){
+				viewPort.zoomToSelection();
+			}else{
+				previousPoint = null;
+			}
 		}
 
 		@Override
 		public void mouseDragged(MouseEvent e) {
-			if (previousPoint != null) {
+			if(SwingUtilities.isLeftMouseButton(e)){
+				recordSelection(e);
+			} else if (previousPoint != null) {
 				Graphics2D graphics = (Graphics2D) panel.getGraphics();
 				graphics.setTransform(panel.getTransform());
 				Point2D unitsCurrent = LayerUtilities.pixelsToUnits(graphics,
 						e.getX(), e.getY());
-				Point2D unitsPrevious = LayerUtilities.pixelsToUnits(graphics,
-						(int) previousPoint.getX(), (int) previousPoint.getY());
-				float millisecondAmount = (float) (unitsPrevious.getX() - unitsCurrent
-						.getX());
-				float centAmount = (float) (unitsPrevious.getY() - unitsCurrent
-						.getY());
+				Point2D unitsPrevious = LayerUtilities.pixelsToUnits(graphics,(int) previousPoint.getX(), (int) previousPoint.getY());
+				float millisecondAmount = (float) (unitsPrevious.getX() - unitsCurrent.getX());
+				float centAmount = (float) (unitsPrevious.getY() - unitsCurrent.getY());
 				previousPoint = e.getPoint();
 				viewPort.drag(millisecondAmount, centAmount);
 				graphics.dispose();
-			}
+			} 
 		}
-
+		
+		protected void recordSelection(MouseEvent e){
+			Graphics2D graphics = (Graphics2D) panel.getGraphics();
+			graphics.setTransform(panel.getTransform());
+			Point2D units = LayerUtilities.pixelsToUnits(graphics,e.getX(), (int) e.getY());
+			if(!cs.hasStartPoint()){
+				panel.cs.setStartPoint(units.getX(), units.getY());
+			} else {
+				panel.cs.setEndPoint(units.getX(), units.getY());
+			}				
+			repaint();
+		}
+		
 		@Override
 		public void mouseMoved(MouseEvent e) {
 		
@@ -156,6 +175,11 @@ public class LinkedPanel extends JPanel {
 		return transform;
 	}
 
+
+	public void removeLayer(Layer layer) {
+		layers.remove(layer);
+		
+	}
 
 	@Override
 	public void paintComponent(final Graphics g) {
