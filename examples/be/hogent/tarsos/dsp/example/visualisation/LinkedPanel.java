@@ -1,5 +1,6 @@
 package be.hogent.tarsos.dsp.example.visualisation;
 
+import java.awt.Dimension;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
 import java.awt.event.MouseListener;
@@ -14,33 +15,30 @@ import javax.swing.JPanel;
 import be.hogent.tarsos.dsp.example.visualisation.layers.Layer;
 
 
+
 public class LinkedPanel extends JPanel {
 
 	private static final long serialVersionUID = -5055686566048886896L;
 
-	private List<Layer> layers;
-
+	private final List<Layer> layers;
 	private final ViewPort viewPort;
-	private CoordinateSystem cs;
+	private final CoordinateSystem cs;
 
+	public LinkedPanel(CoordinateSystem coordinateSystem) {
+		super();
+		setMinimumSize(new Dimension(100,100));
+		layers = new ArrayList<Layer>();
+		cs = coordinateSystem;
+		viewPort = new ViewPort(this.cs);
+		this.setVisible(true);
+	}
+	
 	public CoordinateSystem getCoordinateSystem() {
 		return cs;
 	}
 
-	public void setCoordinateSystem(CoordinateSystem cs) {
-		this.cs = cs;
-	}
-
 	public ViewPort getViewPort() {
 		return viewPort;
-	}
-
-	public LinkedPanel(CoordinateSystem coordinateSystem) {
-		super();
-		layers = new ArrayList<Layer>();
-		setCoordinateSystem(coordinateSystem);
-		viewPort = new ViewPort(this.cs);
-		this.setVisible(true);
 	}
 
 	public void addLayer(Layer l) {
@@ -56,6 +54,10 @@ public class LinkedPanel extends JPanel {
 		}
 	}
 	
+	public void removeLayer(Layer layer) {
+		layers.remove(layer);
+	}
+	
 	public void removeLayers(){
 		this.layers.clear();
 	}
@@ -68,11 +70,6 @@ public class LinkedPanel extends JPanel {
 		transform.scale(getWidth() / xDelta, -getHeight() / yDelta);
 		transform.translate(-cs.getMin(Axis.X),-cs.getMin(Axis.Y));
 		return transform;
-	}
-
-
-	public void removeLayer(Layer layer) {
-		layers.remove(layer);
 	}
 
 	@Override
