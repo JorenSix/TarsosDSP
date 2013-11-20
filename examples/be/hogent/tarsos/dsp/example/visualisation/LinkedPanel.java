@@ -2,22 +2,16 @@ package be.hogent.tarsos.dsp.example.visualisation;
 
 import java.awt.Graphics;
 import java.awt.Graphics2D;
-import java.awt.Point;
-import java.awt.event.ComponentEvent;
-import java.awt.event.MouseAdapter;
-import java.awt.event.MouseEvent;
-import java.awt.event.MouseWheelEvent;
+import java.awt.event.MouseListener;
+import java.awt.event.MouseMotionListener;
 import java.awt.event.MouseWheelListener;
 import java.awt.geom.AffineTransform;
-import java.awt.geom.Point2D;
 import java.util.ArrayList;
 import java.util.List;
 
 import javax.swing.JPanel;
-import javax.swing.SwingUtilities;
 
 import be.hogent.tarsos.dsp.example.visualisation.layers.Layer;
-import be.hogent.tarsos.dsp.example.visualisation.layers.LayerUtilities;
 
 
 public class LinkedPanel extends JPanel {
@@ -46,126 +40,27 @@ public class LinkedPanel extends JPanel {
 		layers = new ArrayList<Layer>();
 		setCoordinateSystem(coordinateSystem);
 		viewPort = new ViewPort(this.cs);
-		DragListener dragListener;
-		if (cs.getUnitsForAxis(Axis.Y) == AxisUnit.AMPLITUDE || cs.getUnitsForAxis(Axis.Y) == AxisUnit.NONE){
-			dragListener = new HorizontalDragListener(this);
-		} else {
-			dragListener = new DragListener(this);
-		}
-		ZoomListener zoomListener = new ZoomListener();
-		addMouseWheelListener(zoomListener);
-		addMouseListener(dragListener);
-		addMouseMotionListener(dragListener);
 		this.setVisible(true);
 	}
 
 	public void addLayer(Layer l) {
-		this.layers.add(l);		
+		this.layers.add(l);	
+		if(l instanceof MouseMotionListener){
+			this.addMouseMotionListener((MouseMotionListener) l);
+		}
+		if(l instanceof MouseListener){
+			this.addMouseListener((MouseListener) l);
+		}
+		if(l instanceof MouseWheelListener){
+			this.addMouseWheelListener((MouseWheelListener) l);
+		}
 	}
 	
 	public void removeLayers(){
 		this.layers.clear();
 	}
 
-	private class ZoomListener implements MouseWheelListener {
-
-		public void mouseWheelMoved(MouseWheelEvent arg0) {
-			int amount = arg0.getWheelRotation() * arg0.getScrollAmount();
-			viewPort.zoom(amount, arg0.getPoint());
-		}
-	}
-
-	private class HorizontalDragListener extends DragListener {
-		private HorizontalDragListener(LinkedPanel p){
-			super(p);
-		}
-		
-		@Override
-		public void mouseDragged(final MouseEvent e) {
-			if(SwingUtilities.isLeftMouseButton(e)){
-				recordSelection(e);
-			} else if (previousPoint != null) {
-				
-				Graphics2D graphics = (Graphics2D) panel.getGraphics();
-				graphics.setTransform(panel.getTransform());
-				Point2D unitsCurrent = LayerUtilities.pixelsToUnits(graphics,e.getX(), (int) previousPoint.getY());
-				Point2D unitsPrevious = LayerUtilities.pixelsToUnits(graphics,(int) previousPoint.getX(), (int) previousPoint.getY());
-				float millisecondAmount = (float) (unitsPrevious.getX() - unitsCurrent.getX());
-				previousPoint = e.getPoint();
-				viewPort.drag(millisecondAmount, 0);
-			}
-		}
-	}
-	
-	private class DragListener extends MouseAdapter {
-
-		LinkedPanel panel;
-		Point previousPoint;
-
-		private DragListener(LinkedPanel p) {
-			panel = p;
-			previousPoint = null;
-		}
-		
-		@Override 
-		public void mouseClicked(MouseEvent e){
-			if(e.getClickCount()==2){
-				panel.getViewPort().resetZoom();
-			}
-		}
-		
-		@Override
-		public void mousePressed(MouseEvent e) {
-			previousPoint = e.getPoint();
-			
-		}
-
-		@Override
-		public void mouseReleased(MouseEvent e) {
-			if(SwingUtilities.isLeftMouseButton(e)){
-				viewPort.zoomToSelection();
-			}else{
-				previousPoint = null;
-			}
-		}
-
-		@Override
-		public void mouseDragged(MouseEvent e) {
-			if(SwingUtilities.isLeftMouseButton(e)){
-				recordSelection(e);
-			} else if (previousPoint != null) {
-				Graphics2D graphics = (Graphics2D) panel.getGraphics();
-				graphics.setTransform(panel.getTransform());
-				Point2D unitsCurrent = LayerUtilities.pixelsToUnits(graphics,
-						e.getX(), e.getY());
-				Point2D unitsPrevious = LayerUtilities.pixelsToUnits(graphics,(int) previousPoint.getX(), (int) previousPoint.getY());
-				float millisecondAmount = (float) (unitsPrevious.getX() - unitsCurrent.getX());
-				float centAmount = (float) (unitsPrevious.getY() - unitsCurrent.getY());
-				previousPoint = e.getPoint();
-				viewPort.drag(millisecondAmount, centAmount);
-				graphics.dispose();
-			} 
-		}
-		
-		protected void recordSelection(MouseEvent e){
-			Graphics2D graphics = (Graphics2D) panel.getGraphics();
-			graphics.setTransform(panel.getTransform());
-			Point2D units = LayerUtilities.pixelsToUnits(graphics,e.getX(), (int) e.getY());
-			if(!cs.hasStartPoint()){
-				panel.cs.setStartPoint(units.getX(), units.getY());
-			} else {
-				panel.cs.setEndPoint(units.getX(), units.getY());
-			}				
-			repaint();
-		}
-		
-		@Override
-		public void mouseMoved(MouseEvent e) {
-		
-		}
-	}
-
-	private AffineTransform getTransform() {
+	public AffineTransform getTransform() {
 		double xDelta = cs.getDelta(Axis.X);
 		double yDelta = cs.getDelta(Axis.Y);
 		AffineTransform transform = new AffineTransform();
@@ -178,7 +73,6 @@ public class LinkedPanel extends JPanel {
 
 	public void removeLayer(Layer layer) {
 		layers.remove(layer);
-		
 	}
 
 	@Override
@@ -200,19 +94,5 @@ public class LinkedPanel extends JPanel {
 		transform.scale(getWidth() / xDelta, -getHeight() / yDelta);
 		transform.translate(-cs.getMin(Axis.X),-cs.getMin(Axis.Y));
 		return transform;
-	}
-
-	public void componentHidden(ComponentEvent arg0) {
-		// TODO Auto-generated method stub
-
-	}
-
-	public void componentMoved(ComponentEvent arg0) {
-		// TODO Auto-generated method stub
-
-	}
-
-	public void componentShown(ComponentEvent arg0) {
-		// TODO Auto-generated method stub
 	}
 }

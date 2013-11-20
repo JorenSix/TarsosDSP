@@ -2,13 +2,19 @@ package be.hogent.tarsos.dsp.example.visualisation.layers;
 
 import java.awt.Color;
 import java.awt.Graphics2D;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
+import java.awt.geom.Point2D;
+
+import javax.swing.SwingUtilities;
 
 import be.hogent.tarsos.dsp.example.visualisation.CoordinateSystem;
+import be.hogent.tarsos.dsp.example.visualisation.LinkedPanel;
 
 /**
  * Draws the current selection.
  */
-public class SelectionLayer implements Layer{
+public class SelectionLayer extends MouseAdapter implements Layer{
 	
 	private final CoordinateSystem cs;
 	private final Color color;
@@ -55,5 +61,30 @@ public class SelectionLayer implements Layer{
 	@Override
 	public String getName() {
 		return "Selection Layer";
+	}
+
+	@Override
+	public void mouseDragged(MouseEvent e) {
+		if(SwingUtilities.isLeftMouseButton(e)){
+			LinkedPanel panel = (LinkedPanel) e.getComponent();
+			Graphics2D graphics = (Graphics2D) panel.getGraphics();
+			graphics.setTransform(panel.getTransform());
+			Point2D units = LayerUtilities.pixelsToUnits(graphics,e.getX(), (int) e.getY());
+			if(!panel.getCoordinateSystem().hasStartPoint()){
+				panel.getCoordinateSystem().setStartPoint(units.getX(), units.getY());
+			} else {
+				panel.getCoordinateSystem().setEndPoint(units.getX(), units.getY());
+			}				
+			panel.repaint();	
+		}
+	}
+
+	@Override
+	public void mouseReleased(MouseEvent e) {
+		if(SwingUtilities.isLeftMouseButton(e)){
+			LinkedPanel panel = (LinkedPanel) e.getComponent();
+			panel.getViewPort().zoomToSelection();
+		}
+		
 	}
 }
