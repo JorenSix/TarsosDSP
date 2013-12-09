@@ -7,7 +7,6 @@ import java.util.HashMap;
 
 import javax.swing.JFrame;
 import javax.swing.JSplitPane;
-
 import be.hogent.tarsos.dsp.ui.ViewPort.ViewPortChangedListener;
 import be.hogent.tarsos.dsp.ui.layers.AmplitudeAxisLayer;
 import be.hogent.tarsos.dsp.ui.layers.BackgroundLayer;
@@ -23,7 +22,6 @@ import be.hogent.tarsos.dsp.ui.layers.WaveFormLayer;
 import be.hogent.tarsos.dsp.ui.layers.ZoomMouseListenerLayer;
 import be.hogent.tarsos.dsp.ui.layers.pch.PitchClassHistogramLayer;
 import be.hogent.tarsos.dsp.ui.layers.pch.ScaleLayer;
-
 
 public class LinkedFrame extends JFrame implements ViewPortChangedListener {
 	private JSplitPane lastSplitPane;
@@ -104,14 +102,19 @@ public class LinkedFrame extends JFrame implements ViewPortChangedListener {
 		File audioFile = new File("/home/joren/Desktop/08._Ladrang_Kandamanyura_10s-20s.wav");
 		
 		LinkedPanel panel = new LinkedPanel(cs);
+		panel.addLayer(new ZoomMouseListenerLayer());
+		panel.addLayer(new DragMouseListenerLayer(cs));
 		panel.addLayer(new BackgroundLayer(cs));
 		panel.addLayer(new AmplitudeAxisLayer(cs));
 		panel.addLayer(new TimeAxisLayer(cs));
 		panel.addLayer(new WaveFormLayer(cs, audioFile));
 		panel.addLayer(new BeatLayer(cs,audioFile,true,true));
 		panel.addLayer(new SelectionLayer(cs));
+<<<<<<< HEAD:src/be/hogent/tarsos/dsp/ui/LinkedFrame.java
 		panel.addLayer(new ZoomMouseListenerLayer());
 		panel.addLayer(new DragMouseListenerLayer(cs));
+=======
+>>>>>>> f532284b54fb66dddb18f72e7d35411d6950d55f:examples/be/hogent/tarsos/dsp/example/visualisation/LinkedFrame.java
 		LegendLayer legend = new LegendLayer(cs,50);
 		panel.addLayer(legend);
 		legend.addEntry("Onsets",Color.BLUE);
@@ -125,14 +128,20 @@ public class LinkedFrame extends JFrame implements ViewPortChangedListener {
 		
 		cs = getCoordinateSystem(AxisUnit.FREQUENCY);
 		panel = new LinkedPanel(cs);
+		panel.addLayer(new ZoomMouseListenerLayer());
+		panel.addLayer(new DragMouseListenerLayer(cs));
 		panel.addLayer(new BackgroundLayer(cs));
 		panel.addLayer(new ConstantQLayer(cs,audioFile,2048,3600,10800,12));
 	//	panel.addLayer(new FFTLayer(cs,audioFile,2048,512));
 		panel.addLayer(new PitchContourLayer(cs,audioFile,Color.red,2048,1024));
 		panel.addLayer(new SelectionLayer(cs));
+<<<<<<< HEAD:src/be/hogent/tarsos/dsp/ui/LinkedFrame.java
 		panel.addLayer(new ZoomMouseListenerLayer());
 		panel.addLayer(new DragMouseListenerLayer(cs));
 		panel.addLayer(new VerticalFrequencyAxisLayer(cs));
+=======
+		panel.addLayer(new FrequencyAxisLayer(cs));
+>>>>>>> f532284b54fb66dddb18f72e7d35411d6950d55f:examples/be/hogent/tarsos/dsp/example/visualisation/LinkedFrame.java
 		panel.addLayer(new TimeAxisLayer(cs));
 		panel.getViewPort().addViewPortChangedListener(this);
 		
