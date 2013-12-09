@@ -110,11 +110,7 @@ public class LinkedFrame extends JFrame implements ViewPortChangedListener {
 		panel.addLayer(new WaveFormLayer(cs, audioFile));
 		panel.addLayer(new BeatLayer(cs,audioFile,true,true));
 		panel.addLayer(new SelectionLayer(cs));
-<<<<<<< HEAD:src/be/hogent/tarsos/dsp/ui/LinkedFrame.java
-		panel.addLayer(new ZoomMouseListenerLayer());
-		panel.addLayer(new DragMouseListenerLayer(cs));
-=======
->>>>>>> f532284b54fb66dddb18f72e7d35411d6950d55f:examples/be/hogent/tarsos/dsp/example/visualisation/LinkedFrame.java
+
 		LegendLayer legend = new LegendLayer(cs,50);
 		panel.addLayer(legend);
 		legend.addEntry("Onsets",Color.BLUE);
@@ -135,13 +131,7 @@ public class LinkedFrame extends JFrame implements ViewPortChangedListener {
 	//	panel.addLayer(new FFTLayer(cs,audioFile,2048,512));
 		panel.addLayer(new PitchContourLayer(cs,audioFile,Color.red,2048,1024));
 		panel.addLayer(new SelectionLayer(cs));
-<<<<<<< HEAD:src/be/hogent/tarsos/dsp/ui/LinkedFrame.java
-		panel.addLayer(new ZoomMouseListenerLayer());
-		panel.addLayer(new DragMouseListenerLayer(cs));
 		panel.addLayer(new VerticalFrequencyAxisLayer(cs));
-=======
-		panel.addLayer(new FrequencyAxisLayer(cs));
->>>>>>> f532284b54fb66dddb18f72e7d35411d6950d55f:examples/be/hogent/tarsos/dsp/example/visualisation/LinkedFrame.java
 		panel.addLayer(new TimeAxisLayer(cs));
 		panel.getViewPort().addViewPortChangedListener(this);
 		
