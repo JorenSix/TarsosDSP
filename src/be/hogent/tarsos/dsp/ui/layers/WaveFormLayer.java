@@ -1,4 +1,4 @@
-package be.hogent.tarsos.dsp.example.visualisation.layers;
+package be.hogent.tarsos.dsp.ui.layers;
 
 import java.awt.Color;
 import java.awt.Graphics2D;
@@ -10,8 +10,8 @@ import javax.sound.sampled.UnsupportedAudioFileException;
 import be.hogent.tarsos.dsp.AudioDispatcher;
 import be.hogent.tarsos.dsp.AudioEvent;
 import be.hogent.tarsos.dsp.AudioProcessor;
-import be.hogent.tarsos.dsp.example.visualisation.Axis;
-import be.hogent.tarsos.dsp.example.visualisation.CoordinateSystem;
+import be.hogent.tarsos.dsp.ui.Axis;
+import be.hogent.tarsos.dsp.ui.CoordinateSystem;
 
 
 public class WaveFormLayer implements Layer {
@@ -45,18 +45,21 @@ public class WaveFormLayer implements Layer {
 		if (samples != null && samples.length > 0) {
 			//graphics.setRenderingHint(RenderingHints.KEY_ANTIALIASING,RenderingHints.VALUE_ANTIALIAS_ON);
 		
-		
 			final int waveFormHeightInUnits = (int) cs.getDelta(Axis.Y);
 			final float lengthInMs = samples.length/sampleRate*1000;
 			final int amountOfSamples = samples.length;
+			
 			float sampleCalculateFactor = amountOfSamples / lengthInMs;
+			
 			int amplitudeFactor = waveFormHeightInUnits / 2;
 			
-			for (int i = Math.max(0, waveFormXMin); i < Math.min(waveFormXMax, lengthInMs); i++) {
+			//every millisecond:
+			int step = 1;
+			
+			for (int i = Math.max(0, waveFormXMin); i < Math.min(waveFormXMax, lengthInMs); i+= step) {
 				int index = (int) (i * sampleCalculateFactor);
 				if (index < samples.length) {
-					graphics.drawLine(i, 0, i,
-							(int) (samples[index] * amplitudeFactor));
+					graphics.drawLine(i, 0, i,(int) (samples[index] * amplitudeFactor));
 				}
 			}
 			//graphics.setRenderingHint(RenderingHints.KEY_ANTIALIASING,RenderingHints.VALUE_ANTIALIAS_OFF);

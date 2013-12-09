@@ -1,4 +1,4 @@
-package be.hogent.tarsos.dsp.example.visualisation.layers;
+package be.hogent.tarsos.dsp.ui.layers;
 
 import java.awt.Color;
 import java.awt.Graphics2D;
@@ -13,12 +13,12 @@ import be.hogent.tarsos.dsp.AudioDispatcher;
 import be.hogent.tarsos.dsp.AudioEvent;
 import be.hogent.tarsos.dsp.AudioProcessor;
 import be.hogent.tarsos.dsp.example.util.PitchConverter;
-import be.hogent.tarsos.dsp.example.visualisation.Axis;
-import be.hogent.tarsos.dsp.example.visualisation.CoordinateSystem;
 import be.hogent.tarsos.dsp.pitch.PitchDetectionHandler;
 import be.hogent.tarsos.dsp.pitch.PitchDetectionResult;
 import be.hogent.tarsos.dsp.pitch.PitchProcessor;
 import be.hogent.tarsos.dsp.pitch.PitchProcessor.PitchEstimationAlgorithm;
+import be.hogent.tarsos.dsp.ui.Axis;
+import be.hogent.tarsos.dsp.ui.CoordinateSystem;
 
 
 public class PitchContourLayer implements Layer {

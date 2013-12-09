@@ -1,4 +1,4 @@
-package be.hogent.tarsos.dsp.example.visualisation.layers;
+package be.hogent.tarsos.dsp.ui.layers;
 
 import java.awt.Color;
 import java.awt.Graphics2D;
@@ -12,52 +12,41 @@ import javax.sound.sampled.UnsupportedAudioFileException;
 import be.hogent.tarsos.dsp.AudioDispatcher;
 import be.hogent.tarsos.dsp.AudioEvent;
 import be.hogent.tarsos.dsp.AudioProcessor;
-import be.hogent.tarsos.dsp.ConstantQ;
 import be.hogent.tarsos.dsp.example.util.PitchConverter;
-import be.hogent.tarsos.dsp.example.visualisation.Axis;
-import be.hogent.tarsos.dsp.example.visualisation.CoordinateSystem;
+import be.hogent.tarsos.dsp.ui.Axis;
+import be.hogent.tarsos.dsp.ui.CoordinateSystem;
+import be.hogent.tarsos.dsp.util.fft.FFT;
 
 
-
-public class ConstantQLayer implements Layer, Runnable{
-
+public class FFTLayer implements Layer {
+	
 	private TreeMap<Double, float[]> features;
-	private final CoordinateSystem cs;
+	private final CoordinateSystem cs; 
+	private final int frameSize;
+	private final int overlap;
 	private final File audioFile;
 	
-
+	
+	private float binWith;// in seconds
+	
 	private float maxSpectralEnergy = 0;
 	private float minSpectralEnergy = 100000;
 	private float[] binStartingPointsInCents;
-	private float binWith;// in seconds
-	private float binHeight;// in seconds
-
-	/**
-	 * The default minimum pitch, in absolute cents (+-66 Hz)
-	 */
-	private int minimumFrequencyInCents = 4000;
-	/**
-	 * The default maximum pitch, in absolute cents (+-4200 Hz)
-	 */
-	private int maximumFrequencyInCents = 10500;
-	/**
-	 * The default number of bins per octave.
-	 */
-	private int binsPerOctave = 48;
+	private float[] binHeightsInCents;
 
 	/**
 	 * The default increment in samples.
 	 */
 	private int increment;
-	
 
-	public ConstantQLayer(CoordinateSystem cs, File audioFile, int increment, int minFreqInCents,int maxFreqInCents, int binsPerOctave) {
+	public FFTLayer(CoordinateSystem cs, File audioFile , int frameSize, int overlap) {
+		increment = frameSize - overlap;
+		this.features = new TreeMap<Double, float[]>();
 		this.cs = cs;		
 		this.audioFile = audioFile;		
-		this.increment = increment;
-		this.minimumFrequencyInCents = minFreqInCents;
-		this.maximumFrequencyInCents = maxFreqInCents;
-		new Thread(this, "Constant Q Initialization").start();
+		this.frameSize = frameSize;
+		this.overlap = overlap;		
+		initialise();
 	}
 
 	public void draw(Graphics2D graphics) {
@@ -70,11 +59,12 @@ public class ConstantQLayer implements Layer, Runnable{
 	
 				// draw the pixels
 				for (int i = 0; i < spectralEnergy.length; i++) {
-					Color color = Color.black;
+					Color color = Color.black; 
 					float centsStartingPoint = binStartingPointsInCents[i];
 					// only draw the visible frequency range
 					if (centsStartingPoint >= cs.getMin(Axis.Y)
 							&& centsStartingPoint <= cs.getMax(Axis.Y)) {
+						
 						int greyValue = 255 - (int) (spectralEnergy[i]
 								/ maxSpectralEnergy * 255);
 						greyValue = Math.max(0, greyValue);
@@ -83,41 +73,32 @@ public class ConstantQLayer implements Layer, Runnable{
 						graphics.fillRect((int) Math.round(timeStart * 1000),
 								Math.round(centsStartingPoint),
 								(int) Math.round(binWith * 1000),
-								(int) Math.ceil(binHeight));
+								(int) Math.ceil(binHeightsInCents[i]));
 					}
 				}
 			}
 		}
 	}
 
-	
-	public void run() {
+	public void initialise() {
+		
 		try {
+			AudioDispatcher adp = AudioDispatcher.fromFile(audioFile, frameSize,overlap);
+			float sampleRate = adp.getFormat().getSampleRate();
+			final TreeMap<Double, float[]> fe = new TreeMap<Double, float[]>();
+			binWith = increment / sampleRate;
+
+			final FFT fft = new FFT(frameSize);
 			
-			float minimumFrequencyInHertz = (float) PitchConverter.absoluteCentToHertz(minimumFrequencyInCents);
-			float maximumFrequencyInHertz = (float) PitchConverter.absoluteCentToHertz(maximumFrequencyInCents);
-
-			final float sampleRate = AudioDispatcher.fromFile(audioFile, 2048,0).getFormat().getFrameRate();
-			
-			final ConstantQ constantQ = new ConstantQ(sampleRate,minimumFrequencyInHertz,maximumFrequencyInHertz, binsPerOctave);
-
-			binWith = increment	/ sampleRate;
-			binHeight = 1200 / (float) binsPerOctave;
-
-			float[] startingPointsInHertz = constantQ.getFreqencies();
-			binStartingPointsInCents = new float[startingPointsInHertz.length];
-			for (int i = 0; i < binStartingPointsInCents.length; i++) {
-				binStartingPointsInCents[i] = (float) PitchConverter
-						.hertzToAbsoluteCent(startingPointsInHertz[i]);
+			binStartingPointsInCents = new float[frameSize];
+			binHeightsInCents = new float[frameSize];
+			for (int i = 1; i < frameSize; i++) {
+				binStartingPointsInCents[i] = (float) PitchConverter.hertzToAbsoluteCent(fft.binToHz(i,sampleRate));
+				binHeightsInCents[i] = binStartingPointsInCents[i] - binStartingPointsInCents[i-1];
 			}
 			
-			int size = constantQ.getFFTlength();
-		
-			AudioDispatcher	adp = AudioDispatcher.fromFile(audioFile, size,size-increment);
-			final double constantQLag = size / adp.getFormat().getSampleRate() - binWith / 2.0;// in seconds
-			final TreeMap<Double, float[]> fe = new TreeMap<Double, float[]>();
+			final double lag =  frameSize / sampleRate - binWith / 2.0;// in seconds
 			
-			adp.addAudioProcessor(constantQ);
 			adp.addAudioProcessor(new AudioProcessor() {
 
 				public void processingFinished() {
@@ -133,29 +114,31 @@ public class ConstantQLayer implements Layer, Runnable{
 						}
 					}
 					minSpectralEnergy = Math.abs(minSpectralEnergy);
-					ConstantQLayer.this.features = fe;
+					FFTLayer.this.features = fe;
 				}
 
 				public boolean process(AudioEvent audioEvent) {
-					fe.put(audioEvent.getTimeStamp() - constantQLag,
-							constantQ.getMagnitudes().clone());
+					float[] buffer = audioEvent.getFloatBuffer().clone();
+					float[] amplitudes = new float[buffer.length/2];
+					fft.forwardTransform(buffer);
+					fft.modulus(buffer, amplitudes);
+					fe.put(audioEvent.getTimeStamp() - lag,amplitudes);
 					return true;
 				}
 			});
-			new Thread(adp,"Constant Q Calculation").start();
+			new Thread(adp,"Calculate FFT").start();
 			
 		} catch (UnsupportedAudioFileException e) {
 			e.printStackTrace();
 		} catch (IOException e2){
 			e2.printStackTrace();
-		}
-		
+		}		
 		
 	}
 
 	@Override
 	public String getName() {
-		return "Constant-Q Layer";
+		return "FFT Layer";
 	}
 
 }

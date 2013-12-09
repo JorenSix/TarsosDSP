@@ -1,4 +1,4 @@
-package be.hogent.tarsos.dsp.example.visualisation.layers;
+package be.hogent.tarsos.dsp.ui.layers;
 
 import java.awt.Color;
 import java.awt.Graphics2D;
@@ -13,10 +13,10 @@ import be.hogent.tarsos.dsp.AudioDispatcher;
 import be.hogent.tarsos.dsp.AudioEvent;
 import be.hogent.tarsos.dsp.AudioProcessor;
 import be.hogent.tarsos.dsp.beatroot.BeatRootOnsetEventHandler;
-import be.hogent.tarsos.dsp.example.visualisation.Axis;
-import be.hogent.tarsos.dsp.example.visualisation.CoordinateSystem;
 import be.hogent.tarsos.dsp.onsets.ComplexOnsetDetector;
 import be.hogent.tarsos.dsp.onsets.OnsetHandler;
+import be.hogent.tarsos.dsp.ui.Axis;
+import be.hogent.tarsos.dsp.ui.CoordinateSystem;
 
 public class BeatLayer implements Layer {
 

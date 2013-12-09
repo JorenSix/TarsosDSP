@@ -1,4 +1,4 @@
-package be.hogent.tarsos.dsp.example.visualisation;
+package be.hogent.tarsos.dsp.ui;
 
 import java.awt.Color;
 import java.awt.Dimension;
@@ -8,16 +8,21 @@ import java.util.HashMap;
 import javax.swing.JFrame;
 import javax.swing.JSplitPane;
 
-import be.hogent.tarsos.dsp.example.visualisation.ViewPort.ViewPortChangedListener;
-import be.hogent.tarsos.dsp.example.visualisation.layers.AmplitudeAxisLayer;
-import be.hogent.tarsos.dsp.example.visualisation.layers.BackgroundLayer;
-import be.hogent.tarsos.dsp.example.visualisation.layers.BeatLayer;
-import be.hogent.tarsos.dsp.example.visualisation.layers.ConstantQLayer;
-import be.hogent.tarsos.dsp.example.visualisation.layers.FrequencyAxisLayer;
-import be.hogent.tarsos.dsp.example.visualisation.layers.LegendLayer;
-import be.hogent.tarsos.dsp.example.visualisation.layers.PitchContourLayer;
-import be.hogent.tarsos.dsp.example.visualisation.layers.TimeAxisLayer;
-import be.hogent.tarsos.dsp.example.visualisation.layers.WaveFormLayer;
+import be.hogent.tarsos.dsp.ui.ViewPort.ViewPortChangedListener;
+import be.hogent.tarsos.dsp.ui.layers.AmplitudeAxisLayer;
+import be.hogent.tarsos.dsp.ui.layers.BackgroundLayer;
+import be.hogent.tarsos.dsp.ui.layers.BeatLayer;
+import be.hogent.tarsos.dsp.ui.layers.ConstantQLayer;
+import be.hogent.tarsos.dsp.ui.layers.DragMouseListenerLayer;
+import be.hogent.tarsos.dsp.ui.layers.LegendLayer;
+import be.hogent.tarsos.dsp.ui.layers.PitchContourLayer;
+import be.hogent.tarsos.dsp.ui.layers.SelectionLayer;
+import be.hogent.tarsos.dsp.ui.layers.TimeAxisLayer;
+import be.hogent.tarsos.dsp.ui.layers.VerticalFrequencyAxisLayer;
+import be.hogent.tarsos.dsp.ui.layers.WaveFormLayer;
+import be.hogent.tarsos.dsp.ui.layers.ZoomMouseListenerLayer;
+import be.hogent.tarsos.dsp.ui.layers.pch.PitchClassHistogramLayer;
+import be.hogent.tarsos.dsp.ui.layers.pch.ScaleLayer;
 
 
 public class LinkedFrame extends JFrame implements ViewPortChangedListener {
@@ -104,6 +109,9 @@ public class LinkedFrame extends JFrame implements ViewPortChangedListener {
 		panel.addLayer(new TimeAxisLayer(cs));
 		panel.addLayer(new WaveFormLayer(cs, audioFile));
 		panel.addLayer(new BeatLayer(cs,audioFile,true,true));
+		panel.addLayer(new SelectionLayer(cs));
+		panel.addLayer(new ZoomMouseListenerLayer());
+		panel.addLayer(new DragMouseListenerLayer(cs));
 		LegendLayer legend = new LegendLayer(cs,50);
 		panel.addLayer(legend);
 		legend.addEntry("Onsets",Color.BLUE);
@@ -121,13 +129,42 @@ public class LinkedFrame extends JFrame implements ViewPortChangedListener {
 		panel.addLayer(new ConstantQLayer(cs,audioFile,2048,3600,10800,12));
 	//	panel.addLayer(new FFTLayer(cs,audioFile,2048,512));
 		panel.addLayer(new PitchContourLayer(cs,audioFile,Color.red,2048,1024));
-		panel.addLayer(new FrequencyAxisLayer(cs));
+		panel.addLayer(new SelectionLayer(cs));
+		panel.addLayer(new ZoomMouseListenerLayer());
+		panel.addLayer(new DragMouseListenerLayer(cs));
+		panel.addLayer(new VerticalFrequencyAxisLayer(cs));
 		panel.addLayer(new TimeAxisLayer(cs));
-		
-				
 		panel.getViewPort().addViewPortChangedListener(this);
 		
-		this.lastSplitPane.add(panel, JSplitPane.BOTTOM);
+		
+		CoordinateSystem pchCS = new CoordinateSystem(AxisUnit.OCCURENCES, 0, 1000,true);
+		pchCS.setMin(Axis.X, 0);
+		pchCS.setMax(Axis.X, 1200);
+		final LinkedPanel pchPanel = new LinkedPanel(pchCS);
+		
+		pchPanel.addLayer(new BackgroundLayer(pchCS));
+		pchPanel.addLayer(new DragMouseListenerLayer(pchCS));
+		pchPanel.addLayer(new PitchClassHistogramLayer());
+		pchPanel.addLayer(new ScaleLayer(pchCS,true));
+		pchPanel.addLayer(new ScaleLayer(pchCS,false));
+		
+		
+		pchPanel.getViewPort().addViewPortChangedListener(new ViewPortChangedListener() {
+			boolean painting = false;
+			@Override
+			public void viewPortChanged(ViewPort newViewPort) {
+				if(!painting){
+					painting = true;
+					pchPanel.repaint();
+					painting = false;
+				}
+					
+				
+			}
+		});
+		
+		this.lastSplitPane.add(pchPanel, JSplitPane.BOTTOM);
+		
 		
 		LinkedFrame.panels.put("Spectral info", panel);
 		

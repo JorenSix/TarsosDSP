@@ -1,4 +1,4 @@
-package be.hogent.tarsos.dsp.example.visualisation.layers;
+package be.hogent.tarsos.dsp.ui.layers;
 
 import java.awt.Color;
 import java.awt.Graphics2D;

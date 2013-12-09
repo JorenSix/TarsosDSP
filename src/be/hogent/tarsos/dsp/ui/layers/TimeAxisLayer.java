@@ -1,10 +1,10 @@
-package be.hogent.tarsos.dsp.example.visualisation.layers;
+package be.hogent.tarsos.dsp.ui.layers;
 
 import java.awt.Color;
 import java.awt.Graphics2D;
 
-import be.hogent.tarsos.dsp.example.visualisation.Axis;
-import be.hogent.tarsos.dsp.example.visualisation.CoordinateSystem;
+import be.hogent.tarsos.dsp.ui.Axis;
+import be.hogent.tarsos.dsp.ui.CoordinateSystem;
 
 
 public class TimeAxisLayer implements Layer {
