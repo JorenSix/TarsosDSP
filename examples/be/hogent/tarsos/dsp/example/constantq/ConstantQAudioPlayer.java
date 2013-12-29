@@ -54,19 +54,19 @@ import javax.swing.event.ChangeListener;
 import be.hogent.tarsos.dsp.AudioEvent;
 import be.hogent.tarsos.dsp.AudioProcessor;
 import be.hogent.tarsos.dsp.example.constantq.Player.PlayerState;
-import be.hogent.tarsos.dsp.example.visualisation.AxisUnit;
-import be.hogent.tarsos.dsp.example.visualisation.CoordinateSystem;
-import be.hogent.tarsos.dsp.example.visualisation.LinkedPanel;
-import be.hogent.tarsos.dsp.example.visualisation.ViewPort;
-import be.hogent.tarsos.dsp.example.visualisation.ViewPort.ViewPortChangedListener;
-import be.hogent.tarsos.dsp.example.visualisation.layers.AmplitudeAxisLayer;
-import be.hogent.tarsos.dsp.example.visualisation.layers.BackgroundLayer;
-import be.hogent.tarsos.dsp.example.visualisation.layers.ConstantQLayer;
-import be.hogent.tarsos.dsp.example.visualisation.layers.FrequencyAxisLayer;
-import be.hogent.tarsos.dsp.example.visualisation.layers.LegendLayer;
-import be.hogent.tarsos.dsp.example.visualisation.layers.PitchContourLayer;
-import be.hogent.tarsos.dsp.example.visualisation.layers.TimeAxisLayer;
-import be.hogent.tarsos.dsp.example.visualisation.layers.WaveFormLayer;
+import be.hogent.tarsos.dsp.ui.AxisUnit;
+import be.hogent.tarsos.dsp.ui.CoordinateSystem;
+import be.hogent.tarsos.dsp.ui.LinkedPanel;
+import be.hogent.tarsos.dsp.ui.ViewPort;
+import be.hogent.tarsos.dsp.ui.ViewPort.ViewPortChangedListener;
+import be.hogent.tarsos.dsp.ui.layers.AmplitudeAxisLayer;
+import be.hogent.tarsos.dsp.ui.layers.BackgroundLayer;
+import be.hogent.tarsos.dsp.ui.layers.ConstantQLayer;
+import be.hogent.tarsos.dsp.ui.layers.VerticalFrequencyAxisLayer;
+import be.hogent.tarsos.dsp.ui.layers.LegendLayer;
+import be.hogent.tarsos.dsp.ui.layers.PitchContourLayer;
+import be.hogent.tarsos.dsp.ui.layers.TimeAxisLayer;
+import be.hogent.tarsos.dsp.ui.layers.WaveFormLayer;
 
 public class ConstantQAudioPlayer extends JFrame {
 
@@ -171,7 +171,7 @@ public class ConstantQAudioPlayer extends JFrame {
 		constantQCS = getCoordinateSystem(AxisUnit.FREQUENCY);
 		constantQ = new LinkedPanel(constantQCS);
 		constantQ.addLayer(new BackgroundLayer(constantQCS));
-		constantQ.addLayer(new FrequencyAxisLayer(constantQCS));
+		constantQ.addLayer(new VerticalFrequencyAxisLayer(constantQCS));
 		constantQ.addLayer(new TimeAxisLayer(constantQCS));
 		legend = new LegendLayer(constantQCS,110);
 		constantQ.addLayer(legend);
@@ -221,7 +221,7 @@ public class ConstantQAudioPlayer extends JFrame {
 			constantQ.addLayer(new BackgroundLayer(constantQCS));
 			constantQ.addLayer(new ConstantQLayer(constantQCS,player.getLoadedFile(),2048,3600,10800,12));
 			constantQ.addLayer(new PitchContourLayer(constantQCS,player.getLoadedFile(),Color.red,2048,1024));
-			constantQ.addLayer(new FrequencyAxisLayer(constantQCS));
+			constantQ.addLayer(new VerticalFrequencyAxisLayer(constantQCS));
 			constantQ.addLayer(new TimeAxisLayer(constantQCS));
 			
 			legend = new LegendLayer(constantQCS,110);
