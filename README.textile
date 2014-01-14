@@ -4,6 +4,15 @@ TarsosDSP is a Java library for audio processing. Its aim is to provide an easy-
 
 To show the capabilities of the library, "TarsosDSP example applications":http://tarsos.0110.be/tag/TarsosDSP are available. Head over to the "TarosDSP release directory":http://tarsos.0110.be/releases/TarsosDSP/ for freshly baked binaries and code smell free (that is the goal anyway), oven-fresh sources.
 
+Some information about TarsosDSP can be found in the paper __TarsosDSP, a Real-Time Audio Processing Framework in Java__, by Joren Six, Olmo Cornelis, and Marc Leman, in __Proceedings of the 53rd AES Conference (AES 53rd)__, 2014. If you use TarsosDSP in academic research, please cite this paper.
+
+bc. @inproceedings{six2014tarsosdsp,
+  author      = {Joren Six and Olmo Cornelis and Marc Leman},
+  title       = {{TarsosDSP, a Real-Time Audio Processing Framework in Java}},
+  booktitle   = {{Proceedings of the 53rd AES Conference (AES 53rd)}}, 
+  year        =  2014
+}
+
 
 h2. Quickly Getting Started with TarsosDSP
 
@@ -56,35 +65,23 @@ To make development with Eclipse easy, make sure both test, src and examples are
 
 
 h2. Credits
+ 
+"TarsosDSP":http://tarsos.0110.be/tag/TarsosDSP was developed at "University College Ghent, School of Arts":http://schoolofartsgent.be between 2009 and 2013, from late 2013 the project is supported by "University Ghent, IPEM":http://www.ipem.ugent.be. 
 
-"Tarsos":http://tarsos.0110.be and "TarsosDSP":http://tarsos.0110.be/tag/TarsosDSP are developed at University College Ghent, School of Arts
-"http://schoolofartsgent.be":http://schoolofartsgent.be
+The TarsosDSP borrows algorithms from various other libraries or research paper. Below a complete list of credits can be found.
 
-The onset detector implementation is based on a "VAMP plugin example":http://vamp-plugins.org/code-doc/PercussionOnsetDetector_8cpp-source.html by __Chris Cannam__ at Queen Mary University, London. The method is described in "Drum Source Separation using Percussive Feature Detection and Spectral Modulation":http://eprints.nuim.ie/699/1/ELE-Bob9.pdf by Dan Barry, Derry Fitzgerald, Eugene Coyle and Bob Lawlor, ISSC 2005.
-
-For the implementation of the YIN pitch tracking algorithm. Both the  "the YIN paper":http://recherche.ircam.fr/equipes/pcm/cheveign/ps/2002_JASA_YIN_proof.pdf and the GPL'd "aubio implementation":http://aubio.org were used as a reference. __Matthias Mauch__ (of Queen Mary University, London) kindly provided the FastYin implementation which uses an FFT to calculate the difference function, it makes the algorithm up to 3 times faster.
-
-The Average Magnitude Difference (AMDF) pitch estimation algorithm is implemented by __Eder Souza__ and adapted for TarsosDSP by myself.
-
-For the MPM pitch tracking algorithm, the paper titled "A Smarter Way To Find Pitch":http://miracle.otago.ac.nz/tartini/papers/A_Smarter_Way_to_Find_Pitch.pdf by __Philip McLeod__ and __Geoff Wyvill__ was used. 
-
-The Dynamic Wavlet pitch estimation algorithm is described in "Real-Time Time-Domain Pitch Tracking Using Wavelets":http://online.physics.uiuc.edu/courses/phys193/NSF_REU_Reports/2005_reu/Real-Time_Time-Domain_Pitch_Tracking_Using_Wavelets.pdf by Eric Larson and Ross Maddox. The implementation within TarsosDSP is based on the implementation in the "Dynamic Wavelet Algorithm Pitch Tracking library":http://www.schmittmachine.com/dywapitchtrack.html by __Antoine Schmitt__, which is released under the MIT open source license, a license compatible with the GPL.
-
-The audio time stretching algorithm is described in "An Overlap-Add Technique Based on Waveform Similarity  (WSOLA) For Hight Quality Time-Scale Modifications of speech":http://mir.cs.nthu.edu.tw/users/litbee/RelatedPaper/[WSOLA]An%20overlap-add%20technique%20based%20on%20waveform%20similarity%20(WSOLA)%20for%20high-quality%20time-scale%20modifications%20of%20speech.pdf by Werner Verhelst and Marc Roelands. As a reference implementation the WSOLA implementation by __Olli Parviainen__ in the LGPL "SoundTouch - an open-source audio processing library":http://www.surina.net/soundtouch/ was used.
-
-The FFT implementation used within TarsosDSP is by __Piotr Wendykier__ and is included in his GPL'd "JTransforms library":https://sites.google.com/site/piotrwendykier/software/jtransforms. JTransforms is the first, open source, multithreaded FFT library written in pure Java. 
-
-The sample rate conversion feature is implemented by __Laszlo systems__ in the GPL'd "libresample4j":https://github.com/dnault-laszlo/libresample4j library. libresample4j is a Java port of Dominic Mazzoni's libresample 0.1.3, which is in turn based on "Julius Smith's Resample 1.7 library":http://www-ccrma.stanford.edu/~jos/resample/.
-
-Various FFT window functions are done by Damien Di Fede and Corban Brook for the GPL'd "Minim":http://code.compartmental.net/tools/minim/ project.
-
-Beat induction based on onsets and saliences is done using code from "Simon Dixon's BeatRoot system":http://www.eecs.qmul.ac.uk/~simond/beatroot/.The software is licensed under the GPL. The algorithm is documented in the 2001 JNMR paper "__Automatic Extraction of Tempo and Beat From Expressive Performances__":http://www.tandfonline.com/doi/abs/10.1076/jnmr.30.1.39.7119#.UbcsROcW0r0 and in the 2007 JNMR article "__Evaluation of the Audio Beat Tracking System BeatRoot__":http://www.tandfonline.com/doi/full/10.1080/09298210701653310#.UbcsgecW0r0
-
-A complex domain onset detection function is implemented using Aubio as an inspiration. Aubio, by __Paul Brossiers__ contains very clean object oriented c-code, the cleanest c-code I have ever seen. The algorithm is described in "__Complex Domain Onset Detection for Musical Signals__":http://www-student.elec.qmul.ac.uk/people/juan/Documents/Duxbury-DAFx-2003.pdf by Christopher Duxbury, Mike E. Davies, and Mark B. Sandler, in Proceedings of the Digital Audio Effects Conference, DAFx-03, pages 90-93, London, UK, 2003
-
-An implementation of the Constant-Q transform by Karl Helgason for the GPL'd <a href="http://rasmusdsp.sourceforge.ne">RasmusDSP</a> project has been adapted for use in TarsosDSP. More information about the Constant-Q transform can be found in the following papers "__Calculation of a Constant Q Spectral Transform__":http://www.wellesley.edu/Physics/brown/pubs/cq1stPaper.pdf by Judith C. Brown, 
-"__An Efficient Algorithm for the Calculation of a Constant Q Transform__":http://www.wellesley.edu/Physics/brown/pubs/effalgV92P2698-P2701.pdf, by Judith C. Brown and Miller S. Puckette, and
-"__The Constant Q Transform__":http://wwwmath1.uni-muenster.de/logik/org/staff/blankertz/constQ/constQ.pdf by Benjamin Blankertz
+* The onset detector implementation is based on a "VAMP plugin example":http://vamp-plugins.org/code-doc/PercussionOnsetDetector_8cpp-source.html by __Chris Cannam__ at Queen Mary University, London. The method is described in "Drum Source Separation using Percussive Feature Detection and Spectral Modulation":http://eprints.nuim.ie/699/1/ELE-Bob9.pdf by Dan Barry, Derry Fitzgerald, Eugene Coyle and Bob Lawlor, ISSC 2005.
+* For the implementation of the YIN pitch tracking algorithm. Both the  "the YIN paper":http://recherche.ircam.fr/equipes/pcm/cheveign/ps/2002_JASA_YIN_proof.pdf and the GPL'd "aubio implementation":http://aubio.org were used as a reference. __Matthias Mauch__ (of Queen Mary University, London) kindly provided the FastYin implementation which uses an FFT to calculate the difference function, it makes the algorithm up to 3 times faster.
+* The Average Magnitude Difference (AMDF) pitch estimation algorithm is implemented by __Eder Souza__ and adapted for TarsosDSP by myself.
+* For the MPM pitch tracking algorithm, the paper titled "A Smarter Way To Find Pitch":http://miracle.otago.ac.nz/tartini/papers/A_Smarter_Way_to_Find_Pitch.pdf by __Philip McLeod__ and __Geoff Wyvill__ was used. 
+* The Dynamic Wavlet pitch estimation algorithm is described in "Real-Time Time-Domain Pitch Tracking Using Wavelets":http://online.physics.uiuc.edu/courses/phys193/NSF_REU_Reports/2005_reu/Real-Time_Time-Domain_Pitch_Tracking_Using_Wavelets.pdf by Eric Larson and Ross Maddox. The implementation within TarsosDSP is based on the implementation in the "Dynamic Wavelet Algorithm Pitch Tracking library":http://www.schmittmachine.com/dywapitchtrack.html by __Antoine Schmitt__, which is released under the MIT open source license, a license compatible with the GPL.
+* The audio time stretching algorithm is described in "An Overlap-Add Technique Based on Waveform Similarity  (WSOLA) For Hight Quality Time-Scale Modifications of speech":http://mir.cs.nthu.edu.tw/users/litbee/RelatedPaper/[WSOLA]An%20overlap-add%20technique%20based%20on%20waveform%20similarity%20(WSOLA)%20for%20high-quality%20time-scale%20modifications%20of%20speech.pdf by Werner Verhelst and Marc Roelands. As a reference implementation the WSOLA implementation by __Olli Parviainen__ in the LGPL "SoundTouch - an open-source audio processing library":http://www.surina.net/soundtouch/ was used.
+* The FFT implementation used within TarsosDSP is by __Piotr Wendykier__ and is included in his GPL'd "JTransforms library":https://sites.google.com/site/piotrwendykier/software/jtransforms. JTransforms is the first, open source, multithreaded FFT library written in pure Java. 
+* The sample rate conversion feature is implemented by __Laszlo systems__ in the GPL'd "libresample4j":https://github.com/dnault-laszlo/libresample4j library. libresample4j is a Java port of Dominic Mazzoni's libresample 0.1.3, which is in turn based on "Julius Smith's Resample 1.7 library":http://www-ccrma.stanford.edu/~jos/resample/
+* Various FFT window functions are done by Damien Di Fede and Corban Brook for the GPL'd "Minim":http://code.compartmental.net/tools/minim/ project.
+* Beat induction based on onsets and saliences is done using code from "Simon Dixon's BeatRoot system":http://www.eecs.qmul.ac.uk/~simond/beatroot/.The software is licensed under the GPL. The algorithm is documented in the 2001 JNMR paper "__Automatic Extraction of Tempo and Beat From Expressive Performances__":http://www.tandfonline.com/doi/abs/10.1076/jnmr.30.1.39.7119#.UbcsROcW0r0 and in the 2007 JNMR article "__Evaluation of the Audio Beat Tracking System BeatRoot__":http://www.tandfonline.com/doi/full/10.1080/09298210701653310#.UbcsgecW0r0
+* A complex domain onset detection function is implemented using Aubio as an inspiration. Aubio, by __Paul Brossiers__ contains very clean object oriented c-code, the cleanest c-code I have ever seen. The algorithm is described in "__Complex Domain Onset Detection for Musical Signals__":http://www-student.elec.qmul.ac.uk/people/juan/Documents/Duxbury-DAFx-2003.pdf by Christopher Duxbury, Mike E. Davies, and Mark B. Sandler, in Proceedings of the Digital Audio Effects Conference, DAFx-03, pages 90-93, London, UK, 2003
+* An implementation of the Constant-Q transform by Karl Helgason for the GPL'd <a href="http://rasmusdsp.sourceforge.ne">RasmusDSP</a> project has been adapted for use in TarsosDSP. More information about the Constant-Q transform can be found in the following papers "__Calculation of a Constant Q Spectral Transform__":http://www.wellesley.edu/Physics/brown/pubs/cq1stPaper.pdf by Judith C. Brown, "__An Efficient Algorithm for the Calculation of a Constant Q Transform__":http://www.wellesley.edu/Physics/brown/pubs/effalgV92P2698-P2701.pdf, by Judith C. Brown and Miller S. Puckette, and "__The Constant Q Transform__":http://wwwmath1.uni-muenster.de/logik/org/staff/blankertz/constQ/constQ.pdf by Benjamin Blankertz
 
 h2. Changelog
 
