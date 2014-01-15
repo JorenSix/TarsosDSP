@@ -4,7 +4,7 @@ TarsosDSP is a Java library for audio processing. Its aim is to provide an easy-
 
 To show the capabilities of the library, "TarsosDSP example applications":http://tarsos.0110.be/tag/TarsosDSP are available. Head over to the "TarosDSP release directory":http://tarsos.0110.be/releases/TarsosDSP/ for freshly baked binaries and code smell free (that is the goal anyway), oven-fresh sources.
 
-Some information about TarsosDSP can be found in the paper __TarsosDSP, a Real-Time Audio Processing Framework in Java__, by Joren Six, Olmo Cornelis, and Marc Leman, in __Proceedings of the 53rd AES Conference (AES 53rd)__, 2014. If you use TarsosDSP in academic research, please cite this paper.
+Some information about TarsosDSP can be found in the paper "__TarsosDSP, a Real-Time Audio Processing Framework in Java__":http://0110.be/files/attachments/411/aes53_tarsos_dsp.pdf, by Joren Six, Olmo Cornelis, and Marc Leman, in __Proceedings of the 53rd AES Conference (AES 53rd)__, 2014. If you use TarsosDSP in academic research, please cite this paper.
 
 bc. @inproceedings{six2014tarsosdsp,
   author      = {Joren Six and Olmo Cornelis and Marc Leman},

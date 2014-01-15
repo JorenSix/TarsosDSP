@@ -126,6 +126,11 @@ public class ConstantQ implements AudioProcessor {
 	 * octaves = 24 places in the output buffer.
 	 */
 	private final float[] magnitudes;
+	
+	/**
+	 * The number of bins per octave.
+	 */
+	private int binsPerOctave;
 
 	/**
 	 * The underlying FFT object.
@@ -141,6 +146,7 @@ public class ConstantQ implements AudioProcessor {
 	public ConstantQ(float sampleRate, float minFreq, float maxFreq,float binsPerOctave, float threshold,float spread) {
 		this.minimumFrequency = minFreq;
 		this.maximumFreqency = maxFreq;
+		this.binsPerOctave = (int) binsPerOctave;
 		
 		// Calculate Constant Q		
 		double q = 1.0 / (Math.pow(2, 1.0 / binsPerOctave) - 1.0) / spread;
@@ -353,5 +359,12 @@ public class ConstantQ implements AudioProcessor {
 	 */
 	public int getFFTlength() {
 		return fftLength;
+	}
+	
+	/**
+	 * @return the number of bins every octave.
+	 */
+	public int getBinsPerOctave(){
+		return binsPerOctave;
 	}
 }

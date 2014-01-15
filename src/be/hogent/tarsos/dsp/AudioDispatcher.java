@@ -35,6 +35,7 @@ import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
+import javax.sound.sampled.AudioFileFormat;
 import javax.sound.sampled.AudioFormat;
 import javax.sound.sampled.AudioInputStream;
 import javax.sound.sampled.AudioSystem;
@@ -43,6 +44,7 @@ import javax.sound.sampled.TargetDataLine;
 import javax.sound.sampled.UnsupportedAudioFileException;
 
 import be.hogent.tarsos.dsp.util.AudioFloatConverter;
+
 
 
 /**
@@ -205,6 +207,41 @@ public final class AudioDispatcher implements Runnable {
 	 */
 	public long durationInFrames(){
 		return audioInputStream.getFrameLength() ;
+	}
+	
+	public static double determineDuration(final File audioFile){
+		double durationInSeconds = -1;
+		try{
+			AudioInputStream stream;		
+			AudioFileFormat sourceFileFormat = AudioSystem.getAudioFileFormat(audioFile);
+			AudioFormat sourceFormat = sourceFileFormat.getFormat();
+			stream = AudioSystem.getAudioInputStream(audioFile);
+			if(stream.getFrameLength() > 0 && sourceFormat.getFrameRate() > 0){
+				//Determine the duration by using frame length (PCM and related formats).
+				durationInSeconds = stream.getFrameLength() / sourceFormat.getFrameRate();
+			}
+		}catch (UnsupportedAudioFileException e) {
+			//ignore
+		} catch (IOException e) {
+			//ignore
+		}
+		
+		if(durationInSeconds == -1){
+			AudioFile f;
+			try {
+				f = new AudioFile(audioFile.getAbsolutePath());
+				AudioDispatcher d = new AudioDispatcher(f.getMonoStream(44100), 4096, 0);
+				DetermineDurationProcessor duration = new DetermineDurationProcessor();
+				d.addAudioProcessor(duration);
+				d.run();
+				durationInSeconds = duration.getDurationInSeconds();
+			} catch (UnsupportedAudioFileException e) {
+				LOG.severe("Could not determine duration of " + audioFile.getName());
+				e.printStackTrace();
+			}
+			LOG.warning("Determined duration of " + audioFile.getName() + " by decoding, performance improvement possible!");
+		}
+		return durationInSeconds;
 	}
 	
 	
@@ -570,5 +607,13 @@ public final class AudioDispatcher implements Runnable {
 		final byte[] byteArray = new byte[floatArray.length * audioFormat.getFrameSize()]; 
 		converter.toByteArray(floatArray, byteArray);
 		return AudioDispatcher.fromByteArray(byteArray, audioFormat, audioBufferSize, bufferOverlap);
+	}
+	
+	/**
+	 * 
+	 * @return The currently processed number of seconds.
+	 */
+	public float secondsProcessed(){
+		return bytesProcessed / (format.getSampleSizeInBits() / 8) / format.getSampleRate() / format.getChannels() ;
 	}
 }
