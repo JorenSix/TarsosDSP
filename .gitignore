@@ -1,7 +1,6 @@
 #################
 ## Eclipse
 #################
-
 *.pydevproject
 .project
 .metadata
@@ -28,9 +27,6 @@ local.properties
 # PDT-specific
 .buildpath
 
-# Examples
-build/*.jar
-
 ############
 ## Windows
 ############
@@ -46,8 +42,6 @@ Desktop.ini
 ############
 
 doc/
-happy.wav
-*.wav
 build/*.jar
 prepender.rb
 *_prefix.txt
