@@ -12,9 +12,9 @@ import javax.sound.sampled.UnsupportedAudioFileException;
 import be.hogent.tarsos.dsp.AudioDispatcher;
 import be.hogent.tarsos.dsp.AudioEvent;
 import be.hogent.tarsos.dsp.AudioProcessor;
-import be.hogent.tarsos.dsp.example.util.PitchConverter;
 import be.hogent.tarsos.dsp.ui.Axis;
 import be.hogent.tarsos.dsp.ui.CoordinateSystem;
+import be.hogent.tarsos.dsp.util.PitchConverter;
 import be.hogent.tarsos.dsp.util.fft.FFT;
 
 
