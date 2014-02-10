@@ -18,8 +18,8 @@
 	<!-- Compiles the java files to bytecode and copy required resources -->
 	<target name="compile">
 		<mkdir dir="../bin" />
-		<javac srcdir="../src" destdir="../bin" />
-		<javac srcdir="../examples" destdir="../bin" />
+		<javac srcdir="../src" destdir="../bin" includeantruntime="false" />
+		<javac srcdir="../examples" destdir="../bin" includeantruntime="false" />
 
 		<!-- copy all needed resources to bin dir -->
 		<copy todir="../bin/be/hogent/tarsos/dsp/example/resources">
@@ -32,10 +32,12 @@
 		<javac 
 		    srcdir="../src" 
 		    debug="true"
+			includeantruntime="false"
   			debuglevel="lines,vars,source"
   			destdir="../bin" />
 		<javac 
 		    srcdir="../examples" 
+			includeantruntime="false"
 		    debug="true"
   			debuglevel="lines,vars,source"
 		    destdir="../bin" />
