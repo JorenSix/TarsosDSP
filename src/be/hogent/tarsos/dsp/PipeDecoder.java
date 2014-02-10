@@ -87,7 +87,7 @@ public class PipeDecoder {
 		
 			pb.redirectError(Redirect.appendTo(pipeLogFile));
 		
-			LOG.fine("Starting piped decoding process for " + resource );
+			LOG.info("Starting piped decoding process for " + resource );
 			final Process process = pb.start();
 			
 			InputStream stdOut = new BufferedInputStream(process.getInputStream(), pipeBuffer);
@@ -95,7 +95,6 @@ public class PipeDecoder {
 			final AudioInputStream audioStream = new AudioInputStream(stdOut, audioFormat, AudioSystem.NOT_SPECIFIED);
 			
 			new Thread(new Runnable(){
-
 				@Override
 				public void run() {
 					try {

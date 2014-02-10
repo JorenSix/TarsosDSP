@@ -30,6 +30,10 @@ public class AudioFile {
 	private final String resource;
 	private static PipeDecoder pipeDecoder = new PipeDecoder();
 	
+	public static void setDecoder(PipeDecoder decoder){
+		pipeDecoder = decoder;
+	}
+	
 	private final PipeDecoder decoder;
 	public AudioFile(String resource){
 		this.resource = AudioResourceUtils.sanitizeResource(resource);

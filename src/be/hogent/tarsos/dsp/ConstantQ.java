@@ -167,10 +167,10 @@ public class ConstantQ implements AudioProcessor {
 		
 		// No need to use power of 2 FFT length.
 		fftLength = (int) calc_fftlen; 
-
-		// If the FFT algorithm only supports power of 2 lengths, use the following
-		// fftLength = (int) Math.pow(2, Math.ceil(Math.log(calc_fftlen) / Math.log(2)));
-
+		
+		//System.out.println(fftLength);
+		//The FFT length needs to be a power of two for performance reasons:
+		fftLength = (int) Math.pow(2, Math.ceil(Math.log(calc_fftlen) / Math.log(2)));
 		
 		// Create FFT object
 		fft = new FFT(fftLength);
