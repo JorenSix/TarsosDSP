@@ -58,6 +58,22 @@ public class LayerUtilities {
 		return numberOfUnits;
 	}
 	
+	public static float unitsToPixels(Graphics2D g, float units, boolean horizontal){
+		Point2D firstSource = new Point2D.Float(units,units);
+		Point2D firstDest = new Point2D.Float(0, 0);
+		
+		Point2D secondSource = new Point2D.Float(0,0);
+		Point2D secondDest = new Point2D.Float(0, 0);
+		
+		g.getTransform().transform(firstSource, firstDest);
+		g.getTransform().transform(secondSource, secondDest);
+		
+		if(horizontal)
+			return (float) (firstDest.getX()-secondDest.getX());
+		else
+			return (float) (firstDest.getY()-secondDest.getY());	
+	}
+	
 	
 	public static Rectangle2D drawString(Graphics2D graphics, String text, double x, double y,boolean centerHorizontal,boolean centerVertical,Color backgroundColor){
 		return drawString(graphics, text, x, y,centerHorizontal, centerVertical, backgroundColor,Color.BLACK);

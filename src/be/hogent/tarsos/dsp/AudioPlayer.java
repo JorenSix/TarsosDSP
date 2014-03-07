@@ -68,17 +68,24 @@ public final class AudioPlayer implements AudioProcessor {
 		this.format = format;
 		line = (SourceDataLine) AudioSystem.getLine(info);
 		line.open();
-		line.start();	
+		line.start();
 	}
+	
+	public AudioPlayer(final AudioFormat format, int bufferSize) throws LineUnavailableException {
+		final DataLine.Info info = new DataLine.Info(SourceDataLine.class,format,bufferSize);
+		this.format = format;
+		line = (SourceDataLine) AudioSystem.getLine(info);
+		line.open();
+		line.start();
+	}
+	
 	
 	@Override
 	public boolean process(AudioEvent audioEvent) {
 		// overlap in samples * nr of bytes / sample = bytes overlap
 		int byteOverlap = audioEvent.getOverlap() * format.getFrameSize();
 		int byteStepSize = audioEvent.getBufferSize() * format.getFrameSize() - byteOverlap;
-		
-		// Play only the audio that has not been played already.
-		line.write(audioEvent.getByteBuffer(), byteOverlap, byteStepSize);
+		line.write(audioEvent.getByteBuffer(), byteOverlap, byteStepSize);		
 		return true;
 	}
 	
@@ -90,7 +97,8 @@ public final class AudioPlayer implements AudioProcessor {
 	 */
 	public void processingFinished() {
 		// cleanup
-		//line.drain();//drain takes too long..
+		line.drain();//drain takes too long..
+		line.stop();
 		line.close();
 	}
 }

@@ -107,8 +107,8 @@ public final class FFT {
 	 *         bufferCount
 	 */
 	public float modulus(final float[] data, final int index) {
-		final int realIndex = 2*index;
-		final int imgIndex = 2 * index + 1;
+		final int realIndex = 2 * index;
+		final int imgIndex =  2 * index + 1;
 		final float modulus = data[realIndex] * data[realIndex] + data[imgIndex] * data[imgIndex];
 		return (float) Math.sqrt(modulus);
 	}
@@ -135,7 +135,7 @@ public final class FFT {
 	 * should be double the length.
 	 * 
 	 * @param data
-	 *            The input signal.
+	 *            The input audio signal.
 	 * @param power
 	 *            The power (modulus) of the data.
 	 * @param phase
@@ -148,6 +148,11 @@ public final class FFT {
 			windowFunction.apply(data);
 		}
 		fft.realForward(data);
+		powerAndPhaseFromFFT(data, power, phase);
+	}
+	
+	
+	public void powerAndPhaseFromFFT(float[] data,float[] power, float[] phase){
 		phase[0] = (float) Math.PI;
 		power[0] = -data[0];
 		for (int i = 1; i < power.length; i++) {

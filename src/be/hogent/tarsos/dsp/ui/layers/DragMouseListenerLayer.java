@@ -22,7 +22,7 @@ public class DragMouseListenerLayer extends MouseAdapter implements Layer {
 	private final CoordinateSystem cs;
 	
 	public DragMouseListenerLayer(CoordinateSystem cs){
-		onlyHorizontal =  (cs.getUnitsForAxis(Axis.Y) == AxisUnit.AMPLITUDE || cs.isWrapping());
+		onlyHorizontal =  (cs.isWrapping());
 		previousPoint = null;
 		this.cs = cs;
 	}

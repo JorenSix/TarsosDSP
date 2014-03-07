@@ -4,8 +4,8 @@ import java.awt.Color;
 import java.awt.Graphics2D;
 
 import be.hogent.tarsos.dsp.ui.Axis;
+import be.hogent.tarsos.dsp.ui.AxisUnit;
 import be.hogent.tarsos.dsp.ui.CoordinateSystem;
-
 
 public class AmplitudeAxisLayer implements Layer {
 	
@@ -16,26 +16,34 @@ public class AmplitudeAxisLayer implements Layer {
 	}
 	
 	public void draw(Graphics2D graphics) {
-		// draw legend
+		if(cs.getUnitsForAxis(Axis.Y) == AxisUnit.AMPLITUDE){
+			drawAmplitudeXAxis(graphics);
+		}
+	}
+	
+	public void drawAmplitudeXAxis(Graphics2D graphics){
 		graphics.setColor(Color.black);
 		
 		int minX = Math.round(cs.getMin(Axis.X));
+		int maxY = Math.round(cs.getMax(Axis.Y));
 		
 		int lineWidthFourPixels = Math.round(LayerUtilities.pixelsToUnits(graphics, 4, true));
-		int textOffset = Math.round(LayerUtilities.pixelsToUnits(graphics, 12, true));
-		int lineWidthTwoPixels = Math.round(LayerUtilities.pixelsToUnits(graphics, 2, true));
+		int textOffset = Math.round(LayerUtilities.pixelsToUnits(graphics, 14, true));
+		int textLabelOffset = Math.round(LayerUtilities.pixelsToUnits(graphics, 20, false));
+			int lineWidthTwoPixels = Math.round(LayerUtilities.pixelsToUnits(graphics, 2, true));
 	
 		for (int i = (int) cs.getMin(Axis.Y); i < cs.getMax(Axis.Y); i+=1) {
-			if (i % 1000 == 0) {
+			if (i % 100 == 0) {
 				graphics.drawLine(minX, i, minX + lineWidthFourPixels, i);
-				String text = String.valueOf(i/1000);
-				LayerUtilities.drawString(graphics, text, minX + textOffset, i, true, true,null);
-			} else if (i%100 == 0) {
+				String text = String.format("%.0f",i/10.0);
+				LayerUtilities.drawString(graphics, text, minX +  textOffset, i, true, true,null);
+			} else if (i%10 == 0) {
 				graphics.drawLine(minX, i, minX + lineWidthTwoPixels, i);				
 			}
 		}
+		graphics.drawLine(minX, 0, minX, maxY);
+		LayerUtilities.drawString(graphics,"Amplitude (%)",minX+textOffset,maxY-textLabelOffset,false,true,Color.white);
 	}
-
 
 	public String getName() {
 		return "Amplitude Axis";

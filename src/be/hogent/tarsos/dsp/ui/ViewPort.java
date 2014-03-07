@@ -55,10 +55,8 @@ public class ViewPort {
 			cs.setMin(Axis.Y, 3600);
 			cs.setMax(Axis.Y, 12800);
 		}
-		
 		cs.setMin(Axis.X, 0);
 		cs.setMax(Axis.X, 30000);
-		
 		viewPortChanged();
 	}
 	

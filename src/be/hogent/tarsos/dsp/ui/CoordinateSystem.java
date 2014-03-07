@@ -2,8 +2,8 @@ package be.hogent.tarsos.dsp.ui;
 
 public class CoordinateSystem  {
 	
-	private AxisUnit xAxisUnits = AxisUnit.TIME;
-	private AxisUnit yAxisUnits;
+	private final AxisUnit xAxisUnits;
+	private final AxisUnit yAxisUnits;
 	
 	private static float xMin = 0;
 	private static float xMax = 10000;
@@ -15,12 +15,16 @@ public class CoordinateSystem  {
 	private float wrappingOrigin;
 	
 	public CoordinateSystem(AxisUnit yAxisUnits, float yMin, float yMax){
-		this(yAxisUnits,yMin,yMax,false);
+		this(AxisUnit.TIME, yAxisUnits,yMin,yMax,false);
 	}
-		
 	
 	public CoordinateSystem(AxisUnit yAxisUnits, float yMin, float yMax,boolean wraps){
+		this(AxisUnit.TIME,yAxisUnits,yMin,yMax,wraps);
+	}
+	
+	public CoordinateSystem(AxisUnit xAxisUnits, AxisUnit yAxisUnits, float yMin, float yMax,boolean wraps){
 		this.yAxisUnits = yAxisUnits;
+		this.xAxisUnits = xAxisUnits;
 		this.yMin = yMin;
 		this.yMax = yMax;
 		this.wraps = wraps;
@@ -101,8 +105,6 @@ public class CoordinateSystem  {
 			yMin = value;
 		}
 	}
-	
-	
 	
 	//For selection Layer
 	private double startX =  Double.MAX_VALUE;

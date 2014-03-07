@@ -75,8 +75,8 @@ public class SelectionLayer extends MouseAdapter implements Layer{
 				panel.getCoordinateSystem().setStartPoint(units.getX(), units.getY());
 			} else {
 				panel.getCoordinateSystem().setEndPoint(units.getX(), units.getY());
-			}				
-			panel.repaint();	
+			}
+			panel.repaint();
 		}
 	}
 
@@ -85,6 +85,7 @@ public class SelectionLayer extends MouseAdapter implements Layer{
 		if(SwingUtilities.isLeftMouseButton(e)){
 			LinkedPanel panel = (LinkedPanel) e.getComponent();
 			panel.getViewPort().zoomToSelection();
+			panel.invalidate();
 		}
 		
 	}

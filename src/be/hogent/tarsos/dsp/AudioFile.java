@@ -1,5 +1,6 @@
 package be.hogent.tarsos.dsp;
 
+import javax.sound.sampled.AudioFormat;
 import javax.sound.sampled.AudioInputStream;
 
 import be.hogent.tarsos.dsp.util.AudioResourceUtils;
@@ -49,5 +50,9 @@ public class AudioFile {
 		AudioInputStream stream = null;
 		stream = decoder.getDecodedStream(resource, targetSampleRate);
 		return stream;
+	}
+	
+	public AudioFormat getTargetFormat(int targetSampleRate){
+		return new AudioFormat(targetSampleRate, 16, 1, true, false);
 	}
 }

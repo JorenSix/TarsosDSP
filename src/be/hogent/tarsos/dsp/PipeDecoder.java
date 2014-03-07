@@ -122,7 +122,7 @@ public class PipeDecoder {
 	 *            The sample rate to convert to.
 	 * @return The audio format after conversion.
 	 */
-	public AudioFormat getTargetAudioFormat(int targetSampleRate) {
+	public static AudioFormat getTargetAudioFormat(int targetSampleRate) {
 		AudioFormat audioFormat = new AudioFormat(AudioFormat.Encoding.PCM_SIGNED, 
 	        		targetSampleRate, 
 	        		2 * 8, 

@@ -217,6 +217,36 @@
 			</fileset>
 		</jar>
 	</target>
+	
+	<target name="example_spectral_peaks" depends="compile">
+			<jar destfile="SpectralPeaks-${version}.jar" filesetmanifest="mergewithoutmain">
+				<manifest>
+					<attribute name="Main-Class" value="be.hogent.tarsos.dsp.example.SpectralPeakFollowerExample" />
+					<attribute name="Class-Path" value="." />
+
+					<!-- Standard manifest attributes -->
+					<attribute name="Implementation-Version" value="${version}-${DSTAMP}" />
+					<attribute name="Built-By" value="${built_by}" />
+					<attribute name="Created-By" value="${built_by}" />
+					<attribute name="Built-Date" value="${TODAY}" />
+				</manifest>
+
+				<!-- exclude wav and test files -->
+				<fileset dir="../bin">
+					<exclude name="**/*.wav" />
+					<exclude name="**/test/**" />
+				</fileset>
+
+				<!-- include source files -->
+				<fileset dir="../src">
+					<include name="**/*.java" />
+				</fileset>
+				<fileset dir="../examples">
+					<exclude name="**/*.wav" />
+					<include name="**/*.java" />
+				</fileset>
+			</jar>
+		</target>
 
 	<target name="example_pitch_shift" depends="compile">
 		<jar destfile="PitchShift-${version}.jar" filesetmanifest="mergewithoutmain">

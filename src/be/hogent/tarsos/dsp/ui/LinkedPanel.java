@@ -31,7 +31,6 @@ public class LinkedPanel extends JPanel {
 		layers = new ArrayList<Layer>();
 		this.cs = coordinateSystem;
 		viewPort = new ViewPort(this.cs);
-		
 		this.setVisible(true);
 	}
 	
@@ -64,7 +63,7 @@ public class LinkedPanel extends JPanel {
 		double yDelta = cs.getDelta(Axis.Y);
 		AffineTransform transform = new AffineTransform();
 		transform.translate(0, getHeight());
-		transform.scale(getWidth() / xDelta, -getHeight() / yDelta);
+		transform.scale(getWidth() / xDelta, - getHeight() / yDelta);
 		transform.translate(-cs.getMin(Axis.X),-cs.getMin(Axis.Y));
 		return transform;
 	}
@@ -91,7 +90,6 @@ public class LinkedPanel extends JPanel {
 		}
 	}
 	
-	
 	public void removeLayer(Layer layer) {
 		layers.remove(layer);
 		if(layer instanceof MouseMotionListener){
@@ -110,8 +108,5 @@ public class LinkedPanel extends JPanel {
 	
 	public void removeLayers(){
 		this.layers.clear();
-	}
-	
-
-	
+	}	
 }
