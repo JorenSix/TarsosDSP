@@ -220,7 +220,7 @@ public class ConstantQAudioPlayer extends JFrame {
 			constantQ.removeLayers();
 			constantQ.addLayer(new BackgroundLayer(constantQCS));
 			constantQ.addLayer(new ConstantQLayer(constantQCS,player.getLoadedFile(),2048,3600,10800,12));
-			constantQ.addLayer(new PitchContourLayer(constantQCS,player.getLoadedFile(),Color.red,2048,1024));
+			constantQ.addLayer(new PitchContourLayer(constantQCS,player.getLoadedFile(),Color.red,2048,0));
 			constantQ.addLayer(new VerticalFrequencyAxisLayer(constantQCS));
 			constantQ.addLayer(new TimeAxisLayer(constantQCS));
 			

@@ -5,8 +5,8 @@ public class CoordinateSystem  {
 	private final AxisUnit xAxisUnits;
 	private final AxisUnit yAxisUnits;
 	
-	private static float xMin = 0;
-	private static float xMax = 10000;
+	private float xMin = 0;
+	private float xMax = 10000;
 	
 	private float yMin;
 	private float yMax;

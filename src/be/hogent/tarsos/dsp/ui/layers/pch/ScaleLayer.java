@@ -35,6 +35,10 @@ public class ScaleLayer extends MouseAdapter implements Layer, MouseMotionListen
 	public String getName() {
 		return "Scale Editor Layer";
 	}
+	
+	public void setScale(double[] newScale){
+		scale = newScale;
+	}
 
 	@Override
 	public void draw(Graphics2D graphics) {
@@ -45,8 +49,8 @@ public class ScaleLayer extends MouseAdapter implements Layer, MouseMotionListen
 		int maxY = Math.round(cs.getMax(Axis.Y));
 		int maxX = Math.round(cs.getMax(Axis.X));
 	
-		int markerheightOffset = Math.round(LayerUtilities.pixelsToUnits(graphics, 15, false));
-		int textOffset = Math.round(LayerUtilities.pixelsToUnits(graphics, 0, false));
+		//int markerheightOffset = Math.round(LayerUtilities.pixelsToUnits(graphics, 15, false));
+		int textOffset = Math.round(LayerUtilities.pixelsToUnits(graphics, 20, false));
 		
 		
 		for (int i = (int) cs.getMin(Axis.X); i < cs.getMax(Axis.X); i++) {
@@ -62,15 +66,17 @@ public class ScaleLayer extends MouseAdapter implements Layer, MouseMotionListen
 							graphics.setColor(Color.LIGHT_GRAY);
 						}
 					}
-					graphics.drawLine(i, minY+ markerheightOffset , i, (int) cs.getEndY() );
+					graphics.drawLine(i, minY + (int) (1.5 * textOffset) , i, maxY - (int) (1.5 * textOffset) );
 					String text = String.valueOf(realValue);
-					LayerUtilities.drawString(graphics, text, i, minY + textOffset, true, false,null);
+					if(enableEditor){
+						LayerUtilities.drawString(graphics, text, i, minY + textOffset, true, false,null);
+					}else{
+						LayerUtilities.drawString(graphics, text, i, maxY - textOffset, true, false,null);
+					}
+					
+					
 				}
 			}
-		}
-		
-		if(!enableEditor){
-			
 		}
 		
 		int axisLabelOffset = Math.round(LayerUtilities.pixelsToUnits(graphics, 60, true));

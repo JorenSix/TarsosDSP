@@ -5,6 +5,7 @@ import java.awt.Graphics2D;
 import java.util.ArrayList;
 import java.util.List;
 
+import be.hogent.tarsos.dsp.ui.Axis;
 import be.hogent.tarsos.dsp.ui.CoordinateSystem;
 import be.hogent.tarsos.dsp.util.PitchConverter;
 
@@ -38,9 +39,11 @@ public class SpectrumLayer implements Layer  {
 				float hertzValue =  (i* sampleRate) / (float) fftSize;
 				int frequencyInCents = (int) Math.round(PitchConverter.hertzToAbsoluteCent(hertzValue));
 				int magintude = Math.round(spectrum[i] * multiplier);
-				graphics.drawLine(prevFreqInCents, prevMagnitude,frequencyInCents, magintude);
-				prevFreqInCents = frequencyInCents;
-				prevMagnitude = magintude;
+				if(cs.getMin(Axis.X) < frequencyInCents && frequencyInCents < cs.getMax(Axis.X)){
+					graphics.drawLine(prevFreqInCents, prevMagnitude,frequencyInCents, magintude);
+					prevFreqInCents = frequencyInCents;
+					prevMagnitude = magintude;
+				}
 			}
 			
 			int markerWidth = Math.round(LayerUtilities.pixelsToUnits(graphics, 7, true));
@@ -50,8 +53,10 @@ public class SpectrumLayer implements Layer  {
 				int bin =  peaksInBins.get(i) ;
 				float hertzValue =  (bin * sampleRate) / (float) fftSize;
 				int frequencyInCents = (int) Math.round(PitchConverter.hertzToAbsoluteCent(hertzValue) - markerWidth/2.0f );
-				int magintude = Math.round(spectrum[bin] * multiplier - markerheight/2.0f);
-				graphics.drawOval(Math.round(frequencyInCents), magintude, markerWidth, markerheight);
+				if(cs.getMin(Axis.X) < frequencyInCents && frequencyInCents < cs.getMax(Axis.X)){
+					int magintude = Math.round(spectrum[bin] * multiplier - markerheight/2.0f);
+					graphics.drawOval(Math.round(frequencyInCents), magintude, markerWidth, markerheight);
+				}
 			}
 		}
 	}

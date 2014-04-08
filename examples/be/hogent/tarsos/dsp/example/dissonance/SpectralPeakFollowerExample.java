@@ -1,4 +1,4 @@
-package be.hogent.tarsos.dsp.example;
+package be.hogent.tarsos.dsp.example.dissonance;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -13,12 +13,10 @@ import be.hogent.tarsos.dsp.AudioFile;
 import be.hogent.tarsos.dsp.AudioProcessor;
 import be.hogent.tarsos.dsp.SpectralPeakFollower;
 import be.hogent.tarsos.dsp.SpectralPeakFollower.SpectralPeak;
+import be.hogent.tarsos.dsp.example.KernelDensityEstimate;
 import be.hogent.tarsos.dsp.util.PitchConverter;
 
-public class SpectralPeakFollowerExample {
-	
-	
-	
+public class SpectralPeakFollowerExample {	
 	private final int sampleRate = 44100;
 	private final int fftsize = 32768/2;
 	private final int overlap = fftsize/2;//50% overlap

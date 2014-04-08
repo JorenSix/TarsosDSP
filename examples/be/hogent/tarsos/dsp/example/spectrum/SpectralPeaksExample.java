@@ -1,4 +1,4 @@
-package be.hogent.tarsos.dsp.example.dissonance;
+package be.hogent.tarsos.dsp.example.spectrum;
 
 import java.awt.BorderLayout;
 import java.awt.Color;
@@ -54,12 +54,11 @@ import be.hogent.tarsos.dsp.ui.layers.SpectrumLayer;
 import be.hogent.tarsos.dsp.ui.layers.ZoomMouseListenerLayer;
 import be.hogent.tarsos.dsp.ui.layers.pch.ScaleLayer;
 
-public class DissonanceExample extends JFrame {
+public class SpectralPeaksExample extends JFrame {
 	
 	private SpectrumLayer spectrumLayer;
 	private SpectrumLayer noiseFloorLayer;
 	private LinkedPanel spectrumPanel;
-	private LinkedPanel sensoryDissonancePanel;
 	private JTextArea textArea;
 	private JSlider frameSlider;
 	
@@ -89,7 +88,7 @@ public class DissonanceExample extends JFrame {
 	 */
 	private static final long serialVersionUID = -5600205438242149179L;
 	
-	public DissonanceExample(String startDir){		
+	public SpectralPeaksExample(String startDir){		
 		this.setLayout(new BorderLayout());
 		this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		this.setTitle("Spectral Peaks");
@@ -102,10 +101,7 @@ public class DissonanceExample extends JFrame {
 		frequencies = new ArrayList<Double>();
 		amplitudes = new ArrayList<Double>();
 		
-		JPanel otherSubPanel = new JPanel(new GridLayout(2,1));
-		otherSubPanel.add(createSpectrumPanel());
-		otherSubPanel.add(createSensoryDisonancePanel());
-		this.add(otherSubPanel,BorderLayout.CENTER);
+		this.add(createSpectrumPanel(),BorderLayout.CENTER);
 		this.add(subPanel,BorderLayout.EAST);
 
 	}
@@ -119,7 +115,7 @@ public class DissonanceExample extends JFrame {
 		chooseFileButton.addActionListener(new ActionListener(){
 			@Override
 			public void actionPerformed(ActionEvent arg0) {
-				int returnVal = fileChooser.showOpenDialog(DissonanceExample.this);
+				int returnVal = fileChooser.showOpenDialog(SpectralPeaksExample.this);
 	            if (returnVal == JFileChooser.APPROVE_OPTION) {
 	                File file = fileChooser.getSelectedFile();
 	                System.out.println(file.toString());
@@ -258,12 +254,9 @@ public class DissonanceExample extends JFrame {
 						frequencies.add((double) peak.getFrequencyInHertz());
 						amplitudes.add((double) peak.getMagnitude());
 						
-						
 					}
 					textArea.setText(sb.toString());
-					
-					DissonanceExample.this.spectrumPanel.repaint();
-					DissonanceExample.this.sensoryDissonancePanel.repaint();
+					SpectralPeaksExample.this.spectrumPanel.repaint();
 				}
 				
 			}
@@ -271,25 +264,10 @@ public class DissonanceExample extends JFrame {
 		buttonPanel.add(frameLabel);
 		buttonPanel.add(frameSlider);
 		
-		final JButton saveDataButton = new JButton("Save");
-		saveDataButton.addActionListener(new ActionListener(){
-			@Override
-			public void actionPerformed(ActionEvent arg0) {
-				if(frameSlider.isEnabled() && fileName != null){
-					SpectralInfo info = spectalInfo.get(frameSlider.getValue());
-					info.store(new File(fileName).getName());
-				}
-			}	
-		});
-		buttonPanel.add(new JLabel("Save current spectum data:"));
-		buttonPanel.add(saveDataButton);
-		
 		textArea = new JTextArea(10,20);
 		buttonPanel.add(new JLabel("Peaks:"));
 		motherPanel.add(buttonPanel, BorderLayout.NORTH);
 		motherPanel.add(textArea, BorderLayout.CENTER);
-		
-		
 		return motherPanel;
 	}
 
@@ -318,85 +296,11 @@ public class DissonanceExample extends JFrame {
 				if(!painting){
 					painting = true;
 					spectrumPanel.repaint();
-					sensoryDissonancePanel.repaint();
 					painting = false;
 				}
 			}
 		});
 		return spectrumPanel;
-	}
-	
-	private JPanel createSensoryDisonancePanel(){
-		CoordinateSystem cs =  new CoordinateSystem(AxisUnit.FREQUENCY, AxisUnit.AMPLITUDE, 0, 1100, false);
-		cs.setMin(Axis.X, 0);
-		cs.setMax(Axis.X, 1800);
-		final ScaleLayer valleyLayer = new ScaleLayer(cs, false);
-	
-		Layer sensoryDissonanceLayer = new Layer() {
-			SensoryDissonanceCurve sdc = new SensoryDissonanceCurve();
-			@Override
-			public String getName() {
-				return "Sensory dissonance layer";
-			}
-			
-			@Override
-			public void draw(Graphics2D graphics) {
-				if(!frequencies.isEmpty()){
-					List<SensoryDissonanceResult> results = sdc.calculate(frequencies, amplitudes);
-					int prevFreqInCents = 0;
-					int prevMagnitude = 0;
-					double maxDissonance = 0;
-					for(SensoryDissonanceResult result : results){
-						maxDissonance = Math.max(result.dissonanceValue, maxDissonance);
-					}
-					graphics.setColor(Color.RED);
-					for(SensoryDissonanceResult result : results){
-						int currentFreqInCents = Math.round((float)result.getdifferenceInCents());
-						int currentMagnitude = Math.round((float) (result.dissonanceValue / maxDissonance * 1000));
-						graphics.drawLine(prevFreqInCents, prevMagnitude,currentFreqInCents,currentMagnitude );
-						prevFreqInCents = currentFreqInCents;
-						prevMagnitude = currentMagnitude;
-						
-					}
-					List<SensoryDissonanceResult> valleys = sdc.valleys(results);
-					double[] newScale = new double[valleys.size()];
-					for(int i = 0;i<valleys.size();i++){
-						newScale[i]  = valleys.get(i).getdifferenceInCents();
-					}
-					valleyLayer.setScale(newScale);
-				}
-			}
-		};
-		
-		
-		sensoryDissonancePanel = new LinkedPanel(cs);
-		sensoryDissonancePanel.addLayer(new BackgroundLayer(cs));
-		sensoryDissonancePanel.addLayer(valleyLayer);
-		sensoryDissonancePanel.addLayer(new ScaleLayer(cs, true));
-		
-		sensoryDissonancePanel.addLayer(sensoryDissonanceLayer);
-		
-		//sensoryDissonancePanel.addLayer(new ZoomMouseListenerLayer());
-		//sensoryDissonancePanel.addLayer(new DragMouseListenerLayer(cs));
-		
-		sensoryDissonancePanel.addLayer(new AmplitudeAxisLayer(cs));
-		sensoryDissonancePanel.addLayer(new SelectionLayer(cs));
-		sensoryDissonancePanel.addLayer(new HorizontalFrequencyAxisLayer(cs));
-		
-		sensoryDissonancePanel.getViewPort().addViewPortChangedListener(new ViewPortChangedListener() {
-			boolean painting = false;
-			@Override
-			public void viewPortChanged(ViewPort newViewPort) {
-				if(!painting){
-					painting = true;
-					sensoryDissonancePanel.repaint();
-					spectrumPanel.repaint();
-					painting = false;
-				}
-			}
-		});
-		
-		return sensoryDissonancePanel;
 	}
 	
 	private void startProcessing(){
@@ -534,7 +438,7 @@ public class DissonanceExample extends JFrame {
 		SwingUtilities.invokeAndWait(new Runnable() {
 			@Override
 			public void run() {
-				DissonanceExample frame = new DissonanceExample("/home/joren/Dropbox/UGent/LaTeX/Articles/2014.Sethares-Theory/etc/octave/flute-test/");
+				SpectralPeaksExample frame = new SpectralPeaksExample("/home/joren/Dropbox/UGent/LaTeX/Articles/2014.Sethares-Theory/etc/octave/flute-test/");
 				frame.pack();
 				frame.setSize(450,650);
 				frame.setVisible(true);

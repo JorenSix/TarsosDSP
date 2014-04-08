@@ -93,6 +93,7 @@ public class SpectralPeakFollower implements AudioProcessor {
 	 * The magnitudes in the current frame.
 	 */
 	private final float[] magnitude;
+	
 	/**
 	 * The calculated noise floor for the current frame.
 	 */
@@ -132,20 +133,19 @@ public class SpectralPeakFollower implements AudioProcessor {
 	}
 
 	private void calculateFFT(float[] audio) {
-		// clone to prevent overwriting audio data
+		// Clone to prevent overwriting audio data
 		float[] fftData = audio.clone();
-		// extract the power and phase data
+		// Extract the power and phase data
 		fft.powerPhaseFFT(fftData, magnitude, phase);
 		
 		for(int i = 0;i<magnitude.length;i++){
 			maxMagnitude = Math.max(maxMagnitude, magnitude[i]);
 		}
 		
-		//normalize
+		//log10 of the normalized value
 		for(int i = 1;i<magnitude.length;i++){
-			magnitude[i] = (float) (10 * Math.log10(magnitude[i]));
+			magnitude[i] = (float) (10 * Math.log10(magnitude[i]/maxMagnitude));
 		}
-		
 	}
 	
 	public static class SpectralPeak{
@@ -201,9 +201,9 @@ public class SpectralPeakFollower implements AudioProcessor {
 			noiseFloorBuffer = new double[medianFilterLength];
 			
 			int index = 0;
-			for (int j = i - medianFilterLength/2; j <= i + medianFilterLength/2 ; j++) {
+			for (int j = i - medianFilterLength/2; j <= i + medianFilterLength/2 && index < noiseFloorBuffer.length; j++) {
 			  if(j >= 0 && j < magnitude.length){
-				noiseFloorBuffer[index] = magnitude[j];  
+				noiseFloorBuffer[index] = magnitude[j];
 			  }  
 			  index++;
 			}
@@ -239,10 +239,10 @@ public class SpectralPeakFollower implements AudioProcessor {
 			boolean largerThanNoiseFloor = (magnitude[i] >  noisefloor[i]);
 			if (largerThanPrevious && largerThanNext && largerThanNoiseFloor) {
 				peakMagnitudes[i] = magnitude[i];
-				magnitudesRatioToNoiseFloor[i] = 1 - (1000.0f+noisefloor[i])/(1000.0f +magnitude[i]);
+				magnitudesRatioToNoiseFloor[i] = 1 - (1000.0f + noisefloor[i])/(1000.0f + magnitude[i]);
 				nump = nump + 1;
 			}
-			if(magnitude[i] > maxMagnitude){
+			if(Math.abs(magnitude[i]) > Math.abs(maxMagnitude)){
 				maxMagnitude = magnitude[i];
 				maxMagnitudeIndex = i;
 			}
@@ -274,7 +274,7 @@ public class SpectralPeakFollower implements AudioProcessor {
 				if ((peakMagnitudes[i] != 0) & (magnitudesRatioToNoiseFloor[i] >= ratioThresh)) {
 					final float frequencyInHertz= getFrequencyForBin(i);
 					//ignore frequencies lower than 30Hz
-					if(frequencyInHertz > 30){
+					if(frequencyInHertz > 30 && referenceFrequency > 30){
 						float binMagnitude = magnitude[i]/maxMagnitude;
 						SpectralPeak peak = new SpectralPeak((float)audioEvent.getTimeStamp(),frequencyInHertz, binMagnitude, referenceFrequency,i);
 						spectralPeakList.add(peak);
@@ -321,6 +321,7 @@ public class SpectralPeakFollower implements AudioProcessor {
 	public static final float median(double[] arr){
 		return percentile(arr, 0.5);
 	}
+	
 	/**
 	*  Returns the p-th percentile of values in an array. You can use this
 	*  function to establish a threshold of acceptance. For example, you can
