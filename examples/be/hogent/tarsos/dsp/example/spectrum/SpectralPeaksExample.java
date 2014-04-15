@@ -3,7 +3,6 @@ package be.hogent.tarsos.dsp.example.spectrum;
 import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Component;
-import java.awt.Graphics2D;
 import java.awt.GridLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -36,8 +35,8 @@ import be.hogent.tarsos.dsp.AudioFile;
 import be.hogent.tarsos.dsp.AudioPlayer;
 import be.hogent.tarsos.dsp.AudioProcessor;
 import be.hogent.tarsos.dsp.PipeDecoder;
-import be.hogent.tarsos.dsp.SpectralPeakFollower;
-import be.hogent.tarsos.dsp.SpectralPeakFollower.SpectralPeak;
+import be.hogent.tarsos.dsp.SpectralPeakProcessor;
+import be.hogent.tarsos.dsp.SpectralPeakProcessor.SpectralPeak;
 import be.hogent.tarsos.dsp.ui.Axis;
 import be.hogent.tarsos.dsp.ui.AxisUnit;
 import be.hogent.tarsos.dsp.ui.CoordinateSystem;
@@ -48,16 +47,15 @@ import be.hogent.tarsos.dsp.ui.layers.AmplitudeAxisLayer;
 import be.hogent.tarsos.dsp.ui.layers.BackgroundLayer;
 import be.hogent.tarsos.dsp.ui.layers.DragMouseListenerLayer;
 import be.hogent.tarsos.dsp.ui.layers.HorizontalFrequencyAxisLayer;
-import be.hogent.tarsos.dsp.ui.layers.Layer;
 import be.hogent.tarsos.dsp.ui.layers.SelectionLayer;
 import be.hogent.tarsos.dsp.ui.layers.SpectrumLayer;
 import be.hogent.tarsos.dsp.ui.layers.ZoomMouseListenerLayer;
-import be.hogent.tarsos.dsp.ui.layers.pch.ScaleLayer;
 
 public class SpectralPeaksExample extends JFrame {
 	
 	private SpectrumLayer spectrumLayer;
 	private SpectrumLayer noiseFloorLayer;
+	
 	private LinkedPanel spectrumPanel;
 	private JTextArea textArea;
 	private JSlider frameSlider;
@@ -72,6 +70,7 @@ public class SpectralPeaksExample extends JFrame {
 	private float noiseFloorFactor;
 	private String fileName;
 	private int numberOfSpectralPeaks;
+	private int currentFrame;
 
 	private final Integer[] fftSizes = {256,512,1024,2048,4096,8192,16384,32768,65536,131072};
 	private final Integer[] inputSampleRate = {22050,44100,192000};
@@ -172,12 +171,13 @@ public class SpectralPeaksExample extends JFrame {
 				Integer value = (Integer) ((JComboBox<Integer>) e.getSource()).getSelectedItem();
 				sampleRate = value;
 				System.out.println("Sample rate Changed to " + value);
-				startProcessing();
 			}
 		});
 		inputSampleRateCombobox.setSelectedIndex(1);
 		buttonPanel.add(new JLabel("Input sample rate"));
 		buttonPanel.add(inputSampleRateCombobox);
+		
+		
 		
 		JSlider noiseFloorSlider = new JSlider(100, 250);
 		final JLabel noiseFloorFactorLabel = new JLabel("Noise floor factor    :");
@@ -188,17 +188,35 @@ public class SpectralPeaksExample extends JFrame {
 				int newValue = source.getValue();
 				double actualValue = newValue/100.0;
 				noiseFloorFactorLabel.setText(String.format("Noise floor factor (%.2f):", actualValue));
-				if(!source.getValueIsAdjusting()){
-					System.out.println("New noise floor factor: " + actualValue);
-					noiseFloorFactor = (float) actualValue;
-					startProcessing();
-				}
+				
+				System.out.println("New noise floor factor: " + actualValue);
+				noiseFloorFactor = (float) actualValue;
+				repaintSpectalInfo();
+				
 			}
 		});
 		noiseFloorSlider.setValue(150);
 		buttonPanel.add(noiseFloorFactorLabel);
 		buttonPanel.add(noiseFloorSlider);
 		
+		
+		JSlider medianFilterSizeSlider = new JSlider(3, 127);
+		final JLabel medianFilterSizeLabel = new JLabel("Median Filter Size   :");
+		medianFilterSizeSlider.addChangeListener(new ChangeListener() {
+			@Override
+			public void stateChanged(ChangeEvent e) {
+				JSlider source = (JSlider) e.getSource();
+				int newValue = source.getValue();
+				medianFilterSizeLabel.setText(String.format("Median Filter Size (%d):", newValue));
+				System.out.println("New Median filter size: " + newValue);
+				noiseFloorMedianFilterLenth = newValue;
+				repaintSpectalInfo();
+				
+			}
+		});
+		medianFilterSizeSlider.setValue(17);
+		buttonPanel.add(medianFilterSizeLabel);
+		buttonPanel.add(medianFilterSizeSlider);
 		
 		JSlider numberOfPeaksSlider = new JSlider(1, 20);
 		final JLabel numberOfPeaksLabel = new JLabel("Number of peaks  :");
@@ -209,18 +227,16 @@ public class SpectralPeaksExample extends JFrame {
 				int newValue = source.getValue();			
 				
 				numberOfPeaksLabel.setText("Number of peaks (" + newValue + "):");
-				if(!source.getValueIsAdjusting()){
-					System.out.println("New amount of peaks: " + newValue);
-					numberOfSpectralPeaks = newValue;
-					startProcessing();
-				}
+				
+				System.out.println("New amount of peaks: " + newValue);
+				numberOfSpectralPeaks = newValue;
+				repaintSpectalInfo();
+				
 			}
 		});
 		numberOfPeaksSlider.setValue(7);
 		buttonPanel.add(numberOfPeaksLabel);
 		buttonPanel.add(numberOfPeaksSlider);
-		
-		
 		
 		
 		final JLabel frameLabel = new JLabel("Analysis frame (0):");
@@ -233,31 +249,9 @@ public class SpectralPeaksExample extends JFrame {
 				int newValue = ((JSlider) e.getSource()).getValue();	
 				frameLabel.setText("Analysis frame (" + newValue + "):");
 				
-				if(newValue < spectalInfo.size()){
-					SpectralInfo info = spectalInfo.get(newValue);
-					
-					spectrumLayer.clearPeaks();
-					spectrumLayer.setSpectrum(info.getSpectrum());
-					noiseFloorLayer.setSpectrum(info.getNoiseFloor());
-					
-					List<SpectralPeak> peaks = info.getPeakList();
-					
-					StringBuilder sb = new StringBuilder("Frequency(Hz);Step(cents);Magnitude\n");
-					frequencies.clear();
-					amplitudes.clear();
-					for(SpectralPeak peak : peaks){
-					
-						String message = String.format("%.2f;%.2f;%.2f\n", peak.getFrequencyInHertz(),peak.getRelativeFrequencyInCents(),peak.getMagnitude());
-						sb.append(message);
-						//float peakFrequencyInCents =(float) PitchConverter.hertzToAbsoluteCent(peak.getFrequencyInHertz());
-						spectrumLayer.setPeak(peak.getBin());
-						frequencies.add((double) peak.getFrequencyInHertz());
-						amplitudes.add((double) peak.getMagnitude());
-						
-					}
-					textArea.setText(sb.toString());
-					SpectralPeaksExample.this.spectrumPanel.repaint();
-				}
+				currentFrame = newValue;
+				repaintSpectalInfo();
+			
 				
 			}
 		});
@@ -271,8 +265,38 @@ public class SpectralPeaksExample extends JFrame {
 		return motherPanel;
 	}
 
+	protected void repaintSpectalInfo() {
+		if(currentFrame < spectalInfo.size()){
+			
+		
+		SpectralInfo info = spectalInfo.get(currentFrame);
+		
+		spectrumLayer.clearPeaks();
+		spectrumLayer.setSpectrum(info.getMagnitudes());
+		noiseFloorLayer.setSpectrum(info.getNoiseFloor(noiseFloorMedianFilterLenth,noiseFloorFactor));
+		
+		List<SpectralPeak> peaks = info.getPeakList(noiseFloorMedianFilterLenth,noiseFloorFactor,numberOfSpectralPeaks);
+		
+		StringBuilder sb = new StringBuilder("Frequency(Hz);Step(cents);Magnitude\n");
+		frequencies.clear();
+		amplitudes.clear();
+		for(SpectralPeak peak : peaks){
+		
+			String message = String.format("%.2f;%.2f;%.2f\n", peak.getFrequencyInHertz(),peak.getRelativeFrequencyInCents(),peak.getMagnitude());
+			sb.append(message);
+			//float peakFrequencyInCents =(float) PitchConverter.hertzToAbsoluteCent(peak.getFrequencyInHertz());
+			spectrumLayer.setPeak(peak.getBin());
+			frequencies.add((double) peak.getFrequencyInHertz());
+			amplitudes.add((double) peak.getMagnitude());
+			
+		}
+		textArea.setText(sb.toString());
+		SpectralPeaksExample.this.spectrumPanel.repaint();
+		}
+	}
+
 	private JPanel createSpectrumPanel(){
-		CoordinateSystem cs =  new CoordinateSystem(AxisUnit.FREQUENCY, AxisUnit.AMPLITUDE, -1000, 10, false);
+		CoordinateSystem cs =  new CoordinateSystem(AxisUnit.FREQUENCY, AxisUnit.AMPLITUDE, 0, 1000, false);
 		cs.setMax(Axis.X, 4800);
 		cs.setMax(Axis.X, 13200);
 		spectrumLayer = new SpectrumLayer(cs,fftsize,sampleRate,Color.red);
@@ -308,10 +332,8 @@ public class SpectralPeaksExample extends JFrame {
 			try {
 				extractPeakListList();
 			} catch (UnsupportedAudioFileException e) {
-				// TODO Auto-generated catch block
 				e.printStackTrace();
 			} catch (LineUnavailableException e) {
-				// TODO Auto-generated catch block
 				e.printStackTrace();
 			}
 		}
@@ -344,7 +366,7 @@ public class SpectralPeaksExample extends JFrame {
 		noiseFloorLayer.setFFTSize(fftsize);
 
 		
-		final SpectralPeakFollower spectralPeakFollower = new SpectralPeakFollower(fftsize, overlap, sampleRate,noiseFloorMedianFilterLenth,numberOfSpectralPeaks,noiseFloorFactor);
+		final SpectralPeakProcessor spectralPeakFollower = new SpectralPeakProcessor(fftsize, overlap, sampleRate);
 		dispatcher = new AudioDispatcher(stream, fftsize, overlap);
 		dispatcher.addAudioProcessor(spectralPeakFollower);
 		
@@ -361,7 +383,7 @@ public class SpectralPeaksExample extends JFrame {
 			
 			@Override
 			public boolean process(AudioEvent audioEvent) {
-				spectalInfo.add(new SpectralInfo(audioEvent.getTimeStamp(),spectralPeakFollower.getSpectrum(), spectralPeakFollower.getNoiseFloor(),spectralPeakFollower.getPeakList()));
+				spectalInfo.add(new SpectralInfo(spectralPeakFollower.getMagnitudes(), spectralPeakFollower.getFrequencyEstimates()));
 				if(frameCounter % 1000 == 0){
 					if(frameCounter > frameSlider.getMaximum()){
 						frameSlider.setMaximum(frameCounter);
@@ -382,63 +404,11 @@ public class SpectralPeaksExample extends JFrame {
 		new Thread(dispatcher).start();
 	}
 	
-	private   static class SpectralInfo{
-		private float[] spectrum;
-		private float[] noiseFloor;
-		private List<SpectralPeak> peaks;
-		private double timeStamp;
-		
-		public SpectralInfo(double timeStamp,float[] spectrum, float[] noisefloor, List<SpectralPeak> list){
-			this.spectrum = spectrum.clone();
-			this.noiseFloor = noisefloor.clone();
-			this.peaks = new ArrayList<SpectralPeak>(list);
-			this.timeStamp = timeStamp;
-		}
-		
-		public void store(String fileName) {
-			System.out.println("Store " + fileName);
-			int ms = (int) Math.round(timeStamp * 1000);
-			StringBuilder sb = new StringBuilder();
-			sb.append("bin index;frequency(Hz);frequency (cent);Magnitude(dB/Hz);Peak");
-			
-			for(int i = 0 ; i < spectrum.length ; i++){
-				SpectralPeak currentPeak;
-				for(SpectralPeak peak:peaks){
-					if(peak.getBin() == i){
-						currentPeak=peak;
-					}
-				}
-				
-				sb.append(String.format("%d;%.2f\n",i,spectrum[i]));
-			}
-			String contents = sb.toString();
-			System.out.println(contents);
-			
-		}
-
-		public List<SpectralPeak> getPeakList() {
-			return peaks;
-		}
-
-		public float[] getSpectrum(){
-			return spectrum;
-		}
-		
-		public float[] getNoiseFloor(){
-			return noiseFloor;
-		}
-	}
-	
-
-	public static void main(String[] args) throws InvocationTargetException, InterruptedException, UnsupportedAudioFileException, LineUnavailableException, IOException{
-		for(int i = 1 ; i < 100 ; i++){
-			System.out.println(String.format("%d %.3f", i, Math.log1p(i/100.0)));
-		}
-		
+	public static void main(String[] args) throws InvocationTargetException, InterruptedException, UnsupportedAudioFileException, LineUnavailableException, IOException{		
 		SwingUtilities.invokeAndWait(new Runnable() {
 			@Override
 			public void run() {
-				SpectralPeaksExample frame = new SpectralPeaksExample("/home/joren/Dropbox/UGent/LaTeX/Articles/2014.Sethares-Theory/etc/octave/flute-test/");
+				SpectralPeaksExample frame = new SpectralPeaksExample(".");
 				frame.pack();
 				frame.setSize(450,650);
 				frame.setVisible(true);

@@ -81,7 +81,7 @@ public class PipeDecoder {
 			String command = pipeCommand;
 			command = command.replace("%resource%", resource);
 			command = command.replace("%sample_rate%", String.valueOf(targetSampleRate));
-			command = command.replace("%channels%", "1");
+			command = command.replace("%channels%","1");
 			
 			ProcessBuilder pb = new ProcessBuilder(pipeEnvironment, pipeArgument , command);
 		
