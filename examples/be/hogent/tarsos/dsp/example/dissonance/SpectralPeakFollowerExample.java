@@ -1,7 +1,6 @@
 package be.hogent.tarsos.dsp.example.dissonance;
 
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 
 import javax.sound.sampled.AudioInputStream;
@@ -11,10 +10,7 @@ import be.hogent.tarsos.dsp.AudioDispatcher;
 import be.hogent.tarsos.dsp.AudioEvent;
 import be.hogent.tarsos.dsp.AudioFile;
 import be.hogent.tarsos.dsp.AudioProcessor;
-import be.hogent.tarsos.dsp.SpectralPeakFollower;
-import be.hogent.tarsos.dsp.SpectralPeakFollower.SpectralPeak;
-import be.hogent.tarsos.dsp.example.KernelDensityEstimate;
-import be.hogent.tarsos.dsp.util.PitchConverter;
+import be.hogent.tarsos.dsp.SpectralPeakProcessor;
 
 public class SpectralPeakFollowerExample {	
 	private final int sampleRate = 44100;
@@ -33,7 +29,8 @@ public class SpectralPeakFollowerExample {
 
 	
 	
-	private final List<List<SpectralPeak>> peakListList = new ArrayList<List<SpectralPeak>>();
+	private final List<float[]> magnitudesList = new ArrayList<float[]>();
+	private final List<float[]> frequencyEstimatesList = new ArrayList<float[]>();
 	
 	
 	public SpectralPeakFollowerExample(String fileName,int numberOfSpectralPeaks){
@@ -46,7 +43,7 @@ public class SpectralPeakFollowerExample {
 		AudioFile f = new AudioFile(fileName);
 		AudioInputStream stream = f.getMonoStream(sampleRate);
 		
-		final SpectralPeakFollower spectralPeakFollower = new SpectralPeakFollower(fftsize, overlap, sampleRate,noiseFloorMedianFilterLenth,numberOfSpectralPeaks,noiseFloorFactor);
+		final SpectralPeakProcessor spectralPeakFollower = new SpectralPeakProcessor(fftsize, overlap, sampleRate);
 		AudioDispatcher dispatcher = new AudioDispatcher(stream, fftsize, overlap);
 		dispatcher.addAudioProcessor(spectralPeakFollower);
 		dispatcher.addAudioProcessor(new AudioProcessor() {
@@ -56,7 +53,8 @@ public class SpectralPeakFollowerExample {
 			
 			@Override
 			public boolean process(AudioEvent audioEvent) {
-				peakListList.add(spectralPeakFollower.getPeakList());
+				magnitudesList.add(spectralPeakFollower.getMagnitudes());
+				frequencyEstimatesList.add(spectralPeakFollower.getFrequencyEstimates());
 				return true;
 			}
 		});
@@ -64,6 +62,7 @@ public class SpectralPeakFollowerExample {
 	}
 	
 	private void processPeakListList(){
+		/*
 		KernelDensityEstimate kde = new KernelDensityEstimate(new KernelDensityEstimate.GaussianKernel(30), minimumCentsBelowHighest + maximumCentsAboveHighest);
 		for(List<SpectralPeak> spectralPeakList : peakListList){
 			for(SpectralPeak spectralPeak : spectralPeakList){
@@ -118,6 +117,7 @@ public class SpectralPeakFollowerExample {
 				System.out.println(String.format("%d %.2f %.2f",cents, estimate[i],ratio));
 			}
 		}
+		*/
 	}
 	
 	public static void main(String... args) throws UnsupportedAudioFileException {		

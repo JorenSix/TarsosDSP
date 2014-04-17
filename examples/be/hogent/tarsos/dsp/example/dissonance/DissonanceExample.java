@@ -36,8 +36,9 @@ import be.hogent.tarsos.dsp.AudioFile;
 import be.hogent.tarsos.dsp.AudioPlayer;
 import be.hogent.tarsos.dsp.AudioProcessor;
 import be.hogent.tarsos.dsp.PipeDecoder;
-import be.hogent.tarsos.dsp.SpectralPeakFollower;
-import be.hogent.tarsos.dsp.SpectralPeakFollower.SpectralPeak;
+import be.hogent.tarsos.dsp.SpectralPeakProcessor;
+import be.hogent.tarsos.dsp.SpectralPeakProcessor.SpectralPeak;
+import be.hogent.tarsos.dsp.example.spectrum.SpectralInfo;
 import be.hogent.tarsos.dsp.ui.Axis;
 import be.hogent.tarsos.dsp.ui.AxisUnit;
 import be.hogent.tarsos.dsp.ui.CoordinateSystem;
@@ -73,6 +74,7 @@ public class DissonanceExample extends JFrame {
 	private float noiseFloorFactor;
 	private String fileName;
 	private int numberOfSpectralPeaks;
+	private int currentFrame;
 
 	private final Integer[] fftSizes = {256,512,1024,2048,4096,8192,16384,32768,65536,131072};
 	private final Integer[] inputSampleRate = {22050,44100,192000};
@@ -192,11 +194,10 @@ public class DissonanceExample extends JFrame {
 				int newValue = source.getValue();
 				double actualValue = newValue/100.0;
 				noiseFloorFactorLabel.setText(String.format("Noise floor factor (%.2f):", actualValue));
-				if(!source.getValueIsAdjusting()){
-					System.out.println("New noise floor factor: " + actualValue);
-					noiseFloorFactor = (float) actualValue;
-					startProcessing();
-				}
+				System.out.println("New noise floor factor: " + actualValue);
+				noiseFloorFactor = (float) actualValue;
+				repaintSpectralInfo();
+				
 			}
 		});
 		noiseFloorSlider.setValue(150);
@@ -211,20 +212,17 @@ public class DissonanceExample extends JFrame {
 			public void stateChanged(ChangeEvent e) {
 				JSlider source = (JSlider) e.getSource();
 				int newValue = source.getValue();			
-				
 				numberOfPeaksLabel.setText("Number of peaks (" + newValue + "):");
-				if(!source.getValueIsAdjusting()){
-					System.out.println("New amount of peaks: " + newValue);
-					numberOfSpectralPeaks = newValue;
-					startProcessing();
-				}
+				System.out.println("New amount of peaks: " + newValue);
+				numberOfSpectralPeaks = newValue;
+				repaintSpectralInfo();
 			}
+
+			
 		});
 		numberOfPeaksSlider.setValue(7);
 		buttonPanel.add(numberOfPeaksLabel);
 		buttonPanel.add(numberOfPeaksSlider);
-		
-		
 		
 		
 		final JLabel frameLabel = new JLabel("Analysis frame (0):");
@@ -236,53 +234,13 @@ public class DissonanceExample extends JFrame {
 			public void stateChanged(ChangeEvent e) {
 				int newValue = ((JSlider) e.getSource()).getValue();	
 				frameLabel.setText("Analysis frame (" + newValue + "):");
-				
-				if(newValue < spectalInfo.size()){
-					SpectralInfo info = spectalInfo.get(newValue);
-					
-					spectrumLayer.clearPeaks();
-					spectrumLayer.setSpectrum(info.getSpectrum());
-					noiseFloorLayer.setSpectrum(info.getNoiseFloor());
-					
-					List<SpectralPeak> peaks = info.getPeakList();
-					
-					StringBuilder sb = new StringBuilder("Frequency(Hz);Step(cents);Magnitude\n");
-					frequencies.clear();
-					amplitudes.clear();
-					for(SpectralPeak peak : peaks){
-					
-						String message = String.format("%.2f;%.2f;%.2f\n", peak.getFrequencyInHertz(),peak.getRelativeFrequencyInCents(),peak.getMagnitude());
-						sb.append(message);
-						//float peakFrequencyInCents =(float) PitchConverter.hertzToAbsoluteCent(peak.getFrequencyInHertz());
-						spectrumLayer.setPeak(peak.getBin());
-						frequencies.add((double) peak.getFrequencyInHertz());
-						amplitudes.add((double) peak.getMagnitude());
-						
-						
-					}
-					textArea.setText(sb.toString());
-					
-					DissonanceExample.this.spectrumPanel.repaint();
-					DissonanceExample.this.sensoryDissonancePanel.repaint();
-				}
-				
+				currentFrame = newValue;
+				repaintSpectralInfo();
 			}
 		});
 		buttonPanel.add(frameLabel);
 		buttonPanel.add(frameSlider);
 		
-		final JButton saveDataButton = new JButton("Save");
-		saveDataButton.addActionListener(new ActionListener(){
-			@Override
-			public void actionPerformed(ActionEvent arg0) {
-				if(frameSlider.isEnabled() && fileName != null){
-					SpectralInfo info = spectalInfo.get(frameSlider.getValue());
-					info.store(new File(fileName).getName());
-				}
-			}	
-		});
-		buttonPanel.add(new JLabel("Save current spectum data:"));
-		buttonPanel.add(saveDataButton);
 		
 		textArea = new JTextArea(10,20);
 		buttonPanel.add(new JLabel("Peaks:"));
@@ -292,7 +250,35 @@ public class DissonanceExample extends JFrame {
 		
 		return motherPanel;
 	}
-
+	
+	
+	private void repaintSpectralInfo() {
+		if(currentFrame < spectalInfo.size()){
+			SpectralInfo info = spectalInfo.get(currentFrame);
+			
+			spectrumLayer.clearPeaks();
+			spectrumLayer.setSpectrum(info.getMagnitudes());
+			noiseFloorLayer.setSpectrum(info.getNoiseFloor(noiseFloorMedianFilterLenth,noiseFloorFactor));
+			List<SpectralPeak> peaks = info.getPeakList(noiseFloorMedianFilterLenth, noiseFloorFactor, numberOfSpectralPeaks);
+			
+			StringBuilder sb = new StringBuilder("Frequency(Hz);Step(cents);Magnitude\n");
+			frequencies.clear();
+			amplitudes.clear();
+			for(SpectralPeak peak : peaks){
+				String message = String.format("%.2f;%.2f;%.2f\n", peak.getFrequencyInHertz(),peak.getRelativeFrequencyInCents(),peak.getMagnitude());
+				sb.append(message);
+				//float peakFrequencyInCents =(float) PitchConverter.hertzToAbsoluteCent(peak.getFrequencyInHertz());
+				spectrumLayer.setPeak(peak.getBin());
+				frequencies.add((double) peak.getFrequencyInHertz());
+				amplitudes.add((double) peak.getMagnitude());
+			}
+			textArea.setText(sb.toString());
+			
+			DissonanceExample.this.spectrumPanel.repaint();
+			DissonanceExample.this.sensoryDissonancePanel.repaint();
+		}			
+	}
+	
 	private JPanel createSpectrumPanel(){
 		CoordinateSystem cs =  new CoordinateSystem(AxisUnit.FREQUENCY, AxisUnit.AMPLITUDE, -1000, 10, false);
 		cs.setMax(Axis.X, 4800);
@@ -371,10 +357,11 @@ public class DissonanceExample extends JFrame {
 		
 		sensoryDissonancePanel = new LinkedPanel(cs);
 		sensoryDissonancePanel.addLayer(new BackgroundLayer(cs));
+		sensoryDissonancePanel.addLayer(sensoryDissonanceLayer);
 		sensoryDissonancePanel.addLayer(valleyLayer);
 		sensoryDissonancePanel.addLayer(new ScaleLayer(cs, true));
 		
-		sensoryDissonancePanel.addLayer(sensoryDissonanceLayer);
+	
 		
 		//sensoryDissonancePanel.addLayer(new ZoomMouseListenerLayer());
 		//sensoryDissonancePanel.addLayer(new DragMouseListenerLayer(cs));
@@ -440,7 +427,7 @@ public class DissonanceExample extends JFrame {
 		noiseFloorLayer.setFFTSize(fftsize);
 
 		
-		final SpectralPeakFollower spectralPeakFollower = new SpectralPeakFollower(fftsize, overlap, sampleRate,noiseFloorMedianFilterLenth,numberOfSpectralPeaks,noiseFloorFactor);
+		final SpectralPeakProcessor spectralPeakFollower = new SpectralPeakProcessor(fftsize, overlap, sampleRate);
 		dispatcher = new AudioDispatcher(stream, fftsize, overlap);
 		dispatcher.addAudioProcessor(spectralPeakFollower);
 		
@@ -457,7 +444,7 @@ public class DissonanceExample extends JFrame {
 			
 			@Override
 			public boolean process(AudioEvent audioEvent) {
-				spectalInfo.add(new SpectralInfo(audioEvent.getTimeStamp(),spectralPeakFollower.getSpectrum(), spectralPeakFollower.getNoiseFloor(),spectralPeakFollower.getPeakList()));
+				spectalInfo.add(new SpectralInfo(spectralPeakFollower.getMagnitudes(),spectralPeakFollower.getFrequencyEstimates()));
 				if(frameCounter % 1000 == 0){
 					if(frameCounter > frameSlider.getMaximum()){
 						frameSlider.setMaximum(frameCounter);
@@ -465,7 +452,6 @@ public class DissonanceExample extends JFrame {
 					frameSlider.setValue(frameCounter);
 				}
 				frameCounter++;
-				
 				return true;
 			}
 		});
@@ -478,52 +464,6 @@ public class DissonanceExample extends JFrame {
 		new Thread(dispatcher).start();
 	}
 	
-	private   static class SpectralInfo{
-		private float[] spectrum;
-		private float[] noiseFloor;
-		private List<SpectralPeak> peaks;
-		private double timeStamp;
-		
-		public SpectralInfo(double timeStamp,float[] spectrum, float[] noisefloor, List<SpectralPeak> list){
-			this.spectrum = spectrum.clone();
-			this.noiseFloor = noisefloor.clone();
-			this.peaks = new ArrayList<SpectralPeak>(list);
-			this.timeStamp = timeStamp;
-		}
-		
-		public void store(String fileName) {
-			System.out.println("Store " + fileName);
-			int ms = (int) Math.round(timeStamp * 1000);
-			StringBuilder sb = new StringBuilder();
-			sb.append("bin index;frequency(Hz);frequency (cent);Magnitude(dB/Hz);Peak");
-			
-			for(int i = 0 ; i < spectrum.length ; i++){
-				SpectralPeak currentPeak;
-				for(SpectralPeak peak:peaks){
-					if(peak.getBin() == i){
-						currentPeak=peak;
-					}
-				}
-				
-				sb.append(String.format("%d;%.2f\n",i,spectrum[i]));
-			}
-			String contents = sb.toString();
-			System.out.println(contents);
-			
-		}
-
-		public List<SpectralPeak> getPeakList() {
-			return peaks;
-		}
-
-		public float[] getSpectrum(){
-			return spectrum;
-		}
-		
-		public float[] getNoiseFloor(){
-			return noiseFloor;
-		}
-	}
 	
 
 	public static void main(String[] args) throws InvocationTargetException, InterruptedException, UnsupportedAudioFileException, LineUnavailableException, IOException{
