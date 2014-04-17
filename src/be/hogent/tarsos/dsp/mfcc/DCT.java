@@ -49,6 +49,7 @@ public class DCT {
 			return;
 		}
 		try {
+			@SuppressWarnings("resource")
 			BufferedReader br = new BufferedReader(new FileReader(f));
 			for ( int i = 0; i < 8; i++ ) {
 				String line = br.readLine();
@@ -63,6 +64,7 @@ public class DCT {
 					fm[i][j] = num;
 				}
 			}
+			br.close();
 		}
 		catch ( FileNotFoundException e ) {
 			System.out.println("Error! can't create FileReader for "+args[0]);

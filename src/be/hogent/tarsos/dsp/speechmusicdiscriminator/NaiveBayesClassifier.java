@@ -39,6 +39,7 @@ public class NaiveBayesClassifier {
 		int maxIndex = -1;
 		double maxValue = -100000.0;
 		for(int i = 0 ; i< probabilities.length ; i++){
+		
 			if(probabilities[i] > maxValue){
 				maxIndex = i;
 				maxValue  = probabilities[i];
@@ -47,7 +48,8 @@ public class NaiveBayesClassifier {
 		if(maxIndex==-1){
 			System.out.println("Did not find max");
 		}
-		
+		//double probability = probabilities[maxIndex];
+		//System.out.println(probability * values.length);
 		return datasets.get(maxIndex).label();
 	}
 	
@@ -108,7 +110,7 @@ public class NaiveBayesClassifier {
 		dataSets.add(males);
 		
 		NaiveBayesClassifier nbc = new NaiveBayesClassifier(dataSets);
-		double[] values = {6.0,130,8.0};  
+		double[] values = {5.4,132,7.5};  
 		System.out.println(nbc.classify(values));		
 	}
 }

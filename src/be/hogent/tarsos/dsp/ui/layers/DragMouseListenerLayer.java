@@ -8,8 +8,6 @@ import java.awt.geom.Point2D;
 
 import javax.swing.SwingUtilities;
 
-import be.hogent.tarsos.dsp.ui.Axis;
-import be.hogent.tarsos.dsp.ui.AxisUnit;
 import be.hogent.tarsos.dsp.ui.CoordinateSystem;
 import be.hogent.tarsos.dsp.ui.LinkedPanel;
 

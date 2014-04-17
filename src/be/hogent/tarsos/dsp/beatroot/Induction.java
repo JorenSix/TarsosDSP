@@ -205,7 +205,7 @@ public class Induction {
 			b = bestn[index];
 			// Adjust it, using the size of super- and sub-intervals
 			double newSum = clusterMean[b] * clusterScore[b];
-			int newCount = clusterSize[b];
+			//int newCount = clusterSize[b];
 			int newWeight = clusterScore[b];
 			for (i = 0; i < intervals; i++) {
 				if (i == b)
@@ -217,7 +217,7 @@ public class Induction {
 						err = Math.abs(clusterMean[b]*degree - clusterMean[i]);
 						if (err < clusterWidth) {
 							newSum += clusterMean[i] / degree * clusterScore[i];
-							newCount += clusterSize[i];
+							//newCount += clusterSize[i];
 							newWeight += clusterScore[i];
 						}
 					}
@@ -227,7 +227,7 @@ public class Induction {
 						err = Math.abs(clusterMean[b] - degree*clusterMean[i]);
 						if (err < clusterWidth * degree) {
 							newSum += clusterMean[i] * degree * clusterScore[i];
-							newCount += clusterSize[i];
+							//newCount += clusterSize[i];
 							newWeight += clusterScore[i];
 						}
 					}
