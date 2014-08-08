@@ -23,14 +23,14 @@
 *  for credits and info, see README.
 * 
 */
-package be.hogent.tarsos.dsp.test;
+package be.tarsos.dsp.test;
 
 import static org.junit.Assert.assertEquals;
 
 import org.junit.Test;
 
-import be.hogent.tarsos.dsp.pitch.PitchDetector;
-import be.hogent.tarsos.dsp.pitch.PitchProcessor.PitchEstimationAlgorithm;
+import be.tarsos.dsp.pitch.PitchDetector;
+import be.tarsos.dsp.pitch.PitchProcessor.PitchEstimationAlgorithm;
 
 public class PitchDetectorTests {
 	

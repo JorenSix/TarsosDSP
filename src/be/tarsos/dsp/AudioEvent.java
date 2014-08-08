@@ -24,13 +24,13 @@
 * 
 */
 
-package be.hogent.tarsos.dsp;
+package be.tarsos.dsp;
 
 import java.util.Arrays;
 
 import javax.sound.sampled.AudioFormat;
 
-import be.hogent.tarsos.dsp.util.AudioFloatConverter;
+import be.tarsos.dsp.util.AudioFloatConverter;
 
 /**
  * An audio event flows through the processing pipeline. The object is reused for performance reasons.

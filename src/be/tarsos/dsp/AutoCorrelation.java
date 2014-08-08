@@ -1,4 +1,4 @@
-package be.hogent.tarsos.dsp;
+package be.tarsos.dsp;
 
 public class AutoCorrelation implements AudioProcessor {
 

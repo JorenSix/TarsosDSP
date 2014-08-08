@@ -1,4 +1,4 @@
-package be.hogent.tarsos.dsp.example.catify;
+package be.tarsos.dsp.example.catify;
 
 import java.io.ByteArrayInputStream;
 import java.io.File;
@@ -20,15 +20,15 @@ import javax.sound.sampled.AudioSystem;
 import javax.sound.sampled.LineUnavailableException;
 import javax.sound.sampled.UnsupportedAudioFileException;
 
-import be.hogent.tarsos.dsp.AudioDispatcher;
-import be.hogent.tarsos.dsp.AudioEvent;
-import be.hogent.tarsos.dsp.AudioProcessor;
-import be.hogent.tarsos.dsp.GainProcessor;
-import be.hogent.tarsos.dsp.WaveformSimilarityBasedOverlapAdd;
-import be.hogent.tarsos.dsp.WaveformSimilarityBasedOverlapAdd.Parameters;
-import be.hogent.tarsos.dsp.example.PitchShiftingExample;
-import be.hogent.tarsos.dsp.example.SharedCommandLineUtilities;
-import be.hogent.tarsos.dsp.resample.RateTransposer;
+import be.tarsos.dsp.AudioDispatcher;
+import be.tarsos.dsp.AudioEvent;
+import be.tarsos.dsp.AudioProcessor;
+import be.tarsos.dsp.GainProcessor;
+import be.tarsos.dsp.WaveformSimilarityBasedOverlapAdd;
+import be.tarsos.dsp.WaveformSimilarityBasedOverlapAdd.Parameters;
+import be.tarsos.dsp.example.PitchShiftingExample;
+import be.tarsos.dsp.example.SharedCommandLineUtilities;
+import be.tarsos.dsp.resample.RateTransposer;
 
 
 

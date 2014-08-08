@@ -1,9 +1,9 @@
-package be.hogent.tarsos.dsp.ui.layers.pch;
+package be.tarsos.dsp.ui.layers.pch;
 
 import java.awt.Graphics2D;
 import java.util.Random;
 
-import be.hogent.tarsos.dsp.ui.layers.Layer;
+import be.tarsos.dsp.ui.layers.Layer;
 
 public class PitchClassHistogramLayer implements Layer{
 

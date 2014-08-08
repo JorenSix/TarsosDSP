@@ -24,7 +24,7 @@
 * 
 */
 
-package be.hogent.tarsos.dsp;
+package be.tarsos.dsp;
 
 /**
  * An envelope follower follows the envelope of a signal. Sometimes the name

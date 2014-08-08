@@ -1,12 +1,12 @@
-package be.hogent.tarsos.dsp;
+package be.tarsos.dsp;
 
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
-import be.hogent.tarsos.dsp.util.PitchConverter;
-import be.hogent.tarsos.dsp.util.fft.FFT;
-import be.hogent.tarsos.dsp.util.fft.HammingWindow;
+import be.tarsos.dsp.util.PitchConverter;
+import be.tarsos.dsp.util.fft.FFT;
+import be.tarsos.dsp.util.fft.HammingWindow;
 
 /**
  * <p>
@@ -279,9 +279,10 @@ public class SpectralPeakProcessor implements AudioProcessor {
 	 * @param frequencyEstimates The frequency estimates for each bin.
 	 * @param localMaximaIndexes The indexes of the local maxima.
 	 * @param numberOfPeaks The requested number of peaks.
+	 * @param minPeakSize 
 	 * @return A list with spectral peaks.
 	 */
-	public static List<SpectralPeak> findPeaks(float[] magnitudes, float[] frequencyEstimates, List<Integer> localMaximaIndexes, int numberOfPeaks){
+	public static List<SpectralPeak> findPeaks(float[] magnitudes, float[] frequencyEstimates, List<Integer> localMaximaIndexes, int numberOfPeaks, int minPeakSize){
 		int maxMagnitudeIndex = findMaxMagnitudeIndex(magnitudes);		
 		List<SpectralPeak> spectralPeakList = new ArrayList<SpectralPeak>();
 		
@@ -291,6 +292,19 @@ public class SpectralPeakProcessor implements AudioProcessor {
 		float referenceFrequency=0;
 		//the frequency of the bin with the highest magnitude
 		referenceFrequency =  frequencyEstimates[maxMagnitudeIndex];
+		
+		//filter the local maxima indexes, remove peaks that are too close to each other
+		//assumes that localmaximaIndexes is sorted from lowest to higest index
+		for(int i = 1 ; i < localMaximaIndexes.size() ; i++){
+			if(localMaximaIndexes.get(i) - localMaximaIndexes.get(i-1) < minPeakSize ){
+				if(magnitudes[localMaximaIndexes.get(i)] > magnitudes[localMaximaIndexes.get(i-1)]){
+					localMaximaIndexes.remove(i-1);
+				}else{
+					localMaximaIndexes.remove(i);
+				}
+				i--;
+			}
+		}
 		
 		// Retrieve the maximum values for the indexes
 		float[] maxMagnitudes = new float[localMaximaIndexes.size()];

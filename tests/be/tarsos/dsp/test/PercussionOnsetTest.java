@@ -24,7 +24,7 @@
 * 
 */
 
-package be.hogent.tarsos.dsp.test;
+package be.tarsos.dsp.test;
 
 import java.io.IOException;
 
@@ -39,10 +39,10 @@ import javax.sound.sampled.UnsupportedAudioFileException;
 
 import org.junit.Test;
 
-import be.hogent.tarsos.dsp.AudioDispatcher;
-import be.hogent.tarsos.dsp.onsets.PercussionOnsetDetector;
-import be.hogent.tarsos.dsp.onsets.PrintOnsetHandler;
-import be.hogent.tarsos.dsp.util.Shared;
+import be.tarsos.dsp.AudioDispatcher;
+import be.tarsos.dsp.onsets.PercussionOnsetDetector;
+import be.tarsos.dsp.onsets.PrintOnsetHandler;
+import be.tarsos.dsp.util.Shared;
 
 public class PercussionOnsetTest {
 	

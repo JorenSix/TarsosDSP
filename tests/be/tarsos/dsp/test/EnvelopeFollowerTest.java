@@ -24,16 +24,16 @@
 * 
 */
 
-package be.hogent.tarsos.dsp.test;
+package be.tarsos.dsp.test;
 
 import javax.sound.sampled.UnsupportedAudioFileException;
 
 import org.junit.Test;
 
-import be.hogent.tarsos.dsp.AudioDispatcher;
-import be.hogent.tarsos.dsp.AudioEvent;
-import be.hogent.tarsos.dsp.AudioProcessor;
-import be.hogent.tarsos.dsp.EnvelopeFollower;
+import be.tarsos.dsp.AudioDispatcher;
+import be.tarsos.dsp.AudioEvent;
+import be.tarsos.dsp.AudioProcessor;
+import be.tarsos.dsp.EnvelopeFollower;
 
 public class EnvelopeFollowerTest {
 	

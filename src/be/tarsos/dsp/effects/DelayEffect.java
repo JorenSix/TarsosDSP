@@ -24,10 +24,10 @@
 * 
 */
 
-package be.hogent.tarsos.dsp.effects;
+package be.tarsos.dsp.effects;
 
-import be.hogent.tarsos.dsp.AudioEvent;
-import be.hogent.tarsos.dsp.AudioProcessor;
+import be.tarsos.dsp.AudioEvent;
+import be.tarsos.dsp.AudioProcessor;
 
 
 /**

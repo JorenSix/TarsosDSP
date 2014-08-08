@@ -1,4 +1,4 @@
-package be.hogent.tarsos.dsp.example.dissonance;
+package be.tarsos.dsp.example.dissonance;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -6,11 +6,11 @@ import java.util.List;
 import javax.sound.sampled.AudioInputStream;
 import javax.sound.sampled.UnsupportedAudioFileException;
 
-import be.hogent.tarsos.dsp.AudioDispatcher;
-import be.hogent.tarsos.dsp.AudioEvent;
-import be.hogent.tarsos.dsp.AudioFile;
-import be.hogent.tarsos.dsp.AudioProcessor;
-import be.hogent.tarsos.dsp.SpectralPeakProcessor;
+import be.tarsos.dsp.AudioDispatcher;
+import be.tarsos.dsp.AudioEvent;
+import be.tarsos.dsp.AudioFile;
+import be.tarsos.dsp.AudioProcessor;
+import be.tarsos.dsp.SpectralPeakProcessor;
 
 public class SpectralPeakFollowerExample {	
 	private final int sampleRate = 44100;

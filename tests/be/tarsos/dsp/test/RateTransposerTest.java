@@ -23,7 +23,7 @@
 *  for credits and info, see README.
 * 
 */
-package be.hogent.tarsos.dsp.test;
+package be.tarsos.dsp.test;
 
 import java.io.IOException;
 
@@ -33,10 +33,10 @@ import javax.sound.sampled.UnsupportedAudioFileException;
 
 import org.junit.Test;
 
-import be.hogent.tarsos.dsp.AudioDispatcher;
-import be.hogent.tarsos.dsp.AudioPlayer;
-import be.hogent.tarsos.dsp.WaveformSimilarityBasedOverlapAdd;
-import be.hogent.tarsos.dsp.resample.RateTransposer;
+import be.tarsos.dsp.AudioDispatcher;
+import be.tarsos.dsp.AudioPlayer;
+import be.tarsos.dsp.WaveformSimilarityBasedOverlapAdd;
+import be.tarsos.dsp.resample.RateTransposer;
 
 public class RateTransposerTest {
 	@Test

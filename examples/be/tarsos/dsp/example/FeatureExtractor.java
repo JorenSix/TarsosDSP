@@ -23,7 +23,7 @@
 *  for credits and info, see README.
 * 
 */
-package be.hogent.tarsos.dsp.example;
+package be.tarsos.dsp.example;
 
 import java.io.File;
 import java.io.IOException;
@@ -33,17 +33,17 @@ import java.util.List;
 import javax.sound.sampled.AudioSystem;
 import javax.sound.sampled.UnsupportedAudioFileException;
 
-import be.hogent.tarsos.dsp.AudioDispatcher;
-import be.hogent.tarsos.dsp.AudioEvent;
-import be.hogent.tarsos.dsp.AudioProcessor;
-import be.hogent.tarsos.dsp.SilenceDetector;
-import be.hogent.tarsos.dsp.beatroot.BeatRootOnsetEventHandler;
-import be.hogent.tarsos.dsp.onsets.ComplexOnsetDetector;
-import be.hogent.tarsos.dsp.onsets.OnsetHandler;
-import be.hogent.tarsos.dsp.pitch.PitchDetectionHandler;
-import be.hogent.tarsos.dsp.pitch.PitchDetectionResult;
-import be.hogent.tarsos.dsp.pitch.PitchProcessor;
-import be.hogent.tarsos.dsp.pitch.PitchProcessor.PitchEstimationAlgorithm;
+import be.tarsos.dsp.AudioDispatcher;
+import be.tarsos.dsp.AudioEvent;
+import be.tarsos.dsp.AudioProcessor;
+import be.tarsos.dsp.SilenceDetector;
+import be.tarsos.dsp.beatroot.BeatRootOnsetEventHandler;
+import be.tarsos.dsp.onsets.ComplexOnsetDetector;
+import be.tarsos.dsp.onsets.OnsetHandler;
+import be.tarsos.dsp.pitch.PitchDetectionHandler;
+import be.tarsos.dsp.pitch.PitchDetectionResult;
+import be.tarsos.dsp.pitch.PitchProcessor;
+import be.tarsos.dsp.pitch.PitchProcessor.PitchEstimationAlgorithm;
 /**
  * Provides support for different types of command line audio feature extraction.
  * @author Joren Six

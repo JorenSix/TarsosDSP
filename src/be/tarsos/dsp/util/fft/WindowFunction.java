@@ -16,7 +16,7 @@
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  */
 
-package be.hogent.tarsos.dsp.util.fft;
+package be.tarsos.dsp.util.fft;
 
 /**
  * A Window function represents a curve which is applied to a sample buffer to

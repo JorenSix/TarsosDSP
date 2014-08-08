@@ -1,4 +1,4 @@
-package be.hogent.tarsos.dsp.example;
+package be.tarsos.dsp.example;
 
 import java.awt.BorderLayout;
 import java.awt.GridLayout;
@@ -27,15 +27,15 @@ import javax.swing.border.TitledBorder;
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
 
-import be.hogent.tarsos.dsp.AudioDispatcher;
-import be.hogent.tarsos.dsp.AudioEvent;
-import be.hogent.tarsos.dsp.AudioPlayer;
-import be.hogent.tarsos.dsp.AudioProcessor;
-import be.hogent.tarsos.dsp.GainProcessor;
-import be.hogent.tarsos.dsp.WaveformWriter;
-import be.hogent.tarsos.dsp.pitch.PitchProcessor;
-import be.hogent.tarsos.dsp.pitch.PitchProcessor.PitchEstimationAlgorithm;
-import be.hogent.tarsos.dsp.synthesis.PitchResyntheziser;
+import be.tarsos.dsp.AudioDispatcher;
+import be.tarsos.dsp.AudioEvent;
+import be.tarsos.dsp.AudioPlayer;
+import be.tarsos.dsp.AudioProcessor;
+import be.tarsos.dsp.GainProcessor;
+import be.tarsos.dsp.WaveformWriter;
+import be.tarsos.dsp.pitch.PitchProcessor;
+import be.tarsos.dsp.pitch.PitchProcessor.PitchEstimationAlgorithm;
+import be.tarsos.dsp.synthesis.PitchResyntheziser;
 
 /**
  * The resynthesizer example shows how to use the PitchResnthesizer class. It is

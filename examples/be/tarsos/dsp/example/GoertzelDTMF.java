@@ -24,7 +24,7 @@
 * 
 */
 
-package be.hogent.tarsos.dsp.example;
+package be.tarsos.dsp.example;
 
 import java.awt.BorderLayout;
 import java.awt.Font;
@@ -48,13 +48,13 @@ import javax.swing.SwingUtilities;
 import javax.swing.UIManager;
 import javax.swing.border.TitledBorder;
 
-import be.hogent.tarsos.dsp.AudioDispatcher;
-import be.hogent.tarsos.dsp.AudioPlayer;
-import be.hogent.tarsos.dsp.AudioProcessor;
-import be.hogent.tarsos.dsp.pitch.DTMF;
-import be.hogent.tarsos.dsp.pitch.Goertzel;
-import be.hogent.tarsos.dsp.pitch.Goertzel.FrequenciesDetectedHandler;
-import be.hogent.tarsos.dsp.util.AudioFloatConverter;
+import be.tarsos.dsp.AudioDispatcher;
+import be.tarsos.dsp.AudioPlayer;
+import be.tarsos.dsp.AudioProcessor;
+import be.tarsos.dsp.pitch.DTMF;
+import be.tarsos.dsp.pitch.Goertzel;
+import be.tarsos.dsp.pitch.Goertzel.FrequenciesDetectedHandler;
+import be.tarsos.dsp.util.AudioFloatConverter;
 
 /**
  * An example of DTMF ( Dual-tone multi-frequency signaling ) decoding with the Goertzel algorithm.

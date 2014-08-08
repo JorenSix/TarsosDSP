@@ -24,7 +24,7 @@
 * 
 */
 
-package be.hogent.tarsos.dsp.example.constantq;
+package be.tarsos.dsp.example.constantq;
 
 import java.beans.PropertyChangeListener;
 import java.beans.PropertyChangeSupport;
@@ -37,11 +37,11 @@ import javax.sound.sampled.AudioSystem;
 import javax.sound.sampled.LineUnavailableException;
 import javax.sound.sampled.UnsupportedAudioFileException;
 
-import be.hogent.tarsos.dsp.AudioDispatcher;
-import be.hogent.tarsos.dsp.AudioEvent;
-import be.hogent.tarsos.dsp.AudioPlayer;
-import be.hogent.tarsos.dsp.AudioProcessor;
-import be.hogent.tarsos.dsp.GainProcessor;
+import be.tarsos.dsp.AudioDispatcher;
+import be.tarsos.dsp.AudioEvent;
+import be.tarsos.dsp.AudioPlayer;
+import be.tarsos.dsp.AudioProcessor;
+import be.tarsos.dsp.GainProcessor;
 
 public class Player implements AudioProcessor {
 	

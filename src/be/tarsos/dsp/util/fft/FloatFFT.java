@@ -58,11 +58,11 @@
  *
  * ***** END LICENSE BLOCK ***** */
 
-package be.hogent.tarsos.dsp.util.fft;
+package be.tarsos.dsp.util.fft;
 
 import java.util.concurrent.Future;
 
-import be.hogent.tarsos.dsp.util.ConcurrencyUtils;
+import be.tarsos.dsp.util.ConcurrencyUtils;
 
 
 

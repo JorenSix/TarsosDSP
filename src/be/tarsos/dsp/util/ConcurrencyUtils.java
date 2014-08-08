@@ -57,7 +57,7 @@
  * the terms of any one of the MPL, the GPL or the LGPL.
  *
  * ***** END LICENSE BLOCK ***** */
-package be.hogent.tarsos.dsp.util;
+package be.tarsos.dsp.util;
 
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.ExecutorService;

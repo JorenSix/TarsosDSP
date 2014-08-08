@@ -1,4 +1,4 @@
-package be.hogent.tarsos.dsp.example.dissonance;
+package be.tarsos.dsp.example.dissonance;
 
 import java.awt.BorderLayout;
 import java.awt.Color;
@@ -30,30 +30,30 @@ import javax.swing.SwingUtilities;
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
 
-import be.hogent.tarsos.dsp.AudioDispatcher;
-import be.hogent.tarsos.dsp.AudioEvent;
-import be.hogent.tarsos.dsp.AudioFile;
-import be.hogent.tarsos.dsp.AudioPlayer;
-import be.hogent.tarsos.dsp.AudioProcessor;
-import be.hogent.tarsos.dsp.PipeDecoder;
-import be.hogent.tarsos.dsp.SpectralPeakProcessor;
-import be.hogent.tarsos.dsp.SpectralPeakProcessor.SpectralPeak;
-import be.hogent.tarsos.dsp.example.spectrum.SpectralInfo;
-import be.hogent.tarsos.dsp.ui.Axis;
-import be.hogent.tarsos.dsp.ui.AxisUnit;
-import be.hogent.tarsos.dsp.ui.CoordinateSystem;
-import be.hogent.tarsos.dsp.ui.LinkedPanel;
-import be.hogent.tarsos.dsp.ui.ViewPort;
-import be.hogent.tarsos.dsp.ui.ViewPort.ViewPortChangedListener;
-import be.hogent.tarsos.dsp.ui.layers.AmplitudeAxisLayer;
-import be.hogent.tarsos.dsp.ui.layers.BackgroundLayer;
-import be.hogent.tarsos.dsp.ui.layers.DragMouseListenerLayer;
-import be.hogent.tarsos.dsp.ui.layers.HorizontalFrequencyAxisLayer;
-import be.hogent.tarsos.dsp.ui.layers.Layer;
-import be.hogent.tarsos.dsp.ui.layers.SelectionLayer;
-import be.hogent.tarsos.dsp.ui.layers.SpectrumLayer;
-import be.hogent.tarsos.dsp.ui.layers.ZoomMouseListenerLayer;
-import be.hogent.tarsos.dsp.ui.layers.pch.ScaleLayer;
+import be.tarsos.dsp.AudioDispatcher;
+import be.tarsos.dsp.AudioEvent;
+import be.tarsos.dsp.AudioFile;
+import be.tarsos.dsp.AudioPlayer;
+import be.tarsos.dsp.AudioProcessor;
+import be.tarsos.dsp.PipeDecoder;
+import be.tarsos.dsp.SpectralPeakProcessor;
+import be.tarsos.dsp.SpectralPeakProcessor.SpectralPeak;
+import be.tarsos.dsp.example.spectrum.SpectralInfo;
+import be.tarsos.dsp.ui.Axis;
+import be.tarsos.dsp.ui.AxisUnit;
+import be.tarsos.dsp.ui.CoordinateSystem;
+import be.tarsos.dsp.ui.LinkedPanel;
+import be.tarsos.dsp.ui.ViewPort;
+import be.tarsos.dsp.ui.ViewPort.ViewPortChangedListener;
+import be.tarsos.dsp.ui.layers.AmplitudeAxisLayer;
+import be.tarsos.dsp.ui.layers.BackgroundLayer;
+import be.tarsos.dsp.ui.layers.DragMouseListenerLayer;
+import be.tarsos.dsp.ui.layers.HorizontalFrequencyAxisLayer;
+import be.tarsos.dsp.ui.layers.Layer;
+import be.tarsos.dsp.ui.layers.SelectionLayer;
+import be.tarsos.dsp.ui.layers.SpectrumLayer;
+import be.tarsos.dsp.ui.layers.ZoomMouseListenerLayer;
+import be.tarsos.dsp.ui.layers.pch.ScaleLayer;
 
 public class DissonanceExample extends JFrame {
 	
@@ -259,7 +259,7 @@ public class DissonanceExample extends JFrame {
 			spectrumLayer.clearPeaks();
 			spectrumLayer.setSpectrum(info.getMagnitudes());
 			noiseFloorLayer.setSpectrum(info.getNoiseFloor(noiseFloorMedianFilterLenth,noiseFloorFactor));
-			List<SpectralPeak> peaks = info.getPeakList(noiseFloorMedianFilterLenth, noiseFloorFactor, numberOfSpectralPeaks);
+			List<SpectralPeak> peaks = info.getPeakList(noiseFloorMedianFilterLenth, noiseFloorFactor, numberOfSpectralPeaks,1);
 			
 			StringBuilder sb = new StringBuilder("Frequency(Hz);Step(cents);Magnitude\n");
 			frequencies.clear();

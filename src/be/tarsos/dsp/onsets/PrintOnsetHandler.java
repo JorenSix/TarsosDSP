@@ -1,4 +1,4 @@
-package be.hogent.tarsos.dsp.onsets;
+package be.tarsos.dsp.onsets;
 
 public class PrintOnsetHandler implements OnsetHandler{
 	@Override

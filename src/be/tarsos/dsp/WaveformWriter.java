@@ -24,7 +24,7 @@
 * 
 */
 
-package be.hogent.tarsos.dsp;
+package be.tarsos.dsp;
 
 import java.io.File;
 import java.io.FileInputStream;

@@ -1,4 +1,4 @@
-package be.hogent.tarsos.dsp.ui;
+package be.tarsos.dsp.ui;
 
 import java.awt.Color;
 import java.awt.Dimension;
@@ -7,21 +7,22 @@ import java.util.HashMap;
 
 import javax.swing.JFrame;
 import javax.swing.JSplitPane;
-import be.hogent.tarsos.dsp.ui.ViewPort.ViewPortChangedListener;
-import be.hogent.tarsos.dsp.ui.layers.AmplitudeAxisLayer;
-import be.hogent.tarsos.dsp.ui.layers.BackgroundLayer;
-import be.hogent.tarsos.dsp.ui.layers.BeatLayer;
-import be.hogent.tarsos.dsp.ui.layers.ConstantQLayer;
-import be.hogent.tarsos.dsp.ui.layers.DragMouseListenerLayer;
-import be.hogent.tarsos.dsp.ui.layers.LegendLayer;
-import be.hogent.tarsos.dsp.ui.layers.PitchContourLayer;
-import be.hogent.tarsos.dsp.ui.layers.SelectionLayer;
-import be.hogent.tarsos.dsp.ui.layers.TimeAxisLayer;
-import be.hogent.tarsos.dsp.ui.layers.VerticalFrequencyAxisLayer;
-import be.hogent.tarsos.dsp.ui.layers.WaveFormLayer;
-import be.hogent.tarsos.dsp.ui.layers.ZoomMouseListenerLayer;
-import be.hogent.tarsos.dsp.ui.layers.pch.PitchClassHistogramLayer;
-import be.hogent.tarsos.dsp.ui.layers.pch.ScaleLayer;
+
+import be.tarsos.dsp.ui.ViewPort.ViewPortChangedListener;
+import be.tarsos.dsp.ui.layers.AmplitudeAxisLayer;
+import be.tarsos.dsp.ui.layers.BackgroundLayer;
+import be.tarsos.dsp.ui.layers.BeatLayer;
+import be.tarsos.dsp.ui.layers.ConstantQLayer;
+import be.tarsos.dsp.ui.layers.DragMouseListenerLayer;
+import be.tarsos.dsp.ui.layers.LegendLayer;
+import be.tarsos.dsp.ui.layers.PitchContourLayer;
+import be.tarsos.dsp.ui.layers.SelectionLayer;
+import be.tarsos.dsp.ui.layers.TimeAxisLayer;
+import be.tarsos.dsp.ui.layers.VerticalFrequencyAxisLayer;
+import be.tarsos.dsp.ui.layers.WaveFormLayer;
+import be.tarsos.dsp.ui.layers.ZoomMouseListenerLayer;
+import be.tarsos.dsp.ui.layers.pch.PitchClassHistogramLayer;
+import be.tarsos.dsp.ui.layers.pch.ScaleLayer;
 
 public class LinkedFrame extends JFrame implements ViewPortChangedListener {
 	private JSplitPane lastSplitPane;

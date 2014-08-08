@@ -1,9 +1,9 @@
-package be.hogent.tarsos.dsp.example.spectrum;
+package be.tarsos.dsp.example.spectrum;
 
 import java.util.List;
 
-import be.hogent.tarsos.dsp.SpectralPeakProcessor;
-import be.hogent.tarsos.dsp.SpectralPeakProcessor.SpectralPeak;
+import be.tarsos.dsp.SpectralPeakProcessor;
+import be.tarsos.dsp.SpectralPeakProcessor.SpectralPeak;
 
 public class SpectralInfo{
 	private float[] magnitudes;
@@ -15,10 +15,10 @@ public class SpectralInfo{
 	}
 	
 
-	public List<SpectralPeak> getPeakList(int medianFilterLength,float noiseFloorFactor,int numberOfPeaks) {
+	public List<SpectralPeak> getPeakList(int medianFilterLength,float noiseFloorFactor,int numberOfPeaks,int minPeakSize) {
 		float[] noiseFloor = getNoiseFloor(medianFilterLength, noiseFloorFactor);
 		List<Integer> localMaxima = SpectralPeakProcessor.findLocalMaxima(magnitudes, noiseFloor);
-		return SpectralPeakProcessor.findPeaks(magnitudes, frequencyEstimates, localMaxima, numberOfPeaks);
+		return SpectralPeakProcessor.findPeaks(magnitudes, frequencyEstimates, localMaxima, numberOfPeaks,minPeakSize);
 	}
 
 	public float[] getMagnitudes(){

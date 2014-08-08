@@ -1,4 +1,4 @@
-package be.hogent.tarsos.dsp.example.dissonance;
+package be.tarsos.dsp.example.dissonance;
 
 import java.util.ArrayList;
 import java.util.Arrays;

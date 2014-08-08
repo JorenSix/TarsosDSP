@@ -1,9 +1,9 @@
-package be.hogent.tarsos.dsp;
+package be.tarsos.dsp;
 
 import javax.sound.sampled.AudioFormat;
 import javax.sound.sampled.AudioInputStream;
 
-import be.hogent.tarsos.dsp.util.AudioResourceUtils;
+import be.tarsos.dsp.util.AudioResourceUtils;
 
 
 /**

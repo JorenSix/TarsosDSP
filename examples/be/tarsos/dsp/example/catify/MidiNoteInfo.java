@@ -1,4 +1,4 @@
-package be.hogent.tarsos.dsp.example.catify;
+package be.tarsos.dsp.example.catify;
 
 class MidiNoteInfo implements Comparable<MidiNoteInfo>{
 	private final int start;

@@ -24,7 +24,7 @@
 * 
 */
 
-package be.hogent.tarsos.dsp.example;
+package be.tarsos.dsp.example;
 
 
 

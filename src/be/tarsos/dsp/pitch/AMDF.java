@@ -23,7 +23,7 @@
 *  for credits and info, see README.
 * 
 */
-package be.hogent.tarsos.dsp.pitch;
+package be.tarsos.dsp.pitch;
 
 /**
  * <p>

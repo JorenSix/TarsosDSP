@@ -17,7 +17,7 @@
     51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
 */
 
-package be.hogent.tarsos.dsp.beatroot;
+package be.tarsos.dsp.beatroot;
 
 import java.util.ListIterator;
 

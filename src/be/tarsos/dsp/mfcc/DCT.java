@@ -23,7 +23,7 @@
 *  for credits and info, see README.
 * 
 */
-package be.hogent.tarsos.dsp.mfcc;
+package be.tarsos.dsp.mfcc;
 
 import java.io.*;
 import java.util.StringTokenizer;

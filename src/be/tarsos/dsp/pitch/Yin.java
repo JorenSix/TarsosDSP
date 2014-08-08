@@ -24,7 +24,7 @@
 * 
 */
 
-package be.hogent.tarsos.dsp.pitch;
+package be.tarsos.dsp.pitch;
 
 /**
  * An implementation of the AUBIO_YIN pitch tracking algorithm. See <a href=

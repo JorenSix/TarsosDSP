@@ -1,11 +1,11 @@
-package be.hogent.tarsos.dsp.synthesis;
+package be.tarsos.dsp.synthesis;
 
 import java.util.Arrays;
 
-import be.hogent.tarsos.dsp.AudioEvent;
-import be.hogent.tarsos.dsp.EnvelopeFollower;
-import be.hogent.tarsos.dsp.pitch.PitchDetectionHandler;
-import be.hogent.tarsos.dsp.pitch.PitchDetectionResult;
+import be.tarsos.dsp.AudioEvent;
+import be.tarsos.dsp.EnvelopeFollower;
+import be.tarsos.dsp.pitch.PitchDetectionHandler;
+import be.tarsos.dsp.pitch.PitchDetectionResult;
 
 /**
  * This pitch detection handler replaces the audio buffer in the pipeline with a

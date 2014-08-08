@@ -1,4 +1,4 @@
-package be.hogent.tarsos.dsp.ui;
+package be.tarsos.dsp.ui;
 
 import java.awt.Point;
 import java.util.ArrayList;

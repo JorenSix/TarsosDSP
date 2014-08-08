@@ -24,15 +24,17 @@
 * 
 */
 
-package be.hogent.tarsos.dsp.test;
+package be.tarsos.dsp.test;
 
+import javax.sound.sampled.AudioInputStream;
 import javax.sound.sampled.LineUnavailableException;
 import javax.sound.sampled.UnsupportedAudioFileException;
 
 import org.junit.Test;
 
-import be.hogent.tarsos.dsp.AudioDispatcher;
-import be.hogent.tarsos.dsp.AudioPlayer;
+import be.tarsos.dsp.AudioDispatcher;
+import be.tarsos.dsp.AudioFile;
+import be.tarsos.dsp.AudioPlayer;
 
 public class AudioPlayerTest {
 	
@@ -42,6 +44,18 @@ public class AudioPlayerTest {
 		AudioDispatcher dispatcher = AudioDispatcher.fromFloatArray(sine, 44100, 1024, 512);
 		dispatcher.addAudioProcessor(new AudioPlayer(dispatcher.getFormat()));	
 		dispatcher.run();
+	}
+	
+	@Test
+	public void testStreamAudioPlayer() throws UnsupportedAudioFileException, LineUnavailableException{
+		AudioFile file = new AudioFile("http://mp3.streampower.be/stubru-high.mp3");
+		AudioInputStream stream = file.getMonoStream(44100);
+		AudioDispatcher d;
+		d = new AudioDispatcher(stream, 1024, 0);
+	    //d.addAudioProcessor(new HaarWaveletCoder());
+	    //d.addAudioProcessor(new HaarWaveletDecoder());
+	    d.addAudioProcessor(new AudioPlayer(d.getFormat()));
+	    d.run();
 	}
 
 }

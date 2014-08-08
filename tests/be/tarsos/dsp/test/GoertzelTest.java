@@ -24,7 +24,7 @@
 * 
 */
 
-package be.hogent.tarsos.dsp.test;
+package be.tarsos.dsp.test;
 
 import static org.junit.Assert.assertEquals;
 
@@ -37,11 +37,11 @@ import javax.sound.sampled.UnsupportedAudioFileException;
 
 import org.junit.Test;
 
-import be.hogent.tarsos.dsp.AudioDispatcher;
-import be.hogent.tarsos.dsp.pitch.DTMF;
-import be.hogent.tarsos.dsp.pitch.Goertzel;
-import be.hogent.tarsos.dsp.pitch.Goertzel.FrequenciesDetectedHandler;
-import be.hogent.tarsos.dsp.util.AudioFloatConverter;
+import be.tarsos.dsp.AudioDispatcher;
+import be.tarsos.dsp.pitch.DTMF;
+import be.tarsos.dsp.pitch.Goertzel;
+import be.tarsos.dsp.pitch.Goertzel.FrequenciesDetectedHandler;
+import be.tarsos.dsp.util.AudioFloatConverter;
 
 public class GoertzelTest {
 	

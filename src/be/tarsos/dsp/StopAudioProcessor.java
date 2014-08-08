@@ -23,7 +23,7 @@
 *  for credits and info, see README.
 * 
 */
-package be.hogent.tarsos.dsp;
+package be.tarsos.dsp;
 
 /**
  * Simply stops the audio processing 

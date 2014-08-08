@@ -1,6 +1,6 @@
-package be.hogent.tarsos.dsp.example.dissonance;
+package be.tarsos.dsp.example.dissonance;
 
-import be.hogent.tarsos.dsp.util.PitchConverter;
+import be.tarsos.dsp.util.PitchConverter;
 
 public class SensoryDissonanceResult {
 	public final double hertzValue;

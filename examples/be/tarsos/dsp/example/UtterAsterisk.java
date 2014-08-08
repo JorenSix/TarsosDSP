@@ -24,7 +24,7 @@
 * 
 */
 
-package be.hogent.tarsos.dsp.example;
+package be.tarsos.dsp.example;
 
 import java.awt.BorderLayout;
 import java.awt.GridLayout;
@@ -47,12 +47,12 @@ import javax.swing.SwingUtilities;
 import javax.swing.UIManager;
 import javax.swing.border.TitledBorder;
 
-import be.hogent.tarsos.dsp.AudioDispatcher;
-import be.hogent.tarsos.dsp.AudioEvent;
-import be.hogent.tarsos.dsp.pitch.PitchDetectionHandler;
-import be.hogent.tarsos.dsp.pitch.PitchDetectionResult;
-import be.hogent.tarsos.dsp.pitch.PitchProcessor;
-import be.hogent.tarsos.dsp.pitch.PitchProcessor.PitchEstimationAlgorithm;
+import be.tarsos.dsp.AudioDispatcher;
+import be.tarsos.dsp.AudioEvent;
+import be.tarsos.dsp.pitch.PitchDetectionHandler;
+import be.tarsos.dsp.pitch.PitchDetectionResult;
+import be.tarsos.dsp.pitch.PitchProcessor;
+import be.tarsos.dsp.pitch.PitchProcessor.PitchEstimationAlgorithm;
 
 public class UtterAsterisk extends JFrame implements PitchDetectionHandler {
 	

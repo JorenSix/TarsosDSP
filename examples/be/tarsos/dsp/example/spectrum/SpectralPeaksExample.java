@@ -1,4 +1,4 @@
-package be.hogent.tarsos.dsp.example.spectrum;
+package be.tarsos.dsp.example.spectrum;
 
 import java.awt.BorderLayout;
 import java.awt.Color;
@@ -29,27 +29,27 @@ import javax.swing.SwingUtilities;
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
 
-import be.hogent.tarsos.dsp.AudioDispatcher;
-import be.hogent.tarsos.dsp.AudioEvent;
-import be.hogent.tarsos.dsp.AudioFile;
-import be.hogent.tarsos.dsp.AudioPlayer;
-import be.hogent.tarsos.dsp.AudioProcessor;
-import be.hogent.tarsos.dsp.PipeDecoder;
-import be.hogent.tarsos.dsp.SpectralPeakProcessor;
-import be.hogent.tarsos.dsp.SpectralPeakProcessor.SpectralPeak;
-import be.hogent.tarsos.dsp.ui.Axis;
-import be.hogent.tarsos.dsp.ui.AxisUnit;
-import be.hogent.tarsos.dsp.ui.CoordinateSystem;
-import be.hogent.tarsos.dsp.ui.LinkedPanel;
-import be.hogent.tarsos.dsp.ui.ViewPort;
-import be.hogent.tarsos.dsp.ui.ViewPort.ViewPortChangedListener;
-import be.hogent.tarsos.dsp.ui.layers.AmplitudeAxisLayer;
-import be.hogent.tarsos.dsp.ui.layers.BackgroundLayer;
-import be.hogent.tarsos.dsp.ui.layers.DragMouseListenerLayer;
-import be.hogent.tarsos.dsp.ui.layers.HorizontalFrequencyAxisLayer;
-import be.hogent.tarsos.dsp.ui.layers.SelectionLayer;
-import be.hogent.tarsos.dsp.ui.layers.SpectrumLayer;
-import be.hogent.tarsos.dsp.ui.layers.ZoomMouseListenerLayer;
+import be.tarsos.dsp.AudioDispatcher;
+import be.tarsos.dsp.AudioEvent;
+import be.tarsos.dsp.AudioFile;
+import be.tarsos.dsp.AudioPlayer;
+import be.tarsos.dsp.AudioProcessor;
+import be.tarsos.dsp.PipeDecoder;
+import be.tarsos.dsp.SpectralPeakProcessor;
+import be.tarsos.dsp.SpectralPeakProcessor.SpectralPeak;
+import be.tarsos.dsp.ui.Axis;
+import be.tarsos.dsp.ui.AxisUnit;
+import be.tarsos.dsp.ui.CoordinateSystem;
+import be.tarsos.dsp.ui.LinkedPanel;
+import be.tarsos.dsp.ui.ViewPort;
+import be.tarsos.dsp.ui.ViewPort.ViewPortChangedListener;
+import be.tarsos.dsp.ui.layers.AmplitudeAxisLayer;
+import be.tarsos.dsp.ui.layers.BackgroundLayer;
+import be.tarsos.dsp.ui.layers.DragMouseListenerLayer;
+import be.tarsos.dsp.ui.layers.HorizontalFrequencyAxisLayer;
+import be.tarsos.dsp.ui.layers.SelectionLayer;
+import be.tarsos.dsp.ui.layers.SpectrumLayer;
+import be.tarsos.dsp.ui.layers.ZoomMouseListenerLayer;
 
 public class SpectralPeaksExample extends JFrame {
 	
@@ -71,8 +71,9 @@ public class SpectralPeaksExample extends JFrame {
 	private String fileName;
 	private int numberOfSpectralPeaks;
 	private int currentFrame;
+	private int minPeakSize;
 
-	private final Integer[] fftSizes = {256,512,1024,2048,4096,8192,16384,32768,65536,131072};
+	private final Integer[] fftSizes = {256,512,1024,2048,4096,8192,16384,22050,32768,65536,131072};
 	private final Integer[] inputSampleRate = {22050,44100,192000};
 	
 	//current frequencies and amplitudes of peak list, for sensory dissonance curve
@@ -200,7 +201,7 @@ public class SpectralPeaksExample extends JFrame {
 		buttonPanel.add(noiseFloorSlider);
 		
 		
-		JSlider medianFilterSizeSlider = new JSlider(3, 127);
+		JSlider medianFilterSizeSlider = new JSlider(3, 255);
 		final JLabel medianFilterSizeLabel = new JLabel("Median Filter Size   :");
 		medianFilterSizeSlider.addChangeListener(new ChangeListener() {
 			@Override
@@ -218,7 +219,25 @@ public class SpectralPeaksExample extends JFrame {
 		buttonPanel.add(medianFilterSizeLabel);
 		buttonPanel.add(medianFilterSizeSlider);
 		
-		JSlider numberOfPeaksSlider = new JSlider(1, 20);
+		JSlider minPeakSizeSlider = new JSlider(5, 255);
+		final JLabel minPeakSizeLabel = new JLabel("Min Peak Size   :");
+		minPeakSizeSlider.addChangeListener(new ChangeListener() {
+			@Override
+			public void stateChanged(ChangeEvent e) {
+				JSlider source = (JSlider) e.getSource();
+				int newValue = source.getValue();
+				minPeakSizeLabel.setText(String.format("Min Peak Size    (%d):", newValue));
+				System.out.println("Min Peak Sizee: " + newValue);
+				minPeakSize = newValue;
+				repaintSpectalInfo();
+			}
+		});
+		minPeakSizeSlider.setValue(5);
+		buttonPanel.add(minPeakSizeLabel);
+		buttonPanel.add(minPeakSizeSlider);
+		
+		
+		JSlider numberOfPeaksSlider = new JSlider(1, 40);
 		final JLabel numberOfPeaksLabel = new JLabel("Number of peaks  :");
 		numberOfPeaksSlider.addChangeListener(new ChangeListener() {
 			@Override
@@ -275,7 +294,7 @@ public class SpectralPeaksExample extends JFrame {
 		spectrumLayer.setSpectrum(info.getMagnitudes());
 		noiseFloorLayer.setSpectrum(info.getNoiseFloor(noiseFloorMedianFilterLenth,noiseFloorFactor));
 		
-		List<SpectralPeak> peaks = info.getPeakList(noiseFloorMedianFilterLenth,noiseFloorFactor,numberOfSpectralPeaks);
+		List<SpectralPeak> peaks = info.getPeakList(noiseFloorMedianFilterLenth,noiseFloorFactor,numberOfSpectralPeaks,minPeakSize);
 		
 		StringBuilder sb = new StringBuilder("Frequency(Hz);Step(cents);Magnitude\n");
 		frequencies.clear();

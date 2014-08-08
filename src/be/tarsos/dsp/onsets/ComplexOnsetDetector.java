@@ -1,10 +1,10 @@
-package be.hogent.tarsos.dsp.onsets;
+package be.tarsos.dsp.onsets;
 
-import be.hogent.tarsos.dsp.AudioEvent;
-import be.hogent.tarsos.dsp.AudioProcessor;
-import be.hogent.tarsos.dsp.util.PeakPicker;
-import be.hogent.tarsos.dsp.util.fft.FFT;
-import be.hogent.tarsos.dsp.util.fft.HannWindow;
+import be.tarsos.dsp.AudioEvent;
+import be.tarsos.dsp.AudioProcessor;
+import be.tarsos.dsp.util.PeakPicker;
+import be.tarsos.dsp.util.fft.FFT;
+import be.tarsos.dsp.util.fft.HannWindow;
 
 /**
  * A complex Domain Method onset detection function

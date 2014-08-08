@@ -1,8 +1,8 @@
-package be.hogent.tarsos.dsp.beatroot;
+package be.tarsos.dsp.beatroot;
 
 import java.util.Iterator;
 
-import be.hogent.tarsos.dsp.onsets.OnsetHandler;
+import be.tarsos.dsp.onsets.OnsetHandler;
 
 /**
  * Forms a bridge between the BeatRoot beat tracking system and an

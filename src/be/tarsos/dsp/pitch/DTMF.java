@@ -24,7 +24,7 @@
 * 
 */
 
-package be.hogent.tarsos.dsp.pitch;
+package be.tarsos.dsp.pitch;
 
 /**
  * Utility class to generate Dual-tone multi-frequency (DTMF) signaling tones.

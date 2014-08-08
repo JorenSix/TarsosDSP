@@ -24,7 +24,7 @@
 * 
 */
 
-package be.hogent.tarsos.dsp.example.constantq;
+package be.tarsos.dsp.example.constantq;
 
 import java.awt.BorderLayout;
 import java.awt.Color;
@@ -51,22 +51,22 @@ import javax.swing.border.TitledBorder;
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
 
-import be.hogent.tarsos.dsp.AudioEvent;
-import be.hogent.tarsos.dsp.AudioProcessor;
-import be.hogent.tarsos.dsp.example.constantq.Player.PlayerState;
-import be.hogent.tarsos.dsp.ui.AxisUnit;
-import be.hogent.tarsos.dsp.ui.CoordinateSystem;
-import be.hogent.tarsos.dsp.ui.LinkedPanel;
-import be.hogent.tarsos.dsp.ui.ViewPort;
-import be.hogent.tarsos.dsp.ui.ViewPort.ViewPortChangedListener;
-import be.hogent.tarsos.dsp.ui.layers.AmplitudeAxisLayer;
-import be.hogent.tarsos.dsp.ui.layers.BackgroundLayer;
-import be.hogent.tarsos.dsp.ui.layers.ConstantQLayer;
-import be.hogent.tarsos.dsp.ui.layers.VerticalFrequencyAxisLayer;
-import be.hogent.tarsos.dsp.ui.layers.LegendLayer;
-import be.hogent.tarsos.dsp.ui.layers.PitchContourLayer;
-import be.hogent.tarsos.dsp.ui.layers.TimeAxisLayer;
-import be.hogent.tarsos.dsp.ui.layers.WaveFormLayer;
+import be.tarsos.dsp.AudioEvent;
+import be.tarsos.dsp.AudioProcessor;
+import be.tarsos.dsp.example.constantq.Player.PlayerState;
+import be.tarsos.dsp.ui.AxisUnit;
+import be.tarsos.dsp.ui.CoordinateSystem;
+import be.tarsos.dsp.ui.LinkedPanel;
+import be.tarsos.dsp.ui.ViewPort;
+import be.tarsos.dsp.ui.ViewPort.ViewPortChangedListener;
+import be.tarsos.dsp.ui.layers.AmplitudeAxisLayer;
+import be.tarsos.dsp.ui.layers.BackgroundLayer;
+import be.tarsos.dsp.ui.layers.ConstantQLayer;
+import be.tarsos.dsp.ui.layers.LegendLayer;
+import be.tarsos.dsp.ui.layers.PitchContourLayer;
+import be.tarsos.dsp.ui.layers.TimeAxisLayer;
+import be.tarsos.dsp.ui.layers.VerticalFrequencyAxisLayer;
+import be.tarsos.dsp.ui.layers.WaveFormLayer;
 
 public class ConstantQAudioPlayer extends JFrame {
 

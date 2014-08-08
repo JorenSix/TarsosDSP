@@ -1,4 +1,4 @@
-package be.hogent.tarsos.dsp.ui.layers;
+package be.tarsos.dsp.ui.layers;
 
 import java.awt.Color;
 import java.awt.Graphics2D;
@@ -9,16 +9,16 @@ import java.util.TreeMap;
 
 import javax.sound.sampled.UnsupportedAudioFileException;
 
-import be.hogent.tarsos.dsp.AudioDispatcher;
-import be.hogent.tarsos.dsp.AudioEvent;
-import be.hogent.tarsos.dsp.AudioProcessor;
-import be.hogent.tarsos.dsp.pitch.PitchDetectionHandler;
-import be.hogent.tarsos.dsp.pitch.PitchDetectionResult;
-import be.hogent.tarsos.dsp.pitch.PitchProcessor;
-import be.hogent.tarsos.dsp.pitch.PitchProcessor.PitchEstimationAlgorithm;
-import be.hogent.tarsos.dsp.ui.Axis;
-import be.hogent.tarsos.dsp.ui.CoordinateSystem;
-import be.hogent.tarsos.dsp.util.PitchConverter;
+import be.tarsos.dsp.AudioDispatcher;
+import be.tarsos.dsp.AudioEvent;
+import be.tarsos.dsp.AudioProcessor;
+import be.tarsos.dsp.pitch.PitchDetectionHandler;
+import be.tarsos.dsp.pitch.PitchDetectionResult;
+import be.tarsos.dsp.pitch.PitchProcessor;
+import be.tarsos.dsp.pitch.PitchProcessor.PitchEstimationAlgorithm;
+import be.tarsos.dsp.ui.Axis;
+import be.tarsos.dsp.ui.CoordinateSystem;
+import be.tarsos.dsp.util.PitchConverter;
 
 
 public class PitchContourLayer implements Layer {

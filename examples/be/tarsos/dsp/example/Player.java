@@ -24,7 +24,7 @@
 * 
 */
 
-package be.hogent.tarsos.dsp.example;
+package be.tarsos.dsp.example;
 
 import java.beans.PropertyChangeListener;
 import java.beans.PropertyChangeSupport;
@@ -37,13 +37,13 @@ import javax.sound.sampled.AudioSystem;
 import javax.sound.sampled.LineUnavailableException;
 import javax.sound.sampled.UnsupportedAudioFileException;
 
-import be.hogent.tarsos.dsp.AudioDispatcher;
-import be.hogent.tarsos.dsp.AudioEvent;
-import be.hogent.tarsos.dsp.AudioPlayer;
-import be.hogent.tarsos.dsp.AudioProcessor;
-import be.hogent.tarsos.dsp.GainProcessor;
-import be.hogent.tarsos.dsp.WaveformSimilarityBasedOverlapAdd;
-import be.hogent.tarsos.dsp.WaveformSimilarityBasedOverlapAdd.Parameters;
+import be.tarsos.dsp.AudioDispatcher;
+import be.tarsos.dsp.AudioEvent;
+import be.tarsos.dsp.AudioPlayer;
+import be.tarsos.dsp.AudioProcessor;
+import be.tarsos.dsp.GainProcessor;
+import be.tarsos.dsp.WaveformSimilarityBasedOverlapAdd;
+import be.tarsos.dsp.WaveformSimilarityBasedOverlapAdd.Parameters;
 
 public class Player implements AudioProcessor {
 	

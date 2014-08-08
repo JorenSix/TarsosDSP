@@ -1,13 +1,13 @@
-package be.hogent.tarsos.dsp.ui.layers;
+package be.tarsos.dsp.ui.layers;
 
 import java.awt.Color;
 import java.awt.Graphics2D;
 import java.util.ArrayList;
 import java.util.List;
 
-import be.hogent.tarsos.dsp.ui.Axis;
-import be.hogent.tarsos.dsp.ui.CoordinateSystem;
-import be.hogent.tarsos.dsp.util.PitchConverter;
+import be.tarsos.dsp.ui.Axis;
+import be.tarsos.dsp.ui.CoordinateSystem;
+import be.tarsos.dsp.util.PitchConverter;
 
 public class SpectrumLayer implements Layer  {
 	

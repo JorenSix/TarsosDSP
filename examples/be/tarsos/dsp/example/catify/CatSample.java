@@ -1,4 +1,4 @@
-package be.hogent.tarsos.dsp.example.catify;
+package be.tarsos.dsp.example.catify;
 
 import java.io.File;
 import java.io.IOException;
@@ -8,12 +8,12 @@ import javax.sound.sampled.AudioFormat;
 import javax.sound.sampled.AudioSystem;
 import javax.sound.sampled.UnsupportedAudioFileException;
 
-import be.hogent.tarsos.dsp.AudioDispatcher;
-import be.hogent.tarsos.dsp.AudioEvent;
-import be.hogent.tarsos.dsp.pitch.PitchDetectionHandler;
-import be.hogent.tarsos.dsp.pitch.PitchDetectionResult;
-import be.hogent.tarsos.dsp.pitch.PitchProcessor;
-import be.hogent.tarsos.dsp.pitch.PitchProcessor.PitchEstimationAlgorithm;
+import be.tarsos.dsp.AudioDispatcher;
+import be.tarsos.dsp.AudioEvent;
+import be.tarsos.dsp.pitch.PitchDetectionHandler;
+import be.tarsos.dsp.pitch.PitchDetectionResult;
+import be.tarsos.dsp.pitch.PitchProcessor;
+import be.tarsos.dsp.pitch.PitchProcessor.PitchEstimationAlgorithm;
 
 class CatSample{
 	double duration;

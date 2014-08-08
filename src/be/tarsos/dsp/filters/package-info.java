@@ -27,4 +27,4 @@
 /**
  * This package contains a couple of filters (low and highpass). 
  */
-package be.hogent.tarsos.dsp.filters;
+package be.tarsos.dsp.filters;

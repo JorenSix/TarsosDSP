@@ -1,4 +1,4 @@
-package be.hogent.tarsos.dsp;
+package be.tarsos.dsp;
 
 /**
  * Calculates the zero crossing rate for a frame.

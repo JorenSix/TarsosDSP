@@ -24,7 +24,7 @@
 * 
 */
 
-package be.hogent.tarsos.dsp.test;
+package be.tarsos.dsp.test;
 
 import static org.junit.Assert.assertEquals;
 
@@ -39,12 +39,13 @@ import org.junit.Test;
 
 
 
-import be.hogent.tarsos.dsp.AudioDispatcher;
-import be.hogent.tarsos.dsp.AudioEvent;
-import be.hogent.tarsos.dsp.AudioPlayer;
-import be.hogent.tarsos.dsp.AudioProcessor;
-import be.hogent.tarsos.dsp.util.AudioFloatConverter;
-import be.hogent.tarsos.dsp.util.fft.FFT;
+
+import be.tarsos.dsp.AudioDispatcher;
+import be.tarsos.dsp.AudioEvent;
+import be.tarsos.dsp.AudioPlayer;
+import be.tarsos.dsp.AudioProcessor;
+import be.tarsos.dsp.util.AudioFloatConverter;
+import be.tarsos.dsp.util.fft.FFT;
 
 public class FFTTest {
 	/**

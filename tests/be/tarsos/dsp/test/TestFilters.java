@@ -24,7 +24,7 @@
 * 
 */
 
-package be.hogent.tarsos.dsp.test;
+package be.tarsos.dsp.test;
 
 import static org.junit.Assert.assertEquals;
 
@@ -40,12 +40,12 @@ import javax.sound.sampled.UnsupportedAudioFileException;
 
 import org.junit.Test;
 
-import be.hogent.tarsos.dsp.AudioDispatcher;
-import be.hogent.tarsos.dsp.AudioPlayer;
-import be.hogent.tarsos.dsp.WaveformWriter;
-import be.hogent.tarsos.dsp.filters.HighPass;
-import be.hogent.tarsos.dsp.filters.LowPassFS;
-import be.hogent.tarsos.dsp.util.AudioFloatConverter;
+import be.tarsos.dsp.AudioDispatcher;
+import be.tarsos.dsp.AudioPlayer;
+import be.tarsos.dsp.WaveformWriter;
+import be.tarsos.dsp.filters.HighPass;
+import be.tarsos.dsp.filters.LowPassFS;
+import be.tarsos.dsp.util.AudioFloatConverter;
 
 public class TestFilters {
 

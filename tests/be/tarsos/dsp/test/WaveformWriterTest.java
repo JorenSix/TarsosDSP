@@ -24,7 +24,7 @@
 * 
 */
 
-package be.hogent.tarsos.dsp.test;
+package be.tarsos.dsp.test;
 
 import java.io.FileNotFoundException;
 
@@ -40,10 +40,10 @@ import javax.sound.sampled.UnsupportedAudioFileException;
 import org.junit.Ignore;
 import org.junit.Test;
 
-import be.hogent.tarsos.dsp.AudioDispatcher;
-import be.hogent.tarsos.dsp.SilenceDetector;
-import be.hogent.tarsos.dsp.WaveformWriter;
-import be.hogent.tarsos.dsp.util.Shared;
+import be.tarsos.dsp.AudioDispatcher;
+import be.tarsos.dsp.SilenceDetector;
+import be.tarsos.dsp.WaveformWriter;
+import be.tarsos.dsp.util.Shared;
 
 public class WaveformWriterTest {
 

@@ -23,7 +23,7 @@
 *  for credits and info, see README.
 * 
 */
-package be.hogent.tarsos.dsp.example;
+package be.tarsos.dsp.example;
 
 public  class SharedCommandLineUtilities {
 	private SharedCommandLineUtilities(){

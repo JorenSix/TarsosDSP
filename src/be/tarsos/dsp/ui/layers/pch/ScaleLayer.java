@@ -1,4 +1,4 @@
-package be.hogent.tarsos.dsp.ui.layers.pch;
+package be.tarsos.dsp.ui.layers.pch;
 
 import java.awt.Color;
 import java.awt.Graphics2D;
@@ -10,11 +10,11 @@ import java.awt.event.MouseMotionListener;
 import java.awt.geom.Point2D;
 import java.util.Arrays;
 
-import be.hogent.tarsos.dsp.ui.Axis;
-import be.hogent.tarsos.dsp.ui.CoordinateSystem;
-import be.hogent.tarsos.dsp.ui.LinkedPanel;
-import be.hogent.tarsos.dsp.ui.layers.Layer;
-import be.hogent.tarsos.dsp.ui.layers.LayerUtilities;
+import be.tarsos.dsp.ui.Axis;
+import be.tarsos.dsp.ui.CoordinateSystem;
+import be.tarsos.dsp.ui.LinkedPanel;
+import be.tarsos.dsp.ui.layers.Layer;
+import be.tarsos.dsp.ui.layers.LayerUtilities;
 
 
 public class ScaleLayer extends MouseAdapter implements Layer, MouseMotionListener, KeyListener {

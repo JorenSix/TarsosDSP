@@ -23,18 +23,18 @@
 *  for credits and info, see README.
 * 
 */
-package be.hogent.tarsos.dsp.example;
+package be.tarsos.dsp.example;
 
 import javax.sound.sampled.AudioFormat;
 import javax.sound.sampled.LineUnavailableException;
 
-import be.hogent.tarsos.dsp.AudioDispatcher;
-import be.hogent.tarsos.dsp.AudioPlayer;
-import be.hogent.tarsos.dsp.effects.DelayEffect;
-import be.hogent.tarsos.dsp.filters.LowPassFS;
-import be.hogent.tarsos.dsp.synthesis.AmplitudeLFO;
-import be.hogent.tarsos.dsp.synthesis.NoiseGenerator;
-import be.hogent.tarsos.dsp.synthesis.SineGenerator;
+import be.tarsos.dsp.AudioDispatcher;
+import be.tarsos.dsp.AudioPlayer;
+import be.tarsos.dsp.effects.DelayEffect;
+import be.tarsos.dsp.filters.LowPassFS;
+import be.tarsos.dsp.synthesis.AmplitudeLFO;
+import be.tarsos.dsp.synthesis.NoiseGenerator;
+import be.tarsos.dsp.synthesis.SineGenerator;
 
 /**
  * Shows how a synthesizer can be constructed using some simple ugen blocks.

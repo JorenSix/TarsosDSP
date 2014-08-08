@@ -1,11 +1,11 @@
-package be.hogent.tarsos.dsp.ui.layers;
+package be.tarsos.dsp.ui.layers;
 
 import java.awt.Graphics2D;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseWheelEvent;
 
-import be.hogent.tarsos.dsp.ui.LinkedPanel;
+import be.tarsos.dsp.ui.LinkedPanel;
 
 
 

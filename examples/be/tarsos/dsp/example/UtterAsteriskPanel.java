@@ -24,7 +24,7 @@
 * 
 */
 
-package be.hogent.tarsos.dsp.example;
+package be.tarsos.dsp.example;
 
 import java.awt.Color;
 import java.awt.Graphics;
@@ -34,7 +34,7 @@ import java.util.ArrayList;
 
 import javax.swing.JPanel;
 
-import be.hogent.tarsos.dsp.util.PitchConverter;
+import be.tarsos.dsp.util.PitchConverter;
 
 public class UtterAsteriskPanel extends JPanel {
 	

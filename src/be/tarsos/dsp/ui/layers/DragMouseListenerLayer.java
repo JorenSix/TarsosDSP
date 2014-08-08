@@ -1,4 +1,4 @@
-package be.hogent.tarsos.dsp.ui.layers;
+package be.tarsos.dsp.ui.layers;
 
 import java.awt.Graphics2D;
 import java.awt.Point;
@@ -8,8 +8,8 @@ import java.awt.geom.Point2D;
 
 import javax.swing.SwingUtilities;
 
-import be.hogent.tarsos.dsp.ui.CoordinateSystem;
-import be.hogent.tarsos.dsp.ui.LinkedPanel;
+import be.tarsos.dsp.ui.CoordinateSystem;
+import be.tarsos.dsp.ui.LinkedPanel;
 
 
 

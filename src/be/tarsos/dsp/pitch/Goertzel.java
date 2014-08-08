@@ -24,10 +24,10 @@
 * 
 */
 
-package be.hogent.tarsos.dsp.pitch;
+package be.tarsos.dsp.pitch;
 
-import be.hogent.tarsos.dsp.AudioEvent;
-import be.hogent.tarsos.dsp.AudioProcessor;
+import be.tarsos.dsp.AudioEvent;
+import be.tarsos.dsp.AudioProcessor;
 
 /**
  * Contains an implementation of the Goertzel algorithm. It can be used to

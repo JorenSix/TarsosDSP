@@ -1,4 +1,4 @@
-package be.hogent.tarsos.dsp.test;
+package be.tarsos.dsp.test;
 
 import static org.junit.Assert.assertEquals;
 
@@ -9,9 +9,9 @@ import javax.sound.sampled.UnsupportedAudioFileException;
 
 import org.junit.Test;
 
-import be.hogent.tarsos.dsp.AudioDispatcher;
-import be.hogent.tarsos.dsp.onsets.ComplexOnsetDetector;
-import be.hogent.tarsos.dsp.onsets.OnsetHandler;
+import be.tarsos.dsp.AudioDispatcher;
+import be.tarsos.dsp.onsets.ComplexOnsetDetector;
+import be.tarsos.dsp.onsets.OnsetHandler;
 
 public class ComplexOnsetTests {
 

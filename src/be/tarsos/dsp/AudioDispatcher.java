@@ -24,7 +24,7 @@
 * 
 */
 
-package be.hogent.tarsos.dsp;
+package be.tarsos.dsp;
 
 import java.io.ByteArrayInputStream;
 import java.io.File;
@@ -43,7 +43,7 @@ import javax.sound.sampled.LineUnavailableException;
 import javax.sound.sampled.TargetDataLine;
 import javax.sound.sampled.UnsupportedAudioFileException;
 
-import be.hogent.tarsos.dsp.util.AudioFloatConverter;
+import be.tarsos.dsp.util.AudioFloatConverter;
 
 
 

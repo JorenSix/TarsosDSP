@@ -52,9 +52,9 @@
  * IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package be.hogent.tarsos.dsp;
+package be.tarsos.dsp;
 
-import be.hogent.tarsos.dsp.util.fft.FFT;
+import be.tarsos.dsp.util.fft.FFT;
 
 /**
  * Implementation of the Constant Q Transform.<br> References:

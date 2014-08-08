@@ -23,9 +23,9 @@
 *  for credits and info, see README.
 * 
 */
-package be.hogent.tarsos.dsp.pitch;
+package be.tarsos.dsp.pitch;
 
-import be.hogent.tarsos.dsp.AudioEvent;
+import be.tarsos.dsp.AudioEvent;
 
 /**
  * An interface to handle detected pitch.

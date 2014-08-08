@@ -1,15 +1,15 @@
-package be.hogent.tarsos.dsp.onsets;
+package be.tarsos.dsp.onsets;
 
 import java.util.Arrays;
 import java.util.Iterator;
 import java.util.LinkedList;
 
-import be.hogent.tarsos.dsp.AudioDispatcher;
-import be.hogent.tarsos.dsp.AudioEvent;
-import be.hogent.tarsos.dsp.AudioProcessor;
-import be.hogent.tarsos.dsp.beatroot.Peaks;
-import be.hogent.tarsos.dsp.util.fft.FFT;
-import be.hogent.tarsos.dsp.util.fft.ScaledHammingWindow;
+import be.tarsos.dsp.AudioDispatcher;
+import be.tarsos.dsp.AudioEvent;
+import be.tarsos.dsp.AudioProcessor;
+import be.tarsos.dsp.beatroot.Peaks;
+import be.tarsos.dsp.util.fft.FFT;
+import be.tarsos.dsp.util.fft.ScaledHammingWindow;
 
 /**
  * <p>

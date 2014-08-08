@@ -35,7 +35,7 @@
  * License: LGPL -- see the file LICENSE.txt for more information
  *
  *****************************************************************************/
-package be.hogent.tarsos.dsp.resample;
+package be.tarsos.dsp.resample;
 
 /**
  * This file provides Kaiser-windowed low-pass filter support,

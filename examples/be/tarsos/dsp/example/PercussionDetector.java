@@ -24,7 +24,7 @@
 * 
 */
 
-package be.hogent.tarsos.dsp.example;
+package be.tarsos.dsp.example;
 
 import java.awt.BorderLayout;
 import java.awt.GridLayout;
@@ -57,9 +57,9 @@ import javax.swing.border.TitledBorder;
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
 
-import be.hogent.tarsos.dsp.AudioDispatcher;
-import be.hogent.tarsos.dsp.onsets.OnsetHandler;
-import be.hogent.tarsos.dsp.onsets.PercussionOnsetDetector;
+import be.tarsos.dsp.AudioDispatcher;
+import be.tarsos.dsp.onsets.OnsetHandler;
+import be.tarsos.dsp.onsets.PercussionOnsetDetector;
 
 
 public class PercussionDetector extends JFrame implements OnsetHandler {

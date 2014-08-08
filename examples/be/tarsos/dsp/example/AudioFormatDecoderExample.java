@@ -1,11 +1,11 @@
-package be.hogent.tarsos.dsp.example;
+package be.tarsos.dsp.example;
 
 import javax.sound.sampled.AudioInputStream;
 import javax.sound.sampled.UnsupportedAudioFileException;
 
-import be.hogent.tarsos.dsp.AudioDispatcher;
-import be.hogent.tarsos.dsp.DetermineDurationProcessor;
-import be.hogent.tarsos.dsp.PipeDecoder;
+import be.tarsos.dsp.AudioDispatcher;
+import be.tarsos.dsp.DetermineDurationProcessor;
+import be.tarsos.dsp.PipeDecoder;
 
 /**
  * Shows how to use the PipeDecoder to decode about any audio format.

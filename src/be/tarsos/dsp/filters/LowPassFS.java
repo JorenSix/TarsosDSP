@@ -41,7 +41,7 @@
  *   License along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  */
-package be.hogent.tarsos.dsp.filters;
+package be.tarsos.dsp.filters;
 
 /**
  * Four stage low pass filter.

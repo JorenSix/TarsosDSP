@@ -23,7 +23,7 @@
 *  for credits and info, see README.
 * 
 */
-package be.hogent.tarsos.dsp.example;
+package be.tarsos.dsp.example;
 
 import java.awt.BorderLayout;
 import java.awt.GridLayout;
@@ -58,14 +58,14 @@ import javax.swing.border.TitledBorder;
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
 
-import be.hogent.tarsos.dsp.AudioDispatcher;
-import be.hogent.tarsos.dsp.AudioPlayer;
-import be.hogent.tarsos.dsp.GainProcessor;
-import be.hogent.tarsos.dsp.MultichannelToMono;
-import be.hogent.tarsos.dsp.WaveformSimilarityBasedOverlapAdd;
-import be.hogent.tarsos.dsp.WaveformWriter;
-import be.hogent.tarsos.dsp.WaveformSimilarityBasedOverlapAdd.Parameters;
-import be.hogent.tarsos.dsp.resample.RateTransposer;
+import be.tarsos.dsp.AudioDispatcher;
+import be.tarsos.dsp.AudioPlayer;
+import be.tarsos.dsp.GainProcessor;
+import be.tarsos.dsp.MultichannelToMono;
+import be.tarsos.dsp.WaveformSimilarityBasedOverlapAdd;
+import be.tarsos.dsp.WaveformWriter;
+import be.tarsos.dsp.WaveformSimilarityBasedOverlapAdd.Parameters;
+import be.tarsos.dsp.resample.RateTransposer;
 
 public class PitchShiftingExample extends JFrame {
 

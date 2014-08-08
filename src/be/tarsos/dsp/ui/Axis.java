@@ -1,4 +1,4 @@
-package be.hogent.tarsos.dsp.ui;
+package be.tarsos.dsp.ui;
 
 public enum Axis {
 	X,Y;

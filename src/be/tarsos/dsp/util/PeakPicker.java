@@ -1,4 +1,4 @@
-package be.hogent.tarsos.dsp.util;
+package be.tarsos.dsp.util;
 
 import java.util.Arrays;
 
@@ -9,7 +9,7 @@ import java.util.Arrays;
  * 2003-2009 Paul Brossier <piem@aubio.org>
  * 
  * @author Joren Six
- * @auhror Paul Brossiers
+ * @author Paul Brossiers
  */
 public class PeakPicker {
 	/** thresh: offset threshold [0.033 or 0.01] */

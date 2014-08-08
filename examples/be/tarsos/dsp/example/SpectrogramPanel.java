@@ -24,7 +24,7 @@
 * 
 */
 
-package be.hogent.tarsos.dsp.example;
+package be.tarsos.dsp.example;
 
 import java.awt.Color;
 import java.awt.Graphics;
@@ -35,8 +35,8 @@ import java.awt.image.BufferedImage;
 
 import javax.swing.JComponent;
 
-import be.hogent.tarsos.dsp.util.PitchConverter;
-import be.hogent.tarsos.dsp.util.fft.FFT;
+import be.tarsos.dsp.util.PitchConverter;
+import be.tarsos.dsp.util.fft.FFT;
 
 public class SpectrogramPanel extends JComponent implements ComponentListener{
 	/**

@@ -26,7 +26,7 @@
 
 /**
  */
-package be.hogent.tarsos.dsp.pitch;
+package be.tarsos.dsp.pitch;
 
 import java.util.ArrayList;
 import java.util.List;

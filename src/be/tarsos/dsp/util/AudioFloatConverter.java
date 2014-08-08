@@ -48,7 +48,7 @@
  * CA 95054 USA or visit www.sun.com if you need additional information or
  * have any questions.
  */
-package be.hogent.tarsos.dsp.util;
+package be.tarsos.dsp.util;
 
 import java.nio.ByteBuffer;
 import java.nio.ByteOrder;

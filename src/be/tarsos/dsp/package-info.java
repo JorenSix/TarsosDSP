@@ -27,4 +27,4 @@
 /**
  * Contains classes to handle sampled sound.
  */
-package be.hogent.tarsos.dsp;
+package be.tarsos.dsp;

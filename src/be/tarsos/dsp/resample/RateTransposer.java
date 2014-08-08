@@ -23,10 +23,10 @@
 *  for credits and info, see README.
 * 
 */
-package be.hogent.tarsos.dsp.resample;
+package be.tarsos.dsp.resample;
 
-import be.hogent.tarsos.dsp.AudioEvent;
-import be.hogent.tarsos.dsp.AudioProcessor;
+import be.tarsos.dsp.AudioEvent;
+import be.tarsos.dsp.AudioProcessor;
 
 
 /**

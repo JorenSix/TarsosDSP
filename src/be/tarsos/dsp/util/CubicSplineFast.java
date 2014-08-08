@@ -66,7 +66,7 @@
 ***************************************************************************************/
 
 
-package be.hogent.tarsos.dsp.util;
+package be.tarsos.dsp.util;
 
 public class CubicSplineFast{
 

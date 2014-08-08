@@ -1,4 +1,4 @@
-package be.hogent.tarsos.dsp.example.catify;
+package be.tarsos.dsp.example.catify;
 
 import java.io.File;
 import java.io.IOException;

@@ -24,7 +24,7 @@
 * 
 */
 
-package be.hogent.tarsos.dsp;
+package be.tarsos.dsp;
 
 /**
  * With the gain processor it is possible to adapt the volume of the sound. With
