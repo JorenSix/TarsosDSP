@@ -86,6 +86,7 @@ The TarsosDSP borrows algorithms from various other libraries or research paper.
 * Beat induction based on onsets and saliences is done using code from "Simon Dixon's BeatRoot system":http://www.eecs.qmul.ac.uk/~simond/beatroot/.The software is licensed under the GPL. The algorithm is documented in the 2001 JNMR paper "__Automatic Extraction of Tempo and Beat From Expressive Performances__":http://www.tandfonline.com/doi/abs/10.1076/jnmr.30.1.39.7119#.UbcsROcW0r0 and in the 2007 JNMR article "__Evaluation of the Audio Beat Tracking System BeatRoot__":http://www.tandfonline.com/doi/full/10.1080/09298210701653310#.UbcsgecW0r0
 * A complex domain onset detection function is implemented using Aubio as an inspiration. Aubio, by __Paul Brossiers__ contains very clean object oriented c-code, the cleanest c-code I have ever seen. The algorithm is described in "__Complex Domain Onset Detection for Musical Signals__":http://www-student.elec.qmul.ac.uk/people/juan/Documents/Duxbury-DAFx-2003.pdf by Christopher Duxbury, Mike E. Davies, and Mark B. Sandler, in Proceedings of the Digital Audio Effects Conference, DAFx-03, pages 90-93, London, UK, 2003
 * An implementation of the Constant-Q transform by Karl Helgason for the GPL'd <a href="http://rasmusdsp.sourceforge.ne">RasmusDSP</a> project has been adapted for use in TarsosDSP. More information about the Constant-Q transform can be found in the following papers "__Calculation of a Constant Q Spectral Transform__":http://www.wellesley.edu/Physics/brown/pubs/cq1stPaper.pdf by Judith C. Brown, "__An Efficient Algorithm for the Calculation of a Constant Q Transform__":http://www.wellesley.edu/Physics/brown/pubs/effalgV92P2698-P2701.pdf, by Judith C. Brown and Miller S. Puckette, and "__The Constant Q Transform__":http://wwwmath1.uni-muenster.de/logik/org/staff/blankertz/constQ/constQ.pdf by Benjamin Blankertz
+* The Haar Wavelet Transform implemented in TarsosDSP is based on the pseudocode found in "__Wavelets Made Easy__" by Yves Nievergelt. 
 
 h2. Changelog
 
@@ -120,4 +121,7 @@ This release adds the ability to extract the MFCC from an audio signal. Also an 
 
 <dt>Version 1.8</dt><dd>2014-04-10</dd>
 With this release it is possible to extract spectral peaks from an FFT and get precise frequency estimates using phase info. An example application called SpectralPeaks is added as well.
+
+<dt>Version 1.9</dt><dd>2014-08-10</dd>
+This release includes a Haar Wavelet Transform and an example of an audio compression algorithm based on Haar Wavelets. It also includes a significant change in package naming.
  
