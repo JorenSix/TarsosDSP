@@ -16,16 +16,16 @@ public class SpectralPeakFollowerExample {
 	private final int sampleRate = 44100;
 	private final int fftsize = 32768/2;
 	private final int overlap = fftsize/2;//50% overlap
-	private final int noiseFloorMedianFilterLenth = fftsize/117;//35
-	private final float noiseFloorFactor = 1.5f;
+	//private final int noiseFloorMedianFilterLenth = fftsize/117;//35
+	//private final float noiseFloorFactor = 1.5f;
 	private final String fileName;
-	private final int numberOfSpectralPeaks;
+	//private final int numberOfSpectralPeaks;
 	
 	/**
 	 * Peaks are only allowed between the highest peak minus 2400 and plus 7200 cents (8 octaves in total)
 	 */
-	private final int minimumCentsBelowHighest = 2400;//2 octaves
-	private final int maximumCentsAboveHighest = 7200;//6 octaves
+	//private final int minimumCentsBelowHighest = 2400;//2 octaves
+	//private final int maximumCentsAboveHighest = 7200;//6 octaves
 
 	
 	
@@ -35,7 +35,7 @@ public class SpectralPeakFollowerExample {
 	
 	public SpectralPeakFollowerExample(String fileName,int numberOfSpectralPeaks){
 		this.fileName = fileName;
-		this.numberOfSpectralPeaks = numberOfSpectralPeaks;
+		//this.numberOfSpectralPeaks = numberOfSpectralPeaks;
 		
 	}
 	
