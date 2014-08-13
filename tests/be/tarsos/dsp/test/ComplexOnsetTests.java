@@ -1,3 +1,26 @@
+/*
+*      _______                       _____   _____ _____  
+*     |__   __|                     |  __ \ / ____|  __ \ 
+*        | | __ _ _ __ ___  ___  ___| |  | | (___ | |__) |
+*        | |/ _` | '__/ __|/ _ \/ __| |  | |\___ \|  ___/ 
+*        | | (_| | |  \__ \ (_) \__ \ |__| |____) | |     
+*        |_|\__,_|_|  |___/\___/|___/_____/|_____/|_|     
+*                                                         
+* -------------------------------------------------------------
+*
+* TarsosDSP is developed by Joren Six at IPEM, University Ghent
+*  
+* -------------------------------------------------------------
+*
+*  Info: http://0110.be/tag/TarsosDSP
+*  Github: https://github.com/JorenSix/TarsosDSP
+*  Releases: http://0110.be/releases/TarsosDSP/
+*  
+*  TarsosDSP includes modified source code by various authors,
+*  for credits and info, see README.
+* 
+*/
+
 package be.tarsos.dsp.test;
 
 import static org.junit.Assert.assertEquals;
@@ -10,6 +33,7 @@ import javax.sound.sampled.UnsupportedAudioFileException;
 import org.junit.Test;
 
 import be.tarsos.dsp.AudioDispatcher;
+import be.tarsos.dsp.io.jvm.AudioDispatcherFactory;
 import be.tarsos.dsp.onsets.ComplexOnsetDetector;
 import be.tarsos.dsp.onsets.OnsetHandler;
 
@@ -26,7 +50,7 @@ public class ComplexOnsetTests {
 			expectedOnsets[i] = Double.parseDouble(onset);
 			i++;
 		}
-		AudioDispatcher d = AudioDispatcher.fromFile(audioFile, 512, 256);
+		AudioDispatcher d = AudioDispatcherFactory.fromFile(audioFile, 512, 256);
 		//use the same default params as aubio: 
 		ComplexOnsetDetector cod = new ComplexOnsetDetector(512, 0.3,256.0/44100.0*4.0,-70);
 		d.addAudioProcessor(cod);

@@ -6,23 +6,21 @@
 *        | | (_| | |  \__ \ (_) \__ \ |__| |____) | |     
 *        |_|\__,_|_|  |___/\___/|___/_____/|_____/|_|     
 *                                                         
-* -----------------------------------------------------------
+* -------------------------------------------------------------
 *
-*  TarsosDSP is developed by Joren Six at 
-*  The School of Arts,
-*  University College Ghent,
-*  Hoogpoort 64, 9000 Ghent - Belgium
+* TarsosDSP is developed by Joren Six at IPEM, University Ghent
 *  
-* -----------------------------------------------------------
+* -------------------------------------------------------------
 *
-*  Info: http://tarsos.0110.be/tag/TarsosDSP
+*  Info: http://0110.be/tag/TarsosDSP
 *  Github: https://github.com/JorenSix/TarsosDSP
-*  Releases: http://tarsos.0110.be/releases/TarsosDSP/
+*  Releases: http://0110.be/releases/TarsosDSP/
 *  
 *  TarsosDSP includes modified source code by various authors,
 *  for credits and info, see README.
 * 
 */
+
 
 package be.tarsos.dsp.test;
 
@@ -42,10 +40,12 @@ import org.junit.Test;
 
 import be.tarsos.dsp.AudioDispatcher;
 import be.tarsos.dsp.AudioPlayer;
-import be.tarsos.dsp.WaveformWriter;
 import be.tarsos.dsp.filters.HighPass;
 import be.tarsos.dsp.filters.LowPassFS;
-import be.tarsos.dsp.util.AudioFloatConverter;
+import be.tarsos.dsp.io.TarsosDSPAudioFloatConverter;
+import be.tarsos.dsp.io.TarsosDSPAudioFormat;
+import be.tarsos.dsp.io.jvm.JVMAudioInputStream;
+import be.tarsos.dsp.io.jvm.WaveformWriter;
 
 public class TestFilters {
 
@@ -66,8 +66,8 @@ public class TestFilters {
 	public void testFilters() throws UnsupportedAudioFileException,
 			LineUnavailableException {
 		final float[] floatBuffer = testAudioBufferSine();
-		final AudioFormat format = new AudioFormat(44100, 16, 1, true, false);
-		final AudioFloatConverter converter = AudioFloatConverter
+		final TarsosDSPAudioFormat format = new TarsosDSPAudioFormat(44100, 16, 1, true, false);
+		final TarsosDSPAudioFloatConverter converter = TarsosDSPAudioFloatConverter
 				.getConverter(format);
 		final byte[] byteBuffer = new byte[floatBuffer.length
 				* format.getFrameSize()];
@@ -75,13 +75,14 @@ public class TestFilters {
 				format.getFrameSize());
 		converter.toByteArray(floatBuffer, byteBuffer);
 		final ByteArrayInputStream bais = new ByteArrayInputStream(byteBuffer);
-		final AudioInputStream inputStream = new AudioInputStream(bais, format,
+		final AudioInputStream inputStream = new AudioInputStream(bais, JVMAudioInputStream.toAudioFormat(format),
 				floatBuffer.length);
-		final AudioDispatcher dispatcher = new AudioDispatcher(inputStream,
+		JVMAudioInputStream jvmAudioInputStream = new JVMAudioInputStream(inputStream);
+		final AudioDispatcher dispatcher = new AudioDispatcher(jvmAudioInputStream,
 				1024, 0);
 		dispatcher.addAudioProcessor(new LowPassFS(1000, 44100));
 		dispatcher.addAudioProcessor(new HighPass(100, 44100));
-		dispatcher.addAudioProcessor(new AudioPlayer(format));
+		dispatcher.addAudioProcessor(new AudioPlayer(JVMAudioInputStream.toAudioFormat(format)));
 		dispatcher.run();
 	}
 
@@ -97,7 +98,8 @@ public class TestFilters {
 		float startFrequency = 200;
 		float stopFrequency = 800;
 		AudioInputStream inputStream = AudioSystem.getAudioInputStream(testFile);
-		AudioDispatcher dispatcher = new AudioDispatcher(inputStream,stepSize,overlap);
+		JVMAudioInputStream jvmAudioInputStream = new JVMAudioInputStream(inputStream);
+		AudioDispatcher dispatcher = new AudioDispatcher(jvmAudioInputStream,stepSize,overlap);
 		dispatcher.addAudioProcessor(new HighPass(startFrequency, sampleRate));
 		dispatcher.addAudioProcessor(new LowPassFS(stopFrequency, sampleRate));
 		dispatcher.addAudioProcessor(new WaveformWriter(format, "filtered.wav"));

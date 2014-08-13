@@ -1,4 +1,27 @@
 /*
+*      _______                       _____   _____ _____  
+*     |__   __|                     |  __ \ / ____|  __ \ 
+*        | | __ _ _ __ ___  ___  ___| |  | | (___ | |__) |
+*        | |/ _` | '__/ __|/ _ \/ __| |  | |\___ \|  ___/ 
+*        | | (_| | |  \__ \ (_) \__ \ |__| |____) | |     
+*        |_|\__,_|_|  |___/\___/|___/_____/|_____/|_|     
+*                                                         
+* -------------------------------------------------------------
+*
+* TarsosDSP is developed by Joren Six at IPEM, University Ghent
+*  
+* -------------------------------------------------------------
+*
+*  Info: http://0110.be/tag/TarsosDSP
+*  Github: https://github.com/JorenSix/TarsosDSP
+*  Releases: http://0110.be/releases/TarsosDSP/
+*  
+*  TarsosDSP includes modified source code by various authors,
+*  for credits and info, see README.
+* 
+*/
+
+/*
 	Copyright (C) 2001, 2006 by Simon Dixon
 
 	This program is free software; you can redistribute it and/or modify
@@ -20,7 +43,6 @@
 
 package be.tarsos.dsp.beatroot;
 
-import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
@@ -29,15 +51,6 @@ import java.io.ObjectOutputStream;
 import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.ListIterator;
-
-import javax.sound.midi.InvalidMidiDataException;
-import javax.sound.midi.MetaMessage;
-import javax.sound.midi.MidiEvent;
-import javax.sound.midi.MidiMessage;
-import javax.sound.midi.MidiSystem;
-import javax.sound.midi.Sequence;
-import javax.sound.midi.ShortMessage;
-import javax.sound.midi.Track;
 
 
 
@@ -243,6 +256,7 @@ public class EventList {
 		}
 	} // readBinary()
 
+	/*
 	public void writeMIDI(String fileName) {
 		writeMIDI(fileName, null);
 	} // writeMIDI()
@@ -400,7 +414,7 @@ public class EventList {
 							noteOns[pitch][channel].keyDown);
 		return list;
 	} // readMidiFile()
-
+*/
 	public void print() {
 		for (Iterator<Event> i = l.iterator(); i.hasNext(); )
 			i.next().print(flags);

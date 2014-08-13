@@ -6,23 +6,21 @@
 *        | | (_| | |  \__ \ (_) \__ \ |__| |____) | |     
 *        |_|\__,_|_|  |___/\___/|___/_____/|_____/|_|     
 *                                                         
-* -----------------------------------------------------------
+* -------------------------------------------------------------
 *
-*  TarsosDSP is developed by Joren Six at 
-*  The School of Arts,
-*  University College Ghent,
-*  Hoogpoort 64, 9000 Ghent - Belgium
+* TarsosDSP is developed by Joren Six at IPEM, University Ghent
 *  
-* -----------------------------------------------------------
+* -------------------------------------------------------------
 *
-*  Info: http://tarsos.0110.be/tag/TarsosDSP
+*  Info: http://0110.be/tag/TarsosDSP
 *  Github: https://github.com/JorenSix/TarsosDSP
-*  Releases: http://tarsos.0110.be/releases/TarsosDSP/
+*  Releases: http://0110.be/releases/TarsosDSP/
 *  
 *  TarsosDSP includes modified source code by various authors,
 *  for credits and info, see README.
 * 
 */
+
 
 package be.tarsos.dsp.example;
 
@@ -53,6 +51,8 @@ import be.tarsos.dsp.AudioDispatcher;
 import be.tarsos.dsp.AudioPlayer;
 import be.tarsos.dsp.GainProcessor;
 import be.tarsos.dsp.effects.DelayEffect;
+import be.tarsos.dsp.io.TarsosDSPAudioInputStream;
+import be.tarsos.dsp.io.jvm.JVMAudioInputStream;
 
 public class Delay extends JFrame {
 	
@@ -183,9 +183,10 @@ public class Delay extends JFrame {
 		line.open(format, numberOfSamples);
 		line.start();
 		final AudioInputStream stream = new AudioInputStream(line);
+		final TarsosDSPAudioInputStream audioStream = new JVMAudioInputStream(stream);
 
 		// create a new dispatcher
-		dispatcher = new AudioDispatcher(stream, bufferSize, overlap);
+		dispatcher = new AudioDispatcher(audioStream, bufferSize, overlap);
 		
 		delayEffect = new DelayEffect(defaultDelay/1000.0,defaultDecay/100.0,sampleRate);
 		inputGain = new GainProcessor(defaultInputGain/100.0);

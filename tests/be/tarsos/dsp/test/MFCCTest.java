@@ -6,23 +6,21 @@
 *        | | (_| | |  \__ \ (_) \__ \ |__| |____) | |     
 *        |_|\__,_|_|  |___/\___/|___/_____/|_____/|_|     
 *                                                         
-* -----------------------------------------------------------
+* -------------------------------------------------------------
 *
-*  TarsosDSP is developed by Joren Six at 
-*  The School of Arts,
-*  University College Ghent,
-*  Hoogpoort 64, 9000 Ghent - Belgium
+* TarsosDSP is developed by Joren Six at IPEM, University Ghent
 *  
-* -----------------------------------------------------------
+* -------------------------------------------------------------
 *
-*  Info: http://tarsos.0110.be/tag/TarsosDSP
+*  Info: http://0110.be/tag/TarsosDSP
 *  Github: https://github.com/JorenSix/TarsosDSP
-*  Releases: http://tarsos.0110.be/releases/TarsosDSP/
+*  Releases: http://0110.be/releases/TarsosDSP/
 *  
 *  TarsosDSP includes modified source code by various authors,
 *  for credits and info, see README.
 * 
 */
+
 package be.tarsos.dsp.test;
 
 import javax.sound.sampled.UnsupportedAudioFileException;
@@ -32,6 +30,7 @@ import org.junit.Test;
 import be.tarsos.dsp.AudioDispatcher;
 import be.tarsos.dsp.AudioEvent;
 import be.tarsos.dsp.AudioProcessor;
+import be.tarsos.dsp.io.jvm.AudioDispatcherFactory;
 import be.tarsos.dsp.mfcc.MFCC;
 
 public class MFCCTest {
@@ -44,7 +43,7 @@ public class MFCCTest {
 		int bufferSize = 1024;
 		int bufferOverlap = 128;
 		final float[] floatBuffer = TestUtilities.audioBufferSine();
-		final AudioDispatcher dispatcher = AudioDispatcher.fromFloatArray(floatBuffer, sampleRate, bufferSize, bufferOverlap);
+		final AudioDispatcher dispatcher = AudioDispatcherFactory.fromFloatArray(floatBuffer, sampleRate, bufferSize, bufferOverlap);
 		final MFCC mfcc = new MFCC(bufferSize, sampleRate, 40, 50, 300, 3000);
 		dispatcher.addAudioProcessor(mfcc);
 		dispatcher.addAudioProcessor(new AudioProcessor() {

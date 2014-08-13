@@ -1,11 +1,33 @@
+/*
+*      _______                       _____   _____ _____  
+*     |__   __|                     |  __ \ / ____|  __ \ 
+*        | | __ _ _ __ ___  ___  ___| |  | | (___ | |__) |
+*        | |/ _` | '__/ __|/ _ \/ __| |  | |\___ \|  ___/ 
+*        | | (_| | |  \__ \ (_) \__ \ |__| |____) | |     
+*        |_|\__,_|_|  |___/\___/|___/_____/|_____/|_|     
+*                                                         
+* -------------------------------------------------------------
+*
+* TarsosDSP is developed by Joren Six at IPEM, University Ghent
+*  
+* -------------------------------------------------------------
+*
+*  Info: http://0110.be/tag/TarsosDSP
+*  Github: https://github.com/JorenSix/TarsosDSP
+*  Releases: http://0110.be/releases/TarsosDSP/
+*  
+*  TarsosDSP includes modified source code by various authors,
+*  for credits and info, see README.
+* 
+*/
+
 package be.tarsos.dsp.example;
 
-import javax.sound.sampled.AudioInputStream;
 import javax.sound.sampled.UnsupportedAudioFileException;
 
 import be.tarsos.dsp.AudioDispatcher;
 import be.tarsos.dsp.DetermineDurationProcessor;
-import be.tarsos.dsp.PipeDecoder;
+import be.tarsos.dsp.io.jvm.AudioDispatcherFactory;
 
 /**
  * Shows how to use the PipeDecoder to decode about any audio format.
@@ -21,9 +43,7 @@ public class AudioFormatDecoderExample {
 			SharedCommandLineUtilities.printPrefix();
 			SharedCommandLineUtilities.printLine();
 			String resource = args[0];
-			PipeDecoder decoder = new PipeDecoder();
-			AudioInputStream stream = decoder.getDecodedStream(resource, 44100);
-			AudioDispatcher audioDispatcher = new AudioDispatcher(stream, 2048, 0);
+			AudioDispatcher audioDispatcher = AudioDispatcherFactory.fromPipe(resource, 44100, 2048, 0);
 			DetermineDurationProcessor ddp = new DetermineDurationProcessor();
 			audioDispatcher.addAudioProcessor(ddp);
 			audioDispatcher.run();

@@ -6,23 +6,21 @@
 *        | | (_| | |  \__ \ (_) \__ \ |__| |____) | |     
 *        |_|\__,_|_|  |___/\___/|___/_____/|_____/|_|     
 *                                                         
-* -----------------------------------------------------------
+* -------------------------------------------------------------
 *
-*  TarsosDSP is developed by Joren Six at 
-*  The School of Arts,
-*  University College Ghent,
-*  Hoogpoort 64, 9000 Ghent - Belgium
+* TarsosDSP is developed by Joren Six at IPEM, University Ghent
 *  
-* -----------------------------------------------------------
+* -------------------------------------------------------------
 *
-*  Info: http://tarsos.0110.be/tag/TarsosDSP
+*  Info: http://0110.be/tag/TarsosDSP
 *  Github: https://github.com/JorenSix/TarsosDSP
-*  Releases: http://tarsos.0110.be/releases/TarsosDSP/
+*  Releases: http://0110.be/releases/TarsosDSP/
 *  
 *  TarsosDSP includes modified source code by various authors,
 *  for credits and info, see README.
 * 
 */
+
 
 package be.tarsos.dsp.example;
 
@@ -51,10 +49,12 @@ import javax.swing.border.TitledBorder;
 import be.tarsos.dsp.AudioDispatcher;
 import be.tarsos.dsp.AudioPlayer;
 import be.tarsos.dsp.AudioProcessor;
+import be.tarsos.dsp.io.TarsosDSPAudioFloatConverter;
+import be.tarsos.dsp.io.TarsosDSPAudioInputStream;
+import be.tarsos.dsp.io.jvm.JVMAudioInputStream;
 import be.tarsos.dsp.pitch.DTMF;
 import be.tarsos.dsp.pitch.Goertzel;
 import be.tarsos.dsp.pitch.Goertzel.FrequenciesDetectedHandler;
-import be.tarsos.dsp.util.AudioFloatConverter;
 
 /**
  * An example of DTMF ( Dual-tone multi-frequency signaling ) decoding with the Goertzel algorithm.
@@ -196,12 +196,14 @@ public class GoertzelDTMF extends JFrame implements ActionListener{
 	public void process(char character) throws UnsupportedAudioFileException, LineUnavailableException{
 		final float[] floatBuffer = DTMF.generateDTMFTone(character);		
 		final AudioFormat format = new AudioFormat(44100, 16, 1, true, false);
-		final AudioFloatConverter converter = AudioFloatConverter.getConverter(format);
+		JVMAudioInputStream.toTarsosDSPFormat(format);
+		final TarsosDSPAudioFloatConverter converter = TarsosDSPAudioFloatConverter.getConverter(JVMAudioInputStream.toTarsosDSPFormat(format));
 		final byte[] byteBuffer = new byte[floatBuffer.length * format.getFrameSize()];
 		converter.toByteArray(floatBuffer, byteBuffer);
 		final ByteArrayInputStream bais = new ByteArrayInputStream(byteBuffer);		
 		final AudioInputStream inputStream = new AudioInputStream(bais, format,floatBuffer.length);
-		final AudioDispatcher dispatcher = new AudioDispatcher(inputStream, stepSize, 0);		
+		final TarsosDSPAudioInputStream stream = new JVMAudioInputStream(inputStream);
+		final AudioDispatcher dispatcher = new AudioDispatcher(stream, stepSize, 0);		
 		dispatcher.addAudioProcessor(goertzelAudioProcessor);
 		dispatcher.addAudioProcessor(new AudioPlayer(format));
 		new Thread(dispatcher).start();

@@ -6,23 +6,21 @@
 *        | | (_| | |  \__ \ (_) \__ \ |__| |____) | |     
 *        |_|\__,_|_|  |___/\___/|___/_____/|_____/|_|     
 *                                                         
-* -----------------------------------------------------------
+* -------------------------------------------------------------
 *
-*  TarsosDSP is developed by Joren Six at 
-*  The School of Arts,
-*  University College Ghent,
-*  Hoogpoort 64, 9000 Ghent - Belgium
+* TarsosDSP is developed by Joren Six at IPEM, University Ghent
 *  
-* -----------------------------------------------------------
+* -------------------------------------------------------------
 *
-*  Info: http://tarsos.0110.be/tag/TarsosDSP
+*  Info: http://0110.be/tag/TarsosDSP
 *  Github: https://github.com/JorenSix/TarsosDSP
-*  Releases: http://tarsos.0110.be/releases/TarsosDSP/
+*  Releases: http://0110.be/releases/TarsosDSP/
 *  
 *  TarsosDSP includes modified source code by various authors,
 *  for credits and info, see README.
 * 
 */
+
 
 package be.tarsos.dsp.example;
 
@@ -57,8 +55,9 @@ import be.tarsos.dsp.AudioDispatcher;
 import be.tarsos.dsp.AudioPlayer;
 import be.tarsos.dsp.GainProcessor;
 import be.tarsos.dsp.WaveformSimilarityBasedOverlapAdd;
-import be.tarsos.dsp.WaveformWriter;
 import be.tarsos.dsp.WaveformSimilarityBasedOverlapAdd.Parameters;
+import be.tarsos.dsp.io.jvm.AudioDispatcherFactory;
+import be.tarsos.dsp.io.jvm.WaveformWriter;
 
 public class TimeStretch extends JFrame{
 
@@ -196,7 +195,7 @@ public class TimeStretch extends JFrame{
 			audioPlayer = new AudioPlayer(format);
 			
 			wsola = new WaveformSimilarityBasedOverlapAdd(Parameters.slowdownDefaults(tempoSlider.getValue()/100.0,format.getSampleRate()));
-			dispatcher = AudioDispatcher.fromFile(inputFile,wsola.getInputBufferSize(),wsola.getOverlap());
+			dispatcher = AudioDispatcherFactory.fromFile(inputFile,wsola.getInputBufferSize(),wsola.getOverlap());
 			wsola.setDispatcher(dispatcher);
 			dispatcher.addAudioProcessor(wsola);
 			dispatcher.addAudioProcessor(gain);
@@ -285,7 +284,7 @@ public class TimeStretch extends JFrame{
 		AudioFormat format = AudioSystem.getAudioFileFormat(inputFile).getFormat();	
 		WaveformSimilarityBasedOverlapAdd wsola = new WaveformSimilarityBasedOverlapAdd(Parameters.slowdownDefaults(tempo,format.getSampleRate()));
 		WaveformWriter writer = new WaveformWriter(format,target);
-		AudioDispatcher dispatcher = AudioDispatcher.fromFile(inputFile,wsola.getInputBufferSize(),wsola.getOverlap());
+		AudioDispatcher dispatcher = AudioDispatcherFactory.fromFile(inputFile,wsola.getInputBufferSize(),wsola.getOverlap());
 		wsola.setDispatcher(dispatcher);
 		dispatcher.addAudioProcessor(wsola);
 		dispatcher.addAudioProcessor(writer);

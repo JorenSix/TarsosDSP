@@ -1,10 +1,32 @@
+/*
+*      _______                       _____   _____ _____  
+*     |__   __|                     |  __ \ / ____|  __ \ 
+*        | | __ _ _ __ ___  ___  ___| |  | | (___ | |__) |
+*        | |/ _` | '__/ __|/ _ \/ __| |  | |\___ \|  ___/ 
+*        | | (_| | |  \__ \ (_) \__ \ |__| |____) | |     
+*        |_|\__,_|_|  |___/\___/|___/_____/|_____/|_|     
+*                                                         
+* -------------------------------------------------------------
+*
+* TarsosDSP is developed by Joren Six at IPEM, University Ghent
+*  
+* -------------------------------------------------------------
+*
+*  Info: http://0110.be/tag/TarsosDSP
+*  Github: https://github.com/JorenSix/TarsosDSP
+*  Releases: http://0110.be/releases/TarsosDSP/
+*  
+*  TarsosDSP includes modified source code by various authors,
+*  for credits and info, see README.
+* 
+*/
+
 package be.tarsos.dsp.example;
 
 import java.awt.BorderLayout;
 import java.lang.reflect.InvocationTargetException;
 
 import javax.sound.sampled.AudioFormat;
-import javax.sound.sampled.AudioInputStream;
 import javax.swing.JComponent;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
@@ -16,10 +38,11 @@ import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
 
 import be.tarsos.dsp.AudioDispatcher;
-import be.tarsos.dsp.AudioFile;
 import be.tarsos.dsp.AudioPlayer;
 import be.tarsos.dsp.BitDepthProcessor;
 import be.tarsos.dsp.GainProcessor;
+import be.tarsos.dsp.io.jvm.AudioDispatcherFactory;
+import be.tarsos.dsp.io.jvm.JVMAudioInputStream;
 import be.tarsos.dsp.wavelet.HaarWaveletCoder;
 import be.tarsos.dsp.wavelet.HaarWaveletDecoder;
 
@@ -44,16 +67,13 @@ public class HaarWaveletAudioCompression extends JFrame{
 			@Override
 			public void run() {
 				try {
-					AudioFile file = new AudioFile(source);
-					AudioFormat format = file.getTargetFormat(44100);
-					AudioInputStream stream = file.getMonoStream(44100);
-					AudioDispatcher adp = new AudioDispatcher(stream, 32, 0);
-
+					AudioDispatcher adp = AudioDispatcherFactory.fromPipe(source, 44100, 32,0);
+					AudioFormat format = JVMAudioInputStream.toAudioFormat(adp.getFormat());
 					coder = new HaarWaveletCoder();
 					HaarWaveletDecoder decoder = new HaarWaveletDecoder();
 					gain = new GainProcessor(1.0);
 					bithDeptProcessor = new BitDepthProcessor();
-					bithDeptProcessor.setBitDepth(format.getSampleSizeInBits());
+					bithDeptProcessor.setBitDepth(adp.getFormat().getSampleSizeInBits());
 
 					adp.addAudioProcessor(coder);
 					adp.addAudioProcessor(decoder);

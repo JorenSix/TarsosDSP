@@ -6,23 +6,21 @@
 *        | | (_| | |  \__ \ (_) \__ \ |__| |____) | |     
 *        |_|\__,_|_|  |___/\___/|___/_____/|_____/|_|     
 *                                                         
-* -----------------------------------------------------------
+* -------------------------------------------------------------
 *
-*  TarsosDSP is developed by Joren Six at 
-*  The School of Arts,
-*  University College Ghent,
-*  Hoogpoort 64, 9000 Ghent - Belgium
+* TarsosDSP is developed by Joren Six at IPEM, University Ghent
 *  
-* -----------------------------------------------------------
+* -------------------------------------------------------------
 *
-*  Info: http://tarsos.0110.be/tag/TarsosDSP
+*  Info: http://0110.be/tag/TarsosDSP
 *  Github: https://github.com/JorenSix/TarsosDSP
-*  Releases: http://tarsos.0110.be/releases/TarsosDSP/
+*  Releases: http://0110.be/releases/TarsosDSP/
 *  
 *  TarsosDSP includes modified source code by various authors,
 *  for credits and info, see README.
 * 
 */
+
 
 package be.tarsos.dsp.example;
 
@@ -58,6 +56,7 @@ import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
 
 import be.tarsos.dsp.AudioDispatcher;
+import be.tarsos.dsp.io.jvm.JVMAudioInputStream;
 import be.tarsos.dsp.onsets.OnsetHandler;
 import be.tarsos.dsp.onsets.PercussionOnsetDetector;
 
@@ -239,8 +238,9 @@ public class PercussionDetector extends JFrame implements OnsetHandler {
 		line.start();
 		final AudioInputStream stream = new AudioInputStream(line);
 
+		JVMAudioInputStream audioStream = new JVMAudioInputStream(stream);
 		// create a new dispatcher
-		dispatcher = new AudioDispatcher(stream, bufferSize,
+		dispatcher = new AudioDispatcher(audioStream, bufferSize,
 				overlap);
 
 		// add a processor, handle percussion event.

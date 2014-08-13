@@ -1,3 +1,26 @@
+/*
+*      _______                       _____   _____ _____  
+*     |__   __|                     |  __ \ / ____|  __ \ 
+*        | | __ _ _ __ ___  ___  ___| |  | | (___ | |__) |
+*        | |/ _` | '__/ __|/ _ \/ __| |  | |\___ \|  ___/ 
+*        | | (_| | |  \__ \ (_) \__ \ |__| |____) | |     
+*        |_|\__,_|_|  |___/\___/|___/_____/|_____/|_|     
+*                                                         
+* -------------------------------------------------------------
+*
+* TarsosDSP is developed by Joren Six at IPEM, University Ghent
+*  
+* -------------------------------------------------------------
+*
+*  Info: http://0110.be/tag/TarsosDSP
+*  Github: https://github.com/JorenSix/TarsosDSP
+*  Releases: http://0110.be/releases/TarsosDSP/
+*  
+*  TarsosDSP includes modified source code by various authors,
+*  for credits and info, see README.
+* 
+*/
+
 package be.tarsos.dsp.example;
 
 import java.awt.BorderLayout;
@@ -32,7 +55,8 @@ import be.tarsos.dsp.AudioEvent;
 import be.tarsos.dsp.AudioPlayer;
 import be.tarsos.dsp.AudioProcessor;
 import be.tarsos.dsp.GainProcessor;
-import be.tarsos.dsp.WaveformWriter;
+import be.tarsos.dsp.io.jvm.AudioDispatcherFactory;
+import be.tarsos.dsp.io.jvm.WaveformWriter;
 import be.tarsos.dsp.pitch.PitchProcessor;
 import be.tarsos.dsp.pitch.PitchProcessor.PitchEstimationAlgorithm;
 import be.tarsos.dsp.synthesis.PitchResyntheziser;
@@ -186,13 +210,13 @@ public class Resynthesizer{
 				
 				PitchResyntheziser prs = new PitchResyntheziser(samplerate);
 				estimationGain = new GainProcessor(estimationGainSlider.getValue()/100.0);
-				estimationDispatcher = AudioDispatcher.fromFile(file, size, overlap);
+				estimationDispatcher = AudioDispatcherFactory.fromFile(file, size, overlap);
 				estimationDispatcher.addAudioProcessor(new PitchProcessor(algo, samplerate, size, prs));
 				estimationDispatcher.addAudioProcessor(estimationGain);
 				estimationDispatcher.addAudioProcessor(new AudioPlayer(format));
 				
 				sourceGain = new GainProcessor(sourceGainSlider.getValue()/100.0);
-				sourceDispatcher = AudioDispatcher.fromFile(file, size, overlap);
+				sourceDispatcher = AudioDispatcherFactory.fromFile(file, size, overlap);
 				sourceDispatcher.addAudioProcessor(sourceGain);
 				sourceDispatcher.addAudioProcessor(new AudioPlayer(format));
 				
@@ -320,7 +344,7 @@ public class Resynthesizer{
 			int size = 1024;
 			int overlap = 0;
 			PitchResyntheziser prs = new PitchResyntheziser(samplerate);
-			AudioDispatcher dispatcher = AudioDispatcher.fromFile(audioFile, size, overlap);
+			AudioDispatcher dispatcher = AudioDispatcherFactory.fromFile(audioFile, size, overlap);
 			dispatcher.addAudioProcessor(new PitchProcessor(algo, samplerate, size, prs));
 			if(outputFile!=null){
 				dispatcher.addAudioProcessor(new WaveformWriter(format, outputFile));

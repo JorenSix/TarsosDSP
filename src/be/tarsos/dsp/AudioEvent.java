@@ -6,31 +6,28 @@
 *        | | (_| | |  \__ \ (_) \__ \ |__| |____) | |     
 *        |_|\__,_|_|  |___/\___/|___/_____/|_____/|_|     
 *                                                         
-* -----------------------------------------------------------
+* -------------------------------------------------------------
 *
-*  TarsosDSP is developed by Joren Six at 
-*  The School of Arts,
-*  University College Ghent,
-*  Hoogpoort 64, 9000 Ghent - Belgium
+* TarsosDSP is developed by Joren Six at IPEM, University Ghent
 *  
-* -----------------------------------------------------------
+* -------------------------------------------------------------
 *
-*  Info: http://tarsos.0110.be/tag/TarsosDSP
+*  Info: http://0110.be/tag/TarsosDSP
 *  Github: https://github.com/JorenSix/TarsosDSP
-*  Releases: http://tarsos.0110.be/releases/TarsosDSP/
+*  Releases: http://0110.be/releases/TarsosDSP/
 *  
 *  TarsosDSP includes modified source code by various authors,
 *  for credits and info, see README.
 * 
 */
 
+
 package be.tarsos.dsp;
 
 import java.util.Arrays;
 
-import javax.sound.sampled.AudioFormat;
-
-import be.tarsos.dsp.util.AudioFloatConverter;
+import be.tarsos.dsp.io.TarsosDSPAudioFloatConverter;
+import be.tarsos.dsp.io.TarsosDSPAudioFormat;
 
 /**
  * An audio event flows through the processing pipeline. The object is reused for performance reasons.
@@ -42,9 +39,9 @@ public class AudioEvent {
 	/**
 	 * The format specifies a particular arrangement of data in a sound stream. 
 	 */
-	private final AudioFormat format;
+	private final TarsosDSPAudioFormat format;
 	
-	private final AudioFloatConverter converter;
+	private final TarsosDSPAudioFloatConverter converter;
 	
 	/**
 	 * The audio data encoded in floats from -1.0 to 1.0.
@@ -72,9 +69,9 @@ public class AudioEvent {
 	private long bytesProcessed;
 	
 	
-	public AudioEvent(AudioFormat format,long frameLength){
+	public AudioEvent(TarsosDSPAudioFormat format,long frameLength){
 		this.format = format;
-		this.converter = AudioFloatConverter.getConverter(format);
+		this.converter = TarsosDSPAudioFloatConverter.getConverter(format);
 		this.overlap = 0;
 		this.frameLength = frameLength;
 	}

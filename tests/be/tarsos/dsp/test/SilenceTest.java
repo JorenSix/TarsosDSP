@@ -6,23 +6,21 @@
 *        | | (_| | |  \__ \ (_) \__ \ |__| |____) | |     
 *        |_|\__,_|_|  |___/\___/|___/_____/|_____/|_|     
 *                                                         
-* -----------------------------------------------------------
+* -------------------------------------------------------------
 *
-*  TarsosDSP is developed by Joren Six at 
-*  The School of Arts,
-*  University College Ghent,
-*  Hoogpoort 64, 9000 Ghent - Belgium
+* TarsosDSP is developed by Joren Six at IPEM, University Ghent
 *  
-* -----------------------------------------------------------
+* -------------------------------------------------------------
 *
-*  Info: http://tarsos.0110.be/tag/TarsosDSP
+*  Info: http://0110.be/tag/TarsosDSP
 *  Github: https://github.com/JorenSix/TarsosDSP
-*  Releases: http://tarsos.0110.be/releases/TarsosDSP/
+*  Releases: http://0110.be/releases/TarsosDSP/
 *  
 *  TarsosDSP includes modified source code by various authors,
 *  for credits and info, see README.
 * 
 */
+
 
 package be.tarsos.dsp.test;
 
@@ -40,7 +38,8 @@ import org.junit.Test;
 import be.tarsos.dsp.AudioDispatcher;
 import be.tarsos.dsp.AudioPlayer;
 import be.tarsos.dsp.SilenceDetector;
-import be.tarsos.dsp.util.AudioFloatConverter;
+import be.tarsos.dsp.io.TarsosDSPAudioFloatConverter;
+import be.tarsos.dsp.io.jvm.JVMAudioInputStream;
 
 public class SilenceTest {
 	
@@ -54,8 +53,8 @@ public class SilenceTest {
 			floatBuffer[i]=floatSinBuffer[i-floatSilenceBuffer.length];
 		}
 		final AudioFormat format = new AudioFormat(44100, 16, 1, true, false);
-		final AudioFloatConverter converter = AudioFloatConverter
-				.getConverter(format);
+		final TarsosDSPAudioFloatConverter converter = TarsosDSPAudioFloatConverter
+				.getConverter(JVMAudioInputStream.toTarsosDSPFormat(format));
 		final byte[] byteBuffer = new byte[floatBuffer.length
 				* format.getFrameSize()];
 		assertEquals("Specified 16 bits so framesize should be 2.", 2,
@@ -64,7 +63,8 @@ public class SilenceTest {
 		final ByteArrayInputStream bais = new ByteArrayInputStream(byteBuffer);
 		final AudioInputStream inputStream = new AudioInputStream(bais, format,
 				floatBuffer.length);
-		final AudioDispatcher dispatcher = new AudioDispatcher(inputStream,
+		JVMAudioInputStream stream = new JVMAudioInputStream(inputStream);
+		final AudioDispatcher dispatcher = new AudioDispatcher(stream,
 				1024, 0);
 		
         dispatcher.addAudioProcessor(new SilenceDetector());

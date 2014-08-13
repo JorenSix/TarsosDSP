@@ -20,7 +20,7 @@ Head over to the "TarsosDSP release repository":http://tarsos.0110.be/releases/T
 
 h2. TarsosDSP on Android
 
-If you want to do audio processing on Android TarsosDSP is a great fit. Unfortunately, the main distribution does not play well with Android by default. There is however an Android TarsosDSP fork. Please consult "TarsosDSP on Android - Audio Processing in Java on Android":http://0110.be/posts/TarsosDSP_on_Android_-_Audio_Processing_in_Java_on_Android" and "this TarsosDSP fork":https://github.com/srubin/TarsosDSP.   
+If you want to do audio processing on Android TarsosDSP is a great fit. The main distribution has no dependencies on @javax.sound.xxx@ and does work well on Android by default. Please consult "TarsosDSP on Android - Audio Processing in Java on Android":http://0110.be/posts/TarsosDSP_on_Android_-_Audio_Processing_in_Java_on_Android". 
 
 h2. TarsosDSP Example Applications
 
@@ -124,4 +124,7 @@ With this release it is possible to extract spectral peaks from an FFT and get p
 
 <dt>Version 1.9</dt><dd>2014-08-10</dd>
 This release includes a Haar Wavelet Transform and an example of an audio compression algorithm based on Haar Wavelets. It also includes a significant change in package naming.
+
+<dt>Version 2.0</dt><dd>2014-08-13</dd>
+The 2.0 version is worth the major version update since it offers out-of-the-box support for Android. The release has no more dependencies on the parts of the java runtime that are not included in Android. To offer this support some packages have been shifted around. The code that does I/O is dependent on the runtime (JVM or Dalvik) and is abstracted using the @be.tarsos.dsp.io@ package.   
  

@@ -1,3 +1,26 @@
+/*
+*      _______                       _____   _____ _____  
+*     |__   __|                     |  __ \ / ____|  __ \ 
+*        | | __ _ _ __ ___  ___  ___| |  | | (___ | |__) |
+*        | |/ _` | '__/ __|/ _ \/ __| |  | |\___ \|  ___/ 
+*        | | (_| | |  \__ \ (_) \__ \ |__| |____) | |     
+*        |_|\__,_|_|  |___/\___/|___/_____/|_____/|_|     
+*                                                         
+* -------------------------------------------------------------
+*
+* TarsosDSP is developed by Joren Six at IPEM, University Ghent
+*  
+* -------------------------------------------------------------
+*
+*  Info: http://0110.be/tag/TarsosDSP
+*  Github: https://github.com/JorenSix/TarsosDSP
+*  Releases: http://0110.be/releases/TarsosDSP/
+*  
+*  TarsosDSP includes modified source code by various authors,
+*  for credits and info, see README.
+* 
+*/
+
 package be.tarsos.dsp.example;
 
 import java.awt.BorderLayout;
@@ -37,8 +60,10 @@ import be.tarsos.dsp.AudioDispatcher;
 import be.tarsos.dsp.AudioPlayer;
 import be.tarsos.dsp.StopAudioProcessor;
 import be.tarsos.dsp.WaveformSimilarityBasedOverlapAdd;
-import be.tarsos.dsp.WaveformWriter;
 import be.tarsos.dsp.WaveformSimilarityBasedOverlapAdd.Parameters;
+import be.tarsos.dsp.io.jvm.AudioDispatcherFactory;
+import be.tarsos.dsp.io.jvm.JVMAudioInputStream;
+import be.tarsos.dsp.io.jvm.WaveformWriter;
 import be.tarsos.dsp.resample.RateTransposer;
 
 public class SampleExtractor  extends JFrame {
@@ -104,10 +129,10 @@ public class SampleExtractor  extends JFrame {
 			public void actionPerformed(ActionEvent arg0) {
 				if(((Double)startSelectionSpinner.getValue())<((Double)endSelectionSpinner.getValue())){
 					try {
-						dispatcher = AudioDispatcher.fromFile(file, 1024, 0);
+						dispatcher = AudioDispatcherFactory.fromFile(file, 1024, 0);
 						dispatcher.skip((Double)startSelectionSpinner.getValue());
 						dispatcher.addAudioProcessor(new StopAudioProcessor((Double)endSelectionSpinner.getValue()));
-						dispatcher.addAudioProcessor(new AudioPlayer(dispatcher.getFormat()));
+						dispatcher.addAudioProcessor(new AudioPlayer(JVMAudioInputStream.toAudioFormat(dispatcher.getFormat())));
 					} catch (UnsupportedAudioFileException e1) {
 					
 					} catch (IOException e1) {
@@ -192,7 +217,7 @@ public class SampleExtractor  extends JFrame {
 							RateTransposer rateTransposer;
 							rateTransposer = new RateTransposer(pitchFactor);
 							wsola = new WaveformSimilarityBasedOverlapAdd(Parameters.musicDefaults(durationFactor,sampleRate));
-							AudioDispatcher dispatcher = AudioDispatcher.fromFile(file,wsola.getInputBufferSize(), wsola.getOverlap());
+							AudioDispatcher dispatcher = AudioDispatcherFactory.fromFile(file,wsola.getInputBufferSize(), wsola.getOverlap());
 							audioPlayer = new AudioPlayer(format);
 							wsola.setDispatcher(dispatcher);
 							dispatcher.skip(startValue);
@@ -277,7 +302,7 @@ public class SampleExtractor  extends JFrame {
 		}
         
         try {
-        	AudioDispatcher dispatcher = AudioDispatcher.fromFile(file, 1024, 0);
+        	AudioDispatcher dispatcher = AudioDispatcherFactory.fromFile(file, 1024, 0);
         	endSelectionSpinner.setValue(dispatcher.durationInSeconds());
 		} catch (UnsupportedAudioFileException e) {
 		} catch (IOException e) {

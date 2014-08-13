@@ -6,23 +6,21 @@
 *        | | (_| | |  \__ \ (_) \__ \ |__| |____) | |     
 *        |_|\__,_|_|  |___/\___/|___/_____/|_____/|_|     
 *                                                         
-* -----------------------------------------------------------
+* -------------------------------------------------------------
 *
-*  TarsosDSP is developed by Joren Six at 
-*  The School of Arts,
-*  University College Ghent,
-*  Hoogpoort 64, 9000 Ghent - Belgium
+* TarsosDSP is developed by Joren Six at IPEM, University Ghent
 *  
-* -----------------------------------------------------------
+* -------------------------------------------------------------
 *
-*  Info: http://tarsos.0110.be/tag/TarsosDSP
+*  Info: http://0110.be/tag/TarsosDSP
 *  Github: https://github.com/JorenSix/TarsosDSP
-*  Releases: http://tarsos.0110.be/releases/TarsosDSP/
+*  Releases: http://0110.be/releases/TarsosDSP/
 *  
 *  TarsosDSP includes modified source code by various authors,
 *  for credits and info, see README.
 * 
 */
+
 
 package be.tarsos.dsp.test;
 
@@ -38,10 +36,12 @@ import javax.sound.sampled.UnsupportedAudioFileException;
 import org.junit.Test;
 
 import be.tarsos.dsp.AudioDispatcher;
+import be.tarsos.dsp.io.TarsosDSPAudioFloatConverter;
+import be.tarsos.dsp.io.TarsosDSPAudioFormat;
+import be.tarsos.dsp.io.jvm.JVMAudioInputStream;
 import be.tarsos.dsp.pitch.DTMF;
 import be.tarsos.dsp.pitch.Goertzel;
 import be.tarsos.dsp.pitch.Goertzel.FrequenciesDetectedHandler;
-import be.tarsos.dsp.util.AudioFloatConverter;
 
 public class GoertzelTest {
 	
@@ -101,14 +101,15 @@ public class GoertzelTest {
 		
 		final float[][] floatSinBuffers = {testAudioBufferSine(6000,10240),testAudioBufferSine(2000,10240),testAudioBufferSine(4000,10240)};
 		final float[] floatBuffer = appendBuffers(floatSinBuffers);
-		final AudioFormat format = new AudioFormat(44100, 16, 1, true, false);
-		final AudioFloatConverter converter = AudioFloatConverter.getConverter(format);
+		final TarsosDSPAudioFormat format = new TarsosDSPAudioFormat(44100, 16, 1, true, false);
+		final TarsosDSPAudioFloatConverter converter = TarsosDSPAudioFloatConverter.getConverter(format);
 		final byte[] byteBuffer = new byte[floatBuffer.length * format.getFrameSize()];
 		assertEquals("Specified 16 bits so framesize should be 2.", 2, format.getFrameSize());
 		converter.toByteArray(floatBuffer, byteBuffer);
 		final ByteArrayInputStream bais = new ByteArrayInputStream(byteBuffer);
-		final AudioInputStream inputStream = new AudioInputStream(bais, format,floatBuffer.length);
-		final AudioDispatcher dispatcher = new AudioDispatcher(inputStream, 1024, 0);
+		final AudioInputStream inputStream = new AudioInputStream(bais, JVMAudioInputStream.toAudioFormat(format),floatBuffer.length);
+		JVMAudioInputStream stream = new JVMAudioInputStream(inputStream);
+		final AudioDispatcher dispatcher = new AudioDispatcher(stream, 1024, 0);
 		
 		double[] frequencies = {6000,3000,5000,5800,6500};
 		
@@ -134,13 +135,14 @@ public class GoertzelTest {
 		final float[] floatBuffer = appendBuffers(floatSinBuffers);
 		final int stepSize = 512;
 		final AudioFormat format = new AudioFormat(44100, 16, 1, true, false);
-		final AudioFloatConverter converter = AudioFloatConverter.getConverter(format);
+		final TarsosDSPAudioFloatConverter converter = TarsosDSPAudioFloatConverter.getConverter(JVMAudioInputStream.toTarsosDSPFormat(format));
 		final byte[] byteBuffer = new byte[floatBuffer.length * format.getFrameSize()];
 		assertEquals("Specified 16 bits so framesize should be 2.", 2, format.getFrameSize());
 		converter.toByteArray(floatBuffer, byteBuffer);
 		final ByteArrayInputStream bais = new ByteArrayInputStream(byteBuffer);
 		final AudioInputStream inputStream = new AudioInputStream(bais, format,floatBuffer.length);
-		final AudioDispatcher dispatcher = new AudioDispatcher(inputStream, stepSize, 0);
+		JVMAudioInputStream stream = new JVMAudioInputStream(inputStream);
+		final AudioDispatcher dispatcher = new AudioDispatcher(stream, stepSize, 0);
 		final StringBuilder data = new StringBuilder();
 		dispatcher.addAudioProcessor(new Goertzel(44100, stepSize,
 				DTMF.DTMF_FREQUENCIES, new FrequenciesDetectedHandler() {

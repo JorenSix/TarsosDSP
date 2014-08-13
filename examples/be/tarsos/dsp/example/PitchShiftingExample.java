@@ -6,23 +6,21 @@
 *        | | (_| | |  \__ \ (_) \__ \ |__| |____) | |     
 *        |_|\__,_|_|  |___/\___/|___/_____/|_____/|_|     
 *                                                         
-* -----------------------------------------------------------
+* -------------------------------------------------------------
 *
-*  TarsosDSP is developed by Joren Six at 
-*  The School of Arts,
-*  University College Ghent,
-*  Hoogpoort 64, 9000 Ghent - Belgium
+* TarsosDSP is developed by Joren Six at IPEM, University Ghent
 *  
-* -----------------------------------------------------------
+* -------------------------------------------------------------
 *
-*  Info: http://tarsos.0110.be/tag/TarsosDSP
+*  Info: http://0110.be/tag/TarsosDSP
 *  Github: https://github.com/JorenSix/TarsosDSP
-*  Releases: http://tarsos.0110.be/releases/TarsosDSP/
+*  Releases: http://0110.be/releases/TarsosDSP/
 *  
 *  TarsosDSP includes modified source code by various authors,
 *  for credits and info, see README.
 * 
 */
+
 package be.tarsos.dsp.example;
 
 import java.awt.BorderLayout;
@@ -63,8 +61,10 @@ import be.tarsos.dsp.AudioPlayer;
 import be.tarsos.dsp.GainProcessor;
 import be.tarsos.dsp.MultichannelToMono;
 import be.tarsos.dsp.WaveformSimilarityBasedOverlapAdd;
-import be.tarsos.dsp.WaveformWriter;
 import be.tarsos.dsp.WaveformSimilarityBasedOverlapAdd.Parameters;
+import be.tarsos.dsp.io.jvm.AudioDispatcherFactory;
+import be.tarsos.dsp.io.jvm.JVMAudioInputStream;
+import be.tarsos.dsp.io.jvm.WaveformWriter;
 import be.tarsos.dsp.resample.RateTransposer;
 
 public class PitchShiftingExample extends JFrame {
@@ -256,13 +256,15 @@ public class PitchShiftingExample extends JFrame {
 					line.open(format, wsola.getInputBufferSize());
 					line.start();
 					final AudioInputStream stream = new AudioInputStream(line);
-					dispatcher = new AudioDispatcher(stream, wsola.getInputBufferSize(),wsola.getOverlap()); 
+					JVMAudioInputStream audioStream = new JVMAudioInputStream(stream);
+					// create a new dispatcher
+					dispatcher = new AudioDispatcher(audioStream, wsola.getInputBufferSize(),wsola.getOverlap()); 
 			 }else{
 					if(format.getChannels() != 1){
-						dispatcher = AudioDispatcher.fromFile(inputFile,wsola.getInputBufferSize() * format.getChannels(),wsola.getOverlap() * format.getChannels());
+						dispatcher = AudioDispatcherFactory.fromFile(inputFile,wsola.getInputBufferSize() * format.getChannels(),wsola.getOverlap() * format.getChannels());
 						dispatcher.addAudioProcessor(new MultichannelToMono(format.getChannels(),true));
 					}else{
-						dispatcher = AudioDispatcher.fromFile(inputFile,wsola.getInputBufferSize(),wsola.getOverlap());
+						dispatcher = AudioDispatcherFactory.fromFile(inputFile,wsola.getInputBufferSize(),wsola.getOverlap());
 					}
 				 //dispatcher = AudioDispatcher.fromFile(inputFile,wsola.getInputBufferSize(),wsola.getOverlap());
 			 }
@@ -340,10 +342,10 @@ public class PitchShiftingExample extends JFrame {
 		WaveformWriter writer = new WaveformWriter(format,target);
 		AudioDispatcher dispatcher;
 		if(format.getChannels() != 1){
-			dispatcher = AudioDispatcher.fromFile(inputFile,wsola.getInputBufferSize() * format.getChannels(),wsola.getOverlap() * format.getChannels());
+			dispatcher = AudioDispatcherFactory.fromFile(inputFile,wsola.getInputBufferSize() * format.getChannels(),wsola.getOverlap() * format.getChannels());
 			dispatcher.addAudioProcessor(new MultichannelToMono(format.getChannels(),true));
 		}else{
-			dispatcher = AudioDispatcher.fromFile(inputFile,wsola.getInputBufferSize(),wsola.getOverlap());
+			dispatcher = AudioDispatcherFactory.fromFile(inputFile,wsola.getInputBufferSize(),wsola.getOverlap());
 		}
 		wsola.setDispatcher(dispatcher);
 		dispatcher.addAudioProcessor(wsola);

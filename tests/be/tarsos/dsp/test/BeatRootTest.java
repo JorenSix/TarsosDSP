@@ -1,3 +1,26 @@
+/*
+*      _______                       _____   _____ _____  
+*     |__   __|                     |  __ \ / ____|  __ \ 
+*        | | __ _ _ __ ___  ___  ___| |  | | (___ | |__) |
+*        | |/ _` | '__/ __|/ _ \/ __| |  | |\___ \|  ___/ 
+*        | | (_| | |  \__ \ (_) \__ \ |__| |____) | |     
+*        |_|\__,_|_|  |___/\___/|___/_____/|_____/|_|     
+*                                                         
+* -------------------------------------------------------------
+*
+* TarsosDSP is developed by Joren Six at IPEM, University Ghent
+*  
+* -------------------------------------------------------------
+*
+*  Info: http://0110.be/tag/TarsosDSP
+*  Github: https://github.com/JorenSix/TarsosDSP
+*  Releases: http://0110.be/releases/TarsosDSP/
+*  
+*  TarsosDSP includes modified source code by various authors,
+*  for credits and info, see README.
+* 
+*/
+
 package be.tarsos.dsp.test;
 
 import static org.junit.Assert.assertEquals;
@@ -16,6 +39,7 @@ import be.tarsos.dsp.beatroot.AgentList;
 import be.tarsos.dsp.beatroot.Event;
 import be.tarsos.dsp.beatroot.EventList;
 import be.tarsos.dsp.beatroot.Induction;
+import be.tarsos.dsp.io.jvm.AudioDispatcherFactory;
 import be.tarsos.dsp.onsets.BeatRootSpectralFluxOnsetDetector;
 import be.tarsos.dsp.onsets.OnsetHandler;
 
@@ -32,7 +56,7 @@ public class BeatRootTest {
 			i++;
 		}
 		
-		AudioDispatcher d = AudioDispatcher.fromFile(audioFile, 2048, 2048-441);
+		AudioDispatcher d = AudioDispatcherFactory.fromFile(audioFile, 2048, 2048-441);
 		d.setZeroPad(true);
 		BeatRootSpectralFluxOnsetDetector b = new BeatRootSpectralFluxOnsetDetector(d, 2048,441);
 		b.setHandler(new OnsetHandler(){
@@ -64,7 +88,7 @@ public class BeatRootTest {
 		/** beat data encoded as a list of Events */
 		final EventList onsetList = new EventList();
 		
-		AudioDispatcher d = AudioDispatcher.fromFile(audioFile, 2048, 2048-441);
+		AudioDispatcher d = AudioDispatcherFactory.fromFile(audioFile, 2048, 2048-441);
 		d.setZeroPad(true);
 		BeatRootSpectralFluxOnsetDetector b = new BeatRootSpectralFluxOnsetDetector(d, 2048,441);
 		b.setHandler(new OnsetHandler(){

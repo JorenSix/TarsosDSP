@@ -6,23 +6,21 @@
 *        | | (_| | |  \__ \ (_) \__ \ |__| |____) | |     
 *        |_|\__,_|_|  |___/\___/|___/_____/|_____/|_|     
 *                                                         
-* -----------------------------------------------------------
+* -------------------------------------------------------------
 *
-*  TarsosDSP is developed by Joren Six at 
-*  The School of Arts,
-*  University College Ghent,
-*  Hoogpoort 64, 9000 Ghent - Belgium
+* TarsosDSP is developed by Joren Six at IPEM, University Ghent
 *  
-* -----------------------------------------------------------
+* -------------------------------------------------------------
 *
-*  Info: http://tarsos.0110.be/tag/TarsosDSP
+*  Info: http://0110.be/tag/TarsosDSP
 *  Github: https://github.com/JorenSix/TarsosDSP
-*  Releases: http://tarsos.0110.be/releases/TarsosDSP/
+*  Releases: http://0110.be/releases/TarsosDSP/
 *  
 *  TarsosDSP includes modified source code by various authors,
 *  for credits and info, see README.
 * 
 */
+
 package be.tarsos.dsp.example;
 
 import java.io.File;
@@ -38,6 +36,7 @@ import be.tarsos.dsp.AudioEvent;
 import be.tarsos.dsp.AudioProcessor;
 import be.tarsos.dsp.SilenceDetector;
 import be.tarsos.dsp.beatroot.BeatRootOnsetEventHandler;
+import be.tarsos.dsp.io.jvm.AudioDispatcherFactory;
 import be.tarsos.dsp.onsets.ComplexOnsetDetector;
 import be.tarsos.dsp.onsets.OnsetHandler;
 import be.tarsos.dsp.pitch.PitchDetectionHandler;
@@ -166,7 +165,7 @@ public class FeatureExtractor {
 			File audioFile = new File(inputFile);
 			int size = 2048;
 			int overlap = 0;
-			AudioDispatcher dispatcher = AudioDispatcher.fromFile(audioFile, size, overlap);
+			AudioDispatcher dispatcher = AudioDispatcherFactory.fromFile(audioFile, size, overlap);
 			
 			dispatcher.addAudioProcessor(new AudioProcessor() {
 				@Override
@@ -212,7 +211,7 @@ public class FeatureExtractor {
 			int size = 2048;
 			int overlap = 0;
 			final SilenceDetector silenceDetecor = new SilenceDetector();		
-			AudioDispatcher dispatcher = AudioDispatcher.fromFile(audioFile, size, overlap);
+			AudioDispatcher dispatcher = AudioDispatcherFactory.fromFile(audioFile, size, overlap);
 			dispatcher.addAudioProcessor(silenceDetecor);
 			dispatcher.addAudioProcessor(new AudioProcessor() {
 				@Override
@@ -276,7 +275,7 @@ public class FeatureExtractor {
 			float samplerate = AudioSystem.getAudioFileFormat(audioFile).getFormat().getSampleRate();
 			int size = 1024;
 			int overlap = 0;
-			AudioDispatcher dispatcher = AudioDispatcher.fromFile(audioFile, size, overlap);
+			AudioDispatcher dispatcher = AudioDispatcherFactory.fromFile(audioFile, size, overlap);
 			dispatcher.addAudioProcessor(new PitchProcessor(algo, samplerate, size, this));
 			dispatcher.run();
 			return true;
@@ -320,7 +319,7 @@ public class FeatureExtractor {
 			File audioFile = new File(inputFile);
 			int size = 512;
 			int overlap = 256;
-			AudioDispatcher dispatcher = AudioDispatcher.fromFile(audioFile, size, overlap);
+			AudioDispatcher dispatcher = AudioDispatcherFactory.fromFile(audioFile, size, overlap);
 			ComplexOnsetDetector detector = new ComplexOnsetDetector(size);
 			detector.setHandler(this);
 			dispatcher.addAudioProcessor(detector);
@@ -363,7 +362,7 @@ public class FeatureExtractor {
 			File audioFile = new File(inputFile);
 			int size = 512;
 			int overlap = 256;
-			AudioDispatcher dispatcher = AudioDispatcher.fromFile(audioFile, size, overlap);
+			AudioDispatcher dispatcher = AudioDispatcherFactory.fromFile(audioFile, size, overlap);
 			
 			ComplexOnsetDetector detector = new ComplexOnsetDetector(size);
 			BeatRootOnsetEventHandler handler = new BeatRootOnsetEventHandler();

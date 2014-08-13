@@ -1,3 +1,26 @@
+/*
+*      _______                       _____   _____ _____  
+*     |__   __|                     |  __ \ / ____|  __ \ 
+*        | | __ _ _ __ ___  ___  ___| |  | | (___ | |__) |
+*        | |/ _` | '__/ __|/ _ \/ __| |  | |\___ \|  ___/ 
+*        | | (_| | |  \__ \ (_) \__ \ |__| |____) | |     
+*        |_|\__,_|_|  |___/\___/|___/_____/|_____/|_|     
+*                                                         
+* -------------------------------------------------------------
+*
+* TarsosDSP is developed by Joren Six at IPEM, University Ghent
+*  
+* -------------------------------------------------------------
+*
+*  Info: http://0110.be/tag/TarsosDSP
+*  Github: https://github.com/JorenSix/TarsosDSP
+*  Releases: http://0110.be/releases/TarsosDSP/
+*  
+*  TarsosDSP includes modified source code by various authors,
+*  for credits and info, see README.
+* 
+*/
+
 package be.tarsos.dsp.example.catify;
 
 import java.io.File;
@@ -10,6 +33,7 @@ import javax.sound.sampled.UnsupportedAudioFileException;
 
 import be.tarsos.dsp.AudioDispatcher;
 import be.tarsos.dsp.AudioEvent;
+import be.tarsos.dsp.io.jvm.AudioDispatcherFactory;
 import be.tarsos.dsp.pitch.PitchDetectionHandler;
 import be.tarsos.dsp.pitch.PitchDetectionResult;
 import be.tarsos.dsp.pitch.PitchProcessor;
@@ -27,7 +51,7 @@ class CatSample{
 		try {
 			format = AudioSystem.getAudioFileFormat(file).getFormat();
 			duration = AudioSystem.getAudioFileFormat(file).getFrameLength()/format.getFrameRate();
-			AudioDispatcher dispatcher = AudioDispatcher.fromFile(file,1024, 0);
+			AudioDispatcher dispatcher = AudioDispatcherFactory.fromFile(file,1024, 0);
 			dispatcher.addAudioProcessor(new PitchProcessor(PitchEstimationAlgorithm.FFT_YIN, format.getSampleRate(), 1024, new PitchDetectionHandler() {
 				@Override
 				public void handlePitch(PitchDetectionResult pitchDetectionResult,AudioEvent audioEvent) {

@@ -6,23 +6,21 @@
 *        | | (_| | |  \__ \ (_) \__ \ |__| |____) | |     
 *        |_|\__,_|_|  |___/\___/|___/_____/|_____/|_|     
 *                                                         
-* -----------------------------------------------------------
+* -------------------------------------------------------------
 *
-*  TarsosDSP is developed by Joren Six at 
-*  The School of Arts,
-*  University College Ghent,
-*  Hoogpoort 64, 9000 Ghent - Belgium
+* TarsosDSP is developed by Joren Six at IPEM, University Ghent
 *  
-* -----------------------------------------------------------
+* -------------------------------------------------------------
 *
-*  Info: http://tarsos.0110.be/tag/TarsosDSP
+*  Info: http://0110.be/tag/TarsosDSP
 *  Github: https://github.com/JorenSix/TarsosDSP
-*  Releases: http://tarsos.0110.be/releases/TarsosDSP/
+*  Releases: http://0110.be/releases/TarsosDSP/
 *  
 *  TarsosDSP includes modified source code by various authors,
 *  for credits and info, see README.
 * 
 */
+
 
 package be.tarsos.dsp.example.constantq;
 
@@ -42,6 +40,7 @@ import be.tarsos.dsp.AudioEvent;
 import be.tarsos.dsp.AudioPlayer;
 import be.tarsos.dsp.AudioProcessor;
 import be.tarsos.dsp.GainProcessor;
+import be.tarsos.dsp.io.jvm.AudioDispatcherFactory;
 
 public class Player implements AudioProcessor {
 	
@@ -125,7 +124,7 @@ public class Player implements AudioProcessor {
 				gainProcessor = new GainProcessor(gain);
 				audioPlayer = new AudioPlayer(format);		
 				
-				dispatcher = AudioDispatcher.fromFile(loadedFile,stepSize,overlap);
+				dispatcher = AudioDispatcherFactory.fromFile(loadedFile,stepSize,overlap);
 				
 				dispatcher.skip(startTime);
 				dispatcher.addAudioProcessor(this);

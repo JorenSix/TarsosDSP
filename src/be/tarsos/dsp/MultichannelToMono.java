@@ -6,23 +6,21 @@
 *        | | (_| | |  \__ \ (_) \__ \ |__| |____) | |     
 *        |_|\__,_|_|  |___/\___/|___/_____/|_____/|_|     
 *                                                         
-* -----------------------------------------------------------
+* -------------------------------------------------------------
 *
-*  TarsosDSP is developed by Joren Six at 
-*  The School of Arts,
-*  University College Ghent,
-*  Hoogpoort 64, 9000 Ghent - Belgium
+* TarsosDSP is developed by Joren Six at IPEM, University Ghent
 *  
-* -----------------------------------------------------------
+* -------------------------------------------------------------
 *
-*  Info: http://tarsos.0110.be/tag/TarsosDSP
+*  Info: http://0110.be/tag/TarsosDSP
 *  Github: https://github.com/JorenSix/TarsosDSP
-*  Releases: http://tarsos.0110.be/releases/TarsosDSP/
+*  Releases: http://0110.be/releases/TarsosDSP/
 *  
 *  TarsosDSP includes modified source code by various authors,
 *  for credits and info, see README.
 * 
 */
+
 package be.tarsos.dsp;
 
 public class MultichannelToMono implements AudioProcessor{
@@ -43,7 +41,7 @@ public class MultichannelToMono implements AudioProcessor{
 		if(mean){
 			if(channels==2){
 				for(int i = 0 ; i < buffer.length ; i = i + channels){
-					newBuffer[i/channels]=(buffer[i]+buffer[i+1])/2;
+					newBuffer[i/channels]=(buffer[i]+buffer[i+1])/2.0f;
 				}	
 			}else{
 				for(int i = 0 ; i < buffer.length ; i = i + channels){

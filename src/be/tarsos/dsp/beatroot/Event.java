@@ -1,4 +1,27 @@
 /*
+*      _______                       _____   _____ _____  
+*     |__   __|                     |  __ \ / ____|  __ \ 
+*        | | __ _ _ __ ___  ___  ___| |  | | (___ | |__) |
+*        | |/ _` | '__/ __|/ _ \/ __| |  | |\___ \|  ___/ 
+*        | | (_| | |  \__ \ (_) \__ \ |__| |____) | |     
+*        |_|\__,_|_|  |___/\___/|___/_____/|_____/|_|     
+*                                                         
+* -------------------------------------------------------------
+*
+* TarsosDSP is developed by Joren Six at IPEM, University Ghent
+*  
+* -------------------------------------------------------------
+*
+*  Info: http://0110.be/tag/TarsosDSP
+*  Github: https://github.com/JorenSix/TarsosDSP
+*  Releases: http://0110.be/releases/TarsosDSP/
+*  
+*  TarsosDSP includes modified source code by various authors,
+*  for credits and info, see README.
+* 
+*/
+
+/*
 	Copyright (C) 2001, 2006 by Simon Dixon
 
 	This program is free software; you can redistribute it and/or modify
@@ -46,7 +69,7 @@ public class Event implements Comparable<Event>, Cloneable {
 		scoreBeat = beat;
 		scoreDuration = duration;
 		flags = eventFlags;
-		midiCommand = javax.sound.midi.ShortMessage.NOTE_ON;
+		midiCommand = 144;//javax.sound.midi.ShortMessage.NOTE_ON;
 		midiChannel = 1;
 		midiTrack = 0;
 		salience = 0;

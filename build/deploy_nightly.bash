@@ -33,6 +33,8 @@ scp -r TarsosDSP-* joren@0110.be:$deploy_location
 
 ssh joren@0110.be mv $deploy_location/TarsosDSP-$version.jar $deploy_location/TarsosDSP-nightly.jar
 ssh joren@0110.be mv $deploy_location/TarsosDSP-$version-bin.jar $deploy_location/TarsosDSP-nightly-bin.jar
+ssh joren@0110.be mv $deploy_location/TarsosDSP-Android-$version.jar $deploy_location/TarsosDSP-Android-nightly.jar
+ssh joren@0110.be mv $deploy_location/TarsosDSP-Android-$version-bin.jar $deploy_location/TarsosDSP-Android-nightly-bin.jar
 ssh joren@0110.be mv $deploy_location/TarsosDSP-$version-Manual.pdf $deploy_location/TarsosDSP-nightly-Manual.pdf
 ssh joren@0110.be mv $deploy_location/TarsosDSP-$version-Documentation $deploy_location/TarsosDSP-nightly-Documentation
 ssh joren@0110.be mv $deploy_location/TarsosDSP-$version-Readme.html $deploy_location/TarsosDSP-nightly-Readme.html

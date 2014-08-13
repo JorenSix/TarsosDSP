@@ -6,23 +6,21 @@
 *        | | (_| | |  \__ \ (_) \__ \ |__| |____) | |     
 *        |_|\__,_|_|  |___/\___/|___/_____/|_____/|_|     
 *                                                         
-* -----------------------------------------------------------
+* -------------------------------------------------------------
 *
-*  TarsosDSP is developed by Joren Six at 
-*  The School of Arts,
-*  University College Ghent,
-*  Hoogpoort 64, 9000 Ghent - Belgium
+* TarsosDSP is developed by Joren Six at IPEM, University Ghent
 *  
-* -----------------------------------------------------------
+* -------------------------------------------------------------
 *
-*  Info: http://tarsos.0110.be/tag/TarsosDSP
+*  Info: http://0110.be/tag/TarsosDSP
 *  Github: https://github.com/JorenSix/TarsosDSP
-*  Releases: http://tarsos.0110.be/releases/TarsosDSP/
+*  Releases: http://0110.be/releases/TarsosDSP/
 *  
 *  TarsosDSP includes modified source code by various authors,
 *  for credits and info, see README.
 * 
 */
+
 
 package be.tarsos.dsp.test;
 
@@ -42,8 +40,9 @@ import org.junit.Test;
 
 import be.tarsos.dsp.AudioDispatcher;
 import be.tarsos.dsp.SilenceDetector;
-import be.tarsos.dsp.WaveformWriter;
-import be.tarsos.dsp.util.Shared;
+import be.tarsos.dsp.example.Shared;
+import be.tarsos.dsp.io.jvm.JVMAudioInputStream;
+import be.tarsos.dsp.io.jvm.WaveformWriter;
 
 public class WaveformWriterTest {
 
@@ -78,9 +77,9 @@ public class WaveformWriterTest {
 		line.open(format, numberOfSamples);
 		line.start();
 		final AudioInputStream stream = new AudioInputStream(line);
-
+		JVMAudioInputStream inpustStream = new JVMAudioInputStream(stream);
 		// create a new dispatcher
-		AudioDispatcher dispatcher = new AudioDispatcher(stream, bufferSize,
+		AudioDispatcher dispatcher = new AudioDispatcher(inpustStream, bufferSize,
 				overlap);
 
 		WaveformWriter writer = new WaveformWriter(format,"01.file.wav");

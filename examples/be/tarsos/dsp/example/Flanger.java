@@ -6,23 +6,21 @@
 *        | | (_| | |  \__ \ (_) \__ \ |__| |____) | |     
 *        |_|\__,_|_|  |___/\___/|___/_____/|_____/|_|     
 *                                                         
-* -----------------------------------------------------------
+* -------------------------------------------------------------
 *
-*  TarsosDSP is developed by Joren Six at 
-*  The School of Arts,
-*  University College Ghent,
-*  Hoogpoort 64, 9000 Ghent - Belgium
+* TarsosDSP is developed by Joren Six at IPEM, University Ghent
 *  
-* -----------------------------------------------------------
+* -------------------------------------------------------------
 *
-*  Info: http://tarsos.0110.be/tag/TarsosDSP
+*  Info: http://0110.be/tag/TarsosDSP
 *  Github: https://github.com/JorenSix/TarsosDSP
-*  Releases: http://tarsos.0110.be/releases/TarsosDSP/
+*  Releases: http://0110.be/releases/TarsosDSP/
 *  
 *  TarsosDSP includes modified source code by various authors,
 *  for credits and info, see README.
 * 
 */
+
 
 package be.tarsos.dsp.example;
 
@@ -63,8 +61,11 @@ import be.tarsos.dsp.AudioDispatcher;
 import be.tarsos.dsp.AudioPlayer;
 import be.tarsos.dsp.GainProcessor;
 import be.tarsos.dsp.MultichannelToMono;
-import be.tarsos.dsp.WaveformWriter;
 import be.tarsos.dsp.effects.FlangerEffect;
+import be.tarsos.dsp.io.TarsosDSPAudioInputStream;
+import be.tarsos.dsp.io.jvm.AudioDispatcherFactory;
+import be.tarsos.dsp.io.jvm.JVMAudioInputStream;
+import be.tarsos.dsp.io.jvm.WaveformWriter;
 
 public class Flanger extends JFrame {
 	
@@ -251,13 +252,14 @@ public class Flanger extends JFrame {
 				line.open(format, bufferSize);
 				line.start();
 				final AudioInputStream stream = new AudioInputStream(line);
-				dispatcher = new AudioDispatcher(stream, bufferSize,overlap); 
+				final TarsosDSPAudioInputStream audioStream = new JVMAudioInputStream(stream);
+				dispatcher = new AudioDispatcher(audioStream, bufferSize,overlap); 
 			 }else{
 					if(format.getChannels() != 1){
-						dispatcher = AudioDispatcher.fromFile(inputFile,bufferSize * format.getChannels(),overlap * format.getChannels());
+						dispatcher = AudioDispatcherFactory.fromFile(inputFile,bufferSize * format.getChannels(),overlap * format.getChannels());
 						dispatcher.addAudioProcessor(new MultichannelToMono(format.getChannels(),true));
 					}else{
-						dispatcher = AudioDispatcher.fromFile(inputFile,bufferSize,overlap);
+						dispatcher = AudioDispatcherFactory.fromFile(inputFile,bufferSize,overlap);
 					}
 			 }
 			 

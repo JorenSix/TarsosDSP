@@ -6,45 +6,33 @@
 *        | | (_| | |  \__ \ (_) \__ \ |__| |____) | |     
 *        |_|\__,_|_|  |___/\___/|___/_____/|_____/|_|     
 *                                                         
-* -----------------------------------------------------------
+* -------------------------------------------------------------
 *
-*  TarsosDSP is developed by Joren Six at 
-*  The School of Arts,
-*  University College Ghent,
-*  Hoogpoort 64, 9000 Ghent - Belgium
+* TarsosDSP is developed by Joren Six at IPEM, University Ghent
 *  
-* -----------------------------------------------------------
+* -------------------------------------------------------------
 *
-*  Info: http://tarsos.0110.be/tag/TarsosDSP
+*  Info: http://0110.be/tag/TarsosDSP
 *  Github: https://github.com/JorenSix/TarsosDSP
-*  Releases: http://tarsos.0110.be/releases/TarsosDSP/
+*  Releases: http://0110.be/releases/TarsosDSP/
 *  
 *  TarsosDSP includes modified source code by various authors,
 *  for credits and info, see README.
 * 
 */
 
+
 package be.tarsos.dsp;
 
-import java.io.ByteArrayInputStream;
-import java.io.File;
 import java.io.IOException;
-import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-import javax.sound.sampled.AudioFileFormat;
-import javax.sound.sampled.AudioFormat;
-import javax.sound.sampled.AudioInputStream;
-import javax.sound.sampled.AudioSystem;
-import javax.sound.sampled.LineUnavailableException;
-import javax.sound.sampled.TargetDataLine;
-import javax.sound.sampled.UnsupportedAudioFileException;
-
-import be.tarsos.dsp.util.AudioFloatConverter;
-
+import be.tarsos.dsp.io.TarsosDSPAudioFloatConverter;
+import be.tarsos.dsp.io.TarsosDSPAudioFormat;
+import be.tarsos.dsp.io.TarsosDSPAudioInputStream;
 
 
 /**
@@ -54,7 +42,7 @@ import be.tarsos.dsp.util.AudioFloatConverter;
  * AudioProcessors and sound. This behavior can be used for visualization.
  * @author Joren Six
  */
-public final class AudioDispatcher implements Runnable {
+public class AudioDispatcher implements Runnable {
 
 	/**
 	 * Log messages.
@@ -65,7 +53,7 @@ public final class AudioDispatcher implements Runnable {
 	 * The audio stream (in bytes), conversion to float happens at the last
 	 * moment.
 	 */
-	private final AudioInputStream audioInputStream;
+	private final TarsosDSPAudioInputStream audioInputStream;
 
 	/**
 	 * This buffer is reused again and again to store audio data using the float
@@ -89,9 +77,9 @@ public final class AudioDispatcher implements Runnable {
 	 * Converter converts an array of floats to an array of bytes (and vice
 	 * versa).
 	 */
-	private final AudioFloatConverter converter;
+	private final TarsosDSPAudioFloatConverter converter;
 	
-	private final AudioFormat format;
+	private final TarsosDSPAudioFormat format;
 
 	/**
 	 * The floatOverlap: the number of elements that are copied in the buffer
@@ -150,11 +138,8 @@ public final class AudioDispatcher implements Runnable {
 	 * @param bufferOverlap
 	 *            How much consecutive buffers overlap (in samples). Half of the
 	 *            AudioBufferSize is common (512, 1024) for an FFT.
-	 * @throws UnsupportedAudioFileException
-	 *             If an unsupported format is used.
 	 */
-	public AudioDispatcher(final AudioInputStream stream, final int audioBufferSize, final int bufferOverlap)
-			throws UnsupportedAudioFileException {
+	public AudioDispatcher(final TarsosDSPAudioInputStream stream, final int audioBufferSize, final int bufferOverlap){
 		
 		audioProcessors = new ArrayList<AudioProcessor>();
 		audioInputStream = stream;
@@ -163,7 +148,7 @@ public final class AudioDispatcher implements Runnable {
 		audioEvent = new AudioEvent(format,audioInputStream.getFrameLength());
 			
 		setStepSizeAndOverlap(audioBufferSize, bufferOverlap);
-		converter = AudioFloatConverter.getConverter(format);
+		converter = TarsosDSPAudioFloatConverter.getConverter(format);
 		
 		stopped = false;
 		
@@ -176,7 +161,7 @@ public final class AudioDispatcher implements Runnable {
 	public AudioDispatcher(final int audioBufferSize) {
 		audioProcessors = new ArrayList<AudioProcessor>();
 		audioInputStream = null;
-		format = new AudioFormat(44100, 16, 1, true, false);
+		format = new TarsosDSPAudioFormat(44100, 16, 1, true, false);
 		audioEvent = new AudioEvent(format, 0);
 		audioFloatBuffer = new float[audioBufferSize];
 		
@@ -186,7 +171,7 @@ public final class AudioDispatcher implements Runnable {
 		byteOverlap = floatOverlap * format.getFrameSize();
 		byteStepSize = floatStepSize * format.getFrameSize();
 		
-		converter = AudioFloatConverter.getConverter(format);
+		converter = TarsosDSPAudioFloatConverter.getConverter(format);
 		stopped = false;
 		bytesToSkip = 0;
 		bytesProcessed = 0;
@@ -207,44 +192,7 @@ public final class AudioDispatcher implements Runnable {
 	 */
 	public long durationInFrames(){
 		return audioInputStream.getFrameLength() ;
-	}
-	
-	public static double determineDuration(final File audioFile){
-		double durationInSeconds = -1;
-		try{
-			AudioInputStream stream;		
-			AudioFileFormat sourceFileFormat = AudioSystem.getAudioFileFormat(audioFile);
-			AudioFormat sourceFormat = sourceFileFormat.getFormat();
-			stream = AudioSystem.getAudioInputStream(audioFile);
-			if(stream.getFrameLength() > 0 && sourceFormat.getFrameRate() > 0){
-				//Determine the duration by using frame length (PCM and related formats).
-				durationInSeconds = stream.getFrameLength() / sourceFormat.getFrameRate();
-			}
-		}catch (UnsupportedAudioFileException e) {
-			//ignore
-		} catch (IOException e) {
-			//ignore
-		}
-		
-		if(durationInSeconds == -1){
-			AudioFile f;
-			try {
-				f = new AudioFile(audioFile.getAbsolutePath());
-				AudioDispatcher d = new AudioDispatcher(f.getMonoStream(44100), 4096, 0);
-				DetermineDurationProcessor duration = new DetermineDurationProcessor();
-				d.addAudioProcessor(duration);
-				d.run();
-				durationInSeconds = duration.getDurationInSeconds();
-			} catch (UnsupportedAudioFileException e) {
-				LOG.severe("Could not determine duration of " + audioFile.getName());
-				e.printStackTrace();
-			}
-			LOG.warning("Determined duration of " + audioFile.getName() + " by decoding, performance improvement possible!");
-		}
-		return durationInSeconds;
-	}
-	
-	
+	}	
 	
 	
 	/**
@@ -272,7 +220,7 @@ public final class AudioDispatcher implements Runnable {
 		floatOverlap = bufferOverlap;
 		floatStepSize = audioFloatBuffer.length - floatOverlap;
 
-		final AudioFormat format = audioInputStream.getFormat();
+		final TarsosDSPAudioFormat format = audioInputStream.getFormat();
 		audioByteBuffer = new byte[audioFloatBuffer.length * format.getFrameSize()];
 		byteOverlap = floatOverlap * format.getFrameSize();
 		byteStepSize = floatStepSize * format.getFrameSize();
@@ -486,127 +434,8 @@ public final class AudioDispatcher implements Runnable {
 		return bytesRead;
 	}
 	
-	public AudioFormat getFormat(){
+	public TarsosDSPAudioFormat getFormat(){
 		return format;
-	}
-
-	/**
-	 * Create a stream from a file and use that to create a new AudioDispatcher
-	 * 
-	 * @param audioFile
-	 *            The file.
-	 * @param size
-	 *            The number of samples used in the buffer.
-	 * @param overlap 
-	 * @return A new audioprocessor.
-	 * @throws UnsupportedAudioFileException
-	 *             If the audio file is not supported.
-	 * @throws IOException
-	 *             When an error occurs reading the file.
-	 */
-	public static AudioDispatcher fromFile(final File audioFile, final int size,final int overlap)
-			throws UnsupportedAudioFileException, IOException {
-		final AudioInputStream stream = AudioSystem.getAudioInputStream(audioFile);
-		return new AudioDispatcher(stream, size, overlap);
-	}
-	
-	
-	/**
-	 * Create a stream from an URL and use that to create a new AudioDispatcher
-	 * 
-	 * @param audioStream
-	 *            The URL describing the stream..
-	 * @param size
-	 *            The number of samples used in the buffer.
-	 * @param overlap 
-	 * @return A new audio processor.
-	 * @throws UnsupportedAudioFileException
-	 *             If the audio file is not supported.
-	 * @throws IOException
-	 *             When an error occurs reading the file.
-	 */
-	public static AudioDispatcher fromURL(final URL audioStream, final int size,final int overlap)
-	throws UnsupportedAudioFileException, IOException {
-		final AudioInputStream stream = AudioSystem.getAudioInputStream(audioStream);
-		return new AudioDispatcher(stream, size, overlap);
-	}
-	
-	
-	
-
-	/**
-	 * Create a stream from an array of bytes and use that to create a new
-	 * AudioDispatcher.
-	 * 
-	 * @param byteArray
-	 *            An array of bytes, containing audio information.
-	 * @param audioFormat
-	 *            The format of the audio represented using the bytes.
-	 * @param audioBufferSize
-	 *            The size of the buffer defines how much samples are processed
-	 *            in one step. Common values are 1024,2048.
-	 * @param bufferOverlap
-	 *            How much consecutive buffers overlap (in samples). Half of the
-	 *            AudioBufferSize is common.
-	 * @return A new AudioDispatcher.
-	 * @throws UnsupportedAudioFileException
-	 *             If the audio format is not supported.
-	 */
-	public static AudioDispatcher fromByteArray(final byte[] byteArray, final AudioFormat audioFormat,
-			final int audioBufferSize, final int bufferOverlap) throws UnsupportedAudioFileException {
-		final ByteArrayInputStream bais = new ByteArrayInputStream(byteArray);
-		final long length = byteArray.length / audioFormat.getFrameSize();
-		final AudioInputStream stream = new AudioInputStream(bais, audioFormat, length);
-		return new AudioDispatcher(stream, audioBufferSize, bufferOverlap);
-	}
-	
-	/**
-	 * Create a new AudioDispatcher connected to the default microphone. The default is defined by the 
-	 * Java runtime by calling <pre>AudioSystem.getTargetDataLine(format)</pre>. 
-	 * The microphone must support the format: 44100Hz sample rate, 16bits mono, signed big endian.   
-	 * @param audioBufferSize
-	 *            The size of the buffer defines how much samples are processed
-	 *            in one step. Common values are 1024,2048.
-	 * @param bufferOverlap
-	 *            How much consecutive buffers overlap (in samples). Half of the
-	 *            AudioBufferSize is common.
-	 * @return An audio dispatcher connected to the default microphone.
-	 * @throws UnsupportedAudioFileException
-	 * @throws LineUnavailableException
-	 */
-	public static AudioDispatcher fromDefaultMicrophone(final int audioBufferSize, final int bufferOverlap) throws UnsupportedAudioFileException, LineUnavailableException {
-		final AudioFormat format = new AudioFormat(44100, 16, 1, true,true);
-		TargetDataLine line =  AudioSystem.getTargetDataLine(format);
-		line.open(format, audioBufferSize);
-		line.start();
-		AudioInputStream stream = new AudioInputStream(line);
-		return new AudioDispatcher(stream, audioBufferSize, bufferOverlap);
-	}
-	
-	/**
-	 * Create a stream from an array of floats and use that to create a new
-	 * AudioDispatcher.
-	 * 
-	 * @param floatArray
-	 *            An array of floats, containing audio information.
-	 * @param sampleRate 
-	 * 			  The sample rate of the audio information contained in the buffer.
-	 * @param audioBufferSize
-	 *            The size of the buffer defines how much samples are processed
-	 *            in one step. Common values are 1024,2048.
-	 * @param bufferOverlap
-	 *            How much consecutive buffers overlap (in samples). Half of the
-	 *            AudioBufferSize is common.
-	 * @return A new AudioDispatcher.
-	 * @throws UnsupportedAudioFileException
-	 *             If the audio format is not supported.
-	 */
-	public static AudioDispatcher fromFloatArray(final float[] floatArray, final int sampleRate, final int audioBufferSize, final int bufferOverlap) throws UnsupportedAudioFileException {
-		final AudioFormat audioFormat = new AudioFormat(sampleRate, 16, 1, true, false);
-		final AudioFloatConverter converter = AudioFloatConverter.getConverter(audioFormat);
-		final byte[] byteArray = new byte[floatArray.length * audioFormat.getFrameSize()]; 
-		converter.toByteArray(floatArray, byteArray);
-		return AudioDispatcher.fromByteArray(byteArray, audioFormat, audioBufferSize, bufferOverlap);
 	}
 	
 	/**

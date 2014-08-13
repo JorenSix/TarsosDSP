@@ -1,3 +1,26 @@
+/*
+*      _______                       _____   _____ _____  
+*     |__   __|                     |  __ \ / ____|  __ \ 
+*        | | __ _ _ __ ___  ___  ___| |  | | (___ | |__) |
+*        | |/ _` | '__/ __|/ _ \/ __| |  | |\___ \|  ___/ 
+*        | | (_| | |  \__ \ (_) \__ \ |__| |____) | |     
+*        |_|\__,_|_|  |___/\___/|___/_____/|_____/|_|     
+*                                                         
+* -------------------------------------------------------------
+*
+* TarsosDSP is developed by Joren Six at IPEM, University Ghent
+*  
+* -------------------------------------------------------------
+*
+*  Info: http://0110.be/tag/TarsosDSP
+*  Github: https://github.com/JorenSix/TarsosDSP
+*  Releases: http://0110.be/releases/TarsosDSP/
+*  
+*  TarsosDSP includes modified source code by various authors,
+*  for credits and info, see README.
+* 
+*/
+
 package be.tarsos.dsp.example.dissonance;
 
 import java.awt.BorderLayout;
@@ -13,7 +36,6 @@ import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
 import java.util.List;
 
-import javax.sound.sampled.AudioInputStream;
 import javax.sound.sampled.LineUnavailableException;
 import javax.sound.sampled.UnsupportedAudioFileException;
 import javax.swing.JButton;
@@ -32,13 +54,15 @@ import javax.swing.event.ChangeListener;
 
 import be.tarsos.dsp.AudioDispatcher;
 import be.tarsos.dsp.AudioEvent;
-import be.tarsos.dsp.AudioFile;
 import be.tarsos.dsp.AudioPlayer;
 import be.tarsos.dsp.AudioProcessor;
-import be.tarsos.dsp.PipeDecoder;
 import be.tarsos.dsp.SpectralPeakProcessor;
 import be.tarsos.dsp.SpectralPeakProcessor.SpectralPeak;
 import be.tarsos.dsp.example.spectrum.SpectralInfo;
+import be.tarsos.dsp.io.PipeDecoder;
+import be.tarsos.dsp.io.PipedAudioStream;
+import be.tarsos.dsp.io.TarsosDSPAudioInputStream;
+import be.tarsos.dsp.io.jvm.JVMAudioInputStream;
 import be.tarsos.dsp.ui.Axis;
 import be.tarsos.dsp.ui.AxisUnit;
 import be.tarsos.dsp.ui.CoordinateSystem;
@@ -413,9 +437,9 @@ public class DissonanceExample extends JFrame {
 		this.setTitle("Spectral Peaks - " + new File(fileName).getName());
 		frameSlider.setEnabled(false);
 		frameSlider.setMaximum(0);
-		AudioFile f = new AudioFile(fileName);
+		PipedAudioStream f = new PipedAudioStream(fileName);
 		spectalInfo.clear();
-		AudioInputStream stream = f.getMonoStream(sampleRate);
+		TarsosDSPAudioInputStream stream = f.getMonoStream(sampleRate);
 		int overlap = fftsize - stepsize;
 		if(overlap < 1){
 			overlap = 128;
@@ -456,9 +480,9 @@ public class DissonanceExample extends JFrame {
 			}
 		});
 		
-		AudioInputStream audioPlayStream = f.getMonoStream(sampleRate);
+		TarsosDSPAudioInputStream audioPlayStream = f.getMonoStream(sampleRate);
 		player = new AudioDispatcher(audioPlayStream, 2048, 0);
-		player.addAudioProcessor(new AudioPlayer(PipeDecoder.getTargetAudioFormat(sampleRate)));
+		player.addAudioProcessor(new AudioPlayer(JVMAudioInputStream.toAudioFormat(PipeDecoder.getTargetAudioFormat(sampleRate))));
 		
 		new Thread(player).start();
 		new Thread(dispatcher).start();
