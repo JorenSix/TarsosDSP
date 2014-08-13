@@ -23,8 +23,9 @@
 	<target name="compile_for_jvm">
 		<mkdir dir="../bin" />
 		<javac srcdir="../src" destdir="../bin" includeantruntime="false" />
-		<javac srcdir="../examples" destdir="../bin" includeantruntime="false" />
 		<javac srcdir="../jvm" destdir="../bin" includeantruntime="false" />
+		<javac srcdir="../examples" destdir="../bin" includeantruntime="false" />
+		
 
 		<!-- copy all needed resources to bin dir -->
 		<copy todir="../bin/be/tarsos/dsp/example/resources">

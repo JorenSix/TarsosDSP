@@ -11,6 +11,9 @@ ant release
 filename=$(basename TarsosDSP-*-bin.jar)
 version=${filename:10:3}
 
+#build the android library
+ant tarsos_dsp_android_library
+
 deploy_dir="/var/www/be.0110/current/public/releases/TarsosDSP/"
 deploy_location=$deploy_dir"TarsosDSP-nightly/"
 
