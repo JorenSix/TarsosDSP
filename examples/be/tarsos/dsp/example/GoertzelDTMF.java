@@ -47,10 +47,10 @@ import javax.swing.UIManager;
 import javax.swing.border.TitledBorder;
 
 import be.tarsos.dsp.AudioDispatcher;
-import be.tarsos.dsp.AudioPlayer;
 import be.tarsos.dsp.AudioProcessor;
 import be.tarsos.dsp.io.TarsosDSPAudioFloatConverter;
 import be.tarsos.dsp.io.TarsosDSPAudioInputStream;
+import be.tarsos.dsp.io.jvm.AudioPlayer;
 import be.tarsos.dsp.io.jvm.JVMAudioInputStream;
 import be.tarsos.dsp.pitch.DTMF;
 import be.tarsos.dsp.pitch.Goertzel;

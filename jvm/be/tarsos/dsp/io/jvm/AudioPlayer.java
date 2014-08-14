@@ -22,13 +22,16 @@
 */
 
 
-package be.tarsos.dsp;
+package be.tarsos.dsp.io.jvm;
 
 import javax.sound.sampled.AudioFormat;
 import javax.sound.sampled.AudioSystem;
 import javax.sound.sampled.DataLine;
 import javax.sound.sampled.LineUnavailableException;
 import javax.sound.sampled.SourceDataLine;
+
+import be.tarsos.dsp.AudioEvent;
+import be.tarsos.dsp.AudioProcessor;
 
 /**
  * This AudioProcessor can be used to sync events with sound. It uses a pattern

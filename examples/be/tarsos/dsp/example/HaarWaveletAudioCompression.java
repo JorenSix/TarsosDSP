@@ -38,10 +38,10 @@ import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
 
 import be.tarsos.dsp.AudioDispatcher;
-import be.tarsos.dsp.AudioPlayer;
 import be.tarsos.dsp.BitDepthProcessor;
 import be.tarsos.dsp.GainProcessor;
 import be.tarsos.dsp.io.jvm.AudioDispatcherFactory;
+import be.tarsos.dsp.io.jvm.AudioPlayer;
 import be.tarsos.dsp.io.jvm.JVMAudioInputStream;
 import be.tarsos.dsp.wavelet.HaarWaveletCoder;
 import be.tarsos.dsp.wavelet.HaarWaveletDecoder;

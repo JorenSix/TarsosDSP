@@ -39,6 +39,7 @@ import javax.sound.sampled.AudioSystem;
 
 import be.tarsos.dsp.AudioEvent;
 import be.tarsos.dsp.AudioProcessor;
+import be.tarsos.dsp.io.TarsosDSPAudioFormat;
 
 /**
  * <p>
@@ -94,6 +95,10 @@ public class WaveformWriter implements AudioProcessor {
 			message = String.format("Could not write to the temporary RAW file %1s: %2s", rawOutputFile.getAbsolutePath(), e.getMessage());
 			LOG.severe(message);
 		}	
+	}
+	
+	public WaveformWriter(final TarsosDSPAudioFormat format,final String fileName){
+		this(JVMAudioInputStream.toAudioFormat(format),fileName);
 	}
 	
 	@Override

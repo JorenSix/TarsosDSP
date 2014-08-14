@@ -29,8 +29,28 @@ import be.tarsos.dsp.AudioDispatcher;
 import be.tarsos.dsp.io.TarsosDSPAudioFormat;
 import be.tarsos.dsp.io.TarsosDSPAudioInputStream;
 
+/**
+ * The Factory creates {@link AudioDispatcher} objects from the
+ * configured default microphone of an Android device. 
+ * It depends on the android runtime and does not work on the standard Java runtime.
+ * 
+ * @author Joren Six
+ * @see AudioDispatcher
+ */
 public class AudioDispatcherFactory {
 
+	/**
+	 * Create a new AudioDispatcher connected to the default microphone.
+	 * 
+	 * @param sampleRate
+	 *            The requested sample rate.
+	 * @param audioBufferSize
+	 *            The size of the audio buffer (in samples).
+	 * 
+	 * @param bufferOverlap
+	 *            The size of the overlap (in samples).
+	 * @return A new AudioDispatcher
+	 */
 	public static AudioDispatcher fromDefaultMicrophone(final int sampleRate,
 			final int audioBufferSize, final int bufferOverlap) {
 		int minAudioBufferSize = AudioRecord.getMinBufferSize(sampleRate,

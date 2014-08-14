@@ -27,9 +27,9 @@ import javax.sound.sampled.AudioFormat;
 import javax.sound.sampled.LineUnavailableException;
 
 import be.tarsos.dsp.AudioDispatcher;
-import be.tarsos.dsp.AudioPlayer;
 import be.tarsos.dsp.effects.DelayEffect;
 import be.tarsos.dsp.filters.LowPassFS;
+import be.tarsos.dsp.io.jvm.AudioPlayer;
 import be.tarsos.dsp.synthesis.AmplitudeLFO;
 import be.tarsos.dsp.synthesis.NoiseGenerator;
 import be.tarsos.dsp.synthesis.SineGenerator;

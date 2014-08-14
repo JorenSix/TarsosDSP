@@ -21,7 +21,7 @@ deploy_location=$deploy_dir"TarsosDSP-nightly/"
 textile2html ../README.textile TarsosDSP-$version-Readme.html
 
 #Copy the manual
-wget "http://tarsos.0110.be/releases/TarsosDSP/TarsosDSP-latest/TarsosDSP-latest-Manual.pdf"
+wget "http://0110.be/releases/TarsosDSP/TarsosDSP-latest/TarsosDSP-latest-Manual.pdf"
 mv $manual_location TarsosDSP-$version-Manual.pdf
 
 

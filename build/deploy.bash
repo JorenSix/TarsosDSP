@@ -47,8 +47,8 @@ ssh joren@0110.be rm -R $deploy_dir/TarsosDSP-latest
 ssh joren@0110.be mkdir $deploy_dir/TarsosDSP-latest
 ssh joren@0110.be ln -s -f $deploy_location/TarsosDSP-$version.jar $deploy_dir/TarsosDSP-latest/TarsosDSP-latest.jar
 ssh joren@0110.be ln -s -f $deploy_location/TarsosDSP-$version-bin.jar $deploy_dir/TarsosDSP-latest/TarsosDSP-latest-bin.jar
-ssh joren@0110.be ln -s -f $deploy_location/TarsosDSP-Android-$version.jar $deploy_location/TarsosDSP-Android-latest.jar
-ssh joren@0110.be ln -s -f $deploy_location/TarsosDSP-Android-$version-bin.jar $deploy_location/TarsosDSP-Android-latest-bin.jar
+ssh joren@0110.be ln -s -f $deploy_location/TarsosDSP-Android-$version.jar $deploy_dir/TarsosDSP-latest/TarsosDSP-Android-latest.jar
+ssh joren@0110.be ln -s -f $deploy_location/TarsosDSP-Android-$version-bin.jar $deploy_dir/TarsosDSP-latest/TarsosDSP-Android-latest-bin.jar
 ssh joren@0110.be ln -s -f $deploy_location/TarsosDSP-$version-Manual.pdf $deploy_dir/TarsosDSP-latest/TarsosDSP-latest-Manual.pdf
 ssh joren@0110.be ln -s -f $deploy_location/TarsosDSP-$version-Documentation $deploy_dir/TarsosDSP-latest/TarsosDSP-latest-Documentation
 ssh joren@0110.be ln -s -f $deploy_location/TarsosDSP-$version-Readme.html $deploy_dir/TarsosDSP-latest/TarsosDSP-latest-Readme.html

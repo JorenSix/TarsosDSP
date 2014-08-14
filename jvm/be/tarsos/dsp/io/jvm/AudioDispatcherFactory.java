@@ -40,6 +40,14 @@ import be.tarsos.dsp.io.PipedAudioStream;
 import be.tarsos.dsp.io.TarsosDSPAudioFloatConverter;
 import be.tarsos.dsp.io.TarsosDSPAudioInputStream;
 
+/**
+ * The Factory creates {@link AudioDispatcher} objects from various sources: the
+ * configured default microphone, PCM wav files or PCM samples piped from a
+ * sub-process. It depends on the javax.sound.* packages and does not work on Android.
+ * 
+ * @author Joren Six
+ * @see AudioDispatcher
+ */
 public class AudioDispatcherFactory {
 
 	/**
@@ -115,14 +123,19 @@ public class AudioDispatcherFactory {
 	}
 	
 	/**
-	 * Create a stream from a piped sub process and use that to create a new AudioDispatcher
+	 * Create a stream from a piped sub process and use that to create a new
+	 * {@link AudioDispatcher} The sub-process writes a WAV-header and
+	 * PCM-samples to standard out. The header is ignored and the PCM samples
+	 * are are captured and interpreted. Examples of executables that can
+	 * convert audio in any format and write to stdout are ffmpeg and avconv.
 	 * 
 	 * @param source
-	 *            The file.
-	 * @param targetSampleRate The target sample rate.
+	 *            The file or stream to capture.
+	 * @param targetSampleRate
+	 *            The target sample rate.
 	 * @param audioBufferSize
 	 *            The number of samples used in the buffer.
-	 * @param bufferOverlap 
+	 * @param bufferOverlap
 	 * @return A new audioprocessor.
 	 */
 	public static AudioDispatcher fromPipe(final String source,final int targetSampleRate, final int audioBufferSize,final int bufferOverlap){

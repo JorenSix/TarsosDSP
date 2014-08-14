@@ -32,6 +32,12 @@ import javax.sound.sampled.AudioInputStream;
 import be.tarsos.dsp.io.TarsosDSPAudioFormat;
 import be.tarsos.dsp.io.TarsosDSPAudioInputStream;
 
+/**
+ * Encapsulates an {@link AudioInputStream} to make it work with the core TarsosDSP library.
+ * 
+ * @author Joren Six
+ *
+ */
 public class JVMAudioInputStream implements TarsosDSPAudioInputStream {
 	
 	private final AudioInputStream underlyingStream;
@@ -66,12 +72,26 @@ public class JVMAudioInputStream implements TarsosDSPAudioInputStream {
 		return tarsosDSPAudioFormat;
 	}
 	
+	/**
+	 * Converts a {@link AudioFormat} to a {@link TarsosDSPAudioFormat}.
+	 * 
+	 * @param format
+	 *            The {@link AudioFormat}
+	 * @return A {@link TarsosDSPAudioFormat}
+	 */
 	public static TarsosDSPAudioFormat toTarsosDSPFormat(AudioFormat format) {
 		boolean isSigned = format.getEncoding() == Encoding.PCM_SIGNED;
 		TarsosDSPAudioFormat tarsosDSPFormat = new TarsosDSPAudioFormat(format.getSampleRate(), format.getSampleSizeInBits(), format.getChannels(), isSigned, format.isBigEndian());
 		return tarsosDSPFormat;
 	}
 
+	/**
+	 * Converts a {@link TarsosDSPAudioFormat} to a {@link AudioFormat}.
+	 * 
+	 * @param format
+	 *            The {@link TarsosDSPAudioFormat}
+	 * @return A {@link AudioFormat}
+	 */
 	public static AudioFormat toAudioFormat(TarsosDSPAudioFormat format) {
 		boolean isSigned = format.getEncoding() == TarsosDSPAudioFormat.Encoding.PCM_SIGNED;
 		AudioFormat audioFormat = new AudioFormat(format.getSampleRate(), format.getSampleSizeInBits(), format.getChannels(), isSigned, format.isBigEndian());
