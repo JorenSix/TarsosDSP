@@ -25,6 +25,17 @@ package be.tarsos.dsp.wavelet;
 
 public class HaarWaveletTransform {
 		
+	private final boolean preserveEnergy;
+	private final float sqrtTwo = (float) Math.sqrt(2.0);
+	
+	public HaarWaveletTransform(boolean preserveEnergy){
+		this.preserveEnergy = preserveEnergy;
+	}
+	
+	public HaarWaveletTransform(){
+		this(false);
+	}
+	
 	/**
 	 * Does an in-place Haar wavelet transform. The
 	 * length of data needs to be a power of two.
@@ -42,6 +53,10 @@ public class HaarWaveletTransform {
 			for(int k=0; k < m;k++){
 				float a = (s[j*k]+s[j*k + i])/2.0f;
 				float c = (s[j*k]-s[j*k + i])/2.0f;
+				if(preserveEnergy){
+					a = a/sqrtTwo;
+					c = c/sqrtTwo;
+				}
 				s[j*k] = a;
 				s[j*k+i] = c;
 			}
@@ -66,6 +81,10 @@ public class HaarWaveletTransform {
 			for(int k = 0; k < m ; k++){
 				float a = data[j*k]+data[j*k+i];
 				float a1 = data[j*k]-data[j*k+i];
+				if(preserveEnergy){
+					a = a*sqrtTwo;
+					a1 = a1*sqrtTwo;
+				}
 				data[j*k] = a;
 				data[j*k+i] = a1;
 			}

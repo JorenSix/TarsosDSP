@@ -93,7 +93,7 @@ public final class AudioPlayer implements AudioProcessor {
 	/*
 	 * (non-Javadoc)
 	 * 
-	 * @see be.hogent.tarsos.util.RealTimeAudioProcessor.AudioProcessor#
+	 * @see be.tarsos.util.RealTimeAudioProcessor.AudioProcessor#
 	 * processingFinished()
 	 */
 	public void processingFinished() {

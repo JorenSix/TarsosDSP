@@ -76,12 +76,12 @@ public class TestUtilities {
 	 */
 	public static float[] audioBufferFlute() {
 		int lengthInSamples = 4096;
-		String file = "/be/hogent/tarsos/dsp/test/resources/flute.novib.ff.A4.wav";
+		String file = "/be/tarsos/dsp/test/resources/flute.novib.ff.A4.wav";
 		return audioBufferFile(file,lengthInSamples);
 	}
 	
 	public static File fluteFile(){
-		String file = "/be/hogent/tarsos/dsp/test/resources/flute.novib.ff.A4.wav";
+		String file = "/be/tarsos/dsp/test/resources/flute.novib.ff.A4.wav";
 		final URL url = TestUtilities.class.getResource(file);
 		try {
 			return new File(new URI(url.toString()));
@@ -91,7 +91,7 @@ public class TestUtilities {
 	}
 	
 	public static File onsetsAudioFile(){
-		String file = "/be/hogent/tarsos/dsp/test/resources/NR45.wav";
+		String file = "/be/tarsos/dsp/test/resources/NR45.wav";
 		final URL url = TestUtilities.class.getResource(file);
 		try {
 			return new File(new URI(url.toString()));
@@ -106,7 +106,7 @@ public class TestUtilities {
 	 */
 	public static float[] audioBufferHighFlute() {
 		int lengthInSamples = 4096;
-		String file = "/be/hogent/tarsos/dsp/test/resources/flute.novib.ff.B6.wav";
+		String file = "/be/tarsos/dsp/test/resources/flute.novib.ff.B6.wav";
 		return audioBufferFile(file,lengthInSamples);
 	}
 	
@@ -177,7 +177,7 @@ public class TestUtilities {
 	 */
 	public static float[] audioBufferPiano() {
 		int lengthInSamples = 4096;
-		String file = "/be/hogent/tarsos/dsp/test/resources/piano.ff.A4.wav";
+		String file = "/be/tarsos/dsp/test/resources/piano.ff.A4.wav";
 		return audioBufferFile(file,lengthInSamples);
 	}
 	
@@ -187,7 +187,7 @@ public class TestUtilities {
 	 */
 	public static float[] audioBufferLowPiano() {
 		int lengthInSamples = 4096;
-		String file = "/be/hogent/tarsos/dsp/test/resources/piano.ff.C3.wav";
+		String file = "/be/tarsos/dsp/test/resources/piano.ff.C3.wav";
 		return audioBufferFile(file,lengthInSamples);
 	}
 	

@@ -42,7 +42,7 @@ public class ComplexOnsetTests {
 	@Test
 	public void testOnsets() throws UnsupportedAudioFileException, IOException{
 		File audioFile = TestUtilities.onsetsAudioFile();
-		String contents = TestUtilities.readFileFromJar("/be/hogent/tarsos/dsp/test/resources/NR45_expected_onsets_complex.txt");
+		String contents = TestUtilities.readFileFromJar("/be/tarsos/dsp/test/resources/NR45_expected_onsets_complex.txt");
 		String[] onsetStrings = contents.split("\n");
 		final double[] expectedOnsets = new double[onsetStrings.length];
 		int i = 0;

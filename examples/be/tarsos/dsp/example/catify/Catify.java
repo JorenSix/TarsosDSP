@@ -63,7 +63,7 @@ public class Catify {
 			if (args.length == 0) {
 				final String tempDir = System.getProperty("java.io.tmpdir");
 				String path = new File(tempDir, "jingle_bells.mid").getAbsolutePath();
-				String resource = "/be/hogent/tarsos/dsp/example/catify/resources/jingle_bells.mid";
+				String resource = "/be/tarsos/dsp/example/catify/resources/jingle_bells.mid";
 				copyFileFromJar(resource, path);
 				Catify c = new Catify(new File(path), new File("out.wav"),null);
 				c.catify();
@@ -136,7 +136,7 @@ public class Catify {
 		if(sampleDirectory==null){
 			final String tempDir = System.getProperty("java.io.tmpdir");
 			String path = new File(tempDir,"4915__noisecollector__cat3_mod.wav").getAbsolutePath();
-			String resource = "/be/hogent/tarsos/dsp/example/catify/resources/4915__noisecollector__cat3_mod.wav";
+			String resource = "/be/tarsos/dsp/example/catify/resources/4915__noisecollector__cat3_mod.wav";
 			copyFileFromJar(resource,path);
 			catSamples.add(new CatSample(new File(path)));
 		} else {

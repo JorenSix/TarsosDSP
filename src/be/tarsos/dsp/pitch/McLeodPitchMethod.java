@@ -199,7 +199,7 @@ public final class McLeodPitchMethod implements PitchDetector {
 	/*
 	 * (non-Javadoc)
 	 * 
-	 * @see be.hogent.tarsos.pitch.pure.PurePitchDetector#getPitch(float[])
+	 * @see be.tarsos.pitch.pure.PurePitchDetector#getPitch(float[])
 	 */
 	public PitchDetectionResult getPitch(final float[] audioBuffer) {
 		final float pitch;

@@ -58,14 +58,18 @@ ant javadoc #Creates the documentation in TarsosDSP/doc
  
 h2. Source Code Organization & Developing
 
-The library is separated into three source folders: 1) the main core functionality in @src@, TarsosDSP example applications in @examples@ and unit tests in @test@.
+The library is separated into five source folders: 1) the main core functionality in @src@, TarsosDSP example applications in @examples@, unit tests in @test@, JVM audio I/O in jvm and Android audio I/O in android.
 
 * @src@ contains the source files of the core DSP libraries. 
 * @test@ contains unit tests for some of the DSP functionality.
 * @examples@ contains a couple of example applications with a Java Swing user interface.
-* @build@ contains ANT build files. Either to build Java documentation or runnable JAR-files for the example applications.  
+* @build@ contains ANT build files. Either to build Java documentation or runnable JAR-files for the example applications.
+* @android@ contains the source files for audio I/O on Android. It is dependent on the Android Runtime.
+* @jvm@ contains the source files for audio I/O on JRE. It is dependent on the Java Runtime Environment.
+* @lib@ although the TarsosDSP core does not require any external dependencies the @lib@ folder does contain two jar-file to easily run unit-tests (JUnit 4 and Hamcrest). 
+  
 
-To make development with Eclipse easy, make sure both test, src and examples are marked as source folders.
+To make development with Eclipse easy, make sure both @test@, @src@, @jvm@ and @examples@ are marked as source folders. For Android development exclude the @jvm@ folder and include @android@.
 
 
 h2. Credits

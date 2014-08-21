@@ -47,7 +47,7 @@ public class BeatRootTest {
 	@Test
 	public void testExpectedOnsets() throws UnsupportedAudioFileException, IOException{
 		File audioFile = TestUtilities.onsetsAudioFile();
-		String contents = TestUtilities.readFileFromJar("/be/hogent/tarsos/dsp/test/resources/NR45_expected_onsets.txt");
+		String contents = TestUtilities.readFileFromJar("/be/tarsos/dsp/test/resources/NR45_expected_onsets.txt");
 		String[] onsetStrings = contents.split("\n");
 		final double[] expectedOnsets = new double[onsetStrings.length];
 		int i = 0;
@@ -75,7 +75,7 @@ public class BeatRootTest {
 	@Test
 	public void testExpectedBeats() throws UnsupportedAudioFileException, IOException{
 		File audioFile = TestUtilities.onsetsAudioFile();
-		String contents = TestUtilities.readFileFromJar("/be/hogent/tarsos/dsp/test/resources/NR45_expected_beats.txt");
+		String contents = TestUtilities.readFileFromJar("/be/tarsos/dsp/test/resources/NR45_expected_beats.txt");
 		String[] beatsStrings = contents.split("\n");
 		final double[] expectedBeats = new double[beatsStrings.length];
 		int i = 0;

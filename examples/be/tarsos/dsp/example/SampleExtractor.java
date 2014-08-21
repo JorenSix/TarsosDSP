@@ -250,7 +250,7 @@ public class SampleExtractor  extends JFrame {
 		try{
 			final String tempDir = System.getProperty("java.io.tmpdir");
 			String path = new File(tempDir,"flute_sample.wav").getAbsolutePath();
-			String resource = "/be/hogent/tarsos/dsp/example/resources/flute_sample.wav";
+			String resource = "/be/tarsos/dsp/example/resources/flute_sample.wav";
 			copyFileFromJar(resource,path);
 			setFile(new File(path));
 		}catch (Exception e){
