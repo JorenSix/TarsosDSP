@@ -1,0 +1,154 @@
+package be.tarsos.dsp.pitch;
+
+import java.io.File;
+import java.io.IOException;
+
+import javax.sound.sampled.UnsupportedAudioFileException;
+
+import be.tarsos.dsp.AudioDispatcher;
+import be.tarsos.dsp.AudioEvent;
+import be.tarsos.dsp.AudioProcessor;
+import be.tarsos.dsp.io.jvm.AudioDispatcherFactory;
+import be.tarsos.dsp.pitch.Goertzel.FrequenciesDetectedHandler;
+import be.tarsos.dsp.util.Complex;
+import be.tarsos.dsp.util.fft.HammingWindow;
+import be.tarsos.dsp.util.fft.WindowFunction;
+
+/**
+ * <a href="http://download.springer.com/static/pdf/14/art%253A10.1186%252F1687-6180-2012-56.pdf?auth66=1409747532_189c92c583694c81b3a0095e2f665c9e&ext=.pdf">Goertzel algorithm generalized to non-integer multiples of fundamental frequency</a>
+ *  Petr Sysel and Pavel Rajmic
+ * 
+ * 
+ * @author Joren Six
+ *
+ */
+public class GeneralizedGoertzel implements AudioProcessor{
+	
+	/**
+	 * A list of frequencies to detect.
+	 */
+	private final double[] frequenciesToDetect;
+	
+	private final double[] indvec;
+	
+	/**
+	 * Cached cosine calculations for each frequency to detect.
+	 */
+	private final double[] precalculatedCosines;
+	/**
+	 * Cached wnk calculations for each frequency to detect.
+	 */
+	private final double[] precalculatedWnk;
+	/**
+	 * A calculated power for each frequency to detect. This array is reused for
+	 * performance reasons.
+	 */
+	private final double[] calculatedPowers;
+	private final Complex[] calculatedComplex;
+
+	private final FrequenciesDetectedHandler handler;
+	
+	
+	
+	public GeneralizedGoertzel(final float audioSampleRate, final int bufferSize,
+			double[] frequencies, FrequenciesDetectedHandler handler){
+		frequenciesToDetect = frequencies;
+		
+		indvec = new double[frequenciesToDetect.length];
+		for (int j = 0; j < frequenciesToDetect.length; j++) {
+			indvec[j] = frequenciesToDetect[j]/(audioSampleRate/(float)bufferSize);
+		}
+		
+		
+		precalculatedCosines = new double[frequencies.length];
+		precalculatedWnk = new double[frequencies.length];
+		this.handler = handler;
+
+		calculatedPowers = new double[frequencies.length];
+		calculatedComplex = new Complex[frequencies.length];
+
+		for (int i = 0; i < frequenciesToDetect.length; i++) {
+			precalculatedCosines[i] = 2 * Math.cos(2 * Math.PI
+					* frequenciesToDetect[i] / audioSampleRate);
+			precalculatedWnk[i] = Math.exp(-2 * Math.PI
+					* frequenciesToDetect[i] / audioSampleRate);
+		}
+		
+	}
+	
+	@Override
+	public boolean process(AudioEvent audioEvent) {
+		
+		float[] x = audioEvent.getFloatBuffer();
+		WindowFunction f  = new HammingWindow();
+		f.apply(x);
+		for (int j = 0; j < frequenciesToDetect.length; j++) {
+			double pik_term = 2 * Math.PI * indvec[j]/(float) audioEvent.getBufferSize(); 
+			double cos_pik_term2 = Math.cos(pik_term) * 2;
+			Complex cc = new Complex(0,-1*pik_term).exp();
+			double s0=0;
+			double s1=0;
+			double s2=0;
+			
+			for(int i = 0 ; i < audioEvent.getBufferSize() ; i++ ){
+				s0 = x[i]+cos_pik_term2*s1-s2;
+				s2=s1;
+				s1=s0;
+			}
+			s0 = cos_pik_term2 * s1 - s2;
+			calculatedComplex[j] = cc.times(new Complex(-s1,0)).plus(new Complex(s0,0));
+			calculatedPowers[j] = calculatedComplex[j].mod();
+		}
+		
+		handler.handleDetectedFrequencies(frequenciesToDetect.clone(), calculatedPowers.clone(),
+				frequenciesToDetect.clone(), calculatedPowers.clone());
+		
+		return true;
+	}
+
+
+	@Override
+	public void processingFinished() {
+		
+	}
+	
+	
+	public static void main(String... args) throws UnsupportedAudioFileException, IOException{
+		double[] frequenciesToDetect = new double[100];
+		for(int i = 0 ; i < frequenciesToDetect.length ; i++ ){
+			frequenciesToDetect[i] = 396 + i;
+		}
+		FrequenciesDetectedHandler handler = new FrequenciesDetectedHandler() {
+			
+			@Override
+			public void handleDetectedFrequencies(double[] frequencies,
+					double[] powers, double[] allFrequencies, double[] allPowers) {
+				int maxIndex = 0;
+				double maxPower = 0;
+				for(int i = 0 ; i < frequencies.length;i++){
+					if(powers[i] > maxPower){
+						maxPower = powers[i];
+						maxIndex= i;
+					}
+				}
+				System.out.println(frequencies[maxIndex] +"\t" + powers[maxIndex]);
+			}
+		};
+		
+		int blockSize = 4096;
+		AudioProcessor generalized = new GeneralizedGoertzel(44100, blockSize,frequenciesToDetect, handler);
+		//AudioProcessor classic = new Goertzel(44100, 2048,frequenciesToDetect, handler);
+		AudioDispatcher ad = AudioDispatcherFactory.fromFile(new File("/home/joren/Desktop/440Hz-44.1kHz.wav"), blockSize, 0);
+		ad = AudioDispatcherFactory.fromFile(new File("/home/joren/Desktop/chirp-44.1kHz_10min.wav"), blockSize, 0);
+		//ad.addAudioProcessor(classic);
+		ad.addAudioProcessor(generalized);
+		long prev = System.currentTimeMillis();
+		ad.run();
+		long diff = System.currentTimeMillis() - prev;
+		System.out.println(diff);
+	}
+
+
+
+
+}
