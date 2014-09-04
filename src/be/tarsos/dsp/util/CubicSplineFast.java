@@ -38,7 +38,7 @@
 *   UPDATE: 14  January 2010
 *
 *   DOCUMENTATION:
-*   See Michael Thomas Flanagan's Java library on-line web page:
+*   See Michael Thomas Flanagan's Java library on-LineWavelet web page:
 *   http://www.ee.ucl.ac.uk/~mflanaga/java/CubicSplineFast.html
 *   http://www.ee.ucl.ac.uk/~mflanaga/java/
 *

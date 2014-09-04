@@ -44,7 +44,7 @@ import be.tarsos.dsp.pitch.PitchDetectionResult;
 import be.tarsos.dsp.pitch.PitchProcessor;
 import be.tarsos.dsp.pitch.PitchProcessor.PitchEstimationAlgorithm;
 /**
- * Provides support for different types of command line audio feature extraction.
+ * Provides support for different types of command LineWavelet audio feature extraction.
  * @author Joren Six
  */
 public class FeatureExtractor {

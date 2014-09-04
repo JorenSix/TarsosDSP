@@ -135,7 +135,7 @@ public class Goertzel implements AudioProcessor {
 				}
 			}
 			handler.handleDetectedFrequencies(frequencies, powers,
-					frequenciesToDetect, calculatedPowers.clone());
+					frequenciesToDetect.clone(), calculatedPowers.clone());
 		}
 
 		return true;

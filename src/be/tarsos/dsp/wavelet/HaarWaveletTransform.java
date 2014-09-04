@@ -37,7 +37,7 @@ public class HaarWaveletTransform {
 	}
 	
 	/**
-	 * Does an in-place Haar wavelet transform. The
+	 * Does an in-place HaarWavelet wavelet transform. The
 	 * length of data needs to be a power of two.
 	 * It is based on the algorithm found in "Wavelets Made Easy" by Yves Nivergelt, page 24.
 	 * @param s The data to transform.
@@ -66,7 +66,7 @@ public class HaarWaveletTransform {
 	}
 	
     /**
-     * Does an in-place inverse Haar Wavelet Transform. The data needs to be a power of two.
+     * Does an in-place inverse HaarWavelet Wavelet Transform. The data needs to be a power of two.
      * It is based on the algorithm found in "Wavelets Made Easy" by Yves Nivergelt, page 29.
      * @param data The data to transform.
      */

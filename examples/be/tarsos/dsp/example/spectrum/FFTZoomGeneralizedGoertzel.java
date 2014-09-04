@@ -1,33 +1,9 @@
-/*
-*      _______                       _____   _____ _____  
-*     |__   __|                     |  __ \ / ____|  __ \ 
-*        | | __ _ _ __ ___  ___  ___| |  | | (___ | |__) |
-*        | |/ _` | '__/ __|/ _ \/ __| |  | |\___ \|  ___/ 
-*        | | (_| | |  \__ \ (_) \__ \ |__| |____) | |     
-*        |_|\__,_|_|  |___/\___/|___/_____/|_____/|_|     
-*                                                         
-* -------------------------------------------------------------
-*
-* TarsosDSP is developed by Joren Six at IPEM, University Ghent
-*  
-* -------------------------------------------------------------
-*
-*  Info: http://0110.be/tag/TarsosDSP
-*  Github: https://github.com/JorenSix/TarsosDSP
-*  Releases: http://0110.be/releases/TarsosDSP/
-*  
-*  TarsosDSP includes modified source code by various authors,
-*  for credits and info, see README.
-* 
-*/
-
-
-package be.tarsos.dsp.example.constantq;
+package be.tarsos.dsp.example.spectrum;
 
 import java.awt.BorderLayout;
 import java.awt.Color;
-import java.awt.Component;
 import java.awt.GridLayout;
+import java.awt.Point;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.beans.PropertyChangeEvent;
@@ -51,6 +27,7 @@ import javax.swing.event.ChangeListener;
 
 import be.tarsos.dsp.AudioEvent;
 import be.tarsos.dsp.AudioProcessor;
+import be.tarsos.dsp.example.constantq.Player;
 import be.tarsos.dsp.example.constantq.Player.PlayerState;
 import be.tarsos.dsp.ui.Axis;
 import be.tarsos.dsp.ui.AxisUnit;
@@ -60,44 +37,40 @@ import be.tarsos.dsp.ui.ViewPort;
 import be.tarsos.dsp.ui.ViewPort.ViewPortChangedListener;
 import be.tarsos.dsp.ui.layers.AmplitudeAxisLayer;
 import be.tarsos.dsp.ui.layers.BackgroundLayer;
-import be.tarsos.dsp.ui.layers.ConstantQLayer;
 import be.tarsos.dsp.ui.layers.DragMouseListenerLayer;
+import be.tarsos.dsp.ui.layers.FFTLayer;
 import be.tarsos.dsp.ui.layers.LegendLayer;
+import be.tarsos.dsp.ui.layers.MouseCursorLayer;
 import be.tarsos.dsp.ui.layers.PitchContourLayer;
 import be.tarsos.dsp.ui.layers.SelectionLayer;
 import be.tarsos.dsp.ui.layers.TimeAxisLayer;
+import be.tarsos.dsp.ui.layers.TooltipLayer;
 import be.tarsos.dsp.ui.layers.VerticalFrequencyAxisLayer;
 import be.tarsos.dsp.ui.layers.WaveFormLayer;
 import be.tarsos.dsp.ui.layers.ZoomMouseListenerLayer;
 
-public class ConstantQAudioPlayer extends JPanel {
-
+public class FFTZoomGeneralizedGoertzel extends JPanel{
 	/**
 	 * 
 	 */
-	private static final long serialVersionUID = -4000269621209901229L;
+	private static final long serialVersionUID = 5689356875546643126L;
 	
-	private JSlider gainSlider;
-	private JSlider positionSlider;
-	
-	private JButton playButton;
-	private JButton stopButton;
-	private JButton pauzeButton;
-	private JLabel progressLabel;
-	private JLabel totalLabel;
-	
-	private LinkedPanel waveForm;
-	private LinkedPanel constantQ;
-	private CoordinateSystem waveFormCS;
-	private CoordinateSystem constantQCS;
-	
-	private JFileChooser fileChooser;
+	JLabel progressLabel;
+	JLabel totalLabel;
 	
 	//position value in the slider
 	private int newPositionValue;
 	
+	JSlider positionSlider;
+	
 	final Player player;
 	
+	private LinkedPanel waveForm;
+	private LinkedPanel timeFrequencyPane;
+	private CoordinateSystem waveFormCS;
+	private CoordinateSystem timeFrequencyPaneCS;
+	
+
 	final AudioProcessor processor = new AudioProcessor() {
 		
 		@Override
@@ -116,21 +89,24 @@ public class ConstantQAudioPlayer extends JPanel {
 			
 		}
 	};
-	
 
 	
-	public ConstantQAudioPlayer(){
+	public FFTZoomGeneralizedGoertzel(){
 		this.setLayout(new BorderLayout());
 		
-		JPanel subPanel = new JPanel(new GridLayout(0,1));
-		
-		subPanel.add(createGainPanel());
-		subPanel.add(createProgressPanel());
-		subPanel.add(createButtonPanel());
-		
-		this.add(new JSplitPane(JSplitPane.VERTICAL_SPLIT, subPanel, createConstantQ()));
-		
+	
 		player = new Player(processor,1024,0);
+		
+		JPanel subPanel = new JPanel(new GridLayout(0,1));
+		subPanel.add(createButtonPanel());
+		subPanel.add(createProgressPanel());
+		subPanel.add(createGainPanel());
+		
+		JComponent featurePanel =  createFeaturePanel();
+		
+		JComponent splitPane = new JSplitPane(JSplitPane.VERTICAL_SPLIT, subPanel,featurePanel);
+		
+		
 		player.addPropertyChangeListener(new PropertyChangeListener() {
 			@Override
 			public void propertyChange(PropertyChangeEvent arg0) {
@@ -141,6 +117,71 @@ public class ConstantQAudioPlayer extends JPanel {
 			}
 		});
 		reactToPlayerState(player.getState());
+		
+		this.add(splitPane);
+	}
+	
+	private void reactToPlayerState(PlayerState newState){
+		positionSlider.setEnabled(newState != PlayerState.NO_FILE_LOADED);
+		if(newState == PlayerState.STOPPED || newState == PlayerState.FILE_LOADED){
+			newPositionValue = 0;
+			positionSlider.setValue(0);
+			setProgressLabelText(0, player.getDurationInSeconds());
+		}
+		if(newState == PlayerState.FILE_LOADED){
+	
+			
+			waveForm.removeLayers();
+			waveForm.addLayer(new BackgroundLayer(waveFormCS));
+			waveForm.addLayer(new AmplitudeAxisLayer(waveFormCS));
+			waveForm.addLayer(new TimeAxisLayer(waveFormCS));
+			waveForm.addLayer(new WaveFormLayer(waveFormCS, player.getLoadedFile()));
+			waveForm.addLayer(new ZoomMouseListenerLayer());
+			waveForm.addLayer(new DragMouseListenerLayer(waveFormCS));
+			
+			
+			final MouseCursorLayer waveFormCursor = new MouseCursorLayer(waveFormCS);
+			waveForm.addLayer(waveFormCursor);
+			
+			LegendLayer legend = new LegendLayer(waveFormCS,50);
+			waveForm.addLayer(legend);
+			legend.addEntry("Wave",Color.BLACK);
+			
+			timeFrequencyPane.removeLayers();
+			timeFrequencyPane.addLayer(new BackgroundLayer(timeFrequencyPaneCS));
+		//	timeFrequencyPane.addLayer(new GeneralizedGoertzelLayer(timeFrequencyPaneCS,player.getLoadedFile(),20));
+			
+			FFTLayer fftLayer = new FFTLayer(timeFrequencyPaneCS,player.getLoadedFile(),2048,1024);
+			timeFrequencyPane.addLayer(fftLayer);
+			MouseCursorLayer cl = new MouseCursorLayer(timeFrequencyPaneCS);
+			timeFrequencyPane.addLayer(cl);
+			
+			
+			timeFrequencyPane.addLayer(new PitchContourLayer(timeFrequencyPaneCS,player.getLoadedFile(),Color.red,2048,0));
+			timeFrequencyPane.addLayer(new VerticalFrequencyAxisLayer(timeFrequencyPaneCS));
+			timeFrequencyPane.addLayer(new ZoomMouseListenerLayer());
+			timeFrequencyPane.addLayer(new DragMouseListenerLayer(timeFrequencyPaneCS));
+			timeFrequencyPane.addLayer(new SelectionLayer(timeFrequencyPaneCS));
+			timeFrequencyPane.addLayer(new TimeAxisLayer(timeFrequencyPaneCS));
+			timeFrequencyPane.addLayer(new TooltipLayer(timeFrequencyPaneCS,fftLayer));
+			
+			legend = new LegendLayer(timeFrequencyPaneCS,110);
+			timeFrequencyPane.addLayer(legend);
+			legend.addEntry("ConstantQ",Color.BLACK);
+			legend.addEntry("Pitch estimations",Color.RED);
+			
+			cl.addPropertyChangeListener(new PropertyChangeListener() {
+				
+				@Override
+				public void propertyChange(PropertyChangeEvent evt) {
+					if(evt.getPropertyName()=="cursor"){
+						Point newPoint = (Point) evt.getNewValue();
+						waveFormCursor.setPoint(newPoint);
+					}
+					
+				}
+			});
+		}
 	}
 	
 	private CoordinateSystem getCoordinateSystem(AxisUnit yUnits) {
@@ -153,9 +194,10 @@ public class ConstantQAudioPlayer extends JPanel {
 		return new CoordinateSystem(yUnits, minValue, maxValue);
 	}
 	
-	private Component createConstantQ() {
-		JSplitPane splitPane = new JSplitPane(JSplitPane.VERTICAL_SPLIT);
 	
+	private JComponent createFeaturePanel() {
+		JSplitPane splitPane = new JSplitPane(JSplitPane.VERTICAL_SPLIT);
+		
 		waveFormCS = getCoordinateSystem(AxisUnit.AMPLITUDE);
 		waveForm = new LinkedPanel(waveFormCS);
 		waveForm.addLayer(new BackgroundLayer(waveFormCS));
@@ -169,111 +211,63 @@ public class ConstantQAudioPlayer extends JPanel {
 		
 		splitPane.add(waveForm, JSplitPane.TOP);
 		
-		constantQCS = getCoordinateSystem(AxisUnit.FREQUENCY);
-		constantQ = new LinkedPanel(constantQCS);
-		constantQ.addLayer(new BackgroundLayer(constantQCS));
-		constantQ.addLayer(new VerticalFrequencyAxisLayer(constantQCS));
-		constantQ.addLayer(new TimeAxisLayer(constantQCS));
-		constantQ.addLayer(new ZoomMouseListenerLayer());
-		constantQ.addLayer(new DragMouseListenerLayer(constantQCS));
-		constantQ.addLayer(new SelectionLayer(constantQCS));
+		timeFrequencyPaneCS = getCoordinateSystem(AxisUnit.FREQUENCY);
+		timeFrequencyPane = new LinkedPanel(timeFrequencyPaneCS);
+		timeFrequencyPane.addLayer(new BackgroundLayer(timeFrequencyPaneCS));
+		timeFrequencyPane.addLayer(new VerticalFrequencyAxisLayer(timeFrequencyPaneCS));
+		timeFrequencyPane.addLayer(new TimeAxisLayer(timeFrequencyPaneCS));
+		timeFrequencyPane.addLayer(new ZoomMouseListenerLayer());
+		timeFrequencyPane.addLayer(new DragMouseListenerLayer(timeFrequencyPaneCS));
+		timeFrequencyPane.addLayer(new SelectionLayer(timeFrequencyPaneCS));
 		
-		legend = new LegendLayer(constantQCS,110);
-		constantQ.addLayer(legend);
+		legend = new LegendLayer(timeFrequencyPaneCS,110);
+		timeFrequencyPane.addLayer(legend);
 		
-		legend.addEntry("ConstantQ",Color.BLACK);
+		legend.addEntry("Spectrogram",Color.BLACK);
 		legend.addEntry("Pitch estimations",Color.RED);
 		
-		splitPane.add(constantQ, JSplitPane.BOTTOM);
+		splitPane.add(timeFrequencyPane, JSplitPane.BOTTOM);
 		splitPane.setDividerLocation(150);
 		
 		ViewPortChangedListener listener = new ViewPortChangedListener() {
 			@Override
 			public void viewPortChanged(ViewPort newViewPort) {
 				waveForm.repaint();
-				constantQ.repaint();
+				timeFrequencyPane.repaint();
 			}
 		};
 		waveForm.getViewPort().addViewPortChangedListener(new ViewPortChangedListener() {
 			@Override
 			public void viewPortChanged(ViewPort newViewPort) {
-				constantQCS.setMin(Axis.X,waveFormCS.getMin(Axis.X));
-				constantQCS.setMax(Axis.X,waveFormCS.getMax(Axis.X));
-			}
-		});		
-		waveForm.getViewPort().addViewPortChangedListener(listener);
-		
-		constantQ.getViewPort().addViewPortChangedListener(new ViewPortChangedListener() {
-			@Override
-			public void viewPortChanged(ViewPort newViewPort) {
-				waveFormCS.setMin(Axis.X,constantQCS.getMin(Axis.X));
-				waveFormCS.setMax(Axis.X,constantQCS.getMax(Axis.X));
+				timeFrequencyPaneCS.setMin(Axis.X,waveFormCS.getMin(Axis.X));
+				timeFrequencyPaneCS.setMax(Axis.X,waveFormCS.getMax(Axis.X));
 			}
 		});
-		constantQ.getViewPort().addViewPortChangedListener(listener);
 		
+		
+		
+		waveForm.getViewPort().addViewPortChangedListener(listener);
+		
+		timeFrequencyPane.getViewPort().addViewPortChangedListener(new ViewPortChangedListener() {
+			@Override
+			public void viewPortChanged(ViewPort newViewPort) {
+				waveFormCS.setMin(Axis.X,timeFrequencyPaneCS.getMin(Axis.X));
+				waveFormCS.setMax(Axis.X,timeFrequencyPaneCS.getMax(Axis.X));
+			}
+		});
+		timeFrequencyPane.getViewPort().addViewPortChangedListener(listener);
 		return splitPane;
 	}
 
-	private void reactToPlayerState(PlayerState newState){
-		positionSlider.setEnabled(newState != PlayerState.NO_FILE_LOADED);
-		playButton.setEnabled(newState != PlayerState.PLAYING && newState != PlayerState.NO_FILE_LOADED);
-		pauzeButton.setEnabled(newState == PlayerState.PLAYING && newState != PlayerState.NO_FILE_LOADED );
-		stopButton.setEnabled((newState == PlayerState.PLAYING || newState == PlayerState.PAUZED) && newState != PlayerState.NO_FILE_LOADED);
-		
-		if(newState == PlayerState.STOPPED || newState == PlayerState.FILE_LOADED){
-			newPositionValue = 0;
-			positionSlider.setValue(0);
-			setProgressLabelText(0, player.getDurationInSeconds());
-		}
-		if(newState == PlayerState.FILE_LOADED){
-	
-			waveForm.removeLayers();
-			waveForm.addLayer(new BackgroundLayer(waveFormCS));
-			waveForm.addLayer(new AmplitudeAxisLayer(waveFormCS));
-			waveForm.addLayer(new TimeAxisLayer(waveFormCS));
-			waveForm.addLayer(new WaveFormLayer(waveFormCS, player.getLoadedFile()));
-			waveForm.addLayer(new ZoomMouseListenerLayer());
-			waveForm.addLayer(new DragMouseListenerLayer(waveFormCS));
-			
-			
-			LegendLayer legend = new LegendLayer(waveFormCS,50);
-			waveForm.addLayer(legend);
-			legend.addEntry("Wave",Color.BLACK);
-			
-			constantQ.removeLayers();
-			constantQ.addLayer(new BackgroundLayer(constantQCS));
-			constantQ.addLayer(new ConstantQLayer(constantQCS,player.getLoadedFile(),2048,3600,10800,12));
-			constantQ.addLayer(new PitchContourLayer(constantQCS,player.getLoadedFile(),Color.red,2048,0));
-			constantQ.addLayer(new VerticalFrequencyAxisLayer(constantQCS));
-			constantQ.addLayer(new ZoomMouseListenerLayer());
-			constantQ.addLayer(new DragMouseListenerLayer(constantQCS));
-			constantQ.addLayer(new SelectionLayer(constantQCS));
-			constantQ.addLayer(new TimeAxisLayer(constantQCS));
-			
-			legend = new LegendLayer(constantQCS,110);
-			constantQ.addLayer(legend);
-			legend.addEntry("ConstantQ",Color.BLACK);
-			legend.addEntry("Pitch estimations",Color.RED);
-		}
-	}
-	
-	public String formattedToString(double seconds) {
-		int minutes = (int) (seconds / 60);
-		int completeSeconds = (int) seconds - (minutes * 60);
-		int hundred =  (int) ((seconds - (int) seconds) * 100);
-		return String.format(Locale.US, "%02d:%02d:%02d", minutes , completeSeconds, hundred);
-	}
-	
 	private JComponent createProgressPanel(){
-		positionSlider = new JSlider(0,1000);
+	    positionSlider = new JSlider(0,1000);
 		positionSlider.setValue(0);
 		positionSlider.setPaintLabels(false);
 		positionSlider.setPaintTicks(false);
 		positionSlider.setEnabled(false);
 		positionSlider.addChangeListener(new ChangeListener() {
 			@Override
-			public void stateChanged(ChangeEvent arg0) {				
+			public void stateChanged(ChangeEvent arg0) {
 				if (newPositionValue != positionSlider.getValue()) {
 					double promille = positionSlider.getValue() / 1000.0;
 					double currentPosition = player.getDurationInSeconds() * promille;
@@ -311,20 +305,31 @@ public class ConstantQAudioPlayer extends JPanel {
 		return panel;
 	}
 	
+	private void setProgressLabelText(double current, double max){
+		progressLabel.setText(formattedToString(current));
+		totalLabel.setText(formattedToString(max));
+	}
+	
+	public String formattedToString(double seconds) {
+		int minutes = (int) (seconds / 60);
+		int completeSeconds = (int) seconds - (minutes * 60);
+		int hundred =  (int) ((seconds - (int) seconds) * 100);
+		return String.format(Locale.US, "%02d:%02d:%02d", minutes , completeSeconds, hundred);
+	}
 	
 	private JComponent createButtonPanel(){
 		JPanel fileChooserPanel = new JPanel(new GridLayout(1,0));
 		fileChooserPanel.setBorder(new TitledBorder("Actions"));
 		
-		fileChooser = new JFileChooser();
+		final JFileChooser fileChooser = new JFileChooser();
 		
 		final JButton chooseFileButton = new JButton("Open...");
 		chooseFileButton.addActionListener(new ActionListener(){
 			@Override
 			public void actionPerformed(ActionEvent arg0) {
-				int returnVal = fileChooser.showOpenDialog(ConstantQAudioPlayer.this);
+				int returnVal = fileChooser.showOpenDialog(FFTZoomGeneralizedGoertzel.this);
 	            if (returnVal == JFileChooser.APPROVE_OPTION) {
-	                File file = fileChooser.getSelectedFile();
+	                File file = fileChooser.getSelectedFile();	                
 	                PlayerState currentState = player.getState();
 	                player.load(file);
 	                if(currentState == PlayerState.NO_FILE_LOADED || currentState == PlayerState.PLAYING){
@@ -337,7 +342,8 @@ public class ConstantQAudioPlayer extends JPanel {
 		});
 		fileChooserPanel.add(chooseFileButton);
 		
-		stopButton = new JButton("Stop");
+		final JButton stopButton = new JButton("Stop");
+		stopButton.setEnabled(false);
 		fileChooserPanel.add(stopButton);
 		stopButton.addActionListener(new ActionListener() {
 			@Override
@@ -346,7 +352,9 @@ public class ConstantQAudioPlayer extends JPanel {
 			}
 		});
 		
-		playButton = new JButton("Play");
+		
+		final JButton playButton = new JButton("Play");
+		playButton.setEnabled(false);
 		playButton.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent arg0) {
@@ -355,7 +363,8 @@ public class ConstantQAudioPlayer extends JPanel {
 		});
 		fileChooserPanel.add(playButton);		
 		
-		pauzeButton = new JButton("Pauze");
+		final JButton pauzeButton = new JButton("Pauze");
+		pauzeButton.setEnabled(false);
 		pauzeButton.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent arg0) {
@@ -364,15 +373,24 @@ public class ConstantQAudioPlayer extends JPanel {
 		});
 		fileChooserPanel.add(pauzeButton);
 		
+		player.addPropertyChangeListener(new PropertyChangeListener() {
+			@Override
+			public void propertyChange(PropertyChangeEvent evt) {
+				if(evt.getPropertyName()=="state"){
+					PlayerState newState = (PlayerState) evt.getNewValue();
+					playButton.setEnabled(newState != PlayerState.PLAYING && newState != PlayerState.NO_FILE_LOADED);
+					pauzeButton.setEnabled(newState == PlayerState.PLAYING && newState != PlayerState.NO_FILE_LOADED );
+					stopButton.setEnabled((newState == PlayerState.PLAYING || newState == PlayerState.PAUZED) && newState != PlayerState.NO_FILE_LOADED);
+				}
+			}
+		});
+		
 		return fileChooserPanel;
 	}
 	
-	private void setProgressLabelText(double current, double max){
-		progressLabel.setText(formattedToString(current));
-		totalLabel.setText(formattedToString(max));
-	}
 	
 	private JComponent createGainPanel(){
+		JSlider gainSlider;
 		gainSlider = new JSlider(0,200);
 		gainSlider.setValue(100);
 		gainSlider.setPaintLabels(true);
@@ -381,6 +399,7 @@ public class ConstantQAudioPlayer extends JPanel {
 		gainSlider.addChangeListener(new ChangeListener() {
 			@Override
 			public void stateChanged(ChangeEvent arg0) {
+				JSlider gainSlider = ((JSlider)arg0.getSource());
 				double gainValue = gainSlider.getValue() / 100.0;
 				label.setText(String.format("Gain: %3d", gainSlider.getValue())+"%");
 				player.setGain(gainValue);
@@ -395,15 +414,14 @@ public class ConstantQAudioPlayer extends JPanel {
 		return gainPanel;
 	}
 	
-	
 	public static void main(String... args) throws InterruptedException, InvocationTargetException {
 		SwingUtilities.invokeAndWait(new Runnable() {
 			@Override
 			public void run() {
 				JFrame frame = new JFrame();
 				frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-				frame.setTitle("Constant Q Audio Player");
-				frame.add(new ConstantQAudioPlayer());
+				frame.setTitle("FFT Zoom with Generalized Goertzel");
+				frame.add(new FFTZoomGeneralizedGoertzel());
 				frame.pack();
 				frame.setSize(450,650);
 				frame.setVisible(true);

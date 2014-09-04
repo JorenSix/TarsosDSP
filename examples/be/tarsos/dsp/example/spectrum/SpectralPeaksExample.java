@@ -98,7 +98,7 @@ public class SpectralPeaksExample extends JFrame {
 	private int minPeakSize;
 
 	private final Integer[] fftSizes = {256,512,1024,2048,4096,8192,16384,22050,32768,65536,131072};
-	private final Integer[] inputSampleRate = {22050,44100,192000};
+	private final Integer[] inputSampleRate = {8000,22050,44100,192000};
 	
 	//current frequencies and amplitudes of peak list, for sensory dissonance curve
 	private final List<Double> frequencies;

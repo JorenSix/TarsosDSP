@@ -65,7 +65,7 @@ public class WaveformWriterTest {
 		Mixer.Info selectedMixer = AudioSystem.getMixerInfo()[selectedMixerIndex];
 		System.out.println("Selected mixer: " + Shared.toLocalString(selectedMixer));
 
-		// open a line
+		// open a LineWavelet
 		final Mixer mixer = AudioSystem.getMixer(selectedMixer);
 		final AudioFormat format = new AudioFormat(sampleRate, 16, 1, true,
 				true);

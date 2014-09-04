@@ -130,6 +130,8 @@ public class LinkedPanel extends JPanel {
 	}
 	
 	public void removeLayers(){
-		this.layers.clear();
+		while(layers.size()> 0){
+			removeLayer(layers.get(0));
+		}
 	}	
 }

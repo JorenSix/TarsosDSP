@@ -52,8 +52,8 @@ public class AudioPlayerTest {
 		TarsosDSPAudioInputStream stream = file.getMonoStream(44100);
 		AudioDispatcher d;
 		d = new AudioDispatcher(stream, 1024, 0);
-	    //d.addAudioProcessor(new HaarWaveletCoder());
-	    //d.addAudioProcessor(new HaarWaveletDecoder());
+	    //d.addAudioProcessor(new Daubechies4WaveletCoder());
+	    //d.addAudioProcessor(new Daubechies4WaveletDecoder());
 	    d.addAudioProcessor(new AudioPlayer(JVMAudioInputStream.toAudioFormat(d.getFormat())));
 	    d.run();
 	}

@@ -33,7 +33,7 @@ import java.util.logging.Logger;
  * <p>
  * Decode audio files to PCM, mono, 16bits per sample, at any sample rate using
  * an external program. By default avconv, provided by libav is used. Other
- * command line programs that are able to decode audio and pipe binary PCM
+ * command LineWavelet programs that are able to decode audio and pipe binary PCM
  * samples to STDOUT are possible as well (ffmpeg, mplayer). On Debian: <code>apt-get install libav-tools</code>
  * </p>
  * <p>

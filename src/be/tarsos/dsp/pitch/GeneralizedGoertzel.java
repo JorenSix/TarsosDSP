@@ -1,14 +1,7 @@
 package be.tarsos.dsp.pitch;
 
-import java.io.File;
-import java.io.IOException;
-
-import javax.sound.sampled.UnsupportedAudioFileException;
-
-import be.tarsos.dsp.AudioDispatcher;
 import be.tarsos.dsp.AudioEvent;
 import be.tarsos.dsp.AudioProcessor;
-import be.tarsos.dsp.io.jvm.AudioDispatcherFactory;
 import be.tarsos.dsp.pitch.Goertzel.FrequenciesDetectedHandler;
 import be.tarsos.dsp.util.Complex;
 import be.tarsos.dsp.util.fft.HammingWindow;
@@ -111,44 +104,5 @@ public class GeneralizedGoertzel implements AudioProcessor{
 	public void processingFinished() {
 		
 	}
-	
-	
-	public static void main(String... args) throws UnsupportedAudioFileException, IOException{
-		double[] frequenciesToDetect = new double[100];
-		for(int i = 0 ; i < frequenciesToDetect.length ; i++ ){
-			frequenciesToDetect[i] = 396 + i;
-		}
-		FrequenciesDetectedHandler handler = new FrequenciesDetectedHandler() {
-			
-			@Override
-			public void handleDetectedFrequencies(double[] frequencies,
-					double[] powers, double[] allFrequencies, double[] allPowers) {
-				int maxIndex = 0;
-				double maxPower = 0;
-				for(int i = 0 ; i < frequencies.length;i++){
-					if(powers[i] > maxPower){
-						maxPower = powers[i];
-						maxIndex= i;
-					}
-				}
-				System.out.println(frequencies[maxIndex] +"\t" + powers[maxIndex]);
-			}
-		};
-		
-		int blockSize = 4096;
-		AudioProcessor generalized = new GeneralizedGoertzel(44100, blockSize,frequenciesToDetect, handler);
-		//AudioProcessor classic = new Goertzel(44100, 2048,frequenciesToDetect, handler);
-		AudioDispatcher ad = AudioDispatcherFactory.fromFile(new File("/home/joren/Desktop/440Hz-44.1kHz.wav"), blockSize, 0);
-		ad = AudioDispatcherFactory.fromFile(new File("/home/joren/Desktop/chirp-44.1kHz_10min.wav"), blockSize, 0);
-		//ad.addAudioProcessor(classic);
-		ad.addAudioProcessor(generalized);
-		long prev = System.currentTimeMillis();
-		ad.run();
-		long diff = System.currentTimeMillis() - prev;
-		System.out.println(diff);
-	}
-
-
-
 
 }

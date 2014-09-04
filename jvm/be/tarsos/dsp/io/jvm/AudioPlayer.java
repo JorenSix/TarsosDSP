@@ -37,8 +37,8 @@ import be.tarsos.dsp.AudioProcessor;
  * This AudioProcessor can be used to sync events with sound. It uses a pattern
  * described in JavaFX Special Effects Taking Java RIA to the Extreme with
  * Animation, Multimedia, and Game Element Chapter 9 page 185: <blockquote><i>
- * The variable line is the Java Sound object that actually makes the sound. The
- * write method on line is interesting because it blocks until it is ready for
+ * The variable LineWavelet is the Java Sound object that actually makes the sound. The
+ * write method on LineWavelet is interesting because it blocks until it is ready for
  * more data. </i></blockquote> If this AudioProcessor chained with other
  * AudioProcessors the others should be able to operate in real time or process
  * the signal on a separate thread.
@@ -49,7 +49,7 @@ public final class AudioPlayer implements AudioProcessor {
 	
 
 	/**
-	 * The line to send sound to. Is also used to keep everything in sync.
+	 * The LineWavelet to send sound to. Is also used to keep everything in sync.
 	 */
 	private SourceDataLine line;
 
@@ -62,7 +62,7 @@ public final class AudioPlayer implements AudioProcessor {
 	 * @param format
 	 *            The AudioFormat of the buffer.
 	 * @throws LineUnavailableException
-	 *             If no output line is available.
+	 *             If no output LineWavelet is available.
 	 */
 	public AudioPlayer(final AudioFormat format)	throws LineUnavailableException {
 		final DataLine.Info info = new DataLine.Info(SourceDataLine.class,format);

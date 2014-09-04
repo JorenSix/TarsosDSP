@@ -91,7 +91,7 @@ public class PeakPicker {
 	
 	/**
 	 * Modified version for real time, moving mean adaptive threshold this
-	 * method is slightly more permissive than the off-line one, and yields to
+	 * method is slightly more permissive than the off-LineWavelet one, and yields to
 	 * an increase of false positives.
 	 * 
 	 * @param onset

@@ -43,21 +43,24 @@ import be.tarsos.dsp.GainProcessor;
 import be.tarsos.dsp.io.jvm.AudioDispatcherFactory;
 import be.tarsos.dsp.io.jvm.AudioPlayer;
 import be.tarsos.dsp.io.jvm.JVMAudioInputStream;
-import be.tarsos.dsp.wavelet.HaarWaveletCoder;
-import be.tarsos.dsp.wavelet.HaarWaveletDecoder;
+import be.tarsos.dsp.wavelet.lift.Daubechies4WaveletCoder;
+import be.tarsos.dsp.wavelet.lift.Daubechies4WaveletDecoder;
 
-public class HaarWaveletAudioCompression extends JFrame{
+public class Daubechies4WaveletAudioCompression extends JFrame{
 
 	/**
 	 * 
 	 */
 	private static final long serialVersionUID = -7385116325411493047L;
 
-	private HaarWaveletCoder coder;
+
 	private GainProcessor gain;
 	private BitDepthProcessor bithDeptProcessor;
+
+
+	protected Daubechies4WaveletCoder coder;
 	
-	public HaarWaveletAudioCompression(final String source){
+	public Daubechies4WaveletAudioCompression(final String source){
 		this.setLayout(new BorderLayout());
 		this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		this.setTitle("HaarWavelet Wavelet Audio Compression Example");
@@ -69,8 +72,8 @@ public class HaarWaveletAudioCompression extends JFrame{
 				try {
 					AudioDispatcher adp = AudioDispatcherFactory.fromPipe(source, 44100, 32,0);
 					AudioFormat format = JVMAudioInputStream.toAudioFormat(adp.getFormat());
-					coder = new HaarWaveletCoder();
-					HaarWaveletDecoder decoder = new HaarWaveletDecoder();
+					coder = new Daubechies4WaveletCoder(16);
+					Daubechies4WaveletDecoder decoder = new Daubechies4WaveletDecoder();
 					gain = new GainProcessor(1.0);
 					bithDeptProcessor = new BitDepthProcessor();
 					bithDeptProcessor.setBitDepth(adp.getFormat().getSampleSizeInBits());
@@ -182,7 +185,7 @@ public class HaarWaveletAudioCompression extends JFrame{
 		SwingUtilities.invokeAndWait(new Runnable() {
 			@Override
 			public void run() {
-				JFrame frame = new HaarWaveletAudioCompression(source);
+				JFrame frame = new Daubechies4WaveletAudioCompression(source);
 				frame.pack();
 				frame.setSize(450,250);
 				frame.setVisible(true);

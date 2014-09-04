@@ -86,8 +86,17 @@ public class ConstantQLayer implements Layer, Runnable{
 
 	public void draw(Graphics2D graphics) {
 		if(features != null){
-			Map<Double, float[]> spectralInfoSubMap = features.subMap(
-					cs.getMin(Axis.X) / 1000.0, cs.getMax(Axis.X) / 1000.0);
+			Map<Double, float[]> spectralInfoSubMap = features.subMap(cs.getMin(Axis.X) / 1000.0, cs.getMax(Axis.X) / 1000.0);
+			
+						
+			double currentMaxSpectralEnergy = 0;
+			for (Map.Entry<Double, float[]> column : spectralInfoSubMap.entrySet()) {
+				float[] spectralEnergy = column.getValue();
+				for (int i = 0; i < spectralEnergy.length; i++) {
+					currentMaxSpectralEnergy = Math.max(currentMaxSpectralEnergy, spectralEnergy[i]);
+				}
+			}
+
 			for (Map.Entry<Double, float[]> column : spectralInfoSubMap.entrySet()) {
 				double timeStart = column.getKey();// in seconds
 				float[] spectralEnergy = column.getValue();// in cents
@@ -99,8 +108,8 @@ public class ConstantQLayer implements Layer, Runnable{
 					// only draw the visible frequency range
 					if (centsStartingPoint >= cs.getMin(Axis.Y)
 							&& centsStartingPoint <= cs.getMax(Axis.Y)) {
-						int greyValue = 255 - (int) (spectralEnergy[i]
-								/ maxSpectralEnergy * 255);
+						int greyValue = 255 - (int) (Math.log1p(spectralEnergy[i])
+								/ Math.log1p(currentMaxSpectralEnergy) * 255);
 						greyValue = Math.max(0, greyValue);
 						color = new Color(greyValue, greyValue, greyValue);
 						graphics.setColor(color);

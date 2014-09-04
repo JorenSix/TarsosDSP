@@ -42,11 +42,11 @@ public class Shared {
 		for (final Info mixerinfo : mixers) {
 			if (supportsRecording
 					&& AudioSystem.getMixer(mixerinfo).getTargetLineInfo().length != 0) {
-				// Mixer capable of recording audio if target line length != 0
+				// Mixer capable of recording audio if target LineWavelet length != 0
 				infos.add(mixerinfo);
 			} else if (supportsPlayback
 					&& AudioSystem.getMixer(mixerinfo).getSourceLineInfo().length != 0) {
-				// Mixer capable of audio play back if source line length != 0
+				// Mixer capable of audio play back if source LineWavelet length != 0
 				infos.add(mixerinfo);
 			}
 		}

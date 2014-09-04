@@ -57,9 +57,9 @@ import java.util.Map;
  * By examing the information stored in the audio format, you can discover how to interpret the bits in the
  * binary sound data.
  * <p>
- * Every data line has an audio format associated with its data stream. The audio format of a source (playback) data line indicates
- * what kind of data the data line expects to receive for output.  For a target (capture) data line, the audio format specifies the kind
- * of the data that can be read from the line.
+ * Every data LineWavelet has an audio format associated with its data stream. The audio format of a source (playback) data LineWavelet indicates
+ * what kind of data the data LineWavelet expects to receive for output.  For a target (capture) data LineWavelet, the audio format specifies the kind
+ * of the data that can be read from the LineWavelet.
  * Sound files also have audio formats, of course.
  * <p>
  * The <code>AudioFormat</code> class accommodates a number of common sound-file encoding techniques, including

@@ -164,10 +164,10 @@ public class FlangerEffect implements AudioProcessor {
 	}
 
 	/**
-	 * Set the new length of the delay line.
+	 * Set the new length of the delay LineWavelet.
 	 * 
 	 * @param flangerLength
-	 *            The new length of the delay line, in seconds.
+	 *            The new length of the delay LineWavelet, in seconds.
 	 */
 	public void setFlangerLength(double flangerLength) {
 		flangerBuffer = new float[(int) (sampleRate * flangerLength)];

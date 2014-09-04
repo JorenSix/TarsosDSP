@@ -23,6 +23,6 @@
 
 
 /**
- * HaarWavelet wavelet calculation and transform.
+ * Wavelet transforms using the lifting scheme algorithm. Implementation by Ian Kaplan
  */
-package be.tarsos.dsp.wavelet;
+package be.tarsos.dsp.wavelet.lift;

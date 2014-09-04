@@ -24,8 +24,19 @@
 package be.tarsos.dsp.ui;
 
 public enum AxisUnit {
-	TIME,
-	FREQUENCY, 
-	AMPLITUDE,
-	OCCURENCES
+	TIME("s"),
+	FREQUENCY("cents"), 
+	AMPLITUDE("dB"),
+	OCCURENCES("#");
+
+	
+	private final String unit;
+	private AxisUnit(String unit){
+		this.unit=unit;
+	}
+	
+	public String getUnit(){
+		return this.unit;
+	}
+	
 }
