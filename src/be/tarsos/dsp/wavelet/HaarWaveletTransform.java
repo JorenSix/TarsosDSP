@@ -107,7 +107,7 @@ public class HaarWaveletTransform {
 	 *            The number to check.
 	 * @return True if the number is a power of two, false otherwise.
 	 */
-	private static boolean isPowerOfTwo(int number) {
+	public static boolean isPowerOfTwo(int number) {
 		if (number <= 0) {
 			throw new IllegalArgumentException("number: " + number);
 		}
@@ -124,7 +124,7 @@ public class HaarWaveletTransform {
 	 *            the integer
 	 * @return log2(bits)
 	 */
-	private int log2(int bits) {
+	public static int log2(int bits) {
 		if (bits == 0) {
 			return 0;
 		}
@@ -136,7 +136,7 @@ public class HaarWaveletTransform {
 	 * @param power The power.
 	 * @return 2^power
 	 */
-	private int pow2(int power) {
+	public static int pow2(int power) {
 		return 1<<power;
 	}
 

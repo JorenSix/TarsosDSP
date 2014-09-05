@@ -37,7 +37,7 @@ package be.tarsos.dsp.resample;
 
 import java.nio.FloatBuffer;
 
-class Resampler {
+public class Resampler {
 
     public static class Result {
         public final int inputSamplesConsumed;

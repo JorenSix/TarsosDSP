@@ -42,6 +42,7 @@ import be.tarsos.dsp.ui.layers.FFTLayer;
 import be.tarsos.dsp.ui.layers.LegendLayer;
 import be.tarsos.dsp.ui.layers.MouseCursorLayer;
 import be.tarsos.dsp.ui.layers.PitchContourLayer;
+import be.tarsos.dsp.ui.layers.Scalogram;
 import be.tarsos.dsp.ui.layers.SelectionLayer;
 import be.tarsos.dsp.ui.layers.TimeAxisLayer;
 import be.tarsos.dsp.ui.layers.TooltipLayer;
@@ -151,7 +152,7 @@ public class FFTZoomGeneralizedGoertzel extends JPanel{
 			timeFrequencyPane.addLayer(new BackgroundLayer(timeFrequencyPaneCS));
 		//	timeFrequencyPane.addLayer(new GeneralizedGoertzelLayer(timeFrequencyPaneCS,player.getLoadedFile(),20));
 			
-			FFTLayer fftLayer = new FFTLayer(timeFrequencyPaneCS,player.getLoadedFile(),2048,1024);
+			Scalogram fftLayer = new Scalogram(timeFrequencyPaneCS,player.getLoadedFile().getAbsolutePath());
 			timeFrequencyPane.addLayer(fftLayer);
 			MouseCursorLayer cl = new MouseCursorLayer(timeFrequencyPaneCS);
 			timeFrequencyPane.addLayer(cl);
