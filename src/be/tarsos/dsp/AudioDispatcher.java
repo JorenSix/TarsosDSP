@@ -424,7 +424,7 @@ public class AudioDispatcher implements Runnable {
 		}else{
 			int currentBytesRead = 0;
 			//Always read a full byte buffer!
-			while(bytesRead != -1 && currentBytesRead<byteStepSize){
+			while(bytesRead != -1 && currentBytesRead<byteStepSize && !stopped){
 				bytesRead = audioInputStream.read(audioByteBuffer, byteOverlap + currentBytesRead , byteStepSize - currentBytesRead);
 				currentBytesRead += bytesRead;
 			}
