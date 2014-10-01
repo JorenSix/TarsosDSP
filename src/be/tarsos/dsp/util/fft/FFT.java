@@ -40,6 +40,7 @@ public final class FFT {
 	private final FloatFFT fft;
 	private final WindowFunction windowFunction;
 	private final int fftSize;
+	private final float[] window; 
 
 	public FFT(final int size) {
 		this(size,null);
@@ -56,6 +57,10 @@ public final class FFT {
 		fft = new FloatFFT(size);
 		fftSize = size;
 		this.windowFunction = windowFunction;
+		if(windowFunction==null)
+			window = null;
+		else
+		   window = windowFunction.generateCurve(size);
 	}
 
 	/**
@@ -66,14 +71,20 @@ public final class FFT {
 	 */
 	public void forwardTransform(final float[] data) {
 		if(windowFunction!=null){
-			windowFunction.apply(data);
+			for(int i = 0 ; i < data.length ; i++){
+				data[i] = data[i] * window[i];
+			}
+			//windowFunction.apply(data);
 		}
 		fft.realForward(data);
 	}
 	
 	public void complexForwardTransform(final float[] data) {
 		if(windowFunction!=null){
-			windowFunction.apply(data);
+			for(int i = 0 ; i < data.length ; i++){
+				data[i] = data[i] * window[i];
+			}
+			//windowFunction.apply(data);
 		}
 		fft.complexForward(data);
 	}

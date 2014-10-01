@@ -67,6 +67,10 @@ public class AudioEvent {
 	 * The number of bytes processed before this event. It can be used to calculate the time stamp for when this event started.
 	 */
 	private long bytesProcessed;
+
+	private int bytesProcessing;
+	
+	
 	
 	
 	public AudioEvent(TarsosDSPAudioFormat format,long frameLength){
@@ -102,6 +106,10 @@ public class AudioEvent {
 	 */
 	public double getTimeStamp(){
 		return bytesProcessed / format.getFrameSize() / format.getSampleRate();
+	}
+	
+	public double getEndTimeStamp(){
+		return(bytesProcessed + bytesProcessing) / format.getFrameSize() / format.getSampleRate();
 	}
 	
 	public long getSamplesProcessed(){
@@ -215,6 +223,11 @@ public class AudioEvent {
 
 	public boolean isSilence(double silenceThreshold) {
 		return soundPressureLevel(floatBuffer) < silenceThreshold;
+	}
+
+	public void setBytesProcessing(int bytesProcessing) {
+		this.bytesProcessing = bytesProcessing;
+		
 	}
 	
 }

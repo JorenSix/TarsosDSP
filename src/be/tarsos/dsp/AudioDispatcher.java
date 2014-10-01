@@ -295,6 +295,7 @@ public class AudioDispatcher implements Runnable {
 				audioEvent.setOverlap(floatOverlap);
 				audioEvent.setFloatBuffer(audioFloatBuffer);
 				audioEvent.setBytesProcessed(bytesProcessed);
+				audioEvent.setBytesProcessing(bytesRead);
 				
 				for (final AudioProcessor processor : audioProcessors) {
 					if(!processor.process(audioEvent)){
@@ -340,7 +341,7 @@ public class AudioDispatcher implements Runnable {
 		//the overlap for the first buffer is zero.
 		audioEvent.setOverlap(0);
 		audioEvent.setFloatBuffer(audioFloatBuffer);
-		audioEvent.setBytesProcessed(bytesProcessed);
+		
 		
 		// Read, convert and process the first full buffer.
 		//Always read a full byte buffer!
@@ -352,7 +353,29 @@ public class AudioDispatcher implements Runnable {
 		}
 		bytesRead = currentBytesRead;
 		
-		if (bytesRead != -1 && !stopped) {
+		if(bytesRead < audioByteBuffer.length){
+			byte[] truncatedByteBuffer = new byte[bytesRead];
+			float[] truncatedFloatBuffer = new float[bytesRead/2];
+			
+			//copy to truncated array:
+			System.arraycopy(audioByteBuffer, 0, truncatedByteBuffer,0 ,bytesRead);
+			
+			converter.toFloatArray(truncatedByteBuffer, truncatedFloatBuffer);
+			audioEvent.setBytesProcessing(bytesRead);
+			audioEvent.setFloatBuffer(truncatedFloatBuffer);
+			
+			for (final AudioProcessor processor : audioProcessors) {
+				if(!processor.process(audioEvent)){
+					break;
+				}
+			}
+			//Update the number of bytes processed;
+			bytesProcessed += bytesRead;
+			audioEvent.setBytesProcessed(bytesProcessed);
+			
+			stop();
+			
+		} else if (bytesRead != -1 && !stopped) {
 			converter.toFloatArray(audioByteBuffer, audioFloatBuffer);
 			
 			for (final AudioProcessor processor : audioProcessors) {
@@ -362,6 +385,7 @@ public class AudioDispatcher implements Runnable {
 			}
 			//Update the number of bytes processed;
 			bytesProcessed += bytesRead;
+			audioEvent.setBytesProcessed(bytesProcessed);
 			
 			// Read, convert and process consecutive overlapping buffers.
 			// Slide the buffer.
@@ -416,6 +440,7 @@ public class AudioDispatcher implements Runnable {
 		//Is array copy faster to shift an array? Probably..
 		System.arraycopy(audioFloatBuffer, floatStepSize, audioFloatBuffer,0 ,floatOverlap);
 		
+		
 		int bytesRead=0;
 		
 		//Check here if the dispatcher is stopped to prevent reading from a closed audio stream.
@@ -429,7 +454,19 @@ public class AudioDispatcher implements Runnable {
 				currentBytesRead += bytesRead;
 			}
 			bytesRead = currentBytesRead;
-			converter.toFloatArray(audioByteBuffer, byteOverlap, audioFloatBuffer, floatOverlap, floatStepSize);
+			//a full buffer has been read from the stream
+			if(byteStepSize == currentBytesRead){
+				converter.toFloatArray(audioByteBuffer, byteOverlap, audioFloatBuffer, floatOverlap, floatStepSize);
+			}else if(bytesRead != -1){
+				//could not read a full buffer from the stream, there are two options: 
+				//make sure the last buffer has the same length as all other buffers and pad with zeros, or send a 
+				//smaller buffer through the chain. Here we do zero padding:
+				for(int i = byteOverlap + currentBytesRead; i < audioByteBuffer.length; i++){
+					audioByteBuffer[i] = 0;
+				}
+				converter.toFloatArray(audioByteBuffer, byteOverlap, audioFloatBuffer, floatOverlap, floatStepSize);
+				
+			}
 		}
 		return bytesRead;
 	}
