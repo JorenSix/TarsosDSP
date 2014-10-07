@@ -68,10 +68,7 @@ public class MFCC implements AudioProcessor {
 	@Override
 	public boolean process(AudioEvent audioEvent) {
 		audioFloatBuffer = audioEvent.getFloatBuffer().clone();
-//		for (int i = 0; i< audioFloatBuffer.length; i++){
-//			System.out.print(Math.round(audioFloatBuffer[i]*100) + " - ");
-//		}
-		System.out.println();
+
         // Magnitude Spectrum
         float bin[] = magnitudeSpectrum(audioFloatBuffer);
         // get Mel Filterbank
