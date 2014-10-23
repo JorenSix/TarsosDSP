@@ -39,7 +39,7 @@ public class AndroidAudioInputStream implements TarsosDSPAudioInputStream{
 	}
 
 	@Override
-	public void skip(long bytesToSkip) throws IOException {
+	public long skip(long bytesToSkip) throws IOException {
 		throw new IOException("Can not skip in audio stream");
 	}
 

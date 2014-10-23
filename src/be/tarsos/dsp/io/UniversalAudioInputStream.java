@@ -37,8 +37,16 @@ public class UniversalAudioInputStream implements TarsosDSPAudioInputStream {
 	}
 
 	@Override
-	public void skip(long bytesToSkip) throws IOException {
-		underlyingStream.skip(bytesToSkip);
+	public long skip(long bytesToSkip) throws IOException {
+		//the skip probably
+		int bytesSkipped = 0;
+		for(int i = 0 ; i < bytesToSkip ; i++){
+			int theByte = underlyingStream.read();
+			if(theByte!=-1){
+				bytesSkipped++;
+			}
+		}
+		return bytesSkipped;
 	}
 
 	@Override

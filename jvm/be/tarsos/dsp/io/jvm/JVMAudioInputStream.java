@@ -48,8 +48,8 @@ public class JVMAudioInputStream implements TarsosDSPAudioInputStream {
 	}
 
 	@Override
-	public void skip(long bytesToSkip) throws IOException {
-		underlyingStream.skip(bytesToSkip);
+	public long skip(long bytesToSkip) throws IOException {
+		return underlyingStream.skip(bytesToSkip);
 	}
 
 	@Override

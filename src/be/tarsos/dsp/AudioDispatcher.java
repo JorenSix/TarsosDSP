@@ -276,7 +276,10 @@ public class AudioDispatcher implements Runnable {
 			int bytesRead = 0;
 			
 			if(bytesToSkip!=0){
-				audioInputStream.skip(bytesToSkip);
+				long skipped = audioInputStream.skip(bytesToSkip);
+				if(skipped !=bytesToSkip){
+					LOG.warning("Did not skip the expected amount of bytes,  " + skipped +  " skipped " + bytesToSkip + " expected!");
+				}
 				bytesProcessed += bytesToSkip;
 			}
 			if(zeroPad){

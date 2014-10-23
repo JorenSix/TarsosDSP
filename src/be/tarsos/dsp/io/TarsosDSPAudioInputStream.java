@@ -31,7 +31,7 @@ import java.io.IOException;
  */
 public interface TarsosDSPAudioInputStream {
 
-	void skip(long bytesToSkip) throws IOException;
+	long skip(long bytesToSkip) throws IOException;
 
 	   /**
      * Reads up to a specified maximum number of bytes of data from the audio
