@@ -49,7 +49,6 @@ public class MFCC implements AudioProcessor {
     
     public MFCC(int samplesPerFrame, int sampleRate){
     	this(samplesPerFrame, sampleRate, 30, 30, 133.3334f, ((float)sampleRate)/2f);
-    	calculateFilterBanks();
     }
 
     public MFCC(int samplesPerFrame, float sampleRate, int amountOfCepstrumCoef, int amountOfMelFilters, float lowerFilterFreq, float upperFilterFreq) {
@@ -61,8 +60,7 @@ public class MFCC implements AudioProcessor {
         
         this.lowerFilterFreq = Math.max(lowerFilterFreq, 25);
         this.upperFilterFreq = Math.min(upperFilterFreq, sampleRate / 2);
-        calculateFilterBanks();
-       
+        calculateFilterBanks();       
     }
 
 	@Override
