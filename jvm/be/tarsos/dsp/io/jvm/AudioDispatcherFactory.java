@@ -63,8 +63,28 @@ public class AudioDispatcherFactory {
 	 * @return An audio dispatcher connected to the default microphone.
 	 * @throws LineUnavailableException
 	 */
-	public static AudioDispatcher defaultMicrophoneAudioDispatcher(final int audioBufferSize, final int bufferOverlap) throws LineUnavailableException {
-		final AudioFormat format = new AudioFormat(44100, 16, 1, true,true);
+	public static AudioDispatcher fromDefaultMicrophone(final int audioBufferSize, final int bufferOverlap) throws LineUnavailableException {
+		return fromDefaultMicrophone(44100, audioBufferSize, bufferOverlap);
+	}
+	
+	/**
+	 * Create a new AudioDispatcher connected to the default microphone. The default is defined by the 
+	 * Java runtime by calling <pre>AudioSystem.getTargetDataLine(format)</pre>. 
+	 * The microphone must support the format of the requested sample rate, 16bits mono, signed big endian.   
+	 * @param sampleRate
+	 * 			The <b>requested</b> sample rate must be supported by the capture device. Nonstandard sample 
+	 * 			rates can be problematic!
+	 * @param audioBufferSize
+	 *            The size of the buffer defines how much samples are processed
+	 *            in one step. Common values are 1024,2048.
+	 * @param bufferOverlap
+	 *            How much consecutive buffers overlap (in samples). Half of the
+	 *            AudioBufferSize is common.
+	 * @return An audio dispatcher connected to the default microphone.
+	 * @throws LineUnavailableException
+	 */
+	public static AudioDispatcher fromDefaultMicrophone(final int sampleRate,final int audioBufferSize, final int bufferOverlap) throws LineUnavailableException {
+		final AudioFormat format = new AudioFormat(sampleRate, 16, 1, true,true);
 		TargetDataLine line =  AudioSystem.getTargetDataLine(format);
 		line.open(format, audioBufferSize);
 		line.start();
