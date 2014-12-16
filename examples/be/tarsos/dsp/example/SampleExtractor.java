@@ -224,11 +224,13 @@ public class SampleExtractor  extends JFrame {
 							dispatcher.addAudioProcessor(new StopAudioProcessor(endValue));
 							dispatcher.addAudioProcessor(wsola);
 							dispatcher.addAudioProcessor(rateTransposer);
-							dispatcher.addAudioProcessor(audioPlayer);
 							if(saveWav){
 								String filename = String.format("%s_%.2fs-%.2fs_modified_%dcents_%.2fs.wav", file.getName(),startValue,endValue,cents,duration);
 								WaveformWriter wfw = new WaveformWriter(format,filename);
 								dispatcher.addAudioProcessor(wfw);
+								System.out.println("Saving to " + filename);
+							}else{
+								dispatcher.addAudioProcessor(audioPlayer);
 							}
 							
 							Thread t = new Thread(dispatcher);
