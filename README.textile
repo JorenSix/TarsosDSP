@@ -66,6 +66,7 @@ The library is separated into five source folders: 1) the main core functionalit
 * @build@ contains ANT build files. Either to build Java documentation or runnable JAR-files for the example applications.
 * @android@ contains the source files for audio I/O on Android. It is dependent on the Android Runtime.
 * @jvm@ contains the source files for audio I/O on JRE. It is dependent on the Java Runtime Environment.
+* @patcher@ I/O for patcher environments like pure data and Max/MSP. It shows how TarsosDSP and pd, MaxMSP can connect. 
 * @lib@ although the TarsosDSP core does not require any external dependencies the @lib@ folder does contain two jar-file to easily run unit-tests (JUnit 4 and Hamcrest). 
   
 
