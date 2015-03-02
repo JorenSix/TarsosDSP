@@ -11,6 +11,13 @@ import be.tarsos.dsp.io.jvm.AudioDispatcherFactory;
 import be.tarsos.dsp.io.jvm.JVMAudioInputStream;
 import be.tarsos.dsp.util.fft.FFT;
 
+/**
+ * This is a translation of code by Stephan M. Bernsee. See the following explanation on this code:
+ * <a href="http://www.dspdimension.com/admin/pitch-shifting-using-the-ft/">Pitch shifting using the STFT</a>.
+ * 
+ * @author Joren Six
+ * @author Stephan M. Bernsee
+ */
 public class PitchShifter implements AudioProcessor{
 	
 	private final FFT fft;
@@ -58,26 +65,6 @@ public class PitchShifter implements AudioProcessor{
 		currentMagnitudes = new float[size/2];
 		currentFrequencies = new float[size/2];
 		currentPhase = new float[size/2];
-		
-		new Thread(new Runnable(){
-		
-			int time = 0;
-			@Override
-			public void run() {
-				while(true){
-					try {
-						float amplitude = 0.05f;//Hz
-						float frequency = 7f;//Hz
-						Thread.sleep(1);
-						time++;
-						double factor = 1 + amplitude * Math.sin(2*Math.PI*frequency * time/1000.0);
-						setPitchShiftFactor((float)factor);
-					} catch (InterruptedException e) {
-						e.printStackTrace();
-					}
-				}
-				
-			}}).start();
 		
 		previousPhase = new float[size/2];
 		summedPhase = new float[size/2];
