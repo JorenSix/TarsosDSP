@@ -53,21 +53,45 @@ public class TimeAxisLayer implements Layer {
 			intervalIndex = 0;
 			int smallDrawInterval = beginDrawInterval*intervals[intervalIndex];
 		
-			int markerHeight = Math.round(LayerUtilities.pixelsToUnits(graphics, 8, false));
+			int markerHeight = Math.round(LayerUtilities.pixelsToUnits(graphics, 9, false));
 			int textOffset = Math.round(LayerUtilities.pixelsToUnits(graphics, 12, false));
 			
 			int smallMarkerheight = Math.round(LayerUtilities.pixelsToUnits(graphics, 4, false));
 			int smallTextOffset = Math.round(LayerUtilities.pixelsToUnits(graphics, 9, false));
 			
-			for (int i = (int) cs.getMin(Axis.X); i < cs.getMax(Axis.X); i++) {
-				if (i % (smallDrawInterval*5) == 0) {
-					graphics.drawLine(i, minY, i, minY + markerHeight);
-					String text = String.valueOf(i / 1000);
-					LayerUtilities.drawString(graphics, text, i, minY + textOffset, true, false,null);
-				} else if (i % smallDrawInterval == 0) {
-					graphics.drawLine(i, minY, i, minY + smallMarkerheight);
-					String text = String.valueOf(i / 1000);
-					LayerUtilities.drawString(graphics, text, i, minY + smallTextOffset, true, false,null);
+			int smallestMarkerheight = Math.round(LayerUtilities.pixelsToUnits(graphics, 2, false));
+			
+			int minValue = (int) cs.getMin(Axis.X);
+			int maxValue = (int) cs.getMax(Axis.X);
+			int differenceInMs = maxValue - minValue;
+			
+			if(differenceInMs > 10000){
+				//only draw seconds
+				for (int i = minValue; i < maxValue; i++) {
+					if (i % (smallDrawInterval*5) == 0) {
+						graphics.drawLine(i, minY, i, minY + markerHeight);
+						String text = String.valueOf(i / 1000);
+						LayerUtilities.drawString(graphics, text, i, minY + textOffset, true, false,null);
+					} else if (i % smallDrawInterval == 0) {
+						graphics.drawLine(i, minY, i, minY + smallMarkerheight);
+						String text = String.valueOf(i / 1000);
+						LayerUtilities.drawString(graphics, text, i, minY + smallTextOffset, true, false,null);
+					}
+				}
+			}else{
+				//also draw 0.1s
+				for (int i = minValue; i < maxValue; i++) {
+					if (i % (smallDrawInterval*5) == 0) {
+						graphics.drawLine(i, minY, i, minY + markerHeight);
+						String text = String.valueOf(i / 1000);
+						LayerUtilities.drawString(graphics, text, i, minY + textOffset, true, false,null);
+					} else if (i % smallDrawInterval == 0) {
+						graphics.drawLine(i, minY, i, minY + smallMarkerheight);
+						String text = String.valueOf(i / 1000);
+						LayerUtilities.drawString(graphics, text, i, minY + smallTextOffset, true, false,null);
+					} else if (i % 100 == 0) {
+						graphics.drawLine(i, minY, i, minY + smallestMarkerheight);
+					}
 				}
 			}
 			

@@ -71,5 +71,10 @@ public class LegendLayer  implements Layer {
 		colors.add(blue);
 		texts.add(string);		
 	}
+	
+	public void removeAllEntries(){
+		colors.clear();
+		texts.clear();
+	}
 
 }

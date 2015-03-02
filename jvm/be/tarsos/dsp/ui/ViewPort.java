@@ -34,11 +34,22 @@ public class ViewPort {
 
 	private final CoordinateSystem cs;
 
+	private int xMinPref= Integer.MAX_VALUE;
+
+	private int xMaxPref= Integer.MAX_VALUE;
+
+	private int yMinPref= Integer.MAX_VALUE;
+
+	private int yMaxPref= Integer.MAX_VALUE;
+
+	private boolean onlyZoomXWithMouseWheel=false;
+
 	
 	public ViewPort(CoordinateSystem cs){
 		listeners = new ArrayList<ViewPortChangedListener>();
 		this.cs = cs;
 	}
+	
 	
 	public void addViewPortChangedListener(ViewPortChangedListener listener){
 		listeners.add(listener);
@@ -54,16 +65,27 @@ public class ViewPort {
 		}
 	}
 	
+	public void setPreferredZoomWindow(int xMin, int xMax, int yMin, int yMax ){
+		this.xMinPref = xMin;
+		this.xMaxPref = xMax;
+		this.yMinPref = yMin;
+		this.yMaxPref = yMax;
+	}
+	
+	public void setOnlyZoomXAxisWithMouseWheel(boolean onlyZoomX){
+		this.onlyZoomXWithMouseWheel = onlyZoomX;
+	}
+	
 	public void zoom(int amount, Point zoomPoint){
 		//time value
 		float xDelta = cs.getDelta(Axis.X);
 		float newXDelta = xDelta + amount * 1000;
-		if(newXDelta > 20 && newXDelta < 600000) {
+		if(newXDelta > 2 && newXDelta < 600000) {
 			cs.setMax(Axis.X, cs.getMin(Axis.X) + newXDelta);
 		}
 		
 		//cents value
-		if(cs.getUnitsForAxis(Axis.Y) == AxisUnit.FREQUENCY){
+		if(cs.getUnitsForAxis(Axis.Y) == AxisUnit.FREQUENCY && ! onlyZoomXWithMouseWheel){
 			float yDelta = cs.getDelta(Axis.Y);
 			float newYDelta = yDelta + amount * 10;
 			if(newYDelta > 50 && newXDelta < 150000) {
@@ -74,12 +96,23 @@ public class ViewPort {
 	}
 	
 	public void resetZoom(){
-		if(cs.getUnitsForAxis(Axis.Y) == AxisUnit.FREQUENCY){
-			cs.setMin(Axis.Y, 3600);
-			cs.setMax(Axis.Y, 12800);
+		
+		if(xMinPref != Integer.MAX_VALUE){
+			cs.setMin(Axis.X, xMinPref);
+			cs.setMax(Axis.X, xMaxPref);
 		}
-		cs.setMin(Axis.X, 0);
-		cs.setMax(Axis.X, 30000);
+		if(yMinPref != Integer.MAX_VALUE){
+			cs.setMin(Axis.Y, yMinPref);
+			cs.setMax(Axis.Y, yMaxPref);
+		}
+		if(xMinPref == Integer.MAX_VALUE && yMinPref == Integer.MAX_VALUE){
+			if(cs.getUnitsForAxis(Axis.Y) == AxisUnit.FREQUENCY){
+				cs.setMin(Axis.Y, 3600);
+				cs.setMax(Axis.Y, 12800);
+			}
+			cs.setMin(Axis.X, 0);
+			cs.setMax(Axis.X, 30000);
+		}
 		viewPortChanged();
 	}
 	
@@ -106,8 +139,8 @@ public class ViewPort {
 		}
 		
 		//do not zoom smaller than a certain threshold
-		int minTimeDiff = 1500;//ms
-		int minCentsDiff = 400;//cents
+		int minTimeDiff = 10;//ms
+		int minCentsDiff = 50;//cents
 		if(endX-startX <= minTimeDiff){
 			endX = startX + minTimeDiff;
 		}
