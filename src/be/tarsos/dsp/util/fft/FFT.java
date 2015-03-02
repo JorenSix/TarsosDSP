@@ -161,6 +161,12 @@ public final class FFT {
 	}
 	
 	
+	/**
+	 * Returns magnitude (or power) and phase for the FFT transformed data. 
+	 * @param data The FFT transformed data.
+	 * @param power The array where the magnitudes or powers are going to be stored. It is half the length of data (FFT size).
+	 * @param phase The array where the phases are going to be stored. It is half the length of data (FFT size).
+	 */
 	public void powerAndPhaseFromFFT(float[] data,float[] power, float[] phase){
 		phase[0] = (float) Math.PI;
 		power[0] = -data[0];
