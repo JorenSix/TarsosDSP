@@ -1,14 +1,7 @@
 package be.tarsos.dsp;
 
-import javax.sound.sampled.AudioFormat;
-import javax.sound.sampled.AudioSystem;
-import javax.sound.sampled.DataLine;
 import javax.sound.sampled.LineUnavailableException;
-import javax.sound.sampled.SourceDataLine;
 
-import be.tarsos.dsp.io.TarsosDSPAudioFloatConverter;
-import be.tarsos.dsp.io.jvm.AudioDispatcherFactory;
-import be.tarsos.dsp.io.jvm.JVMAudioInputStream;
 import be.tarsos.dsp.util.fft.FFT;
 
 /**
@@ -38,11 +31,13 @@ public class PitchShifter implements AudioProcessor{
 	
 	private double excpt;
 	
+	/*
 	private SourceDataLine line;
-	
 	TarsosDSPAudioFloatConverter converter;
+	*/
 	
 	public PitchShifter(double sampleRate, int size, int overlap) throws LineUnavailableException{
+		/*
 		AudioFormat format = new AudioFormat((float) sampleRate, 16, 1, true, true);
 		
 		converter = TarsosDSPAudioFloatConverter.getConverter(JVMAudioInputStream.toTarsosDSPFormat(format));
@@ -51,7 +46,9 @@ public class PitchShifter implements AudioProcessor{
 	
 		line = (SourceDataLine) AudioSystem.getLine(info);
 		line.open();
+		
 		line.start();
+		*/
 		
 		this.size = size;
 		this.sampleRate = sampleRate;
@@ -182,14 +179,13 @@ public class PitchShifter implements AudioProcessor{
 		
 		System.arraycopy(outputAccumulator, stepSize, outputAccumulator, 0, size);
 		
-		
+		/*
 		byte[] out = new byte[output.length*2];
 		converter.toByteArray(output, out);
 		line.write(out, 0, out.length);
+		*/
 		
-		
-		
-		
+
 		return true;
 	}
 
@@ -197,21 +193,4 @@ public class PitchShifter implements AudioProcessor{
 	public void processingFinished() {
 		
 	}
-	
-	public static void main(String... args) throws LineUnavailableException{
-		int sampleRate = 44100;
-		int bufferSize = 2048;
-		int overlap = bufferSize-bufferSize/4;//75% overlap
-		
-		AudioFormat format = new AudioFormat((float) sampleRate, 16, 1, true, true);
-		
-		//converter = TarsosDSPAudioFloatConverter.getConverter(JVMAudioInputStream.toTarsosDSPFormat(format));
-		
-		//AudioDispatcher adp = AudioDispatcherFactory.fromPipe("/home/joren/Desktop/02 My Ship.mp3", sampleRate, bufferSize,overlap);
-		AudioDispatcher adp = AudioDispatcherFactory.fromDefaultMicrophone(bufferSize, overlap);
-		adp.addAudioProcessor(new PitchShifter(sampleRate, bufferSize,overlap));
-		//adp.addAudioProcessor(new AudioPlayer(format));
-		adp.run();
-	}
-
 }
