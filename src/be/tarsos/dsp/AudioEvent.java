@@ -88,6 +88,13 @@ public class AudioEvent {
 		return getFloatBuffer().length;
 	}
 	
+	/**
+	 * @return  The length of the stream, expressed in sample frames rather than bytes
+	 */
+	public long getFrameLength(){
+		return frameLength;
+	}
+	
 	public int getOverlap(){
 		return overlap;
 	}
