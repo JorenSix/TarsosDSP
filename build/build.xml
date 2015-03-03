@@ -2,7 +2,7 @@
 <project default="tarsos_dsp_library" name="Create TarsosDSP JAR-files">
 
 	<!-- Configuration -->
-	<property name="version" value="2.0" />
+	<property name="version" value="2.1" />
 	<property name="built_by" value="${user.name}" />
 	<property name="junit_jar" value="../lib/hamcrest-core-1.3.jar:../lib/junit-4.11.jar" />
 	
@@ -22,14 +22,14 @@
 	<!-- Compiles the java files to a jar file and copy required resources -->
 	<target name="compile_for_jvm">
 		<mkdir dir="../bin" />
-		<javac srcdir="../src" destdir="../bin" includeantruntime="false" />
-		<javac srcdir="../jvm" destdir="../bin" includeantruntime="false" />
-		<javac srcdir="../examples" destdir="../bin" includeantruntime="false" />
+		<javac srcdir="../src/core" destdir="../bin" includeantruntime="false" />
+		<javac srcdir="../src/jvm" destdir="../bin" includeantruntime="false" />
+		<javac srcdir="../src/examples" destdir="../bin" includeantruntime="false" />
 		
 
 		<!-- copy all needed resources to bin dir -->
 		<copy todir="../bin/be/tarsos/dsp/example/resources">
-			<fileset dir="../examples/be/tarsos/dsp/example/resources" />
+			<fileset dir="../src/examples/be/tarsos/dsp/example/resources" />
 		</copy>
 	</target>
 	
@@ -37,15 +37,15 @@
 	<target name="compile_for_android">
 		<delete dir="../bin" />
 		<mkdir dir="../bin" />
-		<javac srcdir="../src" destdir="../bin" includeantruntime="false" />
-		<javac srcdir="../android" destdir="../bin" includeantruntime="false" >
+		<javac srcdir="../src/core" destdir="../bin" includeantruntime="false" />
+		<javac srcdir="../src/android" destdir="../bin" includeantruntime="false" >
 			<classpath>
 				<pathelement location="${android_jar}"/>
 			</classpath>
 		</javac>
 		<!-- copy all needed resources to bin dir -->
 		<copy todir="../bin/be/tarsos/dsp/example/resources">
-			<fileset dir="../examples/be/tarsos/dsp/example/resources" />
+			<fileset dir="../src/examples/be/tarsos/dsp/example/resources" />
 		</copy>
 	</target>
 	
@@ -53,13 +53,13 @@
 	<target name="compile-debug">
 		<mkdir dir="../bin" />
 		<javac 
-		    srcdir="../src" 
+		    srcdir="../src/core" 
 		    debug="true"
 			includeantruntime="false"
   			debuglevel="lines,vars,source"
   			destdir="../bin" />
 		<javac 
-		    srcdir="../examples" 
+		    srcdir="../src/examples" 
 			includeantruntime="false"
 		    debug="true"
   			debuglevel="lines,vars,source"
@@ -67,7 +67,7 @@
 
 		<!-- copy all needed resources to bin dir -->
 		<copy todir="../bin/be/tarsos/dsp/example/resources">
-			<fileset dir="../examples/be/tarsos/dsp/example/resources" />
+			<fileset dir="../src/examples/be/tarsos/dsp/example/resources" />
 		</copy>
 	</target>
 
@@ -91,8 +91,8 @@
 			use="true" 
 			version="true" >
 			   <sourcepath>
-				  <pathelement path="../src"/>
-				  <pathelement path="../jvm"/>
+				  <pathelement path="../src/core"/>
+				  <pathelement path="../src/jvm"/>
 			   </sourcepath>
 			</javadoc>
 	</target>
@@ -118,10 +118,10 @@
 			</fileset>
 
 			<!-- include source files -->
-			<fileset dir="../src">
+			<fileset dir="../src/core">
 				<include name="**/*.java" />
 			</fileset>
-			<fileset dir="../jvm">
+			<fileset dir="../src/jvm">
 				<include name="**/*.java" />
 			</fileset>
 		</jar>
@@ -165,10 +165,10 @@
 				</fileset>
 
 				<!-- include source files -->
-				<fileset dir="../src">
+				<fileset dir="../src/core">
 					<include name="**/*.java" />
 				</fileset>
-				<fileset dir="../android">
+				<fileset dir="../src/android">
 					<include name="**/*.java" />
 				</fileset>
 			</jar>
@@ -270,11 +270,11 @@
 			</fileset>
 
 			<!-- include source files -->
-			<fileset dir="../src">
+			<fileset dir="../src/core">
 				<include name="**/*.java" />
 			</fileset>
 
-			<fileset dir="../examples">
+			<fileset dir="../src/examples">
 				<exclude name="**/*.wav" />
 				<include name="**/*.java" />
 			</fileset>
@@ -302,10 +302,10 @@
 			</fileset>
 
 			<!-- include source files -->
-			<fileset dir="../src">
+			<fileset dir="../src/core">
 				<include name="**/*.java" />
 			</fileset>
-			<fileset dir="../examples">
+			<fileset dir="../src/examples">
 				<exclude name="**/*.wav" />
 				<include name="**/*.java" />
 			</fileset>
@@ -332,10 +332,10 @@
 			</fileset>
 
 			<!-- include source files -->
-			<fileset dir="../src">
+			<fileset dir="../src/core">
 				<include name="**/*.java" />
 			</fileset>
-			<fileset dir="../examples">
+			<fileset dir="../src/examples">
 				<exclude name="**/*.wav" />
 				<include name="**/*.java" />
 			</fileset>
@@ -363,10 +363,10 @@
 			</fileset>
 
 			<!-- include source files -->
-			<fileset dir="../src">
+			<fileset dir="../src/core">
 				<include name="**/*.java" />
 			</fileset>
-			<fileset dir="../examples">
+			<fileset dir="../src/examples">
 				<exclude name="**/*.wav" />
 				<include name="**/*.java" />
 			</fileset>
@@ -395,10 +395,10 @@
 			</fileset>
 
 			<!-- include source files -->
-			<fileset dir="../src">
+			<fileset dir="../src/core">
 				<include name="**/*.java" />
 			</fileset>
-			<fileset dir="../examples">
+			<fileset dir="../src/examples">
 				<exclude name="**/*.wav" />
 				<include name="**/*.java" />
 			</fileset>
@@ -428,11 +428,11 @@
 
 
 			<!-- include source files -->
-			<fileset dir="../src">
+			<fileset dir="../src/core">
 				<include name="**/*.java" />
 
 			</fileset>
-			<fileset dir="../examples">
+			<fileset dir="../src/examples">
 				<include name="**/*.java" />
 			</fileset>
 		</jar>
@@ -459,10 +459,10 @@
 			</fileset>
 
 			<!-- include source files -->
-			<fileset dir="../src">
+			<fileset dir="../src/core">
 				<include name="**/*.java" />
 			</fileset>
-			<fileset dir="../examples">
+			<fileset dir="../src/examples">
 				<exclude name="**/*.wav" />
 				<include name="**/*.java" />
 			</fileset>
@@ -489,10 +489,10 @@
 			</fileset>
 
 			<!-- include source files -->
-			<fileset dir="../src">
+			<fileset dir="../src/core">
 				<include name="**/*.java" />
 			</fileset>
-			<fileset dir="../examples">
+			<fileset dir="../src/examples">
 				<exclude name="**/*.wav" />
 				<include name="**/*.java" />
 			</fileset>
@@ -520,10 +520,10 @@
 			</fileset>
 
 			<!-- include source files -->
-			<fileset dir="../src">
+			<fileset dir="../src/core">
 				<include name="**/*.java" />
 			</fileset>
-			<fileset dir="../examples">
+			<fileset dir="../src/examples">
 				<exclude name="**/*.wav" />
 				<include name="**/*.java" />
 			</fileset>
@@ -552,10 +552,10 @@
 			</fileset>
 
 			<!-- include source files -->
-			<fileset dir="../src">
+			<fileset dir="../src/core">
 				<include name="**/*.java" />
 			</fileset>
-			<fileset dir="../examples">
+			<fileset dir="../src/examples">
 				<exclude name="**/*.wav" />
 				<include name="**/*.java" />
 			</fileset>
@@ -583,10 +583,10 @@
 			</fileset>
 
 			<!-- include source files -->
-			<fileset dir="../src">
+			<fileset dir="../src/core">
 				<include name="**/*.java" />
 			</fileset>
-			<fileset dir="../examples">
+			<fileset dir="../src/examples">
 				<exclude name="**/*.wav" />
 				<include name="**/*.java" />
 			</fileset>
@@ -614,10 +614,10 @@
 			</fileset>
 
 			<!-- include source files -->
-			<fileset dir="../src">
+			<fileset dir="../src/core">
 				<include name="**/*.java" />
 			</fileset>
-			<fileset dir="../examples">
+			<fileset dir="../src/examples">
 				<exclude name="**/*.wav" />
 				<include name="**/*.java" />
 			</fileset>
@@ -644,10 +644,10 @@
 			</fileset>
 
 			<!-- include source files -->
-			<fileset dir="../src">
+			<fileset dir="../src/core">
 				<include name="**/*.java" />
 			</fileset>
-			<fileset dir="../examples">
+			<fileset dir="../src/examples">
 				<exclude name="**/*.wav" />
 				<include name="**/*.java" />
 			</fileset>
@@ -677,10 +677,10 @@
 			</fileset>
 
 			<!-- include source files -->
-			<fileset dir="../src">
+			<fileset dir="../src/core">
 				<include name="**/*.java" />
 			</fileset>
-			<fileset dir="../examples">
+			<fileset dir="../src/examples">
 				<exclude name="**/*.wav" />
 				<include name="**/*.java" />
 			</fileset>
@@ -707,10 +707,10 @@
 			</fileset>
 
 			<!-- include source files -->
-			<fileset dir="../src">
+			<fileset dir="../src/core">
 				<include name="**/*.java" />
 			</fileset>
-			<fileset dir="../examples">
+			<fileset dir="../src/examples">
 				<exclude name="**/*.wav" />
 				<include name="**/*.java" />
 			</fileset>
@@ -736,10 +736,10 @@
 			</fileset>
 
 			<!-- include source files -->
-			<fileset dir="../src">
+			<fileset dir="../src/core">
 				<include name="**/*.java" />
 			</fileset>
-			<fileset dir="../examples">
+			<fileset dir="../src/examples">
 				<include name="**/*.java" />
 			</fileset>
 		</jar>
@@ -765,10 +765,10 @@
 				</fileset>
 
 				<!-- include source files -->
-				<fileset dir="../src">
+				<fileset dir="../src/core">
 					<include name="**/*.java" />
 				</fileset>
-				<fileset dir="../examples">
+				<fileset dir="../src/examples">
 					<exclude name="**/*.wav" />
 					<include name="**/*.java" />
 				</fileset>
@@ -795,10 +795,10 @@
 				</fileset>
 
 				<!-- include source files -->
-				<fileset dir="../src">
+				<fileset dir="../src/core">
 					<include name="**/*.java" />
 				</fileset>
-				<fileset dir="../examples">
+				<fileset dir="../src/examples">
 					<exclude name="**/*.wav" />
 					<include name="**/*.java" />
 				</fileset>
@@ -825,10 +825,10 @@
 					</fileset>
 
 					<!-- include source files -->
-					<fileset dir="../src">
+					<fileset dir="../src/core">
 						<include name="**/*.java" />
 					</fileset>
-					<fileset dir="../examples">
+					<fileset dir="../src/examples">
 						<exclude name="**/*.wav" />
 						<include name="**/*.java" />
 					</fileset>
@@ -855,10 +855,10 @@
 				</fileset>
 
 				<!-- include source files -->
-				<fileset dir="../src">
+				<fileset dir="../src/core">
 					<include name="**/*.java" />
 				</fileset>
-				<fileset dir="../examples">
+				<fileset dir="../src/examples">
 					<exclude name="**/*.wav" />
 					<include name="**/*.java" />
 				</fileset>

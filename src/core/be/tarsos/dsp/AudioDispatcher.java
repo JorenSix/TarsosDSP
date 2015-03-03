@@ -145,7 +145,7 @@ public class AudioDispatcher implements Runnable {
 		audioInputStream = stream;
 
 		format = audioInputStream.getFormat();
-		audioEvent = new AudioEvent(format,audioInputStream.getFrameLength());
+		audioEvent = new AudioEvent(format,-1);
 			
 		setStepSizeAndOverlap(audioBufferSize, bufferOverlap);
 		converter = TarsosDSPAudioFloatConverter.getConverter(format);

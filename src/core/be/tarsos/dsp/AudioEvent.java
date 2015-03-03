@@ -71,8 +71,6 @@ public class AudioEvent {
 	private int bytesProcessing;
 	
 	
-	
-	
 	public AudioEvent(TarsosDSPAudioFormat format,long frameLength){
 		this.format = format;
 		this.converter = TarsosDSPAudioFloatConverter.getConverter(format);

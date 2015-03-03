@@ -31,9 +31,16 @@ import java.io.IOException;
  */
 public interface TarsosDSPAudioInputStream {
 
+	/**
+	 * Skip a number of bytes before reading the remaining bytes.
+	 * @param bytesToSkip The number of bytes to skip.
+	 * @return The number of bytes skipped.
+	 * @throws IOException If the underlying  if an input or output error occurs
+	 * #see read 
+	 */
 	long skip(long bytesToSkip) throws IOException;
 
-	   /**
+	 /**
      * Reads up to a specified maximum number of bytes of data from the audio
      * stream, putting them into the given byte array.
      * <p>This method will always read an integral number of frames.
@@ -59,6 +66,10 @@ public interface TarsosDSPAudioInputStream {
      */
     public void close() throws IOException;
 
+	/**
+	 * 
+	 * @return The format of the underlying audio
+	 */
 	TarsosDSPAudioFormat getFormat();
 
 	long getFrameLength();

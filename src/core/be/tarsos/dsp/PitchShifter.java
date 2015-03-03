@@ -30,7 +30,7 @@ public class PitchShifter implements AudioProcessor{
 	
 	private  float[] previousPhase;
 	
-	private double pitchShiftRatio = 1.2f;
+	private double pitchShiftRatio = 0.5f;
 
 	private final double sampleRate;
 	
@@ -188,6 +188,8 @@ public class PitchShifter implements AudioProcessor{
 		line.write(out, 0, out.length);
 		
 		
+		
+		
 		return true;
 	}
 
@@ -200,30 +202,15 @@ public class PitchShifter implements AudioProcessor{
 		int sampleRate = 44100;
 		int bufferSize = 2048;
 		int overlap = bufferSize-bufferSize/4;//75% overlap
-		AudioDispatcher adp = AudioDispatcherFactory.fromPipe("/home/joren/Desktop/02 My Ship.mp3", sampleRate, bufferSize,overlap);
-		adp.addAudioProcessor(new PitchShifter(sampleRate, bufferSize,overlap));
-		adp.run();
 		
-		sampleRate = 44100;
-		bufferSize = 16000;
-		overlap = 0;//75% overlap
-		adp = AudioDispatcherFactory.fromPipe("/home/joren/Desktop/50s_440Hz.wav", sampleRate, bufferSize,overlap);
-		adp.addAudioProcessor(new AudioProcessor() {
-			
-			@Override
-			public void processingFinished() {
-				// TODO Auto-generated method stub
-				
-			}
-			
-			@Override
-			public boolean process(AudioEvent audioEvent) {
-				for(int i = 0 ; i < audioEvent.getFloatBuffer().length ; i++){
-					
-				}
-				return false;
-			}
-		});
+		AudioFormat format = new AudioFormat((float) sampleRate, 16, 1, true, true);
+		
+		//converter = TarsosDSPAudioFloatConverter.getConverter(JVMAudioInputStream.toTarsosDSPFormat(format));
+		
+		//AudioDispatcher adp = AudioDispatcherFactory.fromPipe("/home/joren/Desktop/02 My Ship.mp3", sampleRate, bufferSize,overlap);
+		AudioDispatcher adp = AudioDispatcherFactory.fromDefaultMicrophone(bufferSize, overlap);
+		adp.addAudioProcessor(new PitchShifter(sampleRate, bufferSize,overlap));
+		//adp.addAudioProcessor(new AudioPlayer(format));
 		adp.run();
 	}
 

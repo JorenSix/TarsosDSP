@@ -58,19 +58,20 @@ ant javadoc #Creates the documentation in TarsosDSP/doc
  
 h2. Source Code Organization & Developing
 
-The library is separated into five source folders: 1) the main core functionality in @src@, TarsosDSP example applications in @examples@, unit tests in @test@, JVM audio I/O in jvm and Android audio I/O in android.
+The library is separated into five source folders: 1) the main core functionality in @src/core@, TarsosDSP example applications in @src/examples@, unit tests in @src/test@, JVM audio I/O in @src/jvm@ and Android audio I/O in @src/android@. 
 
-* @src@ contains the source files of the core DSP libraries. 
-* @test@ contains unit tests for some of the DSP functionality.
-* @examples@ contains a couple of example applications with a Java Swing user interface.
+* @src@ contains the source files of the DSP library. 
+** @src/core@ contains the main core classes.
+** @src/test@ contains unit tests for some of the DSP functionality.
+** @src/examples@ contains a couple of example applications with a Java Swing user interface.
+** @src/android@ contains the source files for audio I/O on Android. It is dependent on the Android Runtime.
+** @src/jvm@ contains the source files for audio I/O on JRE. It is dependent on the Java Runtime Environment.
+** @src/patcher@ I/O for patcher environments like pure data and Max/MSP. It shows how TarsosDSP and pd, MaxMSP can connect.
 * @build@ contains ANT build files. Either to build Java documentation or runnable JAR-files for the example applications.
-* @android@ contains the source files for audio I/O on Android. It is dependent on the Android Runtime.
-* @jvm@ contains the source files for audio I/O on JRE. It is dependent on the Java Runtime Environment.
-* @patcher@ I/O for patcher environments like pure data and Max/MSP. It shows how TarsosDSP and pd, MaxMSP can connect. 
-* @lib@ although the TarsosDSP core does not require any external dependencies the @lib@ folder does contain two jar-file to easily run unit-tests (JUnit 4 and Hamcrest). 
+* @lib@ although the TarsosDSP core does not require any external dependencies the @lib@ folder does contain two jar-file to easily run unit-tests (JUnit 4 and Hamcrest). It also contains a pure data library when one wants to develop for the pure data environment.
   
 
-To make development with Eclipse easy, make sure both @test@, @src@, @jvm@ and @examples@ are marked as source folders. For Android development exclude the @jvm@ folder and include @android@.
+To make development with Eclipse easy, make sure the subfolders of @src@ are marked as "source folder", and not the @src@ folder itself (as is usually the case). For Android development exclude the @jvm@ folder and include @android@ and link to an Android runtime of your choosing.
 
 
 h2. Credits
@@ -93,6 +94,8 @@ The TarsosDSP borrows algorithms from various other libraries or research paper.
 * An implementation of the Constant-Q transform by Karl Helgason for the GPL'd <a href="http://rasmusdsp.sourceforge.ne">RasmusDSP</a> project has been adapted for use in TarsosDSP. More information about the Constant-Q transform can be found in the following papers "__Calculation of a Constant Q Spectral Transform__":http://www.wellesley.edu/Physics/brown/pubs/cq1stPaper.pdf by Judith C. Brown, "__An Efficient Algorithm for the Calculation of a Constant Q Transform__":http://www.wellesley.edu/Physics/brown/pubs/effalgV92P2698-P2701.pdf, by Judith C. Brown and Miller S. Puckette, and "__The Constant Q Transform__":http://wwwmath1.uni-muenster.de/logik/org/staff/blankertz/constQ/constQ.pdf by Benjamin Blankertz
 * The Haar Wavelet Transform implemented in TarsosDSP is based on the pseudocode found in "__Wavelets Made Easy__" by Yves Nievergelt. 
 * The lifting scheme wavelet package is developed by "Ian Kaplan":http://www.bearcave.com/software/java/wavelets/basiclift.html and is based on the concepts explained in __Ripples in Mathematics: The Discrete Wavelet Transform__ by A. Jensen and A. la Cour-Harbo, Springer. It is only slightly modified for easy use in TarsosDSP
+* The frequency domain pitch shifter is developed by "Stephan M. Bernsee":http://www.dspdimension.com/admin/pitch-shifting-using-the-ft/Transformbasiclift.html and is based on the concepts explained in __Pitch Shifting Using The Fourier Transform__. For the moment it is a rather direct translation of the c implementation. It was released under a ' Wide Open License'. As the name of the license suggests, it is a license withouth much restrictions. 
+
 
 h2. Changelog
 
@@ -132,5 +135,8 @@ With this release it is possible to extract spectral peaks from an FFT and get p
 This release includes a Haar Wavelet Transform and an example of an audio compression algorithm based on Haar Wavelets. It also includes a significant change in package naming.
 
 <dt>Version 2.0</dt><dd>2014-08-13</dd>
-The 2.0 version is worth the major version update since it offers out-of-the-box support for Android. The release has no more dependencies on the parts of the java runtime that are not included in Android. To offer this support some packages have been shifted around. The code that does I/O is dependent on the runtime (JVM or Dalvik) and is abstracted using the @be.tarsos.dsp.io@ package.   
+The 2.0 version is worth the major version update since it offers out-of-the-box support for Android. The release has no more dependencies on the parts of the java runtime that are not included in Android. To offer this support some packages have been shifted around. The code that does I/O is dependent on the runtime (JVM or Dalvik) and is abstracted using the @be.tarsos.dsp.io@ package.
+
+<dt>Version 2.1</dt><dd>2015-03-03</dd>
+The 2.1 version restructures some of the source files. All source can now be found in src. The ant build file is adapted to reflect this change. This version also includes an STFT pitch shifter. There was already a time domain pitch shifter included and now a frequency domain implementation is present as well. 
  
