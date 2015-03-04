@@ -45,7 +45,6 @@ doc/
 build/*.jar
 prepender.rb
 *_prefix.txt
-experimental/
 build/TarsosDSP-*
 decoder_log*
 
