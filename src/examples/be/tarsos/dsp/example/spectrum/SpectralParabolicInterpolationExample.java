@@ -37,6 +37,11 @@ import be.tarsos.dsp.util.fft.FFT;
 import be.tarsos.dsp.util.fft.HammingWindow;
 
 
+/**
+ * Currently unfinished example!
+ * @author Joren Six
+ *
+ */
 public class SpectralParabolicInterpolationExample {
 	
 
@@ -77,7 +82,7 @@ public class SpectralParabolicInterpolationExample {
 					}
 				}
 				
-				float offset = (amplitudes[maxIndex+1] - amplitudes[maxIndex-1])/( 2*(2 * amplitudes[maxIndex] - amplitudes[maxIndex+1] - amplitudes[maxIndex-1] ));
+				//float offset = (amplitudes[maxIndex+1] - amplitudes[maxIndex-1])/( 2*(2 * amplitudes[maxIndex] - amplitudes[maxIndex+1] - amplitudes[maxIndex-1] ));
 				//offset/=2.0f;
 				//excpected offset = + 0.2167
 				//float adjustedBin = maxIndex  - offset;

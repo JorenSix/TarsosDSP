@@ -178,9 +178,11 @@ public class FFTLayer implements Layer, TooltipTextGenerator {
 			}
 		}
 		
+		/*
 		public float[] getFrequencyEstimates(){
 			return frequencyEstimates;
 		}
+		*/
 		
 		public float calculateMinMagnitude(){
 			float minMag = 4654654;
@@ -340,7 +342,7 @@ public class FFTLayer implements Layer, TooltipTextGenerator {
 			float frequency = frame.getFrequencyForBin(binIndex);
 			
 			
-			double binSize = binStartingPointsInCents[binIndex+1] - binStartingPointsInCents[binIndex];
+			//double binSize = binStartingPointsInCents[binIndex+1] - binStartingPointsInCents[binIndex];
 			
 			tooltip = String.format("Bin: %d  Estimated Frequency: %.02fHz  Time: %.03fs  ",binIndex,frequency,timestampInSeconds);
 			

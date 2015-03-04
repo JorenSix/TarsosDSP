@@ -38,7 +38,6 @@ import be.tarsos.dsp.ui.ViewPort.ViewPortChangedListener;
 import be.tarsos.dsp.ui.layers.AmplitudeAxisLayer;
 import be.tarsos.dsp.ui.layers.BackgroundLayer;
 import be.tarsos.dsp.ui.layers.DragMouseListenerLayer;
-import be.tarsos.dsp.ui.layers.FFTLayer;
 import be.tarsos.dsp.ui.layers.LegendLayer;
 import be.tarsos.dsp.ui.layers.MouseCursorLayer;
 import be.tarsos.dsp.ui.layers.PitchContourLayer;
