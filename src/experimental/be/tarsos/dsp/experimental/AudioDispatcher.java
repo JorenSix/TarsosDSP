@@ -191,7 +191,7 @@ public class AudioDispatcher implements Runnable {
 	 *            How much consecutive buffers overlap (in samples). Half of the
 	 *            AudioBufferSize is common (512, 1024) for an FFT.
 	 */
-	public void setStepSizeAndOverlap(final int audioBufferSize, final int bufferOverlap){
+	private void setStepSizeAndOverlap(final int audioBufferSize, final int bufferOverlap){
 		audioFloatBuffer = new float[audioBufferSize];
 		floatOverlap = bufferOverlap;
 		floatStepSize = audioFloatBuffer.length - floatOverlap;
@@ -205,11 +205,16 @@ public class AudioDispatcher implements Runnable {
 	/**
 	 * if zero pad is true then the first buffer is only filled up to  buffer size - hop size
 	 * E.g. if the buffer is 2048 and the hop size is 48 then you get 2000x0 and 48 filled audio samples
-	 * @param zeroPad true if the buffer should be zeropadded, false otherwise.
+	 * @param zeroPadFirstBuffer true if the buffer should be zeroPadFirstBuffer, false otherwise.
 	 */
-	public void setZeroPadFirstBuffer(boolean setZeroPadFirstBuffer){
-		this.zeroPadFirstBuffer = setZeroPadFirstBuffer;		
+	public void setZeroPadFirstBuffer(boolean zeroPadFirstBuffer){
+		this.zeroPadFirstBuffer = zeroPadFirstBuffer;		
 	}
+	
+	public void setZeroPadLastBuffer(boolean zeroPadLastBufferb) {
+		this.zeroPadLastBuffer = zeroPadLastBufferb;
+	}
+	
 
 	/**
 	 * Adds an AudioProcessor to the chain of processors.
@@ -236,65 +241,70 @@ public class AudioDispatcher implements Runnable {
 
 	public void run() {
 		
-			int bytesRead = 0;
+		int bytesRead = 0;
+		
+		if(bytesToSkip!=0){
+			skipToStart();
+		}
+	
+		//Read the first (and in some cases last) audio block.
+		try {
+			bytesRead = readNextAudioBlock();
+		} catch (IOException e) {
+			String message="Error while reading audio input stream: " + e.getMessage();	
+			LOG.warning(message);
+			throw new Error(message);
+		}
+
+		// As long as the stream has not ended
+		while (bytesRead != 0 && !stopped) {
 			
-			if(bytesToSkip!=0){
-				long skipped = 0l;
-				try{
-					skipped = audioInputStream.skip(bytesToSkip);
-					if(skipped !=bytesToSkip){
-						throw new IOException();
-					}
-					bytesProcessed += bytesToSkip;
-				}catch(IOException e){
-					String message=String.format("Did not skip the expected amount of bytes,  %d skipped, %d expected!", skipped,bytesToSkip);	
+			//Makes sure the right buffers are processed, they can be changed by audio processors.
+			for (final AudioProcessor processor : audioProcessors) {
+				audioEvent = processor.process(audioEvent);	
+			}
+			
+			if(!stopped){			
+				//Update the number of bytes processed;
+				bytesProcessed += bytesRead;
+				audioEvent.setBytesProcessed(bytesProcessed);
+					
+				// Read, convert and process consecutive overlapping buffers.
+				// Slide the buffer.
+				try {
+					bytesRead = readNextAudioBlock();
+				} catch (IOException e) {
+					String message="Error while reading audio input stream: " + e.getMessage();	
 					LOG.warning(message);
 					throw new Error(message);
 				}
 			}
-		
-			try {
-				bytesRead = readNextAudioBlock();
-			} catch (IOException e) {
-				String message="Error while reading audio input stream: " + e.getMessage();	
-				LOG.warning(message);
-				throw new Error(message);
-			}
+		}
 
-			// As long as the stream has not ended
-			while (bytesRead != 0 && !stopped) {
-				
-				//Makes sure the right buffers are processed, they can be changed by audio processors.
-				for (final AudioProcessor processor : audioProcessors) {
-					processor.process(audioEvent);	
-				}
-				
-				if(!stopped){			
-					//Update the number of bytes processed;
-					bytesProcessed += bytesRead;
-					audioEvent.setBytesProcessed(bytesProcessed);
-						
-					// Read, convert and process consecutive overlapping buffers.
-					// Slide the buffer.
-					try {
-						bytesRead = readNextAudioBlock();
-					} catch (IOException e) {
-						String message="Error while reading audio input stream: " + e.getMessage();	
-						LOG.warning(message);
-						throw new Error(message);
-					}
-				}
-			}
-
-			// Notify all processors that no more data is available. 
-			// when stop() is called processingFinished is called explicitly, no need to do this again.
-			// The explicit call is to prevent timing issues.
-			if(!stopped){
-				stop();
-			}
+		// Notify all processors that no more data is available. 
+		// when stop() is called processingFinished is called explicitly, no need to do this again.
+		// The explicit call is to prevent timing issues.
+		if(!stopped){
+			stop();
+		}
 	}
 	
 	
+	private void skipToStart() {
+		long skipped = 0l;
+		try{
+			skipped = audioInputStream.skip(bytesToSkip);
+			if(skipped !=bytesToSkip){
+				throw new IOException();
+			}
+			bytesProcessed += bytesToSkip;
+		}catch(IOException e){
+			String message=String.format("Did not skip the expected amount of bytes,  %d skipped, %d expected!", skipped,bytesToSkip);	
+			LOG.warning(message);
+			throw new Error(message);
+		}
+	}
+
 	/**
 	 * Stops dispatching audio data.
 	 */
@@ -341,15 +351,24 @@ public class AudioDispatcher implements Runnable {
 		// Is this the first buffer?
 		boolean isFirstBuffer = (bytesProcessed ==0 || bytesProcessed == bytesToSkip);
 		
+		final int offsetInBytes;
+		
+		final int offsetInSamples;
+		
 		final int bytesToRead;
 		//Determine the amount of bytes to read from the stream
 		if(isFirstBuffer && !zeroPadFirstBuffer){
 			//If this is the first buffer and we do not want to zero pad the
 			//first buffer then read a full buffer
 			bytesToRead =  audioByteBuffer.length;
+			// With an offset in bytes of zero;
+			offsetInBytes = 0;
+			offsetInSamples=0;
 		}else{
 			//In all other cases read the amount of bytes defined by the step size
 			bytesToRead = byteStepSize;
+			offsetInBytes = byteOverlap;
+			offsetInSamples = floatOverlap;
 		}
 		
 		//Shift the audio information using array copy since it is probably faster than manually shifting it.
@@ -370,7 +389,7 @@ public class AudioDispatcher implements Runnable {
 		// Always try to read the 'bytesToRead' amount of bytes.
 		// unless the stream is closed (stopped is true) or no bytes could be read during one iteration 
 		while(!stopped && !endOfStream && totalBytesRead<bytesToRead){
-			bytesRead = audioInputStream.read(audioByteBuffer, byteOverlap + totalBytesRead , bytesToRead - totalBytesRead);
+			bytesRead = audioInputStream.read(audioByteBuffer, offsetInBytes + totalBytesRead , bytesToRead - totalBytesRead);
 			if(bytesRead == -1){
 				// The end of the stream is reached if the number of bytes read during this iteration equals -1
 				endOfStream = true;
@@ -384,16 +403,16 @@ public class AudioDispatcher implements Runnable {
 			// Could not read a full buffer from the stream, there are two options:
 			if(zeroPadLastBuffer){
 				//Make sure the last buffer has the same length as all other buffers and pad with zeros
-				for(int i = byteOverlap + totalBytesRead; i < audioByteBuffer.length; i++){
+				for(int i = offsetInBytes + totalBytesRead; i < audioByteBuffer.length; i++){
 					audioByteBuffer[i] = 0;
 				}
-				converter.toFloatArray(audioByteBuffer, byteOverlap, audioFloatBuffer, floatOverlap, floatStepSize);
+				converter.toFloatArray(audioByteBuffer, offsetInBytes, audioFloatBuffer, offsetInSamples, floatStepSize);
 			}else{
 				// Send a smaller buffer through the chain.
-				audioByteBuffer = new byte[byteOverlap + totalBytesRead];
+				audioByteBuffer = new byte[offsetInBytes + totalBytesRead];
 				int totalSamplesRead = totalBytesRead/format.getFrameSize();
-				audioFloatBuffer = new float[floatOverlap + totalBytesRead/format.getFrameSize()];
-				converter.toFloatArray(audioByteBuffer, byteOverlap, audioFloatBuffer, floatOverlap, totalSamplesRead);
+				audioFloatBuffer = new float[offsetInSamples + totalBytesRead/format.getFrameSize()];
+				converter.toFloatArray(audioByteBuffer, offsetInBytes, audioFloatBuffer, offsetInSamples, totalSamplesRead);
 				
 				// Create a new AudioEvent with this new, shorter buffer.
 				audioEvent = new AudioEvent(format, audioFloatBuffer);
@@ -401,7 +420,7 @@ public class AudioDispatcher implements Runnable {
 			}			
 		}else if(bytesToRead == totalBytesRead) {
 			// The expected amount of bytes have been read from the stream.
-			converter.toFloatArray(audioByteBuffer, byteOverlap, audioFloatBuffer, floatOverlap, floatStepSize);
+			converter.toFloatArray(audioByteBuffer, offsetInBytes, audioFloatBuffer, offsetInSamples, floatStepSize);
 		}else{
 			// If the end of the stream has not been reached and the number of bytes read is not the
 			// expected amount of bytes, then we are in an invalid state; 
@@ -428,22 +447,27 @@ public class AudioDispatcher implements Runnable {
 		File audioFile = new File("/home/joren/Desktop/4000_samples_of_440Hz_at_44.1kHz.wav");
 		final AudioInputStream stream = AudioSystem.getAudioInputStream(audioFile);
 		TarsosDSPAudioInputStream audioStream = new JVMAudioInputStream(stream);
-		AudioDispatcher adp =  new AudioDispatcher(audioStream, 2048, 0);
+		AudioDispatcher adp =  new AudioDispatcher(audioStream, 4096, 2048);
+		adp.setZeroPadFirstBuffer(true);
+		adp.setZeroPadLastBuffer(true);
 		adp.addAudioProcessor(new AudioProcessor() {
+			
+			
+			@Override
+			public AudioEvent process(AudioEvent audioEvent) {
+				System.out.println(audioEvent.getSamplesProcessed() + " samples in event: " + audioEvent.getBufferSize());
+				return audioEvent;
+			}
 			
 			@Override
 			public void processingFinished() {
 				// TODO Auto-generated method stub
-				
 			}
 			
-			@Override
-			public boolean process(AudioEvent audioEvent) {
-				System.out.println(audioEvent.getSamplesProcessed() + " samples in event: " + audioEvent.getBufferSize());
-				return true;
-			}
 		});
 		adp.run();
 		
 	}
+
+
 }

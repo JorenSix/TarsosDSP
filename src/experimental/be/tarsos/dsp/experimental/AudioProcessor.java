@@ -23,8 +23,6 @@ package be.tarsos.dsp.experimental;
 */
 
 
-
-
 /**
  * <p>
  * AudioProcessors are responsible for actual digital signal processing. The
@@ -50,7 +48,7 @@ public interface AudioProcessor {
 	 * @return False if the chain needs to stop here, true otherwise. This can
 	 *         be used to implement e.g. a silence detector.
 	 */
-    boolean process(AudioEvent audioEvent);
+	AudioEvent process(AudioEvent audioEvent);
 
     /**
      * Notify the AudioProcessor that no more data is available and processing
