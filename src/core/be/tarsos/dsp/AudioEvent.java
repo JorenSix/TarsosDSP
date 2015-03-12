@@ -165,6 +165,16 @@ public class AudioEvent {
 		return calculateRMS(floatBuffer);
 	}
 	
+	
+	/**
+	 * Returns the dBSPL for a buffer.
+	 * 
+	 * @return The dBSPL level for the buffer.
+	 */
+	public double getdBSPL() {
+		return soundPressureLevel(floatBuffer);
+	}
+	
 	/**
 	 * Calculates and returns the root mean square of the signal. Please
 	 * cache the result since it is calculated every time.
