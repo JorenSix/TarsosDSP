@@ -1,6 +1,5 @@
 package be.tarsos.dsp;
 
-import javax.sound.sampled.LineUnavailableException;
 
 import be.tarsos.dsp.util.fft.FFT;
 
@@ -38,7 +37,8 @@ public class PitchShifter implements AudioProcessor{
 	TarsosDSPAudioFloatConverter converter;
 	*/
 	
-	public PitchShifter(AudioDispatcher d, double factor, double sampleRate, int size, int overlap) throws LineUnavailableException{
+	public PitchShifter(AudioDispatcher d, double factor, double sampleRate, int size, int overlap){
+
 		/*
 		AudioFormat format = new AudioFormat((float) sampleRate, 16, 1, true, true);
 		
