@@ -41,19 +41,17 @@ public class AudioPlayerTest {
 	@Test
 	public void testAudioPlayer() throws UnsupportedAudioFileException, LineUnavailableException{
 		float[] sine = TestUtilities.audioBufferSine();
-		AudioDispatcher dispatcher = AudioDispatcherFactory.fromFloatArray(sine, 44100, 1024, 512);
+		AudioDispatcher dispatcher = AudioDispatcherFactory.fromFloatArray(sine, 44100, 10000, 128);
 		dispatcher.addAudioProcessor(new AudioPlayer(JVMAudioInputStream.toAudioFormat(dispatcher.getFormat())));	
 		dispatcher.run();
 	}
 	
-	@Test
+	
 	public void testStreamAudioPlayer() throws UnsupportedAudioFileException, LineUnavailableException{
 		PipedAudioStream file = new PipedAudioStream("http://mp3.streampower.be/stubru-high.mp3");
 		TarsosDSPAudioInputStream stream = file.getMonoStream(44100);
 		AudioDispatcher d;
-		d = new AudioDispatcher(stream, 1024, 0);
-	    //d.addAudioProcessor(new Daubechies4WaveletCoder());
-	    //d.addAudioProcessor(new Daubechies4WaveletDecoder());
+		d = new AudioDispatcher(stream, 1024, 128);
 	    d.addAudioProcessor(new AudioPlayer(JVMAudioInputStream.toAudioFormat(d.getFormat())));
 	    d.run();
 	}

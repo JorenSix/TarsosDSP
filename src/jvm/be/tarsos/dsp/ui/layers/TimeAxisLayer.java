@@ -64,8 +64,39 @@ public class TimeAxisLayer implements Layer {
 			int minValue = (int) cs.getMin(Axis.X);
 			int maxValue = (int) cs.getMax(Axis.X);
 			int differenceInMs = maxValue - minValue;
-			
-			if(differenceInMs > 10000){
+		
+		if(differenceInMs >= 240000){
+			//only draw seconds
+			for (int i = minValue; i < maxValue; i++) {
+				if (i % (smallDrawInterval*60) == 0) {
+					graphics.drawLine(i, minY, i, minY + markerHeight);
+					String text = String.valueOf(i / 1000);
+					LayerUtilities.drawString(graphics, text, i, minY + textOffset, true, false,null);
+				}
+			}
+				
+		} else if(differenceInMs >= 120000 && differenceInMs < 240000 ){
+				//only draw seconds
+				for (int i = minValue; i < maxValue; i++) {
+					if (i % (smallDrawInterval*10) == 0) {
+						graphics.drawLine(i, minY, i, minY + markerHeight);
+						String text = String.valueOf(i / 1000);
+						LayerUtilities.drawString(graphics, text, i, minY + textOffset, true, false,null);
+					}
+				}
+			}else if(differenceInMs >= 30000 && differenceInMs < 120000 ){
+				//only draw seconds
+				for (int i = minValue; i < maxValue; i++) {
+					if (i % (smallDrawInterval*5) == 0) {
+						graphics.drawLine(i, minY, i, minY + markerHeight);
+						String text = String.valueOf(i / 1000);
+						LayerUtilities.drawString(graphics, text, i, minY + textOffset, true, false,null);
+					} else if (i % smallDrawInterval == 0) {
+						graphics.drawLine(i, minY, i, minY + smallMarkerheight);
+						
+					}
+				}
+			}else if(differenceInMs > 10000 && differenceInMs < 30000){
 				//only draw seconds
 				for (int i = minValue; i < maxValue; i++) {
 					if (i % (smallDrawInterval*5) == 0) {

@@ -83,9 +83,14 @@ public final class AudioPlayer implements AudioProcessor {
 	
 	@Override
 	public boolean process(AudioEvent audioEvent) {
-		// overlap in samples * nr of bytes / sample = bytes overlap
 		int byteOverlap = audioEvent.getOverlap() * format.getFrameSize();
 		int byteStepSize = audioEvent.getBufferSize() * format.getFrameSize() - byteOverlap;
+		if(audioEvent.getTimeStamp() == 0){
+			byteOverlap = 0;
+			byteStepSize = audioEvent.getBufferSize() * format.getFrameSize();
+		}
+		// overlap in samples * nr of bytes / sample = bytes overlap
+		
 		line.write(audioEvent.getByteBuffer(), byteOverlap, byteStepSize);		
 		return true;
 	}

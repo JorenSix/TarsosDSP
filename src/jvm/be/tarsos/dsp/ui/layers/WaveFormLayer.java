@@ -92,9 +92,11 @@ public class WaveFormLayer implements Layer {
 
 	public void initialise() {
 		try {			
-			AudioDispatcher adp = AudioDispatcherFactory.fromFile(audioFile,1024, 0);
-			int amountOfSamples = (int) adp.durationInFrames();
-			adp = AudioDispatcherFactory.fromFile(audioFile,amountOfSamples, 0);
+			AudioDispatcher adp;
+			//max 20min
+			adp = AudioDispatcherFactory.fromFile(audioFile,44100*60*20, 0);
+			adp.setZeroPadLastBuffer(false);
+			
 			sampleRate = adp.getFormat().getSampleRate();
 			adp.addAudioProcessor(new AudioProcessor() {
 				public void processingFinished() {

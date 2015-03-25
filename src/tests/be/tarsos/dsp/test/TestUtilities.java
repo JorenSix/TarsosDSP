@@ -70,6 +70,18 @@ public class TestUtilities {
 		return buffer;
 	}
 	
+	public static float[] audioBufferSine(int numberOfSamples) {
+		final double sampleRate = 44100.0;
+		final double f0 = 440.0;
+		final double amplitudeF0 = 0.5;
+		final float[] buffer = new float[numberOfSamples];
+		for (int sample = 0; sample < buffer.length; sample++) {
+			final double time = sample / sampleRate;
+			buffer[sample] = (float) (amplitudeF0 * Math.sin(2 * Math.PI * f0 * time));
+		}
+		return buffer;
+	}
+	
 	/**
 	 * @return a 4096 samples long 44.1kHz sampled float buffer with the sound
 	 *         of a flute played double forte at A6 (theoretically 440Hz) without vibrato
@@ -90,8 +102,28 @@ public class TestUtilities {
 		}
 	}
 	
+	public static File ccirFile(){
+		String file = "/be/tarsos/dsp/test/resources/CCIR_04221.ogg";
+		final URL url = TestUtilities.class.getResource(file);
+		try {
+			return new File(new URI(url.toString()));
+		} catch (URISyntaxException e) {
+			return null;
+		}
+	}
+	
 	public static File onsetsAudioFile(){
 		String file = "/be/tarsos/dsp/test/resources/NR45.wav";
+		final URL url = TestUtilities.class.getResource(file);
+		try {
+			return new File(new URI(url.toString()));
+		} catch (URISyntaxException e) {
+			return null;
+		}
+	}
+	
+	public static File sineOf4000Samples(){
+		String file = "/be/tarsos/dsp/test/resources/4000_samples_of_440Hz_at_44.1kHz.wav";
 		final URL url = TestUtilities.class.getResource(file);
 		try {
 			return new File(new URI(url.toString()));

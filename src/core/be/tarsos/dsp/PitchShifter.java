@@ -27,6 +27,8 @@ public class PitchShifter implements AudioProcessor{
 
 	private final double sampleRate;
 	
+	private final AudioDispatcher d;
+	
 	private long osamp;
 	
 	private double excpt;
@@ -36,7 +38,7 @@ public class PitchShifter implements AudioProcessor{
 	TarsosDSPAudioFloatConverter converter;
 	*/
 	
-	public PitchShifter(double sampleRate, int size, int overlap) throws LineUnavailableException{
+	public PitchShifter(AudioDispatcher d, double factor, double sampleRate, int size, int overlap) throws LineUnavailableException{
 		/*
 		AudioFormat format = new AudioFormat((float) sampleRate, 16, 1, true, true);
 		
@@ -49,9 +51,10 @@ public class PitchShifter implements AudioProcessor{
 		
 		line.start();
 		*/
-		
+		pitchShiftRatio = factor;
 		this.size = size;
 		this.sampleRate = sampleRate;
+		this.d = d;
 		
 		osamp=size/(size-overlap);
 		
@@ -184,8 +187,10 @@ public class PitchShifter implements AudioProcessor{
 		converter.toByteArray(output, out);
 		line.write(out, 0, out.length);
 		*/
+		audioEvent.setFloatBuffer(outputAccumulator);
+		audioEvent.setOverlap(0);
+		d.setStepSizeAndOverlap(outputAccumulator.length, 0);
 		
-
 		return true;
 	}
 

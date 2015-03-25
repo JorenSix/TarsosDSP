@@ -321,23 +321,13 @@ public class AudioDispatcher implements Runnable {
 	}
 
 	/**
-	 * Slides a buffer with an floatOverlap and reads new data from the stream.
-	 * to the correct place in the buffer. E.g. with a buffer size of 9 and
-	 * floatOverlap of 3.
+	 * Reads the next audio block. It tries to read the number of bytes defined
+	 * by the audio buffer size minus the overlap. If the expected number of
+	 * bytes could not be read either the end of the stream is reached or
+	 * something went wrong.
 	 * 
-	 * <pre>
-	 *      | 0 | 1 | 3 | 3 | 4  | 5  | 6  | 7  | 8  |
-	 *                        |
-	 *                Slide (9 - 3 = 6)
-	 *                        |
-	 *                        v
-	 *      | 6 | 7 | 8 | _ | _  | _  | _  | _  | _  |
-	 *                        |
-	 *        Fill from 3 to (3+6) exclusive
-	 *                        |
-	 *                        v
-	 *      | 6 | 7 | 8 | 9 | 10 | 11 | 12 | 13 | 14 |
-	 * </pre>
+	 * The behavior for the first and last buffer is defined by their corresponding the zero pad settings. The method also handles the case if
+	 * the first buffer is also the last.
 	 * 
 	 * @return The number of bytes read.
 	 * @throws IOException
@@ -466,8 +456,5 @@ public class AudioDispatcher implements Runnable {
 			
 		});
 		adp.run();
-		
 	}
-
-
 }

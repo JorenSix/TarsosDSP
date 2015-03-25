@@ -1,4 +1,4 @@
-package be.tarsos.dsp.experimental;
+package be.tarsos.dsp.test;
 
 import static org.junit.Assert.*;
 
@@ -11,43 +11,56 @@ import javax.sound.sampled.UnsupportedAudioFileException;
 
 import org.junit.Test;
 
+import be.tarsos.dsp.AudioDispatcher;
+import be.tarsos.dsp.AudioEvent;
+import be.tarsos.dsp.AudioProcessor;
+import be.tarsos.dsp.io.PipedAudioStream;
 import be.tarsos.dsp.io.TarsosDSPAudioInputStream;
 import be.tarsos.dsp.io.jvm.JVMAudioInputStream;
 import be.tarsos.dsp.test.TestUtilities;
 
-public class TestAudioDispatcher {
+public class AudioDispatcherTest {
 
 	
 	public TarsosDSPAudioInputStream  getAudioInputStream()  {
-		
 		File audioFile = TestUtilities.sineOf4000Samples();
 		AudioInputStream stream = null;
 		try {
 			stream = AudioSystem.getAudioInputStream(audioFile);
 		} catch (UnsupportedAudioFileException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		} catch (IOException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
+		
 		TarsosDSPAudioInputStream audioStream = new JVMAudioInputStream(stream);
 		return audioStream;
 	}
-
+	
+	public TarsosDSPAudioInputStream getAudioInputStreamPiped(){
+		File audioFile = TestUtilities.sineOf4000Samples();
+		return new PipedAudioStream(audioFile.getAbsolutePath()).getMonoStream(44100);
+	}
+	
 	@Test
-	public void testZeroPadding() {
+	public void testZeroPaddingFirstBuffer(){
+		testZeroPaddingFirstBufferForStream(getAudioInputStream());
+		testZeroPaddingFirstBufferForStream(getAudioInputStreamPiped());
+	}
+
+
+	public void testZeroPaddingFirstBufferForStream(TarsosDSPAudioInputStream audioStream) {
 		final int bufferSize = 4096;
 		final int stepSize = 2048;
 		final int totalSamples = 4000;
-		AudioDispatcher adp =  new AudioDispatcher(getAudioInputStream(), bufferSize, stepSize);
+		AudioDispatcher adp =  new AudioDispatcher(audioStream, bufferSize, stepSize);
 		adp.setZeroPadFirstBuffer(true);
 		adp.setZeroPadLastBuffer(true);
 		adp.addAudioProcessor(new AudioProcessor() {
 			int bufferCounter = 0;
 			
 			@Override
-			public AudioEvent process(AudioEvent audioEvent) {
+			public boolean process(AudioEvent audioEvent) {
 				//Check if the first samples are zero
 				if(audioEvent.getSamplesProcessed()==0){
 					for(int i = 0 ; i < (bufferSize - stepSize); i++){
@@ -64,7 +77,7 @@ public class TestAudioDispatcher {
 					assertEquals("Buffer size should always equal 4096",bufferSize,audioEvent.getBufferSize());
 				}
 				bufferCounter++;
-				return audioEvent;
+				return true;
 			}
 			
 			@Override
@@ -76,8 +89,17 @@ public class TestAudioDispatcher {
 		adp.run();
 	}
 	
+	/**
+	 * Tests the case when the first buffer is immediately the last.
+	 */
 	@Test
-	public void testFirstAndLastBuffer() {
+	public void testFirstAndLastBuffer(){
+
+		testFirstAndLastBufferForStream(getAudioInputStream());
+		testFirstAndLastBufferForStream(getAudioInputStreamPiped());
+	}
+	
+	public void testFirstAndLastBufferForStream(TarsosDSPAudioInputStream audioStream) {
 		final int bufferSize = 4096;
 		final int stepSize = 0;
 		final int totalSamples = 4000;
@@ -88,19 +110,19 @@ public class TestAudioDispatcher {
 			int bufferCounter = 0;
 			
 			@Override
-			public AudioEvent process(AudioEvent audioEvent) {
+			public boolean process(AudioEvent audioEvent) {
 				//Check if the first samples are zero
 				if(audioEvent.getSamplesProcessed()==0){
 					assertEquals("Buffer size should always equal 4000",totalSamples,audioEvent.getBufferSize());
 				}
 				
 				bufferCounter++;
-				return audioEvent;
+				return true;
 			}
 			
 			@Override
 			public void processingFinished() {
-				assertEquals("Should have processed 2 buffers.",1,bufferCounter);
+				assertEquals("Should have processed 1 buffer.",1,bufferCounter);
 			}
 			
 		});

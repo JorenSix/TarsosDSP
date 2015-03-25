@@ -174,7 +174,7 @@ public class FeatureExtractor {
 				
 				@Override
 				public boolean process(AudioEvent audioEvent) {
-					System.out.println(audioEvent.getTimeStamp() + ";" + audioEvent.getRMS());
+					System.out.println(audioEvent.getTimeStamp() + "," + audioEvent.getRMS());
 					return true;
 				}
 			});
@@ -220,7 +220,7 @@ public class FeatureExtractor {
 				
 				@Override
 				public boolean process(AudioEvent audioEvent) {
-					System.out.println(audioEvent.getTimeStamp() + ";" + silenceDetecor.currentSPL());
+					System.out.println(audioEvent.getTimeStamp() + "," + silenceDetecor.currentSPL());
 					return true;
 				}
 			});
@@ -287,7 +287,7 @@ public class FeatureExtractor {
 			double timeStamp = audioEvent.getTimeStamp();
 			float pitch = pitchDetectionResult.getPitch();
 			float probability = pitchDetectionResult.getProbability();
-			System.out.println(timeStamp+";"+pitch+";"+probability);
+			System.out.println(timeStamp+","+pitch+","+probability);
 		}
 	}
 	
@@ -320,7 +320,7 @@ public class FeatureExtractor {
 			int size = 512;
 			int overlap = 256;
 			AudioDispatcher dispatcher = AudioDispatcherFactory.fromFile(audioFile, size, overlap);
-			ComplexOnsetDetector detector = new ComplexOnsetDetector(size);
+			ComplexOnsetDetector detector = new ComplexOnsetDetector(size,0.7,0.1);
 			detector.setHandler(this);
 			dispatcher.addAudioProcessor(detector);
 			
@@ -330,7 +330,7 @@ public class FeatureExtractor {
 
 		@Override
 		public void handleOnset(double time, double salience) {
-			System.out.println(time + ";" + salience);
+			System.out.println(time + "," + salience);
 		}
 	}
 	

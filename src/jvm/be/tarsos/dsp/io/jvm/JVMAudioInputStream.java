@@ -64,6 +64,7 @@ public class JVMAudioInputStream implements TarsosDSPAudioInputStream {
 
 	@Override
 	public long getFrameLength() {
+
 		return underlyingStream.getFrameLength();
 	}
 

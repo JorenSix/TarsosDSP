@@ -57,7 +57,7 @@ public class BeatRootTest {
 		}
 		
 		AudioDispatcher d = AudioDispatcherFactory.fromFile(audioFile, 2048, 2048-441);
-		d.setZeroPad(true);
+		d.setZeroPadFirstBuffer(true);
 		BeatRootSpectralFluxOnsetDetector b = new BeatRootSpectralFluxOnsetDetector(d, 2048,441);
 		b.setHandler(new OnsetHandler(){
 			int i = 0;
@@ -89,7 +89,7 @@ public class BeatRootTest {
 		final EventList onsetList = new EventList();
 		
 		AudioDispatcher d = AudioDispatcherFactory.fromFile(audioFile, 2048, 2048-441);
-		d.setZeroPad(true);
+		d.setZeroPadFirstBuffer(true);
 		BeatRootSpectralFluxOnsetDetector b = new BeatRootSpectralFluxOnsetDetector(d, 2048,441);
 		b.setHandler(new OnsetHandler(){
 			@Override

@@ -139,4 +139,7 @@ The 2.0 version is worth the major version update since it offers out-of-the-box
 
 <dt>Version 2.1</dt><dd>2015-03-03</dd>
 The 2.1 version restructures some of the source files. All source can now be found in src. The ant build file is adapted to reflect this change. This version also includes an STFT pitch shifter. There was already a time domain pitch shifter included and now a frequency domain implementation is present as well. 
+
+<dt>Version 2.2</dt><dd>2015-03-03</dd>
+The 2.2 version includes a new @AudioDispatcher@. It has been reviewed toroughly and now behaves predictably for the first and last buffers as well. To prevent compatibility issues the version githas been changed.  
  

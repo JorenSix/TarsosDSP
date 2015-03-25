@@ -65,7 +65,7 @@ public interface TarsosDSPAudioInputStream {
      * @throws IOException if an input or output error occurs
      */
     public void close() throws IOException;
-
+    
 	/**
 	 * 
 	 * @return The format of the underlying audio

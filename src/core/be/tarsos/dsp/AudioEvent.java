@@ -71,11 +71,10 @@ public class AudioEvent {
 	private int bytesProcessing;
 	
 	
-	public AudioEvent(TarsosDSPAudioFormat format,long frameLength){
+	public AudioEvent(TarsosDSPAudioFormat format){
 		this.format = format;
 		this.converter = TarsosDSPAudioFloatConverter.getConverter(format);
 		this.overlap = 0;
-		this.frameLength = frameLength;
 	}
 	
 	public float getSampleRate(){

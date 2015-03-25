@@ -106,42 +106,14 @@ public class PipeDecoder {
 			LOG.info("Starting piped decoding process for " + resource );
 			final Process process = pb.start();
 			
-			InputStream stdOut = new BufferedInputStream(process.getInputStream(), pipeBuffer);
-			
-			
-			//read and ignore the 46 byte wav header, only pipe the pcm samples to the audioinputstream
-			byte[] header = new byte[46];
-			double sleepSeconds = 0;
-			double timeoutLimit = 20; //seconds
-			
-			try {
-				while(stdOut.available() < header.length){
-					try {
-						Thread.sleep(100);
-						sleepSeconds += 0.1;
-					} catch (InterruptedException e) {
-						e.printStackTrace();
-					}
-					if(sleepSeconds > timeoutLimit){
-						throw new Error("Could not read from pipe within " + timeoutLimit + " seconds: timeout!");
-					}
-				}
-				int bytesRead = stdOut.read(header);
-				if(bytesRead != header.length){
-					throw new Error("Could not read complete WAV-header from pipe. This could result in mis-aligned frames!");
-				}
-			} catch (IOException e1) {
-				throw new Error("Problem reading from piped sub process: " + e1.getMessage());
-			}
-						
-		
+			final InputStream stdOut = new BufferedInputStream(process.getInputStream(), pipeBuffer);
 			
 			new Thread(new Runnable(){
 				@Override
 				public void run() {
 					try {
 						process.waitFor();
-						LOG.fine("Finished piped decoding process");
+						LOG.info("Finished piped decoding process");
 					} catch (InterruptedException e) {
 						LOG.severe("Interrupted while waiting for sub process exit.");
 						e.printStackTrace();

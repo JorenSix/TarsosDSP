@@ -305,7 +305,9 @@ public class SampleExtractor  extends JFrame {
         
         try {
         	AudioDispatcher dispatcher = AudioDispatcherFactory.fromFile(file, 1024, 0);
-        	endSelectionSpinner.setValue(dispatcher.durationInSeconds());
+        	dispatcher.run();
+        	
+        	endSelectionSpinner.setValue((double) dispatcher.secondsProcessed());
 		} catch (UnsupportedAudioFileException e) {
 		} catch (IOException e) {
 		}
@@ -319,7 +321,7 @@ public class SampleExtractor  extends JFrame {
 				try {
 					UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
 				} catch (Exception e) {
-					//ignore failure to set default look en feel;
+					//ignore failure to set default look and feel;
 				}
 				JFrame frame = new SampleExtractor();
 				frame.pack();
