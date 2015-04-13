@@ -30,7 +30,9 @@ import java.awt.Graphics2D;
 import java.awt.GridLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.io.BufferedWriter;
 import java.io.File;
+import java.io.FileWriter;
 import java.io.IOException;
 import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
@@ -57,6 +59,8 @@ import be.tarsos.dsp.AudioEvent;
 import be.tarsos.dsp.AudioProcessor;
 import be.tarsos.dsp.SpectralPeakProcessor;
 import be.tarsos.dsp.SpectralPeakProcessor.SpectralPeak;
+import be.tarsos.dsp.example.dissonance.KernelDensityEstimate.GaussianKernel;
+import be.tarsos.dsp.example.dissonance.KernelDensityEstimate.Kernel;
 import be.tarsos.dsp.example.spectrum.SpectralInfo;
 import be.tarsos.dsp.io.PipeDecoder;
 import be.tarsos.dsp.io.PipedAudioStream;
@@ -78,6 +82,7 @@ import be.tarsos.dsp.ui.layers.SelectionLayer;
 import be.tarsos.dsp.ui.layers.SpectrumLayer;
 import be.tarsos.dsp.ui.layers.ZoomMouseListenerLayer;
 import be.tarsos.dsp.ui.layers.pch.ScaleLayer;
+import be.tarsos.dsp.util.PitchConverter;
 
 public class DissonanceExample extends JFrame {
 	
@@ -87,6 +92,7 @@ public class DissonanceExample extends JFrame {
 	private LinkedPanel sensoryDissonancePanel;
 	private JTextArea textArea;
 	private JSlider frameSlider;
+	private JSlider noiseFloorMedianLengthSlider;
 	
 	private AudioDispatcher dispatcher;
 	private AudioDispatcher player;
@@ -228,6 +234,22 @@ public class DissonanceExample extends JFrame {
 		buttonPanel.add(noiseFloorFactorLabel);
 		buttonPanel.add(noiseFloorSlider);
 		
+		final JLabel noiseFloorMedianLengthLabel = new JLabel("Noise floor median filter length ("+ noiseFloorMedianFilterLenth +"):");
+		noiseFloorMedianLengthSlider = new JSlider(3,fftsize/2);
+		noiseFloorMedianLengthSlider.addChangeListener(new ChangeListener() {
+			
+			@Override
+			public void stateChanged(ChangeEvent e) {
+				int newValue = ((JSlider) e.getSource()).getValue();	
+				noiseFloorMedianLengthLabel.setText("Noise floor median filter length (" + newValue + "):");
+				noiseFloorMedianFilterLenth = newValue;
+				repaintSpectralInfo();
+			}
+		});
+		buttonPanel.add(noiseFloorMedianLengthLabel);
+		buttonPanel.add(noiseFloorMedianLengthSlider);
+		noiseFloorMedianLengthSlider.setValue(noiseFloorMedianFilterLenth);
+		
 		
 		JSlider numberOfPeaksSlider = new JSlider(1, 20);
 		final JLabel numberOfPeaksLabel = new JLabel("Number of peaks  :");
@@ -241,8 +263,6 @@ public class DissonanceExample extends JFrame {
 				numberOfSpectralPeaks = newValue;
 				repaintSpectralInfo();
 			}
-
-			
 		});
 		numberOfPeaksSlider.setValue(7);
 		buttonPanel.add(numberOfPeaksLabel);
@@ -283,13 +303,13 @@ public class DissonanceExample extends JFrame {
 			spectrumLayer.clearPeaks();
 			spectrumLayer.setSpectrum(info.getMagnitudes());
 			noiseFloorLayer.setSpectrum(info.getNoiseFloor(noiseFloorMedianFilterLenth,noiseFloorFactor));
-			List<SpectralPeak> peaks = info.getPeakList(noiseFloorMedianFilterLenth, noiseFloorFactor, numberOfSpectralPeaks,1);
+			List<SpectralPeak> peaks = info.getPeakList(noiseFloorMedianFilterLenth, noiseFloorFactor, numberOfSpectralPeaks,50);
 			
-			StringBuilder sb = new StringBuilder("Frequency(Hz);Step(cents);Magnitude\n");
+			StringBuilder sb = new StringBuilder("Frequency(Hz);Step(cents);Magnitude;Ratio\n");
 			frequencies.clear();
 			amplitudes.clear();
 			for(SpectralPeak peak : peaks){
-				String message = String.format("%.2f;%.2f;%.2f\n", peak.getFrequencyInHertz(),peak.getRelativeFrequencyInCents(),peak.getMagnitude());
+				String message = String.format("%.2f;%.2f;%.2f;%.2f\n", peak.getFrequencyInHertz(),peak.getRelativeFrequencyInCents(),peak.getMagnitude(),peak.getFrequencyInHertz()/peak.getRefFrequencyInHertz());
 				sb.append(message);
 				//float peakFrequencyInCents =(float) PitchConverter.hertzToAbsoluteCent(peak.getFrequencyInHertz());
 				spectrumLayer.setPeak(peak.getBin());
@@ -464,6 +484,14 @@ public class DissonanceExample extends JFrame {
 				}
 				frameSlider.setValue(frameCounter);
 				frameSlider.setEnabled(true);
+				
+				//write spectral info to file
+				 try {
+					writeSpectralInfoToFile();
+				} catch (IOException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
 			}
 			
 			@Override
@@ -486,15 +514,89 @@ public class DissonanceExample extends JFrame {
 		
 		new Thread(player).start();
 		new Thread(dispatcher).start();
+		
+		
+	}
+	
+	private void writeSpectralInfoToFile() throws IOException{
+		StringBuilder sb = new StringBuilder();
+		
+		File file = new File("spectrum.txt");
+		 
+		// if file doesnt exists, then create it
+		if (!file.exists()) {
+			file.createNewFile();
+		}
+
+		FileWriter fw = new FileWriter(file.getAbsoluteFile());
+		BufferedWriter bw = new BufferedWriter(fw);
+		
+		Kernel kernel = new GaussianKernel(80);
+		
+		KernelDensityEstimate kde = new KernelDensityEstimate(kernel,14400);
+
+		
+		for(int i = 0 ; i < spectalInfo.size() ;i++){
+			SpectralInfo spi = spectalInfo.get(i);
+			float[] mags = spi.getMagnitudes().clone();
+			float[] floor = spi.getNoiseFloor(80,1.0f);
+			
+			List<SpectralPeak> peaks = spi.getPeakList(80, 1.06f, 20,50);
+			for(SpectralPeak peak:peaks){
+				double pitchInCents = PitchConverter.hertzToAbsoluteCent(peak.getFrequencyInHertz());
+				for(int k = 0 ; k < Math.max(0,mags[peak.getBin()]-floor[peak.getBin()])*10; k++){
+					kde.add(pitchInCents);
+				}
+			}
+			
+			sb.append("frame_");
+			sb.append(i);
+			sb.append(" ");
+			for(int j = 0;j<mags.length ; j++){
+				sb.append(Math.max(0,mags[j]-floor[j]));
+				sb.append(" ");
+			}
+			sb.append("\n");
+			
+			if(sb.length() > 100000){
+				String content = sb.toString();
+				bw.write(content);
+				sb = new StringBuilder();
+			}
+		}
+		
+		String content = sb.toString();
+		bw.write(content);
+		bw.close();
+		
+		
+		file = new File("estimate.txt");
+		 
+		// if file doesnt exists, then create it
+		if (!file.exists()) {
+			file.createNewFile();
+		}
+
+		fw = new FileWriter(file.getAbsoluteFile());
+		bw = new BufferedWriter(fw);
+		
+		double[] estimate = kde.getEstimate();
+		sb = new StringBuilder();
+		sb.append("\n");
+		for(int i = 6000 ; i < 12000 ; i++){
+			sb.append(i);
+			sb.append(" ");
+			sb.append(estimate[i]);
+			sb.append("\n");
+		}
+		content = sb.toString();
+		bw.write(content);
+		bw.close();		
 	}
 	
 	
 
-	public static void main(String[] args) throws InvocationTargetException, InterruptedException, UnsupportedAudioFileException, LineUnavailableException, IOException{
-		for(int i = 1 ; i < 100 ; i++){
-			System.out.println(String.format("%d %.3f", i, Math.log1p(i/100.0)));
-		}
-		
+	public static void main(String[] args) throws InvocationTargetException, InterruptedException, UnsupportedAudioFileException, LineUnavailableException, IOException{	
 		SwingUtilities.invokeAndWait(new Runnable() {
 			@Override
 			public void run() {

@@ -46,6 +46,8 @@ public final class FFT {
 		this(size,null);
 	}
 	
+
+	
 	/**
 	 * Create a new fft of the specified size. Apply the specified window on the samples before a forward transform. 
 	 * arning: the window is not applied in reverse when a backwards transform is requested.
@@ -101,6 +103,10 @@ public final class FFT {
 
 	public double binToHz(final int binIndex, final float sampleRate) {
 		return binIndex * sampleRate / (double) fftSize;
+	}
+	
+	public int size(){
+		return fftSize;
 	}
 
 	/**

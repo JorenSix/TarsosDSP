@@ -37,11 +37,10 @@ public class SpectralInfo{
 		this.frequencyEstimates = frequencyEstimates;
 	}
 	
-
-	public List<SpectralPeak> getPeakList(int medianFilterLength,float noiseFloorFactor,int numberOfPeaks,int minPeakSize) {
+	public List<SpectralPeak> getPeakList(int medianFilterLength,float noiseFloorFactor,int numberOfPeaks,int minPeakDistanceInCents) {
 		float[] noiseFloor = getNoiseFloor(medianFilterLength, noiseFloorFactor);
 		List<Integer> localMaxima = SpectralPeakProcessor.findLocalMaxima(magnitudes, noiseFloor);
-		return SpectralPeakProcessor.findPeaks(magnitudes, frequencyEstimates, localMaxima, numberOfPeaks,minPeakSize);
+		return SpectralPeakProcessor.findPeaks(magnitudes, frequencyEstimates, localMaxima, numberOfPeaks,minPeakDistanceInCents);
 	}
 
 	public float[] getMagnitudes(){

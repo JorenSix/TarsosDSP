@@ -25,8 +25,6 @@ public class WaveHeader {
 
     // follows WAVE format in http://ccrma.stanford.edu/courses/422/projects/WaveFormat
 
-    private static final String TAG = "WaveHeader";
-
     private static final int HEADER_LENGTH = 44;
 
     /** Indicates PCM format. */
@@ -168,7 +166,7 @@ public class WaveHeader {
     public int read(InputStream in) throws IOException {
         /* RIFF header */
         readId(in, "RIFF");
-        int numBytes = readInt(in) - 36;
+        
         readId(in, "WAVE");
 
         /* fmt chunk */

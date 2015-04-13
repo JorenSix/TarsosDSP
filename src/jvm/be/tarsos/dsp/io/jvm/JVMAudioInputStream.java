@@ -98,4 +98,5 @@ public class JVMAudioInputStream implements TarsosDSPAudioInputStream {
 		AudioFormat audioFormat = new AudioFormat(format.getSampleRate(), format.getSampleSizeInBits(), format.getChannels(), isSigned, format.isBigEndian());
 		return audioFormat;
 	}
+	
 }
