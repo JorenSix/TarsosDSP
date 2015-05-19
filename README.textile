@@ -1,6 +1,6 @@
 h1. TarsosDSP
 
-TarsosDSP is a Java library for audio processing. Its aim is to provide an easy-to-use interface to practical music  processing algorithms implemented, as simply as possible, in pure Java and without any other external dependencies. TarsosDSP features an implementation of a percussion onset detector and a number of pitch detection algorithms: YIN, the Mcleod Pitch method and a "Dynamic Wavelet Algorithm Pitch Tracking" algorithm. Also included is a Goertzel DTMF(Dual tone multi frequency) decoding algorithm, a time stretch algorithm (WSOLA), resampling, filters, simple synthesis, some audio effects, and a pitch shifting algorithm.
+TarsosDSP is a Java library for audio processing. Its aim is to provide an easy-to-use interface to practical music processing algorithms implemented, as simply as possible, in pure Java and without any other external dependencies. The library tries to hit the sweet spot between being capable enough to get real tasks done but compact and simple enough to serve as a demonstration on how DSP algorithms works. TarsosDSP features an implementation of a percussion onset detector and a number of pitch detection algorithms: YIN, the Mcleod Pitch method and a "Dynamic Wavelet Algorithm Pitch Tracking" algorithm. Also included is a Goertzel DTMF(Dual tone multi frequency) decoding algorithm, a time stretch algorithm (WSOLA), resampling, filters, simple synthesis, some audio effects, and a pitch shifting algorithm.
 
 To show the capabilities of the library, "TarsosDSP example applications":http://tarsos.0110.be/tag/TarsosDSP are available. Head over to the "TarosDSP release directory":http://tarsos.0110.be/releases/TarsosDSP/ for freshly baked binaries and code smell free (that is the goal anyway), oven-fresh sources.
 
@@ -16,7 +16,18 @@ bc. @inproceedings{six2014tarsosdsp,
 
 h2. Quickly Getting Started with TarsosDSP
 
-Head over to the "TarsosDSP release repository":http://tarsos.0110.be/releases/TarsosDSP/ and download the latest "TarsosDSP library":http://tarsos.0110.be/releases/TarsosDSP/TarsosDSP-latest/TarsosDSP-latest.jar. To get up to speed quickly, check the "TarsosDSP Example applications":http://tarsos.0110.be/releases/TarsosDSP/TarsosDSP-latest/TarsosDSP-latest-Examples/ for inspiration and consult the "API documentation":http://tarsos.0110.be/releases/TarsosDSP/TarsosDSP-latest/TarsosDSP-latest-Documentation/.
+Head over to the "TarsosDSP release repository":http://tarsos.0110.be/releases/TarsosDSP/ and download the latest "TarsosDSP library":http://tarsos.0110.be/releases/TarsosDSP/TarsosDSP-latest/TarsosDSP-latest.jar. Include the Jar-file in your project and you are ready to go. To get up to speed quickly, check the "TarsosDSP Example applications":http://tarsos.0110.be/releases/TarsosDSP/TarsosDSP-latest/TarsosDSP-latest-Examples/ for inspiration and consult the "API documentation":http://tarsos.0110.be/releases/TarsosDSP/TarsosDSP-latest/TarsosDSP-latest-Documentation/.
+
+Every "release of TarsosDSP":http://0110.be/releases/TarsosDSP/ contains the following:
+
+* @TarsosDSP-x.x-Documentation/@ JavaDoc documentation
+* @TarsosDSP-x.x-Examples/@ Example applications.
+* @TarsosDSP-Android-x.x-bin.jar@ Jar library for inclusion in Android projects, withouth source files included.
+* @TarsosDSP-Android-x.x.jar@ Jar library for inclusion in Android projects, with source files included.
+* @TarsosDSP-x.x-Manual.pdf@ A manual describing the core concepts of TarsosDSP.
+* @TarsosDSP-x.x-Readme.html@ This readme.
+* @TarsosDSP-x.x-bin.jar@ Jar library for inclusion in Java projects, withouth source files included.
+* @TarsosDSP-x.x.jar@ Jar library for inclusion in Java projects, with source files included.
 
 h2. TarsosDSP on Android
 
@@ -141,5 +152,5 @@ The 2.0 version is worth the major version update since it offers out-of-the-box
 The 2.1 version restructures some of the source files. All source can now be found in src. The ant build file is adapted to reflect this change. This version also includes an STFT pitch shifter. There was already a time domain pitch shifter included and now a frequency domain implementation is present as well. 
 
 <dt>Version 2.2</dt><dd>2015-03-03</dd>
-The 2.2 version includes a new @AudioDispatcher@. It has been reviewed toroughly and now behaves predictably for the first and last buffers as well. To prevent compatibility issues the version githas been changed.  
+The 2.2 version includes a new @AudioDispatcher@. It has been reviewed toroughly and now behaves predictably for the first and last buffers as well. To prevent compatibility issues the version has been changed.  
  

@@ -28,6 +28,7 @@ import javax.sound.sampled.LineUnavailableException;
 
 import be.tarsos.dsp.AudioGenerator;
 import be.tarsos.dsp.effects.DelayEffect;
+import be.tarsos.dsp.effects.FlangerEffect;
 import be.tarsos.dsp.filters.LowPassFS;
 import be.tarsos.dsp.io.jvm.AudioPlayer;
 import be.tarsos.dsp.synthesis.AmplitudeLFO;
@@ -57,6 +58,7 @@ public class SynthesisExample {
 		generator.addAudioProcessor(new SineGenerator(0.01,2460));
 		generator.addAudioProcessor(new AmplitudeLFO(0.1,0.7));
 		generator.addAudioProcessor(new DelayEffect(0.757, 0.4, 44100));
+		generator.addAudioProcessor(new FlangerEffect(0.1,0.2,44100,4));
 		generator.addAudioProcessor(new AudioPlayer( new AudioFormat(44100, 16, 1, true, false)));
 		generator.run();
 	}

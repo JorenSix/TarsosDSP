@@ -36,7 +36,9 @@ import java.io.FileWriter;
 import java.io.IOException;
 import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map.Entry;
 
 import javax.sound.sampled.LineUnavailableException;
 import javax.sound.sampled.UnsupportedAudioFileException;
@@ -405,8 +407,6 @@ public class DissonanceExample extends JFrame {
 		sensoryDissonancePanel.addLayer(valleyLayer);
 		sensoryDissonancePanel.addLayer(new ScaleLayer(cs, true));
 		
-	
-		
 		//sensoryDissonancePanel.addLayer(new ZoomMouseListenerLayer());
 		//sensoryDissonancePanel.addLayer(new DragMouseListenerLayer(cs));
 		
@@ -534,9 +534,46 @@ public class DissonanceExample extends JFrame {
 		Kernel kernel = new GaussianKernel(80);
 		
 		KernelDensityEstimate kde = new KernelDensityEstimate(kernel,14400);
-
+		
+		HashMap<Integer, Integer> peakCounter = new HashMap<Integer, Integer>();
+		HashMap<Integer, List<Integer>> peakFrames = new HashMap<Integer, List<Integer>>();
 		
 		for(int i = 0 ; i < spectalInfo.size() ;i++){
+			
+			SpectralInfo spi = spectalInfo.get(i);
+			float[] mags = spi.getMagnitudes().clone();
+			float[] floor = spi.getNoiseFloor(80,1.0f);
+			List<SpectralPeak> peaks = spi.getPeakList(80, 1.06f, 20,50);
+			
+			double maxPeak = 0;
+			double pitchInCents=0;
+			for(SpectralPeak peak:peaks){
+				if(peak.getMagnitude() > maxPeak){
+					 pitchInCents = PitchConverter.hertzToAbsoluteCent(peak.getFrequencyInHertz());
+					 maxPeak = peak.getMagnitude();
+					 int key = (int) Math.round(pitchInCents/50.0f);
+					 if(!peakCounter.containsKey(key)){
+						 peakCounter.put(key, 0);
+						 peakFrames.put(key, new ArrayList<Integer>());
+					 }
+					 peakCounter.put(key, peakCounter.get(key) + 1);
+					 peakFrames.get(key).add(i);
+				}
+			}
+		}
+		
+		int maxValue = 0; 
+		int maxKey = 0;
+		for(Entry<Integer,Integer> entry : peakCounter.entrySet()){
+			System.out.println(entry.getKey() * 50 + ";" + entry.getValue());
+			if(entry.getValue() > maxValue){
+				maxValue = entry.getValue();
+				maxKey = entry.getKey();
+			}
+		}
+		List<Integer> framesToIterate = peakFrames.get(maxKey); 
+		
+		for(int i : framesToIterate){
 			SpectralInfo spi = spectalInfo.get(i);
 			float[] mags = spi.getMagnitudes().clone();
 			float[] floor = spi.getNoiseFloor(80,1.0f);
