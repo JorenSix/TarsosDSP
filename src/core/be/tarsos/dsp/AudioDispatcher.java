@@ -432,7 +432,7 @@ public class AudioDispatcher implements Runnable {
 			}else{
 				converter.toFloatArray(audioByteBuffer, offsetInBytes, audioFloatBuffer, offsetInSamples, floatStepSize);
 			}
-		}else{
+		} else if(!stopped) {
 			// If the end of the stream has not been reached and the number of bytes read is not the
 			// expected amount of bytes, then we are in an invalid state; 
 			throw new IOException(String.format("The end of the audio stream has not been reached and the number of bytes read (%d) is not equal "
