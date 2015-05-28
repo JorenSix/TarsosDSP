@@ -71,8 +71,7 @@ public class AudioDispatcherFactory {
 		audioInputStream.startRecording();
 		return new AudioDispatcher(audioStream,audioBufferSize,bufferOverlap);
 		}else{
-			new IllegalArgumentException("Buffer size too small should be at least " + (minAudioBufferSize *2));
-			return null;
+			throw new IllegalArgumentException("Buffer size too small should be at least " + (minAudioBufferSize *2));
 		}
 		
 		
