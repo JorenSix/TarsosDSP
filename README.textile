@@ -46,7 +46,7 @@ TarsosDSP contains some ready made example applications. Most have a Java Swing 
 * "Audio Time Stretching - Implementation in Pure Java Using WSOLA":http://tarsos.0110.be/artikels/lees/Audio_Time_Stretching_-_Implementation_in_Pure_Java_Using_WSOLA an implementation of a time stretching algorithm. WSOLA(Waveform Similarity Overlap Add) makes it possible to change the play back speed of audio without changing the pitch. The play back speed can be changed at any moment, even when there is audio playing.
 * "Audio Feature Extraction":http://tarsos.0110.be/releases/TarsosDSP/TarsosDSP-1.3/TarsosDSP-1.3-Examples/FeatureExtractor-1.3.jar a command line application to do simple feature extraction.
 * "Audio Synthesis":http://tarsos.0110.be/releases/TarsosDSP/TarsosDSP-1.3/TarsosDSP-1.3-Examples/Synthesis-1.3.jar a command line application to do simple audio synthesis.
-* "Pitch Shifting":http://tarsos.0110.be/artikels/lees/Pitch_Shifting_-_Implementation_in_Pure_Java_with_Resampling_and_Time_Stretsching an example application that does pitch shifting, either in real-time on a microphone input, or on recorded audio. Also included is a command line application to do pitch shifting. 
+* "Pitch Shifting":http://tarsos.0110.be/artikels/lees/Pitch_Shifting_-_Implementation_in_Pure_Java_with_Resampling_and_Time_Stretching an example application that does pitch shifting, either in real-time on a microphone input, or on recorded audio. Also included is a command line application to do pitch shifting. 
 
 
 h2. Developing TarsosDSP
