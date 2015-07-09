@@ -29,12 +29,15 @@ import java.io.InputStream;
 import java.nio.ByteOrder;
 import java.util.logging.Logger;
 
+import be.tarsos.dsp.util.FFMPEGDownloader;
+
 /**
  * <p>
  * Decode audio files to PCM, mono, 16bits per sample, at any sample rate using
- * an external program. By default avconv, provided by libav is used. Other
- * command LineWavelet programs that are able to decode audio and pipe binary PCM
- * samples to STDOUT are possible as well (ffmpeg, mplayer). On Debian: <code>apt-get install libav-tools</code>
+ * an external program. By default ffmpeg is used. Other
+ * command Line  programs that are able to decode audio and pipe binary PCM
+ * samples to STDOUT are possible as well (avconv, mplayer). 
+ * To install ffmpeg on Debian: <code>apt-get install ffmpeg</code>.
  * </p>
  * <p>
  * This adds support for a lot of audio formats and video container formats with
@@ -44,7 +47,7 @@ import java.util.logging.Logger;
  * <p>
  * To see which audio decoders are supported, check
  * </p>
- * <code><pre>avconv -decoders | grep -E "^A" | sort
+ * <code><pre>ffmpeg -decoders | grep -E "^A" | sort
 avconv version 9.8, Copyright (c) 2000-2013 the Libav developers
   built on Aug 26 2013 09:52:20 with gcc 4.4.3 (Ubuntu 4.4.3-4ubuntu5.1)
 A... 8svx_exp             8SVX exponential
@@ -76,9 +79,38 @@ public class PipeDecoder {
 			pipeEnvironment = "/bin/bash";
 			pipeArgument = "-c";
 		}
-		pipeCommand = "avconv -i \"%resource%\" -vn -ar %sample_rate% -ac %channels% -sample_fmt s16 -f s16le pipe:1";
+		
+		String path = System.getenv("PATH");
+		String arguments = " -i \"%resource%\" -vn -ar %sample_rate% -ac %channels% -sample_fmt s16 -f s16le pipe:1";
+		if(isAvailable("ffmpeg")){
+			LOG.info("found ffmpeg on the path (" + path + "). Will use ffmpeg for decoding media files.");
+			pipeCommand = "ffmpeg" + arguments;	
+		}else if (isAvailable("avconv")){
+			LOG.info("found avconv on your path(" + path + "). Will use avconv for decoding media files.");
+			pipeCommand = "avconv" + arguments;
+		}else{
+			LOG.warning("Dit not find ffmpeg or avconv on your path(" + path + "), will try to download it automatically.");
+			FFMPEGDownloader downloader = new FFMPEGDownloader();
+			String binary = downloader.ffmpegBinary();
+			if(binary == null){
+				LOG.severe("Could not find an ffmpeg binary for your system");
+				pipeCommand = "false";
+				throw new Error("Decoding via a pipe will not work: Could not find an ffmpeg binary for your system");
+			}else{
+				pipeCommand = '"' + binary + '"' + arguments;
+			}
+		}
 		//pipeLogFile = new File("decoder_log.txt");
 		pipeBuffer = 10000;
+	}
+	
+	private boolean isAvailable(String command){
+		try{
+			Runtime.getRuntime().exec(command + " -version");
+			return true;
+		}catch (Exception e){
+			return false;
+		}	
 	}
 	
 	public PipeDecoder(String pipeEnvironment,String pipeArgument,String pipeCommand,String pipeLogFile,int pipeBuffer){
@@ -146,5 +178,4 @@ public class PipeDecoder {
 	                ByteOrder.BIG_ENDIAN.equals(ByteOrder.nativeOrder()));
 		 return audioFormat;
 	}
-
 }
