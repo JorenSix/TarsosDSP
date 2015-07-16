@@ -24,8 +24,11 @@
 package be.tarsos.dsp.io;
 
 import java.io.BufferedInputStream;
+import java.io.BufferedReader;
+import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.InputStreamReader;
 import java.nio.ByteOrder;
 import java.util.logging.Logger;
 
@@ -67,17 +70,29 @@ public class PipeDecoder {
 	private final String pipeEnvironment;
 	private final String pipeArgument;
 	private final String pipeCommand;
-	//private final File pipeLogFile;
 	private final int pipeBuffer;
+
+	private boolean printErrorstream = true;
+
+	private String decoderBinaryAbsolutePath;
 	
 	public PipeDecoder(){
+		pipeBuffer = 10000;
+
 		//Use sensible defaults depending on the platform
 		if(System.getProperty("os.name").indexOf("indows") > 0 ){
 			pipeEnvironment = "cmd.exe";
 			pipeArgument = "/C";
-		}else{
+		}else if(new File("/bin/bash").exists()){
 			pipeEnvironment = "/bin/bash";
 			pipeArgument = "-c";
+		}else if (new File("/system/bin/sh").exists()){
+			//probably we are on android here
+			pipeEnvironment = "/system/bin/sh";
+			pipeArgument = "-c";
+		}else{
+			LOG.severe("Coud not find a command line environment (cmd.exe or /bin/bash)");
+			throw new Error("Decoding via a pipe will not work: Coud not find a command line environment (cmd.exe or /bin/bash)");
 		}
 		
 		String path = System.getenv("PATH");
@@ -88,20 +103,31 @@ public class PipeDecoder {
 		}else if (isAvailable("avconv")){
 			LOG.info("found avconv on your path(" + path + "). Will use avconv for decoding media files.");
 			pipeCommand = "avconv" + arguments;
-		}else{
-			LOG.warning("Dit not find ffmpeg or avconv on your path(" + path + "), will try to download it automatically.");
-			FFMPEGDownloader downloader = new FFMPEGDownloader();
-			String binary = downloader.ffmpegBinary();
-			if(binary == null){
-				LOG.severe("Could not find an ffmpeg binary for your system");
+		}else {
+			if(isAndroid()) {
+				String tempDirectory = System.getProperty("java.io.tmpdir");
+				File f = new File(tempDirectory, "ffmpeg");
+				if (f.exists() && f.length() > 1000000 && f.canExecute()) {
+					decoderBinaryAbsolutePath = f.getAbsolutePath();
+				} else {
+					LOG.severe("Could not find an ffmpeg binary for your Android system");
+					LOG.severe("Unpack a statically compiled ffmpeg binary for your architecture to: " + f.getAbsolutePath());
+				}
+			}else{
+				LOG.warning("Dit not find ffmpeg or avconv on your path(" + path + "), will try to download it automatically.");
+				FFMPEGDownloader downloader = new FFMPEGDownloader();
+				decoderBinaryAbsolutePath = downloader.ffmpegBinary();
+				if(decoderBinaryAbsolutePath==null){
+					LOG.severe("Could not download an ffmpeg binary automatically for your system.");
+				}
+			}
+			if(decoderBinaryAbsolutePath == null){
 				pipeCommand = "false";
 				throw new Error("Decoding via a pipe will not work: Could not find an ffmpeg binary for your system");
 			}else{
-				pipeCommand = '"' + binary + '"' + arguments;
+				pipeCommand = '"' + decoderBinaryAbsolutePath + '"' + arguments;
 			}
 		}
-		//pipeLogFile = new File("decoder_log.txt");
-		pipeBuffer = 10000;
 	}
 	
 	private boolean isAvailable(String command){
@@ -117,7 +143,6 @@ public class PipeDecoder {
 		this.pipeEnvironment = pipeEnvironment;
 		this.pipeArgument = pipeArgument;
 		this.pipeCommand = pipeCommand;
-		//this.pipeLogFile = new File(pipeLogFile);
 		this.pipeBuffer = pipeBuffer;
 	}
 
@@ -130,15 +155,17 @@ public class PipeDecoder {
 			command = command.replace("%sample_rate%", String.valueOf(targetSampleRate));
 			command = command.replace("%channels%","1");
 			
-			ProcessBuilder pb = new ProcessBuilder(pipeEnvironment, pipeArgument , command);
-		
-			//
-			//pb.redirectError(Redirect.appendTo(pipeLogFile));
-		
-			LOG.info("Starting piped decoding process for " + resource );
+			ProcessBuilder pb;
+			pb= new ProcessBuilder(pipeEnvironment, pipeArgument , command);
+
+			LOG.info("Starting piped decoding process for " + resource);
 			final Process process = pb.start();
 			
 			final InputStream stdOut = new BufferedInputStream(process.getInputStream(), pipeBuffer);
+			//print std error if requested
+			if(printErrorstream) {
+				new ErrorStreamGobbler(process.getErrorStream(),LOG).start();
+			}
 			
 			new Thread(new Runnable(){
 				@Override
@@ -147,7 +174,7 @@ public class PipeDecoder {
 						process.waitFor();
 						LOG.info("Finished piped decoding process");
 					} catch (InterruptedException e) {
-						LOG.severe("Interrupted while waiting for sub process exit.");
+						LOG.severe("Interrupted while waiting for decoding sub process exit.");
 						e.printStackTrace();
 					}
 				}},"Decoding Pipe").start();
@@ -158,6 +185,23 @@ public class PipeDecoder {
 		}
 		return null;
 		
+	}
+
+	public void printBinaryInfo(){
+		try {
+			Process p = Runtime.getRuntime().exec(decoderBinaryAbsolutePath);
+			BufferedReader input = new BufferedReader(new InputStreamReader(p.getErrorStream()));
+			String line = null;
+			while ((line = input.readLine()) != null) {
+				System.out.println(line);
+			}
+			input.close();
+			int exitVal = p.waitFor();
+		} catch (InterruptedException e) {
+			e.printStackTrace();
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
 	}
 	
 	/**
@@ -177,5 +221,44 @@ public class PipeDecoder {
 	        		targetSampleRate, 
 	                ByteOrder.BIG_ENDIAN.equals(ByteOrder.nativeOrder()));
 		 return audioFormat;
+	}
+
+
+	private boolean isAndroid(){
+		try {
+			// This class is only available on android
+			Class.forName("android.app.Activity");
+			System.out.println("Running on Android!");
+			return true;
+		} catch(ClassNotFoundException e) {
+			//the class is not found when running JVM
+			return false;
+		}
+	}
+
+
+	private class ErrorStreamGobbler extends Thread {
+		private final InputStream is;
+		private final Logger logger;
+
+		private ErrorStreamGobbler(InputStream is, Logger logger) {
+			this.is = is;
+			this.logger = logger;
+		}
+
+		@Override
+		public void run() {
+			try {
+				InputStreamReader isr = new InputStreamReader(is);
+				BufferedReader br = new BufferedReader(isr);
+				String line = null;
+				while ((line = br.readLine()) != null) {
+					logger.info(line);
+				}
+			}
+			catch (IOException ioe) {
+				ioe.printStackTrace();
+			}
+		}
 	}
 }

@@ -541,8 +541,8 @@ public class DissonanceExample extends JFrame {
 		for(int i = 0 ; i < spectalInfo.size() ;i++){
 			
 			SpectralInfo spi = spectalInfo.get(i);
-			float[] mags = spi.getMagnitudes().clone();
-			float[] floor = spi.getNoiseFloor(80,1.0f);
+			//float[] mags = spi.getMagnitudes().clone();
+			//float[] floor = spi.getNoiseFloor(80,1.0f);
 			List<SpectralPeak> peaks = spi.getPeakList(80, 1.06f, 20,50);
 			
 			double maxPeak = 0;

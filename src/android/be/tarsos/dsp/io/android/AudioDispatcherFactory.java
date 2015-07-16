@@ -26,6 +26,7 @@ package be.tarsos.dsp.io.android;
 import android.media.AudioRecord;
 import android.media.MediaRecorder;
 import be.tarsos.dsp.AudioDispatcher;
+import be.tarsos.dsp.io.PipedAudioStream;
 import be.tarsos.dsp.io.TarsosDSPAudioFormat;
 import be.tarsos.dsp.io.TarsosDSPAudioInputStream;
 
@@ -73,7 +74,29 @@ public class AudioDispatcherFactory {
 		}else{
 			throw new IllegalArgumentException("Buffer size too small should be at least " + (minAudioBufferSize *2));
 		}
-		
-		
+	}
+
+
+	/**
+	 * Create a stream from a piped sub process and use that to create a new
+	 * {@link AudioDispatcher} The sub-process writes a WAV-header and
+	 * PCM-samples to standard out. The header is ignored and the PCM samples
+	 * are are captured and interpreted. Examples of executables that can
+	 * convert audio in any format and write to stdout are ffmpeg and avconv.
+	 *
+	 * @param source
+	 *            The file or stream to capture.
+	 * @param targetSampleRate
+	 *            The target sample rate.
+	 * @param audioBufferSize
+	 *            The number of samples used in the buffer.
+	 * @param bufferOverlap
+	 * 			  The number of samples to overlap the current and previous buffer.
+	 * @return A new audioprocessor.
+	 */
+	public static AudioDispatcher fromPipe(final String source,final int targetSampleRate, final int audioBufferSize,final int bufferOverlap){
+		PipedAudioStream f = new PipedAudioStream(source);
+		TarsosDSPAudioInputStream audioStream = f.getMonoStream(targetSampleRate);
+		return new AudioDispatcher(audioStream, audioBufferSize, bufferOverlap);
 	}
 }

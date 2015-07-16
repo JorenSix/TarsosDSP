@@ -25,8 +25,8 @@
 package be.tarsos.dsp;
 
 import java.nio.ByteOrder;
-import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.CopyOnWriteArrayList;
 import java.util.logging.Logger;
 
 import be.tarsos.dsp.io.TarsosDSPAudioFormat;
@@ -95,7 +95,7 @@ public class AudioGenerator implements Runnable {
 	 */
 	public AudioGenerator(final int audioBufferSize, final int bufferOverlap){
 		
-		audioProcessors = new ArrayList<AudioProcessor>();
+		audioProcessors = new CopyOnWriteArrayList<AudioProcessor>();
 		
 
 		format = getTargetAudioFormat(44100);
