@@ -7,6 +7,7 @@ import android.util.Log;
 
 import be.tarsos.dsp.AudioEvent;
 import be.tarsos.dsp.AudioProcessor;
+import be.tarsos.dsp.io.TarsosDSPAudioFloatConverter;
 import be.tarsos.dsp.io.TarsosDSPAudioFormat;
 
 /**
@@ -27,7 +28,8 @@ public class AndroidAudioPlayer implements AudioProcessor {
     private static final String TAG = "AndroidAudioPlayer";
 
     private final AudioTrack audioTrack;
-    
+
+
     /**
      * Constructs a new AndroidAudioPlayer from an audio format, default buffer size and stream type.
      *
@@ -57,13 +59,13 @@ public class AndroidAudioPlayer implements AudioProcessor {
         // this is the maximum length sample, or audio clip, that can be played by this instance. See getMinBufferSize(int, int, int) to determine
         // the minimum required buffer size for the successful creation of an AudioTrack instance in streaming mode. Using values smaller
         // than getMinBufferSize() will result in an initialization failure.
-        int minBufferSizeInBytes = AudioTrack.getMinBufferSize(sampleRate, AudioFormat.CHANNEL_OUT_MONO,  AudioFormat.ENCODING_PCM_FLOAT);
+        int minBufferSizeInBytes = AudioTrack.getMinBufferSize(sampleRate, AudioFormat.CHANNEL_OUT_MONO,  AudioFormat.ENCODING_PCM_16BIT);
         if(minBufferSizeInBytes > bufferSizeInBytes){
             throw new IllegalArgumentException("The buffer size should be at least " + (minBufferSizeInBytes/audioFormat.getSampleSizeInBits()/8) + " (samples) according to  AudioTrack.getMinBufferSize().");
         }
 
         //http://developer.android.com/reference/android/media/AudioTrack.html#AudioTrack(int, int, int, int, int, int)
-        audioTrack = new AudioTrack(streamType, sampleRate, AudioFormat.CHANNEL_OUT_MONO, AudioFormat.ENCODING_PCM_FLOAT, bufferSizeInBytes,AudioTrack.MODE_STREAM);
+        audioTrack = new AudioTrack(streamType, sampleRate, AudioFormat.CHANNEL_OUT_MONO, AudioFormat.ENCODING_PCM_16BIT, bufferSizeInBytes,AudioTrack.MODE_STREAM);
 
         audioTrack.play();
     }
@@ -85,8 +87,10 @@ public class AndroidAudioPlayer implements AudioProcessor {
     public boolean process(AudioEvent audioEvent) {
         int overlapInSamples = audioEvent.getOverlap();
         int stepSizeInSamples = audioEvent.getBufferSize() - overlapInSamples;
+        byte[] byteBuffer = audioEvent.getByteBuffer();
 
-        int ret = audioTrack.write(audioEvent.getFloatBuffer(),overlapInSamples,stepSizeInSamples,AudioTrack.WRITE_BLOCKING);
+        //int ret = audioTrack.write(audioEvent.getFloatBuffer(),overlapInSamples,stepSizeInSamples,AudioTrack.WRITE_BLOCKING);
+        int ret = audioTrack.write(byteBuffer,overlapInSamples*2,stepSizeInSamples*2);
         if (ret < 0) {
             Log.e(TAG, "AudioTrack.write returned error code " + ret);
         }
