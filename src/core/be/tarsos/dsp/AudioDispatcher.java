@@ -25,11 +25,10 @@
 package be.tarsos.dsp;
 
 import java.io.IOException;
-import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.CopyOnWriteArrayList;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-
 
 import be.tarsos.dsp.io.TarsosDSPAudioFloatConverter;
 import be.tarsos.dsp.io.TarsosDSPAudioFormat;
@@ -148,8 +147,10 @@ public class AudioDispatcher implements Runnable {
 	 *            AudioBufferSize is common (512, 1024) for an FFT.
 	 */
 	public AudioDispatcher(final TarsosDSPAudioInputStream stream, final int audioBufferSize, final int bufferOverlap){
-		
-		audioProcessors = new ArrayList<AudioProcessor>();
+		// The copy on write list allows concurrent modification of the list while
+		// it is iterated. A nice feature to have when adding AudioProcessors while
+		// the AudioDispatcher is running.
+		audioProcessors = new CopyOnWriteArrayList<AudioProcessor>();
 		audioInputStream = stream;
 
 		format = audioInputStream.getFormat();
