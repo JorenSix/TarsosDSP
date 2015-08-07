@@ -40,7 +40,7 @@ To check if this is the case look for the following lines in the @build.gradle@ 
 }
 </code></pre>
 
-For futher information, please consult "TarsosDSP on Android - Audio Processing in Java on Android":http://0110.be/posts/TarsosDSP_on_Android_-_Audio_Processing_in_Java_on_Android". 
+For futher information, please consult "TarsosDSP on Android - Audio Processing in Java on Android":http://0110.be/posts/TarsosDSP_on_Android_-_Audio_Processing_in_Java_on_Android. 
 
 
 h2. TarsosDSP Example Applications
