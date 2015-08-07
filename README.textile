@@ -31,7 +31,17 @@ Every "release of TarsosDSP":http://0110.be/releases/TarsosDSP/ contains the fol
 
 h2. TarsosDSP on Android
 
-If you want to do audio processing on Android TarsosDSP is a great fit. The main distribution has no dependencies on @javax.sound.xxx@ and does work well on Android by default. Please consult "TarsosDSP on Android - Audio Processing in Java on Android":http://0110.be/posts/TarsosDSP_on_Android_-_Audio_Processing_in_Java_on_Android". 
+If you want to do audio processing on Android TarsosDSP is a great fit. The main distribution has no dependencies on @javax.sound.xxx@ and does work well on Android by default. To add TarsosDSP to an Android Studio project download the latest "TarsosDSP Android release":http://0110.be/releases/TarsosDSP/TarsosDSP-latest/TarsosDSP-Android-latest.jar and place it in the @/app/libs/@ folder of your project. By default Gradle includes jar files placed in that directory in your classpath. 
+
+To check if this is the case look for the following lines in the @build.gradle@ file in the module @app@:
+
+<pre><code>dependencies {
+    compile fileTree(dir: 'libs', include: ['*.jar'])
+}
+</code></pre>
+
+For futher information, please consult "TarsosDSP on Android - Audio Processing in Java on Android":http://0110.be/posts/TarsosDSP_on_Android_-_Audio_Processing_in_Java_on_Android". 
+
 
 h2. TarsosDSP Example Applications
 
