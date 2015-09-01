@@ -176,7 +176,7 @@ public class AudioDispatcher implements Runnable {
 	 * @param seconds
 	 */
 	public void skip(double seconds){
-		bytesToSkip = Math.round(seconds * format.getSampleRate() * format.getFrameSize()); 
+		bytesToSkip = Math.round(seconds * format.getSampleRate()) * format.getFrameSize(); 
 	}
 	
 	/**

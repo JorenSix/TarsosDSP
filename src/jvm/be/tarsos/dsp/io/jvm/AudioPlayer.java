@@ -32,6 +32,7 @@ import javax.sound.sampled.SourceDataLine;
 
 import be.tarsos.dsp.AudioEvent;
 import be.tarsos.dsp.AudioProcessor;
+import be.tarsos.dsp.io.TarsosDSPAudioFormat;
 
 /**
  * This AudioProcessor can be used to sync events with sound. It uses a pattern
@@ -80,6 +81,13 @@ public final class AudioPlayer implements AudioProcessor {
 		line.start();
 	}
 	
+	public AudioPlayer(final TarsosDSPAudioFormat format, int bufferSize) throws LineUnavailableException {
+		this(JVMAudioInputStream.toAudioFormat(format),bufferSize);
+	}
+	public AudioPlayer(final TarsosDSPAudioFormat format) throws LineUnavailableException {
+		this(JVMAudioInputStream.toAudioFormat(format));
+	}
+	
 	
 	@Override
 	public boolean process(AudioEvent audioEvent) {
@@ -91,7 +99,10 @@ public final class AudioPlayer implements AudioProcessor {
 		}
 		// overlap in samples * nr of bytes / sample = bytes overlap
 		
-		line.write(audioEvent.getByteBuffer(), byteOverlap, byteStepSize);		
+		int bytesWritten = line.write(audioEvent.getByteBuffer(), byteOverlap, byteStepSize);
+		if(bytesWritten != byteStepSize){
+			System.err.println(String.format("Expected to write %d bytes but only wrote %d bytes",byteStepSize,bytesWritten));
+		}
 		return true;
 	}
 	

@@ -76,7 +76,7 @@ public abstract class IIRFilter implements AudioProcessor {
 	/** The previous output values. */
 	protected float[] out;
 
-	private final float frequency;
+	private float frequency;
 	
 	private final float sampleRate;
 
@@ -96,6 +96,11 @@ public abstract class IIRFilter implements AudioProcessor {
 		calcCoeff();
 		in = new float[a.length];
 		out = new float[b.length];
+	}
+	
+	public void setFrequency(float freq){
+		this.frequency = freq;	
+		calcCoeff();	
 	}
 
 	/**

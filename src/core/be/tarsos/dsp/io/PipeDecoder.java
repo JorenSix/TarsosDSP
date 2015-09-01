@@ -72,7 +72,7 @@ public class PipeDecoder {
 	private final String pipeCommand;
 	private final int pipeBuffer;
 
-	private boolean printErrorstream = true;
+	private boolean printErrorstream = false;
 
 	private String decoderBinaryAbsolutePath;
 	
