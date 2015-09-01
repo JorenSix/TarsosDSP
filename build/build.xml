@@ -2,7 +2,7 @@
 <project default="tarsos_dsp_library" name="Create TarsosDSP JAR-files">
 
 	<!-- Configuration -->
-	<property name="version" value="2.2" />
+	<property name="version" value="2.3" />
 	<property name="built_by" value="${user.name}" />
 	<property name="junit_jar" value="../lib/hamcrest-core-1.3.jar:../lib/junit-4.11.jar" />
 	
