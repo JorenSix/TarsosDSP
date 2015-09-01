@@ -196,7 +196,8 @@ public class PipeDecoder {
 				System.out.println(line);
 			}
 			input.close();
-			int exitVal = p.waitFor();
+			//int exitVal = 
+			p.waitFor();
 		} catch (InterruptedException e) {
 			e.printStackTrace();
 		} catch (IOException e) {
