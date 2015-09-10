@@ -27,9 +27,9 @@
 	<!-- Compiles the java files to a jar file and copy required resources -->
 	<target name="compile_for_jvm">
 		<mkdir dir="../bin" />
-		<javac srcdir="../src/core" destdir="../bin" includeantruntime="false" />
-		<javac srcdir="../src/jvm" destdir="../bin" includeantruntime="false" />
-		<javac srcdir="../src/examples" destdir="../bin" includeantruntime="false" />
+		<javac srcdir="../src/core" destdir="../bin" includeantruntime="false" target="1.7" source="1.7" />
+		<javac srcdir="../src/jvm" destdir="../bin" includeantruntime="false" target="1.7" source="1.7" />
+		<javac srcdir="../src/examples" destdir="../bin" includeantruntime="false" target="1.7" source="1.7" />
 		
 
 		<!-- copy all needed resources to bin dir -->
@@ -42,8 +42,8 @@
 	<target name="compile_for_android">
 		<delete dir="../bin" />
 		<mkdir dir="../bin" />
-		<javac srcdir="../src/core" destdir="../bin" includeantruntime="false" />
-		<javac srcdir="../src/android" destdir="../bin" includeantruntime="false" >
+		<javac srcdir="../src/core" destdir="../bin" includeantruntime="false"  target="1.7" source="1.7"/>
+		<javac srcdir="../src/android" destdir="../bin" includeantruntime="false" target="1.7" source="1.7" >
 			<classpath>
 				<pathelement location="${android_jar}"/>
 			</classpath>
