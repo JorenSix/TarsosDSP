@@ -110,8 +110,8 @@ public class PipeDecoder {
 				if (f.exists() && f.length() > 1000000 && f.canExecute()) {
 					decoderBinaryAbsolutePath = f.getAbsolutePath();
 				} else {
-					LOG.severe("Could not find an ffmpeg binary for your Android system");
-					LOG.severe("Unpack a statically compiled ffmpeg binary for your architecture to: " + f.getAbsolutePath());
+					LOG.severe("Could not find an ffmpeg binary for your Android system. Did you forget calling: 'new AndroidFFMPEGLocator(this);' ?");
+					LOG.severe("Tried to unpack a statically compiled ffmpeg binary for your architecture to: " + f.getAbsolutePath());
 				}
 			}else{
 				LOG.warning("Dit not find ffmpeg or avconv on your path(" + path + "), will try to download it automatically.");
