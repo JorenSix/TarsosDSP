@@ -76,6 +76,15 @@ ant tarsos_dsp_library #Builds the core TarsosDSP library
 ant build_examples #Builds all the TarsosDSP examples
 ant javadoc #Creates the documentation in TarsosDSP/doc
 </code></pre>
+
+h3. TarsosDSP with Eclipse and OSGi
+
+If you fork TarsosDSP you can install it as an Eclipse plug-in project. Just use EGit's "Import Projects" wizard as usual and start coding and pushing to your fork. 
+
+The TarsoDSP jars (non-Android) are bundles and therefore OSGi ready from 2.4.0. 
+
+The generated bundle DOES NOT include the Android part of the normal build because of the non-existing dependencies in a regular Eclipse installation. If you are an Android developer AND use OSGi then use the project properties (or change .classpath) to add the src/android folder as a source folder and add the exported packages yourself to the MANIFEST.MF. Use the 'Export..." wizard to export the project as a "Deployable plug-ins and fragments" to a location on your disk.
+
  
 h2. Source Code Organization & Developing
 
