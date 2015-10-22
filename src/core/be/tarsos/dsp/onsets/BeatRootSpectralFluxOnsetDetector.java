@@ -132,11 +132,14 @@ public class BeatRootSpectralFluxOnsetDetector implements AudioProcessor, OnsetD
 	private final FFT fft;
 	
 	public BeatRootSpectralFluxOnsetDetector(AudioDispatcher d,int fftSize, int hopSize){
+		
 		this.hopSize = hopSize; 
 		this.hopTime = hopSize/d.getFormat().getSampleRate();
 		this.fftSize = fftSize;
+
+		System.err.println("Please use the ComplexOnset detector: BeatRootSpectralFluxOnsetDetector does currenlty not support streaming");
 		//no overlap
-		//FIXME:
+		//FIXME:		
 		int durationInFrames = -1000; 
 		totalFrames = (int)(durationInFrames / hopSize) + 4;
 		energy = new double[totalFrames*energyOversampleFactor];

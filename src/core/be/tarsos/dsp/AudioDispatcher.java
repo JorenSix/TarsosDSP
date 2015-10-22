@@ -255,6 +255,8 @@ public class AudioDispatcher implements Runnable {
 	
 		//Read the first (and in some cases last) audio block.
 		try {
+			//needed to get correct time info when skipping first x seconds
+			audioEvent.setBytesProcessed(bytesProcessed);
 			bytesRead = readNextAudioBlock();
 		} catch (IOException e) {
 			String message="Error while reading audio input stream: " + e.getMessage();	
