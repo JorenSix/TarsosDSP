@@ -18,13 +18,15 @@ public class PitchShifterTest {
 	@Test
 	public void testPitchShiftSine() throws UnsupportedAudioFileException, LineUnavailableException, IOException{
 		float[] audioBuffer = TestUtilities.audioBufferSine();
-		double factor = 1.2;
+		double factor = 1.35;
 		int sampleRate = 44100;
 	
-		final AudioDispatcher d = AudioDispatcherFactory.fromFloatArray(audioBuffer, sampleRate, 1024,1024-256);
-		PitchShifter w = new PitchShifter(d,factor,sampleRate,1024,1024-256);
+		final AudioDispatcher d = AudioDispatcherFactory.fromFloatArray(audioBuffer, sampleRate, 1024,1024-32);
+		d.setZeroPadLastBuffer(true);
+		PitchShifter w = new PitchShifter(factor,sampleRate,1024,1024-32);
 		AudioFormat f = new AudioFormat(sampleRate,16,1,true,false);
 		d.addAudioProcessor(w);
+		
 		d.addAudioProcessor(new AudioPlayer(f));
 		d.run();
 	}

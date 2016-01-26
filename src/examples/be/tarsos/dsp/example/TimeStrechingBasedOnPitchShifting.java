@@ -21,10 +21,13 @@ import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
 
 import be.tarsos.dsp.AudioDispatcher;
+import be.tarsos.dsp.AudioEvent;
+import be.tarsos.dsp.AudioProcessor;
 import be.tarsos.dsp.PitchShifter;
 import be.tarsos.dsp.io.jvm.AudioDispatcherFactory;
 import be.tarsos.dsp.io.jvm.AudioPlayer;
 import be.tarsos.dsp.resample.RateTransposer;
+import be.tarsos.dsp.resample.Resampler;
 
 public class TimeStrechingBasedOnPitchShifting extends JFrame implements TarsosDSPDemo {
 	/**
@@ -38,7 +41,8 @@ public class TimeStrechingBasedOnPitchShifting extends JFrame implements TarsosD
 	private double currentFactor;// pitch shift factor
 	private AudioDispatcher dispatcher;
 	private PitchShifter pitchShifter;
-	private RateTransposer rateTransposer;
+	
+	float[] buffer;
 	
 	private ChangeListener parameterSettingChangedListener = new ChangeListener(){
 @Override
@@ -98,22 +102,74 @@ public class TimeStrechingBasedOnPitchShifting extends JFrame implements TarsosD
 	}
 	
 	private void startFile(File file) {
-		int size = 4096;
-		int overlap = 4096 - 128;
+		final int size = 4096;
+		final int overlap = 4096 - 128;
 		int samplerate = 44100;
-		AudioDispatcher d = AudioDispatcherFactory.fromPipe(file.getAbsolutePath(), samplerate, size, overlap);
-		pitchShifter = new PitchShifter(currentFactor, samplerate, size, overlap);
+		final AudioDispatcher d = AudioDispatcherFactory.fromPipe(file.getAbsolutePath(), samplerate, size, overlap);
+		pitchShifter = new PitchShifter(1.0/currentFactor, samplerate, size, overlap);
 		
 		//rateTransposer = new RateTransposer(currentFactor);
 		
+		d.addAudioProcessor(new AudioProcessor() {
+			
+			@Override
+			public void processingFinished() {
+				// TODO Auto-generated method stub
+				
+			}
+			
+			@Override
+			public boolean process(AudioEvent audioEvent) {
+				buffer = audioEvent.getFloatBuffer();
+				return true;
+			}
+		});
+		
 		d.addAudioProcessor(pitchShifter);
+		
+		d.addAudioProcessor(new AudioProcessor() {
+			Resampler r= new Resampler(false,0.1,4.0);
+			@Override
+			public void processingFinished() {
+			}
+			
+			@Override
+			public boolean process(AudioEvent audioEvent) {
+				
+				float factor = (float) (currentFactor);
+				float[] src = audioEvent.getFloatBuffer();
+				float[] out = new float[(int) ((size-overlap) * factor)];
+				r.process(factor, src, overlap,size-overlap, false, out, 0, out.length);
+				//The size of the output buffer changes (according to factor).
+				d.setStepSizeAndOverlap(out.length, 0);
+				
+				audioEvent.setFloatBuffer(out);
+				audioEvent.setOverlap(0);
+		
+				return true;
+			}
+		});
 		//d.addAudioProcessor(rateTransposer);
 		try {
 			d.addAudioProcessor(new AudioPlayer(d.getFormat()));
 		} catch (LineUnavailableException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
+		d.addAudioProcessor(new AudioProcessor() {
+			
+			@Override
+			public void processingFinished() {
+			}
+			
+			@Override
+			public boolean process(AudioEvent audioEvent) {
+				d.setStepSizeAndOverlap(size, overlap);
+				d.setAudioFloatBuffer(buffer);
+				audioEvent.setFloatBuffer(buffer);
+				audioEvent.setOverlap(overlap);
+				return true;
+			}
+		});
 		dispatcher = d ;
 		new Thread(d).start();
 		
