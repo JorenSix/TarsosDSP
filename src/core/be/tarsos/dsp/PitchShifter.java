@@ -1,8 +1,6 @@
 package be.tarsos.dsp;
 
 
-import javax.sound.sampled.LineUnavailableException;
-
 import be.tarsos.dsp.util.fft.FFT;
 
 /**
@@ -24,7 +22,7 @@ public class PitchShifter implements AudioProcessor{
 	
 	private  float[] previousPhase;
 	
-	private double pitchShiftRatio = 0.5f;
+	private double pitchShiftRatio = 0;
 
 	private final double sampleRate;
 	
@@ -32,24 +30,8 @@ public class PitchShifter implements AudioProcessor{
 	
 	private double excpt;
 	
-	
-	//private SourceDataLine line;
-	//TarsosDSPAudioFloatConverter converter;
-	
-	
-	public PitchShifter(AudioDispatcher d, double factor, double sampleRate, int size, int overlap) throws LineUnavailableException{
-/*
-		AudioFormat format = new AudioFormat((float) sampleRate, 16, 1, true, true);
-		
-		converter = TarsosDSPAudioFloatConverter.getConverter(JVMAudioInputStream.toTarsosDSPFormat(format));
-		
-		final DataLine.Info info = new DataLine.Info(SourceDataLine.class,format);
-	
-		line = (SourceDataLine) AudioSystem.getLine(info);
-		line.open();
-		
-		line.start();
-		*/
+	public PitchShifter(double factor, double sampleRate, int size, int overlap){
+
 		
 		pitchShiftRatio = factor;
 		this.size = size;
@@ -180,26 +162,16 @@ public class PitchShifter implements AudioProcessor{
 		}
 		
 		int stepSize = (int) (size/osamp);
-		/*
-		float[] output = new float[stepSize];
-		System.arraycopy(outputAccumulator, 0, output, 0, stepSize);
 		
-		byte[] out = new byte[output.length*2];
-		converter.toByteArray(output, out);
-		line.write(out, 0, out.length);
 		
-		d.setStepSizeAndOverlap(output.length, 0);
-		audioEvent.setFloatBuffer(outputAccumulator);
-		audioEvent.setOverlap(0);
-		*/
-		
-		float[] audioBuffer = new float[audioEvent.getFloatBuffer().length];
-		audioEvent.setFloatBuffer(audioBuffer);
 		
 		//Arrays.fill(audioBuffer, 0);
 		System.arraycopy(outputAccumulator, stepSize, outputAccumulator, 0, size);
+		
+		float[] audioBuffer = new float[audioEvent.getFloatBuffer().length];
+		audioEvent.setFloatBuffer(audioBuffer);
 		System.arraycopy(outputAccumulator, 0, audioBuffer,size-stepSize, stepSize);
-		//System.arraycopy(outputAccumulator, stepSize, outputAccumulator, 0, size);
+		
 		return true;
 	}
 
