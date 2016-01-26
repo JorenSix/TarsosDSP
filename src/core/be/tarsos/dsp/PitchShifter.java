@@ -1,6 +1,8 @@
 package be.tarsos.dsp;
 
 
+import javax.sound.sampled.LineUnavailableException;
+
 import be.tarsos.dsp.util.fft.FFT;
 
 /**
@@ -26,20 +28,17 @@ public class PitchShifter implements AudioProcessor{
 
 	private final double sampleRate;
 	
-	private final AudioDispatcher d;
-	
 	private long osamp;
 	
 	private double excpt;
 	
-	/*
-	private SourceDataLine line;
-	TarsosDSPAudioFloatConverter converter;
-	*/
 	
-	public PitchShifter(AudioDispatcher d, double factor, double sampleRate, int size, int overlap){
-
-		/*
+	//private SourceDataLine line;
+	//TarsosDSPAudioFloatConverter converter;
+	
+	
+	public PitchShifter(AudioDispatcher d, double factor, double sampleRate, int size, int overlap) throws LineUnavailableException{
+/*
 		AudioFormat format = new AudioFormat((float) sampleRate, 16, 1, true, true);
 		
 		converter = TarsosDSPAudioFloatConverter.getConverter(JVMAudioInputStream.toTarsosDSPFormat(format));
@@ -51,10 +50,11 @@ public class PitchShifter implements AudioProcessor{
 		
 		line.start();
 		*/
+		
 		pitchShiftRatio = factor;
 		this.size = size;
 		this.sampleRate = sampleRate;
-		this.d = d;
+		//this.d = d;
 		
 		osamp=size/(size-overlap);
 		
@@ -172,25 +172,34 @@ public class PitchShifter implements AudioProcessor{
 		fft.backwardsTransform(newFFTData);
 		for(int i = 0 ; i < newFFTData.length ; i ++){
 			float window = (float) (-.5*Math.cos(2.*Math.PI*(double)i/(double)size)+.5);
-			outputAccumulator[i] += 4000*window*newFFTData[i]/(float) (size*osamp);
+			//outputAccumulator[i] += 2000*window*newFFTData[i]/(float) (size*osamp);
+			outputAccumulator[i] += window*newFFTData[i]/(float) osamp;
+			if(outputAccumulator[i] > 1.0 ||  outputAccumulator[i] < -1.0 ){
+				System.err.println("Clipping!");
+			}
 		}
 		
 		int stepSize = (int) (size/osamp);
+		/*
 		float[] output = new float[stepSize];
-		
 		System.arraycopy(outputAccumulator, 0, output, 0, stepSize);
 		
-		System.arraycopy(outputAccumulator, stepSize, outputAccumulator, 0, size);
-		
-		/*
 		byte[] out = new byte[output.length*2];
 		converter.toByteArray(output, out);
 		line.write(out, 0, out.length);
-		*/
+		
+		d.setStepSizeAndOverlap(output.length, 0);
 		audioEvent.setFloatBuffer(outputAccumulator);
 		audioEvent.setOverlap(0);
-		d.setStepSizeAndOverlap(outputAccumulator.length, 0);
+		*/
 		
+		float[] audioBuffer = new float[audioEvent.getFloatBuffer().length];
+		audioEvent.setFloatBuffer(audioBuffer);
+		
+		//Arrays.fill(audioBuffer, 0);
+		System.arraycopy(outputAccumulator, stepSize, outputAccumulator, 0, size);
+		System.arraycopy(outputAccumulator, 0, audioBuffer,size-stepSize, stepSize);
+		//System.arraycopy(outputAccumulator, stepSize, outputAccumulator, 0, size);
 		return true;
 	}
 

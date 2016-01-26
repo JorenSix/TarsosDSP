@@ -57,6 +57,8 @@ import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
 
 import be.tarsos.dsp.AudioDispatcher;
+import be.tarsos.dsp.AudioEvent;
+import be.tarsos.dsp.AudioProcessor;
 import be.tarsos.dsp.GainProcessor;
 import be.tarsos.dsp.MultichannelToMono;
 import be.tarsos.dsp.WaveformSimilarityBasedOverlapAdd;
@@ -83,6 +85,7 @@ public class PitchShiftingExample extends JFrame {
 	private RateTransposer rateTransposer;
 	private double currentFactor;// pitch shift factor
 	private double sampleRate;
+	private boolean loop;
 	
 	private final JSlider factorSlider;
 	private final JLabel factorLabel;
@@ -126,6 +129,8 @@ public class PitchShiftingExample extends JFrame {
 		
 		originalTempoCheckBox = new JCheckBox("Keep original tempo?", true);
 		originalTempoCheckBox.addChangeListener(parameterSettingChangedListener);
+		
+		this.loop = false;
 		
 		currentFactor = 1;
 		
@@ -185,13 +190,22 @@ public class PitchShiftingExample extends JFrame {
 		JPanel params = new JPanel(new BorderLayout());
 		params.setBorder(new TitledBorder("2. Set the algorithm parameters"));
 		
+		JCheckBox loopCheckbox = new JCheckBox(("Loop sample?"));
+		loopCheckbox.addActionListener(new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				loop = ((JCheckBox)e.getSource()).isSelected();
+			}
+		});
+		
 		JLabel label = new JLabel("Factor 100%");
 		label.setToolTipText("The pitch shift factor in % (100 is no change, 50 is double pitch, 200 half).");
 		factorLabel = label;
 		params.add(label,BorderLayout.NORTH);
 		params.add(factorSlider,BorderLayout.CENTER);
 		
-		JPanel subPanel = new JPanel(new GridLayout(2, 2));
+		
+		JPanel subPanel = new JPanel(new GridLayout(0, 2));
 			
 		centsSpinner = new JSpinner();
 		centsSpinner.addChangeListener(parameterSettingChangedListener);
@@ -204,6 +218,10 @@ public class PitchShiftingExample extends JFrame {
 		label.setToolTipText("Pitch shift in cents.");
 		subPanel.add(label);
 		subPanel.add(originalTempoCheckBox);
+		
+		label = new JLabel("Loop sample?");
+		subPanel.add(label);
+		subPanel.add(loopCheckbox);
 		
 		params.add(subPanel,BorderLayout.SOUTH);
 		
@@ -227,7 +245,7 @@ public class PitchShiftingExample extends JFrame {
 		return 1200 * Math.log(1/factor) / Math.log(2); 
 	}
 	
-	private void startFile(File inputFile,Mixer mixer){
+	private void startFile(final File inputFile,Mixer mixer){
 		if(dispatcher != null){
 			dispatcher.stop();
 		}
@@ -273,6 +291,22 @@ public class PitchShiftingExample extends JFrame {
 			dispatcher.addAudioProcessor(rateTransposer);
 			dispatcher.addAudioProcessor(gain);
 			dispatcher.addAudioProcessor(audioPlayer);
+			dispatcher.addAudioProcessor(new AudioProcessor() {
+				
+				@Override
+				public void processingFinished() {
+					if(loop){
+					dispatcher =null;
+					startFile(inputFile,null);
+					}
+					
+				}
+				
+				@Override
+				public boolean process(AudioEvent audioEvent) {
+					return true;
+				}
+			});
 
 			Thread t = new Thread(dispatcher);
 			t.start();
