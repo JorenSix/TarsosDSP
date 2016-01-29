@@ -116,6 +116,7 @@ The TarsosDSP borrows algorithms from various other libraries or research paper.
 * The Haar Wavelet Transform implemented in TarsosDSP is based on the pseudocode found in "__Wavelets Made Easy__" by Yves Nievergelt. 
 * The lifting scheme wavelet package is developed by "Ian Kaplan":http://www.bearcave.com/software/java/wavelets/basiclift.html and is based on the concepts explained in __Ripples in Mathematics: The Discrete Wavelet Transform__ by A. Jensen and A. la Cour-Harbo, Springer. It is only slightly modified for easy use in TarsosDSP
 * The frequency domain pitch shifter is developed by "Stephan M. Bernsee":http://www.dspdimension.com/admin/pitch-shifting-using-the-ft/Transformbasiclift.html and is based on the concepts explained in __Pitch Shifting Using The Fourier Transform__. For the moment it is a rather direct translation of the c implementation. It was released under a ' Wide Open License'. As the name of the license suggests, it is a license withouth much restrictions. 
+* The granulator is developed for "the beads project":http://www.beadsproject.net/. It was released under a GPL-license.
 
 
 h2. Changelog
