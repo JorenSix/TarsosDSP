@@ -95,10 +95,15 @@ public class AudioGenerator implements Runnable {
 	 */
 	public AudioGenerator(final int audioBufferSize, final int bufferOverlap){
 		
+		this(audioBufferSize,bufferOverlap,44100);
+	}
+	
+	public AudioGenerator(final int audioBufferSize, final int bufferOverlap,final int samplerate){
+		
 		audioProcessors = new CopyOnWriteArrayList<AudioProcessor>();
 		
 
-		format = getTargetAudioFormat(44100);
+		format = getTargetAudioFormat(samplerate);
 		
 			
 		setStepSizeAndOverlap(audioBufferSize, bufferOverlap);
@@ -241,6 +246,10 @@ public class AudioGenerator implements Runnable {
 			System.arraycopy(audioFloatBuffer, floatStepSize, audioFloatBuffer,0 ,floatOverlap);
 		}
 		samplesProcessed += floatStepSize;
+	}
+	
+	public void resetTime(){
+		samplesProcessed=0;
 	}
 	
 	public TarsosDSPAudioFormat getFormat(){
