@@ -77,7 +77,8 @@ public final class AudioPlayer implements AudioProcessor {
 		final DataLine.Info info = new DataLine.Info(SourceDataLine.class,format,bufferSize);
 		this.format = format;
 		line = (SourceDataLine) AudioSystem.getLine(info);
-		line.open();
+		line.open(format,bufferSize*2);
+		System.out.println("Buffer size:" + line.getBufferSize());
 		line.start();
 	}
 	
@@ -88,6 +89,9 @@ public final class AudioPlayer implements AudioProcessor {
 		this(JVMAudioInputStream.toAudioFormat(format));
 	}
 	
+	public long getMicroSecondPosition(){
+		return line.getMicrosecondPosition();
+	}
 	
 	@Override
 	public boolean process(AudioEvent audioEvent) {
@@ -98,6 +102,14 @@ public final class AudioPlayer implements AudioProcessor {
 			byteStepSize = audioEvent.getBufferSize() * format.getFrameSize();
 		}
 		// overlap in samples * nr of bytes / sample = bytes overlap
+		
+		/*
+		if(byteStepSize < line.available()){
+			System.out.println(line.available() + " Will not block " + line.getMicrosecondPosition());
+		}else {
+			System.out.println("Will block " + line.getMicrosecondPosition());
+		}
+		*/
 		
 		int bytesWritten = line.write(audioEvent.getByteBuffer(), byteOverlap, byteStepSize);
 		if(bytesWritten != byteStepSize){
