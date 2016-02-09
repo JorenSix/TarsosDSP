@@ -188,4 +188,24 @@ public final class FFT {
 		powerPhaseFFT(data, power, phase);
 		power[0] = (float) Math.sqrt(data[0] * data[0] + data[1] * data[1]);
 	}
+	
+	/**
+	 * Multiplies to arrays containing imaginary numbers. The data in the first argument
+	 * is modified! The real part is stored at <code>2*i</code>, the imaginary part <code>2*i+i</code>
+	 * @param data The array with imaginary numbers that is modified.
+	 * @param other The array with imaginary numbers that is not modified.
+	 * Data and other need to be the same length.
+	 */
+	public void multiply(float[] data, float[] other){
+		assert data.length == other.length;
+		if(data.length!=other.length){
+			throw new IllegalArgumentException("Both arrays with imaginary numbers shouldb e of equal length");
+		}
+		for (int i = 1; i < data.length-1; i+=2) {
+			int realIndex = i;
+			int imgIndex  = i + 1;
+			data[realIndex] = data[realIndex] * other[realIndex] + -1 *  data[imgIndex] * other[imgIndex];
+			data[imgIndex] =  data[realIndex] * other[imgIndex] + data[imgIndex] * other[realIndex];
+		}
+	}
 }
