@@ -94,9 +94,11 @@ public class WaveformSimilarityBasedOverlapAdd implements AudioProcessor {
 		
 		//pMidBuffer and pRefBuffer are initialized with 8 times the needed length to prevent a reset
 		//of the arrays when overlapLength changes.
-		if(overlapLength > oldOverlapLength * 8){
+		
+		if(overlapLength > oldOverlapLength * 8 && pMidBuffer==null){
 			pMidBuffer = new float[overlapLength * 8]; //overlapLengthx2?
 			pRefMidBuffer = new float[overlapLength * 8];//overlapLengthx2?
+			System.out.println("New overlapLength" + overlapLength);
 		}
 		
 		double nominalSkip = tempo * (seekWindowLength - overlapLength);
@@ -104,7 +106,15 @@ public class WaveformSimilarityBasedOverlapAdd implements AudioProcessor {
 		
 		sampleReq = Math.max(intskip + overlapLength, seekWindowLength) + seekLength;
 		
+		float[] prevOutputBuffer = outputFloatBuffer;
 		outputFloatBuffer = new float[getOutputBufferSize()];
+		if(prevOutputBuffer!=null){
+			System.out.println("Copy outputFloatBuffer contents");
+			for(int i = 0 ; i < prevOutputBuffer.length && i < outputFloatBuffer.length ; i++){
+			 outputFloatBuffer[i] = prevOutputBuffer[i];
+			}
+		}
+		
 		newParameters = null;
 	}
 	
@@ -245,6 +255,7 @@ public class WaveformSimilarityBasedOverlapAdd implements AudioProcessor {
 			applyNewParameters();
 			dispatcher.setStepSizeAndOverlap(getInputBufferSize(),getOverlap());
 		}
+		
 		return true;
 	}
 

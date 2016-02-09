@@ -60,6 +60,11 @@ public class ComplexOnsetDetector implements AudioProcessor, OnsetDetector{
 	 */
 	private double lastOnset;
 	
+	/**
+	 * The last detected onset value.
+	 */
+	private double lastOnsetValue;
+	
 	private final PeakPicker peakPicker;
 	
 	private OnsetHandler handler;
@@ -157,6 +162,8 @@ public class ComplexOnsetDetector implements AudioProcessor, OnsetDetector{
 			/* swap old magnitude data (1 frame is enough) */
 			oldmag[j]= power[j];
 		}
+		
+		lastOnsetValue = onsetValue;
 		
 		
 		boolean isOnset = peakPicker.pickPeak(onsetValue);

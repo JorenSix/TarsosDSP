@@ -93,7 +93,7 @@ public class GeneralizedGoertzel implements AudioProcessor{
 			calculatedPowers[j] = calculatedComplex[j].mod();
 		}
 		
-		handler.handleDetectedFrequencies(frequenciesToDetect.clone(), calculatedPowers.clone(),
+		handler.handleDetectedFrequencies(audioEvent.getTimeStamp(),frequenciesToDetect.clone(), calculatedPowers.clone(),
 				frequenciesToDetect.clone(), calculatedPowers.clone());
 		
 		return true;

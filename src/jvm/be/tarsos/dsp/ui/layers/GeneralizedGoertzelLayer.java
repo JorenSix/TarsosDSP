@@ -134,7 +134,7 @@ public class GeneralizedGoertzelLayer implements Layer{
 			FrequenciesDetectedHandler handler= new FrequenciesDetectedHandler(){
 				int i = 0;
 				@Override
-				public void handleDetectedFrequencies(double[] frequencies,
+				public void handleDetectedFrequencies(double time, double[] frequencies,
 						double[] powers, double[] allFrequencies,
 						double[] allPowers) {
 						

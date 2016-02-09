@@ -159,9 +159,14 @@ public class AudioDispatcherFactory {
 	 * @return A new audioprocessor.
 	 */
 	public static AudioDispatcher fromPipe(final String source,final int targetSampleRate, final int audioBufferSize,final int bufferOverlap){
-		PipedAudioStream f = new PipedAudioStream(source);
-		TarsosDSPAudioInputStream audioStream = f.getMonoStream(targetSampleRate);
-		return new AudioDispatcher(audioStream, audioBufferSize, bufferOverlap);
+		if(new File(source).exists()&&new File(source).isFile() && new File(source).canRead()){
+			PipedAudioStream f = new PipedAudioStream(source);
+			TarsosDSPAudioInputStream audioStream = f.getMonoStream(targetSampleRate);
+			return new AudioDispatcher(audioStream, audioBufferSize, bufferOverlap);
+		}else{
+			throw new IllegalArgumentException("The file " + source + " is not a readable file. Does it exist?");
+		}
+		
 	}
 	
 	/**

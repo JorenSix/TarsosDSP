@@ -98,7 +98,7 @@ public class Goertzel implements AudioProcessor {
 		 * @param allPowers
 		 *            A list of powers of all frequencies that were checked.
 		 */
-		void handleDetectedFrequencies(final double[] frequencies,
+		void handleDetectedFrequencies(final double timestamp,final double[] frequencies,
 				final double[] powers, final double[] allFrequencies,
 				final double allPowers[]);
 	}
@@ -134,7 +134,7 @@ public class Goertzel implements AudioProcessor {
 					index++;
 				}
 			}
-			handler.handleDetectedFrequencies(frequencies, powers,
+			handler.handleDetectedFrequencies(audioEvent.getTimeStamp(),frequencies, powers,
 					frequenciesToDetect.clone(), calculatedPowers.clone());
 		}
 

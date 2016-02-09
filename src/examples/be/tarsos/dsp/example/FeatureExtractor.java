@@ -319,7 +319,7 @@ public class FeatureExtractor {
 			File audioFile = new File(inputFile);
 			int size = 512;
 			int overlap = 256;
-			AudioDispatcher dispatcher = AudioDispatcherFactory.fromFile(audioFile, size, overlap);
+			AudioDispatcher dispatcher = AudioDispatcherFactory.fromPipe(audioFile.getAbsolutePath(),44100, size, overlap);
 			ComplexOnsetDetector detector = new ComplexOnsetDetector(size,0.7,0.1);
 			detector.setHandler(this);
 			dispatcher.addAudioProcessor(detector);

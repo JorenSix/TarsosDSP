@@ -26,7 +26,6 @@ import be.tarsos.dsp.AudioProcessor;
 import be.tarsos.dsp.PitchShifter;
 import be.tarsos.dsp.io.jvm.AudioDispatcherFactory;
 import be.tarsos.dsp.io.jvm.AudioPlayer;
-import be.tarsos.dsp.resample.RateTransposer;
 import be.tarsos.dsp.resample.Resampler;
 
 public class TimeStrechingBasedOnPitchShifting extends JFrame implements TarsosDSPDemo {
@@ -38,11 +37,11 @@ public class TimeStrechingBasedOnPitchShifting extends JFrame implements TarsosD
 	private final JSlider factorSlider;
 	private final JLabel factorLabel;
 	
-	private double currentFactor;// pitch shift factor
+	private double currentFactor = 1.2;// pitch shift factor
 	private AudioDispatcher dispatcher;
 	private PitchShifter pitchShifter;
 	
-	float[] buffer;
+	private float[] buffer;
 	
 	private ChangeListener parameterSettingChangedListener = new ChangeListener(){
 @Override
@@ -51,7 +50,6 @@ public class TimeStrechingBasedOnPitchShifting extends JFrame implements TarsosD
 			factorLabel.setText("Factor " + Math.round(currentFactor * 100) + "%");
 			if (TimeStrechingBasedOnPitchShifting.this.dispatcher != null) {				 
 				pitchShifter.setPitchShiftFactor((float) currentFactor);
-				//rateTransposer.setFactor(currentFactor);
 			}
 		}}; 
 	
@@ -88,30 +86,27 @@ public class TimeStrechingBasedOnPitchShifting extends JFrame implements TarsosD
 		params.setBorder(new TitledBorder("2. Set the algorithm parameters"));
 		
 		factorSlider = new JSlider(20, 250);
-		factorSlider.setValue(120);
+		factorSlider.setValue((int) (currentFactor*100));
 		factorSlider.setPaintLabels(true);
 		factorSlider.addChangeListener(parameterSettingChangedListener);
 		
 		JLabel label = new JLabel("Factor 100%");
-		label.setToolTipText("The pitch shift factor in % (100 is no change, 50 is double pitch, 200 half).");
+		label.setText("Factor " + Math.round(currentFactor * 100) + "%");
+		label.setToolTipText("The tempo factor in % (100 is no change, 50 is double tempo, 200 half).");
 		factorLabel = label;
 		params.add(label,BorderLayout.NORTH);
 		params.add(factorSlider,BorderLayout.CENTER);
 		this.add(params,BorderLayout.CENTER);
-		
 	}
 	
 	private void startFile(File file) {
-		final int size = 4096;
-		final int overlap = 4096 - 128;
+		final int size = 2048;
+		final int overlap = 2048 - 128;
 		int samplerate = 44100;
 		final AudioDispatcher d = AudioDispatcherFactory.fromPipe(file.getAbsolutePath(), samplerate, size, overlap);
 		pitchShifter = new PitchShifter(1.0/currentFactor, samplerate, size, overlap);
 		
-		//rateTransposer = new RateTransposer(currentFactor);
-		
 		d.addAudioProcessor(new AudioProcessor() {
-			
 			@Override
 			public void processingFinished() {
 				// TODO Auto-generated method stub
@@ -181,7 +176,6 @@ public class TimeStrechingBasedOnPitchShifting extends JFrame implements TarsosD
 
 	@Override
 	public String name() {
-		// TODO Auto-generated method stub
 		return "TimeStrechingBasedOnPitchShifting";
 	}
 

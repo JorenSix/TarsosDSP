@@ -198,10 +198,10 @@
 		</target>
 
 	<!-- builds all examples -->
-	<target name="build_examples" depends="example_haar_compression,example_spectral_peaks,example_advanced_audio_player,example_delay_effect,example_goertzel_algorithm,example_oscilloscope,example_percussion_detector,example_pitch_detector,example_spectrogram,example_sound_detector,example_time_stretch,example_utter_asterisk,example_feature_extractor,example_synthesis,example_pitch_shift,example_sample_extractor,example_resynthesizer,example_catify,example_flanging,example_constantq" />
+	<target name="build_examples" depends="example_haar_compression,example_dissonance,example_spectral_peaks,example_advanced_audio_player,example_delay_effect,example_goertzel_algorithm,example_oscilloscope,example_percussion_detector,example_pitch_detector,example_spectrogram,example_sound_detector,example_time_stretch,example_utter_asterisk,example_feature_extractor,example_synthesis,example_pitch_shift,example_sample_extractor,example_resynthesizer,example_catify,example_flanging,example_constantq" />
 
 	<!-- builds a release: all examples, documentation and library in the correct folders-->
-	<target name="release" depends="javadoc,tarsos_dsp_library,build_examples">
+	<target name="release" depends="javadoc,tarsos_dsp_library,tarsos_dsp_android_library,build_examples">
 
 		<copy todir="TarsosDSP-${version}-Documentation">
 			<fileset dir="../doc" />
@@ -442,6 +442,38 @@
 			</fileset>
 		</jar>
 	</target>
+	
+	<target name="example_dissonance" depends="compile_for_jvm">
+		
+			<jar destfile="DissonanceExample-${version}.jar" filesetmanifest="mergewithoutmain">
+				<manifest>
+					<attribute name="Main-Class" value="be.tarsos.dsp.example.dissonance.DissonanceExample" />
+					<attribute name="Class-Path" value="." />
+
+					<!-- Standard manifest attributes -->
+					<attribute name="Implementation-Version" value="${version}-${DSTAMP}" />
+					<attribute name="Built-By" value="${built_by}" />
+					<attribute name="Created-By" value="${built_by}" />
+					<attribute name="Built-Date" value="${TODAY}" />
+				</manifest>
+
+				<!-- include class files -->
+				<fileset dir="../bin">
+					<exclude name="**/test/**" />
+					<exclude name="be/tarsos/dsp/example/catify/resources/*" />
+				</fileset>
+
+
+				<!-- include source files -->
+				<fileset dir="../src/core">
+					<include name="**/*.java" />
+
+				</fileset>
+				<fileset dir="../src/examples">
+					<include name="**/*.java" />
+				</fileset>
+			</jar>
+		</target>
 
 	<!-- Builds an example -->
 	<target name="example_pitch_detector" depends="compile_for_jvm">

@@ -106,6 +106,7 @@ public class PipeDecoder {
 		}else {
 			if(isAndroid()) {
 				String tempDirectory = System.getProperty("java.io.tmpdir");
+				printErrorstream=true;
 				File f = new File(tempDirectory, "ffmpeg");
 				if (f.exists() && f.length() > 1000000 && f.canExecute()) {
 					decoderBinaryAbsolutePath = f.getAbsolutePath();
@@ -161,7 +162,15 @@ public class PipeDecoder {
 			LOG.info("Starting piped decoding process for " + resource);
 			final Process process = pb.start();
 			
-			final InputStream stdOut = new BufferedInputStream(process.getInputStream(), pipeBuffer);
+			final InputStream stdOut = new BufferedInputStream(process.getInputStream(), pipeBuffer){
+				@Override
+				public void close() throws IOException{
+					super.close();
+					// try to destroy the ffmpeg command after close
+					process.destroy();
+				}
+			};
+			
 			//print std error if requested
 			if(printErrorstream) {
 				new ErrorStreamGobbler(process.getErrorStream(),LOG).start();
@@ -184,7 +193,6 @@ public class PipeDecoder {
 			e.printStackTrace();
 		}
 		return null;
-		
 	}
 
 	public void printBinaryInfo(){

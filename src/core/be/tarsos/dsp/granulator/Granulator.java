@@ -1,8 +1,5 @@
 package be.tarsos.dsp.granulator;
 
-/*
- * This file is part of Beads. See http://www.beadsproject.net for all information.
- */
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -71,15 +68,14 @@ public class Granulator implements AudioProcessor  {
 	
 	private final float[] outputBuffer;
 	
-	
 
 	/**
 	 * Instantiates a new GranularSamplePlayer.
 	 * 
-	 * @param context the AudioContext.
-	 * @param outs the number of outputs.
+	 * @param sampleRate the sample rate.
+	 * @param bufferSize the size of an output buffer.
 	 */
-	public Granulator(float sampleRate,int size) {
+	public Granulator(float sampleRate,int bufferSize) {
 		grains = new ArrayList<Grain>();
 		freeGrains = new ArrayList<Grain>();
 		deadGrains = new ArrayList<Grain>();
@@ -93,23 +89,15 @@ public class Granulator implements AudioProcessor  {
 		grainSize = 100.0f;
 		grainRandomness = 0.1f;
 		
-		window = new be.tarsos.dsp.util.fft.CosineWindow().generateCurve(size);
-		outputBuffer = new float[size];
+		window = new be.tarsos.dsp.util.fft.CosineWindow().generateCurve(bufferSize);
+		outputBuffer = new float[bufferSize];
 		
 		msPerSample = 1000.0f/sampleRate;
 		
 		positionIncrement = msPerSample;
 	}
 
-	/*
-	public synchronized void setSample(Sample buffer) {
-		//super.setSample(buffer);
-		grains.clear();
-		timeSinceLastGrain = 0f;
-	}
-	*/
-
-	
+		
 	public void start() {
 		timeSinceLastGrain = 0;
 	}
@@ -184,7 +172,6 @@ public class Granulator implements AudioProcessor  {
 				}
 				sampleValue = sampleValue * windowScale;
 				outputBuffer[i] += (float) sampleValue;
-
 			}
 			// increment time
 			position += positionIncrement * timeStretchFactor;

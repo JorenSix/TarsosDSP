@@ -87,7 +87,7 @@ public class GoertzelDTMF extends JFrame implements ActionListener{
 	
 	private final AudioProcessor goertzelAudioProcessor = new Goertzel(44100, stepSize,DTMF.DTMF_FREQUENCIES, new FrequenciesDetectedHandler() {
 		@Override
-		public void handleDetectedFrequencies(final double[] frequencies, final double[] powers, final double[] allFrequencies, final double allPowers[]) {
+		public void handleDetectedFrequencies(double time,final double[] frequencies, final double[] powers, final double[] allFrequencies, final double allPowers[]) {
 			if (frequencies.length == 2) {
 				int rowIndex = -1;
 				int colIndex = -1;

@@ -115,7 +115,7 @@ public class GoertzelTest {
 		
         dispatcher.addAudioProcessor(new Goertzel(44100,1024,frequencies,new FrequenciesDetectedHandler() {
 			@Override
-			public void handleDetectedFrequencies(final double[] frequencies, final double[] powers, final double[] allFrequencies, final double allPowers[]) {
+			public void handleDetectedFrequencies(double time,final double[] frequencies, final double[] powers, final double[] allFrequencies, final double allPowers[]) {
 				assertEquals("Should only detect 6000 Hz",(int)frequencies[0],6000);
 			}
 		}));
@@ -148,7 +148,7 @@ public class GoertzelTest {
 				DTMF.DTMF_FREQUENCIES, new FrequenciesDetectedHandler() {
 					
 					@Override
-					public void handleDetectedFrequencies(
+					public void handleDetectedFrequencies(double time,
 							final double[] frequencies, final double[] powers, final double[] allFrequencies, final double allPowers[]) {
 						// assertEquals("Should detect 2 frequencies.",2,frequencies.length);
 						assertEquals(

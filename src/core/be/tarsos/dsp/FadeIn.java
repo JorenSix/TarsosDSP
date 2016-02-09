@@ -12,7 +12,7 @@ public class FadeIn implements AudioProcessor
 	private double firstTime=-1;
 	private double time;
 	private GainProcessor gp=new GainProcessor(0.1);
-	private boolean isFadeIn=true;
+	private boolean fadingIn=true;
 	
 	// METHODS
 	
@@ -22,25 +22,29 @@ public class FadeIn implements AudioProcessor
 		this.duration=d;
 	}
 	
-	// Stop fade in processing
+	// Stop fade in processing immediately
 	public void stopFadeIn()
 	{
-		this.isFadeIn=false;
+		this.fadingIn=false;
 	}
 
 	@Override
 	public boolean process(AudioEvent audioEvent)
 	{
 		// Don't do anything after the end of the Fade In
-		if(isFadeIn==true)
+		if(fadingIn)
 		{
 			if(firstTime==-1)
 				firstTime=audioEvent.getTimeStamp();
+			
 			
 			// Increase the gain according to time since the beginning of the Fade In
 			time=audioEvent.getTimeStamp()-firstTime;
 			gp.setGain(time/duration);
 			gp.process(audioEvent);
+			if(time > duration){
+				fadingIn = false;
+			}
 		}
 		return true;
 	}

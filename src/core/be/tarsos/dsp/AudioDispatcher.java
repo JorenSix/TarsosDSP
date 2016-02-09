@@ -421,7 +421,11 @@ public class AudioDispatcher implements Runnable {
 				converter.toFloatArray(audioByteBuffer, offsetInBytes, audioFloatBuffer, offsetInSamples, floatStepSize);
 			}else{
 				// Send a smaller buffer through the chain.
+				byte[] audioByteBufferContent = audioByteBuffer;
 				audioByteBuffer = new byte[offsetInBytes + totalBytesRead];
+				for(int i = 0 ; i < audioByteBuffer.length ; i++){
+					audioByteBuffer[i] = audioByteBufferContent[i];
+				}
 				int totalSamplesRead = totalBytesRead/format.getFrameSize();
 				audioFloatBuffer = new float[offsetInSamples + totalBytesRead/format.getFrameSize()];
 				converter.toFloatArray(audioByteBuffer, offsetInBytes, audioFloatBuffer, offsetInSamples, totalSamplesRead);
@@ -460,6 +464,16 @@ public class AudioDispatcher implements Runnable {
 	 */
 	public float secondsProcessed(){
 		return bytesProcessed / (format.getSampleSizeInBits() / 8) / format.getSampleRate() / format.getChannels() ;
+	}
+
+	public void setAudioFloatBuffer(float[] audioBuffer){
+		audioFloatBuffer = audioBuffer;
+	}
+	/**
+	 * @return True if the dispatcher is stopped or the end of stream has been reached.
+	 */
+	public boolean isStopped(){
+		return stopped;
 	}
 	
 }

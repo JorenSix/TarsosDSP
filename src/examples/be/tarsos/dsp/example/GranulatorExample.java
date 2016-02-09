@@ -17,7 +17,6 @@ import javax.swing.event.ChangeListener;
 import be.tarsos.dsp.AudioDispatcher;
 import be.tarsos.dsp.AudioEvent;
 import be.tarsos.dsp.AudioProcessor;
-import be.tarsos.dsp.example.TimeStrechingBasedOnPitchShifting;
 import be.tarsos.dsp.granulator.Granulator;
 import be.tarsos.dsp.io.jvm.AudioDispatcherFactory;
 import be.tarsos.dsp.io.jvm.AudioPlayer;
@@ -137,14 +136,12 @@ public class GranulatorExample extends JFrame {
 			}
 		});
 
-		timeStretchSlider.setValue(1200);
+		timeStretchSlider.setValue(950);
 		pitchShiftSlider.setValue(1000);
 		positionSlider.setValue(0);
 		grainRandomnesslSlider.setValue(0);
 		grainSizeSlider.setValue(100);
 		grainIntervallSlider.setValue(70);
-		
-		
 		this.add(openFileLabel);
 		this.add(openFileButton);
 		this.add(timeStretchLabel);
@@ -168,8 +165,6 @@ public class GranulatorExample extends JFrame {
 
 			@Override
 			public void processingFinished() {
-				// TODO Auto-generated method stub
-
 			}
 
 			@Override
@@ -204,7 +199,6 @@ public class GranulatorExample extends JFrame {
 		granulator.setPitchShiftFactor(pitchShiftSlider.getValue()/1000.0f);
 		granulator.setPosition(positionSlider.getValue()/1000f);
 		granulator.setGrainRandomness(grainRandomnesslSlider.getValue()/100.0f);
-		
 		
 		new Thread(d).start();
 
