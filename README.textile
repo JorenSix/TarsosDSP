@@ -2,7 +2,7 @@ h1. TarsosDSP
 
 TarsosDSP is a Java library for audio processing. Its aim is to provide an easy-to-use interface to practical music processing algorithms implemented, as simply as possible, in pure Java and without any other external dependencies. The library tries to hit the sweet spot between being capable enough to get real tasks done but compact and simple enough to serve as a demonstration on how DSP algorithms works. TarsosDSP features an implementation of a percussion onset detector and a number of pitch detection algorithms: YIN, the Mcleod Pitch method and a "Dynamic Wavelet Algorithm Pitch Tracking" algorithm. Also included is a Goertzel DTMF(Dual tone multi frequency) decoding algorithm, a time stretch algorithm (WSOLA), resampling, filters, simple synthesis, some audio effects, and a pitch shifting algorithm.
 
-To show the capabilities of the library, "TarsosDSP example applications":http://tarsos.0110.be/tag/TarsosDSP are available. Head over to the "TarosDSP release directory":http://tarsos.0110.be/releases/TarsosDSP/ for freshly baked binaries and code smell free (that is the goal anyway), oven-fresh sources.
+To show the capabilities of the library, "TarsosDSP example applications":http://0110.be/tag/TarsosDSP are available. Head over to the "TarosDSP release directory":http://0110.be/releases/TarsosDSP/ for freshly baked binaries and code smell free (that is the goal anyway), oven-fresh sources.
 
 Some information about TarsosDSP can be found in the paper "__TarsosDSP, a Real-Time Audio Processing Framework in Java__":http://0110.be/files/attachments/411/aes53_tarsos_dsp.pdf, by Joren Six, Olmo Cornelis, and Marc Leman, in __Proceedings of the 53rd AES Conference (AES 53rd)__, 2014. If you use TarsosDSP in academic research, please cite this paper.
 
@@ -16,7 +16,7 @@ bc. @inproceedings{six2014tarsosdsp,
 
 h2. Quickly Getting Started with TarsosDSP
 
-Head over to the "TarsosDSP release repository":http://tarsos.0110.be/releases/TarsosDSP/ and download the latest "TarsosDSP library":http://tarsos.0110.be/releases/TarsosDSP/TarsosDSP-latest/TarsosDSP-latest.jar. Include the Jar-file in your project and you are ready to go. To get up to speed quickly, check the "TarsosDSP Example applications":http://tarsos.0110.be/releases/TarsosDSP/TarsosDSP-latest/TarsosDSP-latest-Examples/ for inspiration and consult the "API documentation":http://tarsos.0110.be/releases/TarsosDSP/TarsosDSP-latest/TarsosDSP-latest-Documentation/.
+Head over to the "TarsosDSP release repository":http://0110.be/releases/TarsosDSP/ and download the latest "TarsosDSP library":http://0110.be/releases/TarsosDSP/TarsosDSP-latest/TarsosDSP-latest.jar. Include the Jar-file in your project and you are ready to go. To get up to speed quickly, check the "TarsosDSP Example applications":http://0110.be/releases/TarsosDSP/TarsosDSP-latest/TarsosDSP-latest-Examples/ for inspiration and consult the "API documentation":http://0110.be/releases/TarsosDSP/TarsosDSP-latest/TarsosDSP-latest-Documentation/.
 
 Every "release of TarsosDSP":http://0110.be/releases/TarsosDSP/ contains the following:
 
@@ -47,16 +47,16 @@ h2. TarsosDSP Example Applications
 
 TarsosDSP contains some ready made example applications. Most have a Java Swing user interface. They show which functionality is present in the library and how to use it.
 
-* "SoundDetector":http://tarsos.0110.be/artikels/lees/TarsosDSP%253A_a_small_JAVA_audio_processing_library show how you loudness calculations can be done. When input sound is over a defined limit an event is fired.
-* "PitchDetector":http://tarsos.0110.be/artikels/lees/TarsosDSP%253A_a_small_JAVA_audio_processing_library this demo application shows real-time pitch detection. When pitch is detected the hertz value is printed together with a probability.
-* "PercussionDetector":http://tarsos.0110.be/artikels/lees/TarsosDSP%253A_a_small_JAVA_audio_processing_library show the percussion (onset) dectection. Clapping your hands causes an event. This demo application also shows the influence of the two parameters on the algorithm.
-* "UtterAsterisk":http://tarsos.0110.be/artikels/lees/TarsosDSP_sample_application%253A_Utter_Asterisk a game with the goal to sing as close to a melody a possible. Technically it shows real-time pitch detection with YIN or MPM.
-* "Spectrogram in Java":http://tarsos.0110.be/artikels/lees/Spectrogram_in_Java_with_TarsosDSP shows a spectrogram and detected pitch, either live or from an audio file. It is interesting to see which frequencies are picked as fundamentals.
-* "Goertzel DTMF(Dual tone multi frequency) decoding":http://tarsos.0110.be/artikels/lees/Dual-Tone_Multi-Frequency_%2528DTMF%2529_Decoding_with_the_Goertzel_Algorithm_in_Java an implementation of the Goertzel Algorithm. A fancy user interface shows what goes on under the hood.
-* "Audio Time Stretching - Implementation in Pure Java Using WSOLA":http://tarsos.0110.be/artikels/lees/Audio_Time_Stretching_-_Implementation_in_Pure_Java_Using_WSOLA an implementation of a time stretching algorithm. WSOLA(Waveform Similarity Overlap Add) makes it possible to change the play back speed of audio without changing the pitch. The play back speed can be changed at any moment, even when there is audio playing.
-* "Audio Feature Extraction":http://tarsos.0110.be/releases/TarsosDSP/TarsosDSP-1.3/TarsosDSP-1.3-Examples/FeatureExtractor-1.3.jar a command line application to do simple feature extraction.
-* "Audio Synthesis":http://tarsos.0110.be/releases/TarsosDSP/TarsosDSP-1.3/TarsosDSP-1.3-Examples/Synthesis-1.3.jar a command line application to do simple audio synthesis.
-* "Pitch Shifting":http://tarsos.0110.be/artikels/lees/Pitch_Shifting_-_Implementation_in_Pure_Java_with_Resampling_and_Time_Stretching an example application that does pitch shifting, either in real-time on a microphone input, or on recorded audio. Also included is a command line application to do pitch shifting. 
+* "SoundDetector":http://0110.be/artikels/lees/TarsosDSP%253A_a_small_JAVA_audio_processing_library show how you loudness calculations can be done. When input sound is over a defined limit an event is fired.
+* "PitchDetector":http://0110.be/artikels/lees/TarsosDSP%253A_a_small_JAVA_audio_processing_library this demo application shows real-time pitch detection. When pitch is detected the hertz value is printed together with a probability.
+* "PercussionDetector":http://0110.be/artikels/lees/TarsosDSP%253A_a_small_JAVA_audio_processing_library show the percussion (onset) dectection. Clapping your hands causes an event. This demo application also shows the influence of the two parameters on the algorithm.
+* "UtterAsterisk":http://0110.be/artikels/lees/TarsosDSP_sample_application%253A_Utter_Asterisk a game with the goal to sing as close to a melody a possible. Technically it shows real-time pitch detection with YIN or MPM.
+* "Spectrogram in Java":http://0110.be/artikels/lees/Spectrogram_in_Java_with_TarsosDSP shows a spectrogram and detected pitch, either live or from an audio file. It is interesting to see which frequencies are picked as fundamentals.
+* "Goertzel DTMF(Dual tone multi frequency) decoding":http://0110.be/artikels/lees/Dual-Tone_Multi-Frequency_%2528DTMF%2529_Decoding_with_the_Goertzel_Algorithm_in_Java an implementation of the Goertzel Algorithm. A fancy user interface shows what goes on under the hood.
+* "Audio Time Stretching - Implementation in Pure Java Using WSOLA":http://0110.be/artikels/lees/Audio_Time_Stretching_-_Implementation_in_Pure_Java_Using_WSOLA an implementation of a time stretching algorithm. WSOLA(Waveform Similarity Overlap Add) makes it possible to change the play back speed of audio without changing the pitch. The play back speed can be changed at any moment, even when there is audio playing.
+* "Audio Feature Extraction":http://0110.be/releases/TarsosDSP/TarsosDSP-1.3/TarsosDSP-1.3-Examples/FeatureExtractor-1.3.jar a command line application to do simple feature extraction.
+* "Audio Synthesis":http://0110.be/releases/TarsosDSP/TarsosDSP-1.3/TarsosDSP-1.3-Examples/Synthesis-1.3.jar a command line application to do simple audio synthesis.
+* "Pitch Shifting":http://0110.be/artikels/lees/Pitch_Shifting_-_Implementation_in_Pure_Java_with_Resampling_and_Time_Stretching an example application that does pitch shifting, either in real-time on a microphone input, or on recorded audio. Also included is a command line application to do pitch shifting. 
 
 
 h2. Developing TarsosDSP
@@ -97,7 +97,7 @@ To make development with Eclipse easy, make sure the subfolders of @src@ are mar
 
 h2. Credits
  
-"TarsosDSP":http://tarsos.0110.be/tag/TarsosDSP was developed at "University College Ghent, School of Arts":http://schoolofartsgent.be between 2009 and 2013, from late 2013 the project is supported by "University Ghent, IPEM":http://www.ipem.ugent.be. 
+"TarsosDSP":http://0110.be/tag/TarsosDSP was developed at "University College Ghent, School of Arts":http://schoolofartsgent.be between 2009 and 2013, from late 2013 the project is supported by "University Ghent, IPEM":http://www.ipem.ugent.be. 
 
 The TarsosDSP borrows algorithms from various other libraries or research paper. Below a complete list of credits can be found.
 
@@ -121,7 +121,7 @@ The TarsosDSP borrows algorithms from various other libraries or research paper.
 
 h2. Changelog
 
-<dt>Version 1.0</dt><dd>2012-04-24</dd> First release which includes several pitch trackers and a time stretching algorithm, amongst other things. Downloads and javadoc API can be found at the "TarsosDSP release directory":http://tarsos.0110.be/releases/TarsosDSP/
+<dt>Version 1.0</dt><dd>2012-04-24</dd> First release which includes several pitch trackers and a time stretching algorithm, amongst other things. Downloads and javadoc API can be found at the "TarsosDSP release directory":http://0110.be/releases/TarsosDSP/
 
 <dt>Version 1.1</dt><dd>2012-06-4</dd> 
 Changed how the audio dispatcher stops. Added StopAudioProcessor.
