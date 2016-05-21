@@ -132,15 +132,28 @@ public class AndroidFFMPEGLocator {
         X86,ARMEABI_V7A,ARMEABI_V7A_NEON;
     }
 
+    private boolean isCPUArchitectureSupported(String alias) {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+            for (String supportedAlias : Build.SUPPORTED_ABIS) {
+                if (supportedAlias.equals(alias))
+                    return true;
+            }
+
+            return false;
+        } else {
+            return Build.CPU_ABI.equals(alias);
+        }
+    }
+
     private CPUArchitecture getCPUArchitecture() {
         // check if device is x86
-        if (Build.SUPPORTED_ABIS[0].equals("x86")){
+        if (isCPUArchitectureSupported("x86")) {
             return CPUArchitecture.X86;
-        } else if (Build.SUPPORTED_ABIS[0].equals("armeabi-v7a")) {
+        } else if (isCPUArchitectureSupported("armeabi-v7a")) {
             // check if NEON is supported:
-            if(isNeonSupported()){
+            if (isNeonSupported()) {
                 return CPUArchitecture.ARMEABI_V7A_NEON;
-            }else{
+            } else {
                 return CPUArchitecture.ARMEABI_V7A;
             }
         }
