@@ -61,7 +61,7 @@ public class AndroidAudioPlayer implements AudioProcessor {
         // than getMinBufferSize() will result in an initialization failure.
         int minBufferSizeInBytes = AudioTrack.getMinBufferSize(sampleRate, AudioFormat.CHANNEL_OUT_MONO,  AudioFormat.ENCODING_PCM_16BIT);
         if(minBufferSizeInBytes > bufferSizeInBytes){
-            throw new IllegalArgumentException("The buffer size should be at least " + (minBufferSizeInBytes/audioFormat.getSampleSizeInBits()/8) + " (samples) according to  AudioTrack.getMinBufferSize().");
+            throw new IllegalArgumentException("The buffer size should be at least " + (minBufferSizeInBytes/(audioFormat.getSampleSizeInBits()/8)) + " (samples) according to  AudioTrack.getMinBufferSize().");
         }
 
         //http://developer.android.com/reference/android/media/AudioTrack.html#AudioTrack(int, int, int, int, int, int)
