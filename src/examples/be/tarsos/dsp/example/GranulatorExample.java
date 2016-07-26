@@ -18,6 +18,7 @@ import be.tarsos.dsp.AudioDispatcher;
 import be.tarsos.dsp.AudioEvent;
 import be.tarsos.dsp.AudioProcessor;
 import be.tarsos.dsp.granulator.Granulator;
+import be.tarsos.dsp.granulator.OptimizedGranulator;
 import be.tarsos.dsp.io.jvm.AudioDispatcherFactory;
 import be.tarsos.dsp.io.jvm.AudioPlayer;
 
@@ -28,10 +29,10 @@ public class GranulatorExample extends JFrame {
 		 */
 	private static final long serialVersionUID = 8730005768957982611L;
 
-	private Granulator granulator;
+	private OptimizedGranulator granulator;
 	private float[] orig;
-	int sampleRate = 44100;
-	int bufferSize = 512;
+	int sampleRate = 48000;
+	int bufferSize = 256;
 	
 
 	final JSlider timeStretchSlider = new JSlider(-3000, 3000);
@@ -51,7 +52,6 @@ public class GranulatorExample extends JFrame {
 		final JLabel grainRandomnessLabel = new JLabel("Grain randomness (%): 10");
 		final JLabel positionLabel = new JLabel("Position (s): 0");
 		
-
 		
 		final JFileChooser fileChooser = new JFileChooser();
 		final JButton openFileButton  = new JButton("Open file...");
@@ -136,8 +136,8 @@ public class GranulatorExample extends JFrame {
 			}
 		});
 
-		timeStretchSlider.setValue(950);
-		pitchShiftSlider.setValue(1000);
+		timeStretchSlider.setValue(1000);
+		pitchShiftSlider.setValue(950);
 		positionSlider.setValue(0);
 		grainRandomnesslSlider.setValue(0);
 		grainSizeSlider.setValue(100);
@@ -156,11 +156,13 @@ public class GranulatorExample extends JFrame {
 		this.add(grainRandomnesslSlider);
 		this.add(positionLabel);
 		this.add(positionSlider);
+		
+		openFile("/home/joren/Desktop/sort/christina_40s-80s.wav");
 	}
 	
 	private void openFile(String audioFile){
 		AudioDispatcher d = AudioDispatcherFactory.fromPipe(audioFile, sampleRate,bufferSize,0);
-		granulator = new Granulator(sampleRate, bufferSize);
+		granulator = new OptimizedGranulator(sampleRate, bufferSize);
 		d.addAudioProcessor(new AudioProcessor() {
 
 			@Override

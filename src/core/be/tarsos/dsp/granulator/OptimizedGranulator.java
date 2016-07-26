@@ -17,7 +17,7 @@ import be.tarsos.dsp.AudioProcessor;
  * @author ollie
  * @author Joren
  */
-public class Granulator implements AudioProcessor  {
+public class OptimizedGranulator implements AudioProcessor  {
 
 	public static final float ADAPTIVE_INTERP_LOW_THRESH = 0.5f;
 	public static final float ADAPTIVE_INTERP_HIGH_THRESH = 2.5f;
@@ -27,10 +27,9 @@ public class Granulator implements AudioProcessor  {
 	
 	/**
 	 * The millisecond position increment per sample. Calculated from the ratio
-	 * of the {@link AudioContext}'s sample rate and the {@link Sample}'s sample
-	 * rate.
+	 * of the sample rate
 	 */
-	private double positionIncrement;
+	private double audioSampleLength;
 	
 	
 	private float grainInterval;
@@ -40,8 +39,6 @@ public class Granulator implements AudioProcessor  {
 	/** The time in milliseconds since the last grain was activated. */
 	private float timeSinceLastGrain;
 
-	/** The length of one sample in milliseconds. */
-	private double msPerSample;
 
 	/** The pitch, bound to the pitch envelope. */
 	private float pitchFactor;
@@ -50,14 +47,8 @@ public class Granulator implements AudioProcessor  {
 	private float timeStretchFactor;
 
 	/** The list of current grains. */
-	private ArrayList<Grain> grains;
+	private Grain[] grains;
 
-	/** A list of free grains. */
-	private ArrayList<Grain> freeGrains;
-
-	/** A list of dead grains. */
-	private ArrayList<Grain> deadGrains;
-	
 	/** The interpolation type. */
 	//protected InterpolationType interpolationType;
 
@@ -77,12 +68,13 @@ public class Granulator implements AudioProcessor  {
 	 * @param sampleRate the sample rate.
 	 * @param bufferSize the size of an output buffer.
 	 */
-	public Granulator(float sampleRate,int bufferSize) {
-		grains = new ArrayList<Grain>();
-		freeGrains = new ArrayList<Grain>();
-		deadGrains = new ArrayList<Grain>();
+	public OptimizedGranulator(float sampleRate,int bufferSize) {
+		grains = new Grain[50];
+		for(int i = 0 ; i < grains.length ; i++){
+			grains[i] = new Grain();
+		}
 		
-		audioBuffer = new float[(int) (12*60*sampleRate)];//max 12 minutes of audio
+		audioBuffer = new float[4800*2];//max 0.2s 
 		audioBufferWatermark = 0;
 		
 		pitchFactor = 1.0f;
@@ -91,12 +83,10 @@ public class Granulator implements AudioProcessor  {
 		grainSize = 100.0f;
 		grainRandomness = 0.1f;
 		
-		window = new be.tarsos.dsp.util.fft.CosineWindow().generateCurve(bufferSize);
+		window = new be.tarsos.dsp.util.fft.CosineWindow().generateCurve(512);
 		outputBuffer = new float[bufferSize];
-		
-		msPerSample = 1000.0f/sampleRate;
-		
-		positionIncrement = msPerSample;
+			
+		audioSampleLength = 1000.0f/sampleRate;
 	}
 
 		
@@ -111,12 +101,11 @@ public class Granulator implements AudioProcessor  {
 	/** Special case method for playing first grain. */
 	private void firstGrain() {
 		if(firstGrain) {
-			Grain g = new Grain();
+			Grain g = grains[0];
 			g.position = position;
 			g.age = grainSize / 4f;
 			g.grainSize = grainSize;
 			
-			grains.add(g);
 			firstGrain = false;
 			timeSinceLastGrain = grainInterval / 2f;
 		}
@@ -124,9 +113,18 @@ public class Granulator implements AudioProcessor  {
 
 	@Override
 	public boolean process(AudioEvent audioEvent) {
-		System.arraycopy(audioEvent.getFloatBuffer(), 0, audioBuffer,
-				audioBufferWatermark, audioEvent.getBufferSize());
-		audioBufferWatermark += audioEvent.getBufferSize();
+		
+		int bufferSize = audioEvent.getBufferSize();
+		for (int i = 0; i < bufferSize; i++) {
+			audioBuffer[audioBufferWatermark] = audioEvent.getFloatBuffer()[i];
+			audioBufferWatermark++;
+			if(audioBufferWatermark==audioBuffer.length){
+				audioBufferWatermark=0;
+				
+			}
+		}
+		
+		System.out.println("Buffer water mark:" + audioBufferWatermark);
 
 		// grains.clear();
 		// position = audioEvent.getTimeStamp()*1000 - 5000;
@@ -135,69 +133,73 @@ public class Granulator implements AudioProcessor  {
 		Arrays.fill(outputBuffer, 0);
 
 		firstGrain();
-
-		int bufferSize = audioEvent.getBufferSize();
+		
+		int activeGrains = 0;
+		for(int j = 0 ; j < grains.length ; j++){
+			if(grains[j].active){
+				activeGrains++;
+			}
+		}	
+		System.out.println("Active grains = " + activeGrains);
 
 		// now loop through the buffer
 		for (int i = 0; i < bufferSize; i++) {
 			// determine if we need a new grain
 			if (timeSinceLastGrain > grainInterval) {
-				Grain g = null;
-				if (freeGrains.size() > 0) {
-					g = freeGrains.get(0);
-					freeGrains.remove(0);
-				} else {
-					g = new Grain();
-				}
-				g.reset(grainSize, grainRandomness, position,timeStretchFactor,pitchFactor);
-				grains.add(g);
-				timeSinceLastGrain = 0f;
+				Grain firstInactiveGrain = null;
+				for(int j = 0 ; j < grains.length ; j++){
+					if(!grains[j].active){
+						firstInactiveGrain = grains[j];
+						firstInactiveGrain.reset(grainSize, grainRandomness, position,timeStretchFactor,pitchFactor);
+						timeSinceLastGrain = 0f;
+						break;
+					}
+				}	
 				//System.out.println(grains.size());
 			}
 
 			// gather the output from each grain
-			for (int gi = 0; gi < grains.size(); gi++) {
-				Grain g = grains.get(gi);
-				// calculate value of grain window
-				float windowScale = getValueFraction((float) (g.age / g.grainSize));
-				// get position in sample for this grain
-				// get the frame for this grain
-
-				double sampleValue;
-				getFrameLinear(g.position);
-				if (pitchFactor > ADAPTIVE_INTERP_HIGH_THRESH) {
-					sampleValue = getFrameNoInterp(g.position);
-				} else if (pitchFactor > ADAPTIVE_INTERP_LOW_THRESH) {
-					sampleValue = getFrameLinear(g.position);
-				} else {
-					sampleValue = getFrameCubic(g.position);
+			for (int gi = 0; gi < grains.length; gi++) {
+				Grain g = grains[gi];
+				if(g.active){
+					// calculate value of grain window
+					float windowScale = getValueFraction((float) (g.age / g.grainSize));
+					// get position in sample for this grain
+					// get the frame for this grain
+	
+					double sampleValue;
+					//if (pitchFactor > ADAPTIVE_INTERP_HIGH_THRESH) {
+						sampleValue = getFrameNoInterp(g.position);
+					//} else if (pitchFactor > ADAPTIVE_INTERP_LOW_THRESH) {
+					//	sampleValue = getFrameLinear(g.position);
+					//} else {
+					//	sampleValue = getFrameCubic(g.position);
+					//}
+					sampleValue = sampleValue * windowScale;
+					outputBuffer[i] += (float) sampleValue;
 				}
-				sampleValue = sampleValue * windowScale;
-				outputBuffer[i] += (float) sampleValue;
 			}
 			// increment time
-			position += positionIncrement * timeStretchFactor;
+			position += audioSampleLength * timeStretchFactor;
 
-			for (int gi = 0; gi < grains.size(); gi++) {
-				Grain g = grains.get(gi);
-				calculateNextGrainPosition(g);
-			}
-			// increment timeSinceLastGrain
-			timeSinceLastGrain += msPerSample;
-			// finally, see if any grains are dead
-			for (int gi = 0; gi < grains.size(); gi++) {
-				Grain g = grains.get(gi);
-				if (g.age > g.grainSize) {
-					freeGrains.add(g);
-					deadGrains.add(g);
+			for (int gi = 0; gi < grains.length; gi++) {
+				Grain g = grains[gi];
+				if(g.active){
+					calculateNextGrainPosition(g);
+					
+					if (g.age > g.grainSize) {
+						g.active = false;
+					}
 				}
 			}
-			for (int gi = 0; gi < deadGrains.size(); gi++) {
-				Grain g = deadGrains.get(gi);
-				grains.remove(g);
-			}
-			deadGrains.clear();
+			
+			timeSinceLastGrain += audioSampleLength;	
 		}
+		
+		for (int i = 0; i < bufferSize; i++) {
+			outputBuffer[i] = outputBuffer[i]/(float) 5.0f;
+		}
+		
 		audioEvent.setFloatBuffer(outputBuffer);
 
 		return true;
@@ -241,7 +243,13 @@ public class Granulator implements AudioProcessor  {
 	 */
 	public float getFrameNoInterp(double posInMS) {
 		double frame = msToSamples(posInMS);
+		
 		int frame_floor = (int) Math.floor(frame);
+		
+		//int diff = audioBufferWatermark - frame_floor; 
+		//if( diff < 4800 || diff > )
+
+		
 		return audioBuffer[frame_floor];
 	}
 	
@@ -292,7 +300,14 @@ public class Granulator implements AudioProcessor  {
 	
 	
 	private double msToSamples(double posInMs){
-		return (posInMs) / msPerSample;
+		double positionInSamples = posInMs / audioSampleLength;
+		if(positionInSamples < 0){
+			positionInSamples = 0;
+		}else{
+			int bufferNumber = (int) (positionInSamples/audioBuffer.length);
+			positionInSamples = positionInSamples - bufferNumber * audioBuffer.length;
+		}
+		return positionInSamples;
 	}
 
 	@Override
@@ -309,7 +324,10 @@ public class Granulator implements AudioProcessor  {
 	 */
 	public float getValueFraction(float fraction) {
 		float posInBuf = fraction * window.length;
-		int lowerIndex = (int)posInBuf;
+		if(fraction >= 1.0f){
+			posInBuf -= 1.0f;
+		}
+		int lowerIndex = (int) posInBuf;
 		float offset = posInBuf - lowerIndex;
 		int upperIndex = (lowerIndex + 1) % window.length;
 		return (1 - offset) * window[lowerIndex] + offset * window[upperIndex];
@@ -322,8 +340,8 @@ public class Granulator implements AudioProcessor  {
 	 */
 	private void calculateNextGrainPosition(Grain g) {
 		int direction = timeStretchFactor >= 0 ? 1 : -1;	//this is a bit odd in the case when controlling grain from positionEnvelope
-		g.age += msPerSample;
-		g.position += direction * positionIncrement * pitchFactor;	
+		g.age += audioSampleLength;
+		g.position += direction * audioSampleLength * pitchFactor;	
 	}
 
 	public void setTimestretchFactor(float currentFactor) {

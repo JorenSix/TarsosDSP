@@ -29,6 +29,8 @@ Every "release of TarsosDSP":http://0110.be/releases/TarsosDSP/ contains the fol
 * @TarsosDSP-x.x-bin.jar@ Jar library for inclusion in Java projects, withouth source files included.
 * @TarsosDSP-x.x.jar@ Jar library for inclusion in Java projects, with source files included.
 
+The source code of TarsosDSP are compatible with Java 1.6. The jar files are compiled for 1.7.
+
 h2. TarsosDSP on Android
 
 If you want to do audio processing on Android TarsosDSP is a great fit. The main distribution has no dependencies on @javax.sound.xxx@ and does work well on Android by default. To add TarsosDSP to an Android Studio project download the latest "TarsosDSP Android release":http://0110.be/releases/TarsosDSP/TarsosDSP-latest/TarsosDSP-Android-latest.jar and place it in the @/app/libs/@ folder of your project. By default Gradle includes jar files placed in that directory in your classpath. 

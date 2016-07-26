@@ -12,7 +12,9 @@ class Grain{
 	double age;
 
 	/** The grain size of the grain. Fixed at instantiation. */
-	double grainSize;		
+	double grainSize;	
+	
+	boolean active;
 	
 	/**
 	 * Sets the given Grain to start immediately.
@@ -22,9 +24,12 @@ class Grain{
 	 * @param time
 	 *            the time
 	 */
-	void reset(double grainSize,double randomness,double position){
-		this.position = position + (grainSize * randomness * (Math.random() * 2.0 - 1.0));
+	void reset(double grainSize,double randomness,double position,double timeStretchFactor,double pitchShiftFactor){
+		double randomTimeDiff = (Math.random() > 0.5 ? +1 : -1) * grainSize * randomness;
+		double actualGrainSize = (grainSize + randomTimeDiff) * 1.0/timeStretchFactor + 1;
+		this.position = position - actualGrainSize;
 		this.age = 0f;
-		this.grainSize = grainSize;
+		this.grainSize = actualGrainSize;
+		this.active =true;
 	}		
 }
