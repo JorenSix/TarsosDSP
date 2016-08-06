@@ -62,6 +62,7 @@ import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.Future;
 import java.util.concurrent.ThreadFactory;
+import java.util.concurrent.atomic.AtomicInteger;
 
 /**
  * Concurrency utilities.
@@ -96,7 +97,13 @@ public class ConcurrencyUtils {
     }
 
     private static class CustomThreadFactory implements ThreadFactory {
-        private static final ThreadFactory defaultFactory = Executors.defaultThreadFactory();
+        private static final ThreadGroup group = new ThreadGroup("TarsosDSP");
+
+        private static final AtomicInteger idCounter = new AtomicInteger(0);
+
+        static {
+            group.setDaemon(true);
+        }
 
         private final Thread.UncaughtExceptionHandler handler;
 
@@ -105,7 +112,9 @@ public class ConcurrencyUtils {
         }
 
         public Thread newThread(Runnable r) {
-            Thread t = defaultFactory.newThread(r);
+            Thread t = new Thread(group, r,
+              group.getName() + '-' + idCounter.incrementAndGet());
+            t.setDaemon(group.isDaemon());
             t.setUncaughtExceptionHandler(handler);
             return t;
         }
