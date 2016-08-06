@@ -280,11 +280,13 @@ public class ConcurrencyUtils {
      * @return true if x is a power-of-two number
      */
     public static boolean isPowerOf2(int x) {
-        if (x <= 0)
-            return false;
-        else
-            return (x & (x - 1)) == 0;
+        return x > 0 && isPowerOf2_unchecked(x);
     }
+
+    private static boolean isPowerOf2_unchecked(int x) {
+        return (x & (x - 1)) == 0;
+    }
+
 
     /**
      * Causes the currently executing thread to sleep (temporarily cease
