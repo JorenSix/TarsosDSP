@@ -249,16 +249,9 @@ public class ConcurrencyUtils {
     public static int nextPow2(int x) {
         if (x < 1)
             throw new IllegalArgumentException("x must be greater or equal 1");
-        if ((x & (x - 1)) == 0) {
-            return x; // x is already a power-of-two number 
-        }
-        x |= (x >>> 1);
-        x |= (x >>> 2);
-        x |= (x >>> 4);
-        x |= (x >>> 8);
-        x |= (x >>> 16);
-        x |= (x >>> 32);
-        return x + 1;
+        return isPowerOf2_unchecked(x) ?
+          x : // x is already a power-of-two number
+          Integer.lowestOneBit(x) << 1;
     }
 
     /**
@@ -270,7 +263,9 @@ public class ConcurrencyUtils {
     public static int prevPow2(int x) {
         if (x < 1)
             throw new IllegalArgumentException("x must be greater or equal 1");
-        return (int) Math.pow(2, Math.floor(Math.log(x) / Math.log(2)));
+        return isPowerOf2_unchecked(x) ?
+          x : // x is already a power-of-two number
+          Integer.lowestOneBit(x) >>> 1;
     }
 
     /**
