@@ -219,9 +219,9 @@
 
 	<!-- Compiles the junit classes -->
 	<target name="compile_with_tests" depends="compile_for_jvm">
-		<javac srcdir="../tests" destdir="../bin" classpath="${junit_jar}" debug="true" />
+		<javac srcdir="../src/tests" destdir="../bin" classpath="${junit_jar}" debug="true" />
 		<copy todir="../bin/be/tarsos/dsp/test/resources">
-			<fileset dir="../tests/be/tarsos/dsp/test/resources" />
+			<fileset dir="../src/tests/be/tarsos/dsp/test/resources" />
 		</copy>
 	</target>
 
