@@ -203,9 +203,14 @@ public final class FFT {
 		}
 		for (int i = 1; i < data.length-1; i+=2) {
 			int realIndex = i;
-			int imgIndex  = i + 1;
-			data[realIndex] = data[realIndex] * other[realIndex] + -1 *  data[imgIndex] * other[imgIndex];
-			data[imgIndex] =  data[realIndex] * other[imgIndex] + data[imgIndex] * other[realIndex];
-		}
+			int imgIndex = i + 1;
+			float tempReal = data[realIndex] * other[realIndex] + -1 * data[imgIndex] * other[imgIndex];
+			float tempImg = data[realIndex] * other[imgIndex] + data[imgIndex] * other[realIndex];
+			data[realIndex] = tempReal;
+			data[imgIndex] = tempImg;
+			//fix by perfecthu 
+			//data[realIndex] = data[realIndex] * other[realIndex] + -1 * data[imgIndex] * other[imgIndex];
+			//data[imgIndex] = data[realIndex] * other[imgIndex] + data[imgIndex] * other[realIndex];
+			}
 	}
 }
