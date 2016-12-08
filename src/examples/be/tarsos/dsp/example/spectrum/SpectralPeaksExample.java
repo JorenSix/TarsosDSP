@@ -397,7 +397,7 @@ public class SpectralPeaksExample extends JFrame {
 		frameSlider.setMaximum(0);
 		PipedAudioStream f = new PipedAudioStream(fileName);
 		spectalInfo.clear();
-		TarsosDSPAudioInputStream stream = f.getMonoStream(sampleRate);
+		TarsosDSPAudioInputStream stream = f.getMonoStream(sampleRate,0);
 		int overlap = fftsize - stepsize;
 		if(overlap < 1){
 			overlap = 128;
@@ -439,7 +439,7 @@ public class SpectralPeaksExample extends JFrame {
 			}
 		});
 		
-		TarsosDSPAudioInputStream audioPlayStream = f.getMonoStream(sampleRate);
+		TarsosDSPAudioInputStream audioPlayStream = f.getMonoStream(sampleRate,0);
 		player = new AudioDispatcher(audioPlayStream, 2048, 0);
 		player.addAudioProcessor(new AudioPlayer(JVMAudioInputStream.toAudioFormat(PipeDecoder.getTargetAudioFormat(sampleRate))));
 		

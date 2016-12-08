@@ -169,4 +169,8 @@ The 2.2 version includes a new @AudioDispatcher@. It has been reviewed toroughly
 
 <dt>Version 2.3</dt><dd>2015-09-01</dd>
 The 2.3 version includes improved Android support: "audio decoding on Android":http://0110.be/posts/Decode_MP3s_and_other_Audio_formats_the_easy_way_on_Android can be done using a provided, statically compiled ffmpeg binary. The ffmpeg decoding functionality for JVM has been improved as well. If no ffmpeg executable is found it is downloaded automatically from "here":http://0110.be/releases/TarsosDSP/TarsosDSP-static-ffmpeg. 
+
+<dt>Version 2.4</dt><dd>2016-12-01</dd>
+Some small changes to the pipe decoder. Now it is possible to set a start and duration for the incoming decoded audio from ffmpeg. 
+
  

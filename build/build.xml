@@ -2,13 +2,13 @@
 <project default="tarsos_dsp_library" name="Create TarsosDSP JAR-files">
 
 	<!-- Configuration -->
-	<property name="version" value="2.3" />
+	<property name="version" value="2.4" />
 	<property name="built_by" value="${user.name}" />
 	<property name="junit_jar" value="../lib/hamcrest-core-1.3.jar:../lib/junit-4.11.jar" />
 	
 	<!-- If you want to build an Android TarsosDSP jar file, please download the Android SDK and 
 	     Fix   -->
-	<property name="android_jar" value="/opt/Android/Sdk/platforms/android-22/android.jar" />
+	<property name="android_jar" value="/opt/Android/android-sdk-linux/platforms/android-22/android.jar" />
 
 	<!-- run the ant timestamp task -->
 	<tstamp />

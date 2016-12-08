@@ -49,7 +49,7 @@ public class AudioPlayerTest {
 	
 	public void testStreamAudioPlayer() throws UnsupportedAudioFileException, LineUnavailableException{
 		PipedAudioStream file = new PipedAudioStream("http://mp3.streampower.be/stubru-high.mp3");
-		TarsosDSPAudioInputStream stream = file.getMonoStream(44100);
+		TarsosDSPAudioInputStream stream = file.getMonoStream(44100,0);
 		AudioDispatcher d;
 		d = new AudioDispatcher(stream, 1024, 128);
 	    d.addAudioProcessor(new AudioPlayer(JVMAudioInputStream.toAudioFormat(d.getFormat())));

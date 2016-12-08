@@ -66,15 +66,29 @@ public class PipedAudioStream {
 	/**
 	 * Return a one channel, signed PCM stream of audio of a defined sample rate. 
 	 * @param targetSampleRate The target sample stream.
+	 * @param startTimeOffset The start time offset.
 	 * @return An audio stream which can be used to read samples from.
 	 */
-	public TarsosDSPAudioInputStream getMonoStream(int targetSampleRate){
-		InputStream stream = null;
-		stream = decoder.getDecodedStream(resource, targetSampleRate);
-		return new UniversalAudioInputStream(stream, getTargetFormat(targetSampleRate));
+	public TarsosDSPAudioInputStream getMonoStream(int targetSampleRate,double startTimeOffset){
+		return getMonoStream(targetSampleRate, startTimeOffset,-1);
 	}
 	
 	private TarsosDSPAudioFormat getTargetFormat(int targetSampleRate){
 		return new TarsosDSPAudioFormat(targetSampleRate, 16, 1, true, false);
+	}
+
+
+	/**
+	 * Return a one channel, signed PCM stream of audio of a defined sample rate. 
+	 * @param targetSampleRate The target sample stream.
+	 * @param startTimeOffset The start time offset.
+	 * @param numberOfSeconds the number of seconds to pipe. If negative the stream is processed until end of stream.
+	 * @return An audio stream which can be used to read samples from.
+	 */
+	public TarsosDSPAudioInputStream getMonoStream(int targetSampleRate, double startTimeOffset,
+			double numberOfSeconds) {
+		InputStream stream = null;
+		stream = decoder.getDecodedStream(resource, targetSampleRate,startTimeOffset,numberOfSeconds);
+		return new UniversalAudioInputStream(stream, getTargetFormat(targetSampleRate));
 	}
 }

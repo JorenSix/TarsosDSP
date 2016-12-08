@@ -31,6 +31,8 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.nio.ByteOrder;
 import java.util.logging.Logger;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import be.tarsos.dsp.util.FFMPEGDownloader;
 
@@ -96,7 +98,7 @@ public class PipeDecoder {
 		}
 		
 		String path = System.getenv("PATH");
-		String arguments = " -i \"%resource%\" -vn -ar %sample_rate% -ac %channels% -sample_fmt s16 -f s16le pipe:1";
+		String arguments = " -ss %input_seeking%  %number_of_seconds% -i \"%resource%\" -vn -ar %sample_rate% -ac %channels% -sample_fmt s16 -f s16le pipe:1";
 		if(isAvailable("ffmpeg")){
 			LOG.info("found ffmpeg on the path (" + path + "). Will use ffmpeg for decoding media files.");
 			pipeCommand = "ffmpeg" + arguments;	
@@ -148,10 +150,19 @@ public class PipeDecoder {
 	}
 
 	
-	public InputStream getDecodedStream(final String resource,final int targetSampleRate) {
+	public InputStream getDecodedStream(final String resource,final int targetSampleRate,final double timeOffset, double numberOfSeconds) {
 		
 		try {
 			String command = pipeCommand;
+			command = command.replace("%input_seeking%",String.valueOf(timeOffset));
+			//defines the number of seconds to process
+			// -t 10.000 e.g. specifies to process ten seconds 
+			// from the specified time offset (which is often zero).
+			if(numberOfSeconds>0){
+				command = command.replace("%number_of_seconds%","-t " + String.valueOf(numberOfSeconds));
+			} else {
+				command = command.replace("%number_of_seconds%","");
+			}
 			command = command.replace("%resource%", resource);
 			command = command.replace("%sample_rate%", String.valueOf(targetSampleRate));
 			command = command.replace("%channels%","1");
@@ -160,6 +171,7 @@ public class PipeDecoder {
 			pb= new ProcessBuilder(pipeEnvironment, pipeArgument , command);
 
 			LOG.info("Starting piped decoding process for " + resource);
+			LOG.info(" with command: " + command);
 			final Process process = pb.start();
 			
 			final InputStream stdOut = new BufferedInputStream(process.getInputStream(), pipeBuffer){
@@ -193,6 +205,60 @@ public class PipeDecoder {
 			e.printStackTrace();
 		}
 		return null;
+	}
+	
+	public double getDuration(final String resource) {
+		double duration = -1;
+		try {
+			String command = "ffmpeg -i '%resource%'";
+			
+			command = command.replace("%resource%", resource);
+					
+			ProcessBuilder pb;
+			pb= new ProcessBuilder(pipeEnvironment, pipeArgument , command);
+
+			LOG.info("Starting duration command for " + resource);
+			LOG.fine(" with command: " + command);
+			final Process process = pb.start();
+			
+			final InputStream stdOut = new BufferedInputStream(process.getInputStream(), pipeBuffer){
+				@Override
+				public void close() throws IOException{
+					super.close();
+					// try to destroy the ffmpeg command after close
+					process.destroy();
+				}
+			};
+			
+			ErrorStreamStringGlobber essg = new ErrorStreamStringGlobber(process.getErrorStream());
+			essg.start();
+			
+			new Thread(new Runnable(){
+				@Override
+				public void run() {
+					try {
+						process.waitFor();
+						LOG.info("Finished piped decoding process");
+					} catch (InterruptedException e) {
+						LOG.severe("Interrupted while waiting for decoding sub process exit.");
+						e.printStackTrace();
+					}
+				}},"Decoding Pipe").run();
+			
+			String stdError = essg.getErrorStreamAsString();
+			Pattern regex = Pattern.compile(".*\\s.*Duration:\\s+(\\d\\d):(\\d\\d):(\\d\\d)\\.(\\d\\d), .*", Pattern.DOTALL | Pattern.MULTILINE);
+			Matcher regexMatcher = regex.matcher(stdError);
+			if (regexMatcher.find()) {
+				duration = Integer.valueOf(regexMatcher.group(1)) * 3600+ 
+				Integer.valueOf(regexMatcher.group(2)) * 60+
+				Integer.valueOf(regexMatcher.group(3)) * 1 +
+				 Double.valueOf("." + regexMatcher.group(4) );
+			}
+		} catch (IOException e) {
+			LOG.warning("IO exception while decoding audio via sub process." + e.getMessage() );
+			e.printStackTrace();
+		}
+		return duration;
 	}
 
 	public void printBinaryInfo(){
@@ -268,6 +334,35 @@ public class PipeDecoder {
 			catch (IOException ioe) {
 				ioe.printStackTrace();
 			}
+		}
+	}
+	
+	private class ErrorStreamStringGlobber extends Thread {
+		private final InputStream is;
+		private final StringBuilder sb;
+
+		private ErrorStreamStringGlobber(InputStream is) {
+			this.is = is;
+			this.sb = new StringBuilder();
+		}
+
+		@Override
+		public void run() {
+			try {
+				InputStreamReader isr = new InputStreamReader(is);
+				BufferedReader br = new BufferedReader(isr);
+				String line = null;
+				while ((line = br.readLine()) != null) {
+					sb.append(line);
+				}
+			}
+			catch (IOException ioe) {
+				ioe.printStackTrace();
+			}
+		}
+		
+		public String getErrorStreamAsString(){
+			return sb.toString();
 		}
 	}
 }

@@ -36,6 +36,7 @@ import javax.sound.sampled.TargetDataLine;
 import javax.sound.sampled.UnsupportedAudioFileException;
 
 import be.tarsos.dsp.AudioDispatcher;
+import be.tarsos.dsp.io.PipeDecoder;
 import be.tarsos.dsp.io.PipedAudioStream;
 import be.tarsos.dsp.io.TarsosDSPAudioFloatConverter;
 import be.tarsos.dsp.io.TarsosDSPAudioInputStream;
@@ -159,15 +160,67 @@ public class AudioDispatcherFactory {
 	 * @return A new audioprocessor.
 	 */
 	public static AudioDispatcher fromPipe(final String source,final int targetSampleRate, final int audioBufferSize,final int bufferOverlap){
+		return fromPipe(source, targetSampleRate, audioBufferSize, bufferOverlap,0);
+	}
+	
+	/**
+	 * Create a stream from a piped sub process and use that to create a new
+	 * {@link AudioDispatcher} The sub-process writes a WAV-header and
+	 * PCM-samples to standard out. The header is ignored and the PCM samples
+	 * are are captured and interpreted. Examples of executables that can
+	 * convert audio in any format and write to stdout are ffmpeg and avconv.
+	 * 
+	 * @param source
+	 *            The file or stream to capture.
+	 * @param targetSampleRate
+	 *            The target sample rate.
+	 * @param audioBufferSize
+	 *            The number of samples used in the buffer.
+	 * @param bufferOverlap
+	 * @param startTimeOffset 
+	 * 			  Number of seconds to skip
+	 * @return A new audioprocessor.
+	 */
+	public static AudioDispatcher fromPipe(final String source,final int targetSampleRate, final int audioBufferSize,final int bufferOverlap,final double startTimeOffset){
 		if(new File(source).exists()&&new File(source).isFile() && new File(source).canRead()){
 			PipedAudioStream f = new PipedAudioStream(source);
-			TarsosDSPAudioInputStream audioStream = f.getMonoStream(targetSampleRate);
+			TarsosDSPAudioInputStream audioStream = f.getMonoStream(targetSampleRate,startTimeOffset);
 			return new AudioDispatcher(audioStream, audioBufferSize, bufferOverlap);
 		}else{
 			throw new IllegalArgumentException("The file " + source + " is not a readable file. Does it exist?");
 		}
-		
 	}
+	
+	/**
+	 * Create a stream from a piped sub process and use that to create a new
+	 * {@link AudioDispatcher} The sub-process writes a WAV-header and
+	 * PCM-samples to standard out. The header is ignored and the PCM samples
+	 * are are captured and interpreted. Examples of executables that can
+	 * convert audio in any format and write to stdout are ffmpeg and avconv.
+	 * 
+	 * @param source
+	 *            The file or stream to capture.
+	 * @param targetSampleRate
+	 *            The target sample rate.
+	 * @param audioBufferSize
+	 *            The number of samples used in the buffer.
+	 * @param bufferOverlap
+	 * @param startTimeOffset 
+	 * 			  Number of seconds to skip
+	 * @param numberOfSeconds
+	 * 			  Number of seconds to pipe
+	 * @return A new audioprocessor.
+	 */
+	public static AudioDispatcher fromPipe(final String source,final int targetSampleRate, final int audioBufferSize,final int bufferOverlap,final double startTimeOffset,final double numberOfSeconds){
+		if(new File(source).exists()&&new File(source).isFile() && new File(source).canRead()){
+			PipedAudioStream f = new PipedAudioStream(source);
+			TarsosDSPAudioInputStream audioStream = f.getMonoStream(targetSampleRate,startTimeOffset,numberOfSeconds);
+			return new AudioDispatcher(audioStream, audioBufferSize, bufferOverlap);
+		}else{
+			throw new IllegalArgumentException("The file " + source + " is not a readable file. Does it exist?");
+		}
+	}
+	
 	
 	/**
 	 * Create a stream from a file and use that to create a new AudioDispatcher

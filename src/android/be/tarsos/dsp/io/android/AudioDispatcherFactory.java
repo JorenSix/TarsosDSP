@@ -96,7 +96,7 @@ public class AudioDispatcherFactory {
 	 */
 	public static AudioDispatcher fromPipe(final String source,final int targetSampleRate, final int audioBufferSize,final int bufferOverlap){
 		PipedAudioStream f = new PipedAudioStream(source);
-		TarsosDSPAudioInputStream audioStream = f.getMonoStream(targetSampleRate);
+		TarsosDSPAudioInputStream audioStream = f.getMonoStream(targetSampleRate,0);
 		return new AudioDispatcher(audioStream, audioBufferSize, bufferOverlap);
 	}
 }

@@ -64,7 +64,7 @@ public class SpectralPeakFollowerExample {
 	
 	private void extractPeakListList() throws UnsupportedAudioFileException{
 		PipedAudioStream f = new PipedAudioStream(fileName);
-		TarsosDSPAudioInputStream stream = f.getMonoStream(sampleRate);
+		TarsosDSPAudioInputStream stream = f.getMonoStream(sampleRate,0);
 		
 		final SpectralPeakProcessor spectralPeakFollower = new SpectralPeakProcessor(fftsize, overlap, sampleRate);
 		AudioDispatcher dispatcher = new AudioDispatcher(stream, fftsize, overlap);

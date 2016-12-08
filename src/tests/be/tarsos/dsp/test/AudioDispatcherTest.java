@@ -39,7 +39,7 @@ public class AudioDispatcherTest {
 	
 	public TarsosDSPAudioInputStream getAudioInputStreamPiped(){
 		File audioFile = TestUtilities.sineOf4000Samples();
-		return new PipedAudioStream(audioFile.getAbsolutePath()).getMonoStream(44100);
+		return new PipedAudioStream(audioFile.getAbsolutePath()).getMonoStream(44100,0);
 	}
 	
 	@Test
