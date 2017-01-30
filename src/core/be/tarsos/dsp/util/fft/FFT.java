@@ -50,10 +50,10 @@ public final class FFT {
 	
 	/**
 	 * Create a new fft of the specified size. Apply the specified window on the samples before a forward transform. 
-	 * arning: the window is not applied in reverse when a backwards transform is requested.
+	 * warning: the window is not applied in reverse when a backwards transform is requested.
 	 * @param size The size of the fft.
 	 * @param windowFunction Apply the specified window on the samples before a forward transform. 
-	 * arning: the window is not applied in reverse when a backwards transform is requested.
+	 * warning: the window is not applied in reverse when a backwards transform is requested.
 	 */
 	public FFT(final int size, final WindowFunction windowFunction){
 		fft = new FloatFFT(size);

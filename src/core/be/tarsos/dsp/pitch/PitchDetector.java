@@ -30,6 +30,7 @@ package be.tarsos.dsp.pitch;
  * 
  * @author Joren Six
  */
+@FunctionalInterface
 public interface PitchDetector {
 	/**
 	 * Analyzes a buffer with audio information and estimates a pitch in Hz.
@@ -42,5 +43,5 @@ public interface PitchDetector {
 	 * @return An estimation of the pitch in Hz or -1 if no pitch is detected or
 	 *         present in the buffer.
 	 */
-	PitchDetectionResult getPitch(final float[] audioBuffer);
+	public PitchDetectionResult getPitch(final float[] audioBuffer);
 }

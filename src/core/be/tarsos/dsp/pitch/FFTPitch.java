@@ -1,28 +1,6 @@
-/*
-*      _______                       _____   _____ _____  
-*     |__   __|                     |  __ \ / ____|  __ \ 
-*        | | __ _ _ __ ___  ___  ___| |  | | (___ | |__) |
-*        | |/ _` | '__/ __|/ _ \/ __| |  | |\___ \|  ___/ 
-*        | | (_| | |  \__ \ (_) \__ \ |__| |____) | |     
-*        |_|\__,_|_|  |___/\___/|___/_____/|_____/|_|     
-*                                                         
-* -------------------------------------------------------------
-*
-* TarsosDSP is developed by Joren Six at IPEM, University Ghent
-*  
-* -------------------------------------------------------------
-*
-*  Info: http://0110.be/tag/TarsosDSP
-*  Github: https://github.com/JorenSix/TarsosDSP
-*  Releases: http://0110.be/releases/TarsosDSP/
-*  
-*  TarsosDSP includes modified source code by various authors,
-*  for credits and info, see README.
-* 
-*/
-
 package be.tarsos.dsp.pitch;
 
+import be.tarsos.dsp.SpectrumProcessor;
 
 /**
  * Implements a pitch tracker by simply locating the most 
@@ -32,14 +10,29 @@ package be.tarsos.dsp.pitch;
  */
 public class FFTPitch implements PitchDetector {
 	
+	private final SpectrumProcessor spectrumExtractor; 
 	private final PitchDetectionResult result;
 	public FFTPitch(int sampleRate,int bufferSize){
+		spectrumExtractor = new SpectrumProcessor(bufferSize, 0, sampleRate);
 		result = new PitchDetectionResult();
 	}
 
 	@Override
 	public PitchDetectionResult getPitch(float[] audioBuffer) {
+		spectrumExtractor.process(audioBuffer);
 		
+		float[] magnitudes = spectrumExtractor.getMagnitudes();
+		float[] frequencies = spectrumExtractor.getFrequencies();
+		
+		float maxMagnitude = -5000;
+		float pitch = 0;
+		for(int i = 4 ; i < magnitudes.length-4;i++){
+			if(magnitudes[i] > maxMagnitude){
+				pitch = frequencies[i];
+				maxMagnitude = magnitudes[i];
+			}
+		}
+		result.setPitch(pitch);
 		
 		return result;
 	}
