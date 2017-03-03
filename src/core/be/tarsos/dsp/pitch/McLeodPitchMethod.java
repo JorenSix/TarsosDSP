@@ -33,7 +33,7 @@ import java.util.List;
  * <p>
  * Implementation of The McLeod Pitch Method (MPM). It is described in the
  * article <a href=
- * "http://miracle.otago.ac.nz/postgrads/tartini/papers/A_Smarter_Way_to_Find_Pitch.pdf"
+ * "http://miracle.otago.ac.nz/tartini/papers/A_Smarter_Way_to_Find_Pitch.pdf"
  * >A Smarter Way to Find Pitch</a>. According to the article:
  * </p>
  * <blockquote> <bufferCount>
