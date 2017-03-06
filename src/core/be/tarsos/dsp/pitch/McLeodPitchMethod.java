@@ -33,7 +33,7 @@ import java.util.List;
  * <p>
  * Implementation of The McLeod Pitch Method (MPM). It is described in the
  * article <a href=
- * "http://miracle.otago.ac.nz/postgrads/tartini/papers/A_Smarter_Way_to_Find_Pitch.pdf"
+ * "http://miracle.otago.ac.nz/tartini/papers/A_Smarter_Way_to_Find_Pitch.pdf"
  * >A Smarter Way to Find Pitch</a>. According to the article:
  * </p>
  * <blockquote> <bufferCount>
@@ -223,7 +223,7 @@ public final class McLeodPitchMethod implements PitchDetector {
 
 			if (nsdf[tau] > SMALL_CUTOFF) {
 				// calculates turningPointX and Y
-				prabolicInterpolation(tau);
+				parabolicInterpolation(tau);
 				// store the turning points
 				ampEstimates.add(turningPointY);
 				periodEstimates.add(turningPointX);
@@ -300,7 +300,7 @@ public final class McLeodPitchMethod implements PitchDetector {
 	 * @param tau
 	 *            The delay tau, b value in the drawing is the tau value.
 	 */
-	private void prabolicInterpolation(final int tau) {
+	private void parabolicInterpolation(final int tau) {
 		final float nsdfa = nsdf[tau - 1];
 		final float nsdfb = nsdf[tau];
 		final float nsdfc = nsdf[tau + 1];
