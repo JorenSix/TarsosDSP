@@ -72,6 +72,8 @@ public class RateTransposer implements AudioProcessor {
 		r.process(factor, src, 0, src.length, false, out, 0, out.length);
 		//The size of the output buffer changes (according to factor). 
 		audioEvent.setFloatBuffer(out);
+		//Update overlap offset to match new buffer size
+		audioEvent.setOverlap((int) (audioEvent.getOverlap() * factor));
 		return true;
 	}
 
