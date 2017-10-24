@@ -24,7 +24,7 @@ import java.util.logging.Logger;
  */
 public class FFMPEGDownloader {
 	
-	private static String url = "http://0110.be/releases/TarsosDSP/TarsosDSP-static-ffmpeg/";
+	private static String url = "https://0110.be/releases/TarsosDSP/TarsosDSP-static-ffmpeg/";
 	
 	private final String ffmpegBinary;
 	
