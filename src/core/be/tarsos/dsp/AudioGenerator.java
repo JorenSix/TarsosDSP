@@ -245,6 +245,9 @@ public class AudioGenerator implements Runnable {
 		if(audioFloatBuffer.length == floatOverlap + floatStepSize ){
 			System.arraycopy(audioFloatBuffer, floatStepSize, audioFloatBuffer,0 ,floatOverlap);
 		}
+		// Zero-fill rest of the buffer
+		for(int i=floatOverlap; i < audioFloatBuffer.length; i++)
+			audioFloatBuffer[i] = 0;
 		samplesProcessed += floatStepSize;
 	}
 	
