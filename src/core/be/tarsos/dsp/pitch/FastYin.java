@@ -59,16 +59,6 @@ public final class FastYin implements PitchDetector {
 	private static final double DEFAULT_THRESHOLD = 0.20;
 
 	/**
-	 * The default size of an audio buffer (in samples).
-	 */
-	public static final int DEFAULT_BUFFER_SIZE = 2048;
-
-	/**
-	 * The default overlap of two consecutive audio buffers (in samples).
-	 */
-	public static final int DEFAULT_OVERLAP = 1536;
-
-	/**
 	 * The actual YIN threshold.
 	 */
 	private final double threshold;

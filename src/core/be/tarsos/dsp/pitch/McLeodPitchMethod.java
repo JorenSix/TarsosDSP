@@ -71,12 +71,6 @@ public final class McLeodPitchMethod implements PitchDetector {
 	public static final int DEFAULT_BUFFER_SIZE = 1024;
 
 	/**
-	 * Overlap defines how much two audio buffers following each other should
-	 * overlap (in samples). 75% overlap is advised in the MPM article.
-	 */
-	public static final int DEFAULT_OVERLAP = 768;
-
-	/**
 	 * Defines the relative size the chosen peak (pitch) has. 0.93 means: choose
 	 * the first peak that is higher than 93% of the highest peak detected. 93%
 	 * is the default value used in the Tartini user interface.
