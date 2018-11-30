@@ -63,7 +63,7 @@ TarsosDSP contains some ready made example applications. Most have a Java Swing 
 
 h2. Developing TarsosDSP
 
-If you want to build from source, or want to improve TarsosDSP follow the instructions below. Contributions to TarsosDSP are more than welcome, if you have a an algorithm to add or find a bug, do not hesitate to send me a message.
+If you want to build from source, or want to improve TarsosDSP follow the instructions below. Contributions to TarsosDSP are more than welcome, if you have an algorithm to add or find a bug, do not hesitate to send me a message.
 
 TarsosDSP uses "Apache Ant":http://ant.apache.org/ as a build system. The instructions below detail how you can build from source. When everything runs correctly you should be able to run all example applications and have the latest version of the TarsosDSP library for inclusion in your projects. Also the Javadoc documentation for the API should be available.
 
