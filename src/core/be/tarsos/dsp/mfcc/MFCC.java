@@ -127,7 +127,7 @@ public class MFCC implements AudioProcessor {
         //Calculates te centerfrequencies.
         for (int i = 1; i <= amountOfMelFilters; i++) {
             float fc = (inverseMel(mel[0] + factor * i) / sampleRate) * samplesPerFrame;
-            centerFrequencies[i - 1] = Math.round(fc);
+            centerFrequencies[i] = Math.round(fc);
         }
 
     }
