@@ -57,18 +57,21 @@ public class SilenceDetector implements AudioProcessor {
 	}
 
 	/**
-	 * Calculates the local (linear) energy of an audio buffer.
-	 * 
-	 * @param buffer
-	 *            The audio buffer.
-	 * @return The local (linear) energy of an audio buffer.
+	 * Calculates and returns the root mean square of the signal. Please
+	 * cache the result since it is calculated every time.
+	 * @param floatBuffer The audio buffer to calculate the RMS for.
+	 * @return The <a
+	 *         href="http://en.wikipedia.org/wiki/Root_mean_square">RMS</a> of
+	 *         the signal present in the current buffer.
 	 */
-	private double localEnergy(final float[] buffer) {
-		double power = 0.0D;
-		for (float element : buffer) {
-			power += element * element;
+	public static double calculateRMS(float[] floatBuffer){
+		double rms = 0.0;
+		for (int i = 0; i < floatBuffer.length; i++) {
+			rms += floatBuffer[i] * floatBuffer[i];
 		}
-		return power;
+		rms = rms / Double.valueOf(floatBuffer.length);
+		rms = Math.sqrt(rms);
+		return rms;
 	}
 
 	/**
@@ -78,10 +81,9 @@ public class SilenceDetector implements AudioProcessor {
 	 *            The buffer with audio information.
 	 * @return The dBSPL level for the buffer.
 	 */
-	private double soundPressureLevel(final float[] buffer) {
-		double value = Math.pow(localEnergy(buffer), 0.5);
-		value = value / buffer.length;
-		return linearToDecibel(value);
+	private static double soundPressureLevel(final float[] buffer) {
+		double rms = calculateRMS(buffer);
+		return linearToDecibel(rms);
 	}
 
 	/**
@@ -91,7 +93,7 @@ public class SilenceDetector implements AudioProcessor {
 	 *            The value to convert.
 	 * @return The converted value.
 	 */
-	private double linearToDecibel(final double value) {
+	private static double linearToDecibel(final double value) {
 		return 20.0 * Math.log10(value);
 	}
 	
