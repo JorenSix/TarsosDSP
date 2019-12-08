@@ -116,8 +116,8 @@ public class AMDF implements PitchDetector{
 			}
 			amd[i] = summation;
 		}
-		
-		for (int j = (int)minPeriod; j < (int)maxPeriod; j++){
+
+		for (int j = (int)minPeriod; j < (int)maxPeriod&&j<amd.length; j++){
 			if(amd[j] < minval){
 				 minval = amd[j];
 			}
