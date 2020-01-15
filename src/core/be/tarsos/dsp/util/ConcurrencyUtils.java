@@ -62,6 +62,7 @@ import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.Future;
 import java.util.concurrent.ThreadFactory;
+import java.util.concurrent.atomic.AtomicInteger;
 
 /**
  * Concurrency utilities.
@@ -96,7 +97,13 @@ public class ConcurrencyUtils {
     }
 
     private static class CustomThreadFactory implements ThreadFactory {
-        private static final ThreadFactory defaultFactory = Executors.defaultThreadFactory();
+        private static final ThreadGroup group = new ThreadGroup("TarsosDSP");
+
+        private static final AtomicInteger idCounter = new AtomicInteger(0);
+
+        static {
+            group.setDaemon(true);
+        }
 
         private final Thread.UncaughtExceptionHandler handler;
 
@@ -105,7 +112,9 @@ public class ConcurrencyUtils {
         }
 
         public Thread newThread(Runnable r) {
-            Thread t = defaultFactory.newThread(r);
+            Thread t = new Thread(group, r,
+              group.getName() + '-' + idCounter.incrementAndGet());
+            t.setDaemon(group.isDaemon());
             t.setUncaughtExceptionHandler(handler);
             return t;
         }
@@ -249,16 +258,9 @@ public class ConcurrencyUtils {
     public static int nextPow2(int x) {
         if (x < 1)
             throw new IllegalArgumentException("x must be greater or equal 1");
-        if ((x & (x - 1)) == 0) {
-            return x; // x is already a power-of-two number 
-        }
-        x |= (x >>> 1);
-        x |= (x >>> 2);
-        x |= (x >>> 4);
-        x |= (x >>> 8);
-        x |= (x >>> 16);
-        x |= (x >>> 32);
-        return x + 1;
+        return isPowerOf2_unchecked(x) ?
+          x : // x is already a power-of-two number
+          Integer.lowestOneBit(x) << 1;
     }
 
     /**
@@ -270,7 +272,9 @@ public class ConcurrencyUtils {
     public static int prevPow2(int x) {
         if (x < 1)
             throw new IllegalArgumentException("x must be greater or equal 1");
-        return (int) Math.pow(2, Math.floor(Math.log(x) / Math.log(2)));
+        return isPowerOf2_unchecked(x) ?
+          x : // x is already a power-of-two number
+          Integer.lowestOneBit(x) >>> 1;
     }
 
     /**
@@ -280,11 +284,13 @@ public class ConcurrencyUtils {
      * @return true if x is a power-of-two number
      */
     public static boolean isPowerOf2(int x) {
-        if (x <= 0)
-            return false;
-        else
-            return (x & (x - 1)) == 0;
+        return x > 0 && isPowerOf2_unchecked(x);
     }
+
+    private static boolean isPowerOf2_unchecked(int x) {
+        return (x & (x - 1)) == 0;
+    }
+
 
     /**
      * Causes the currently executing thread to sleep (temporarily cease
