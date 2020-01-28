@@ -22,7 +22,7 @@ Every "release of TarsosDSP":http://0110.be/releases/TarsosDSP/ contains the fol
 
 * @TarsosDSP-x.x-Documentation/@ JavaDoc documentation
 * @TarsosDSP-x.x-Examples/@ Example applications.
-* @TarsosDSP-Android-x.x-bin.jar@ Jar library for inclusion in Android projects, withouth source files included.
+* @TarsosDSP-Android-x.x-bin.jar@ Jar library for inclusion in Android projects, without source files included.
 * @TarsosDSP-Android-x.x.jar@ Jar library for inclusion in Android projects, with source files included.
 * @TarsosDSP-x.x-Manual.pdf@ A manual describing the core concepts of TarsosDSP.
 * @TarsosDSP-x.x-Readme.html@ This readme.
@@ -42,7 +42,7 @@ To check if this is the case look for the following lines in the @build.gradle@ 
 }
 </code></pre>
 
-For futher information, please consult "TarsosDSP on Android - Audio Processing in Java on Android":http://0110.be/posts/TarsosDSP_on_Android_-_Audio_Processing_in_Java_on_Android. 
+For further information, please consult "TarsosDSP on Android - Audio Processing in Java on Android":http://0110.be/posts/TarsosDSP_on_Android_-_Audio_Processing_in_Java_on_Android. 
 
 
 h2. TarsosDSP Example Applications
@@ -55,7 +55,7 @@ TarsosDSP contains some ready made example applications. Most have a Java Swing 
 * "UtterAsterisk":http://0110.be/artikels/lees/TarsosDSP_sample_application%253A_Utter_Asterisk a game with the goal to sing as close to a melody a possible. Technically it shows real-time pitch detection with YIN or MPM.
 * "Spectrogram in Java":http://0110.be/artikels/lees/Spectrogram_in_Java_with_TarsosDSP shows a spectrogram and detected pitch, either live or from an audio file. It is interesting to see which frequencies are picked as fundamentals.
 * "Goertzel DTMF(Dual tone multi frequency) decoding":http://0110.be/artikels/lees/Dual-Tone_Multi-Frequency_%2528DTMF%2529_Decoding_with_the_Goertzel_Algorithm_in_Java an implementation of the Goertzel Algorithm. A fancy user interface shows what goes on under the hood.
-* "Audio Time Stretching - Implementation in Pure Java Using WSOLA":http://0110.be/artikels/lees/Audio_Time_Stretching_-_Implementation_in_Pure_Java_Using_WSOLA an implementation of a time stretching algorithm. WSOLA(Waveform Similarity Overlap Add) makes it possible to change the play back speed of audio without changing the pitch. The play back speed can be changed at any moment, even when there is audio playing.
+* "Audio Time Stretching - Implementation in Pure Java Using WSOLA":http://0110.be/artikels/lees/Audio_Time_Stretching_-_Implementation_in_Pure_Java_Using_WSOLA an implementation of a time stretching algorithm. WSOLA (Waveform Similarity Overlap Add) makes it possible to change the play back speed of audio without changing the pitch. The play back speed can be changed at any moment, even when there is audio playing.
 * "Audio Feature Extraction":http://0110.be/releases/TarsosDSP/TarsosDSP-1.3/TarsosDSP-1.3-Examples/FeatureExtractor-1.3.jar a command line application to do simple feature extraction.
 * "Audio Synthesis":http://0110.be/releases/TarsosDSP/TarsosDSP-1.3/TarsosDSP-1.3-Examples/Synthesis-1.3.jar a command line application to do simple audio synthesis.
 * "Pitch Shifting":http://0110.be/artikels/lees/Pitch_Shifting_-_Implementation_in_Pure_Java_with_Resampling_and_Time_Stretching an example application that does pitch shifting, either in real-time on a microphone input, or on recorded audio. Also included is a command line application to do pitch shifting. 
@@ -117,7 +117,7 @@ The TarsosDSP borrows algorithms from various other libraries or research paper.
 * An implementation of the Constant-Q transform by Karl Helgason for the GPL'd <a href="http://rasmusdsp.sourceforge.ne">RasmusDSP</a> project has been adapted for use in TarsosDSP. More information about the Constant-Q transform can be found in the following papers "__Calculation of a Constant Q Spectral Transform__":http://www.wellesley.edu/Physics/brown/pubs/cq1stPaper.pdf by Judith C. Brown, "__An Efficient Algorithm for the Calculation of a Constant Q Transform__":http://www.wellesley.edu/Physics/brown/pubs/effalgV92P2698-P2701.pdf, by Judith C. Brown and Miller S. Puckette, and "__The Constant Q Transform__":http://wwwmath1.uni-muenster.de/logik/org/staff/blankertz/constQ/constQ.pdf by Benjamin Blankertz
 * The Haar Wavelet Transform implemented in TarsosDSP is based on the pseudocode found in "__Wavelets Made Easy__" by Yves Nievergelt. 
 * The lifting scheme wavelet package is developed by "Ian Kaplan":http://www.bearcave.com/software/java/wavelets/basiclift.html and is based on the concepts explained in __Ripples in Mathematics: The Discrete Wavelet Transform__ by A. Jensen and A. la Cour-Harbo, Springer. It is only slightly modified for easy use in TarsosDSP
-* The frequency domain pitch shifter is developed by "Stephan M. Bernsee":http://www.dspdimension.com/admin/pitch-shifting-using-the-ft/Transformbasiclift.html and is based on the concepts explained in __Pitch Shifting Using The Fourier Transform__. For the moment it is a rather direct translation of the c implementation. It was released under a ' Wide Open License'. As the name of the license suggests, it is a license withouth much restrictions. 
+* The frequency domain pitch shifter is developed by "Stephan M. Bernsee":http://www.dspdimension.com/admin/pitch-shifting-using-the-ft/Transformbasiclift.html and is based on the concepts explained in __Pitch Shifting Using The Fourier Transform__. For the moment it is a rather direct translation of the c implementation. It was released under a 'Wide Open License'. As the name of the license suggests, it is a license withouth much restrictions. 
 * The granulator is developed for "the beads project":http://www.beadsproject.net/. It was released under a GPL-license.
 
 
