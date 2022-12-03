@@ -186,6 +186,8 @@ public class PipeDecoder {
 			//print std error if requested
 			if(printErrorstream) {
 				new ErrorStreamGobbler(process.getErrorStream(),LOG).start();
+			}else{
+				new ErrorStreamConsumer(process.getErrorStream()).start();
 			}
 			
 			new Thread(new Runnable(){
@@ -337,7 +339,28 @@ public class PipeDecoder {
 			}
 		}
 	}
-	
+
+	private class ErrorStreamConsumer extends Thread {
+		private final InputStream is;
+
+		private ErrorStreamConsumer(InputStream is) {
+			this.is = is;
+		}
+
+		@Override
+		public void run() {
+			try {
+				InputStreamReader isr = new InputStreamReader(is);
+				BufferedReader br = new BufferedReader(isr);
+				String line = null;
+				while ((line = br.readLine()) != null) {}
+			}
+			catch (IOException ioe) {
+				ioe.printStackTrace();
+			}
+		}
+	}
+
 	private class ErrorStreamStringGlobber extends Thread {
 		private final InputStream is;
 		private final StringBuilder sb;
