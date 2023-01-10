@@ -185,6 +185,8 @@ public class PipeDecoder {
 				new ErrorStreamGobbler(process.getErrorStream(),LOG).start();
 			}else{
 				//makes sure the error stream is handled
+				//fix by SalomonBrys
+				//see https://github.com/JorenSix/TarsosDSP/pull/212
 				new ErrorStreamIgnorer(process.getErrorStream()).start();
 			}
 			
