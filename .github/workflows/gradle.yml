@@ -8,9 +8,9 @@ name: TarsosDSP Gradle Build
 
 on:
   push:
-    branches: [ "development" ]
+    branches: [ "master" ]
   pull_request:
-    branches: [ "development" ]
+    branches: [ "master" ]
 
 permissions:
   contents: read
