@@ -1,0 +1,108 @@
+import java.text.SimpleDateFormat
+
+plugins {
+    id 'java-library'
+    id 'maven-publish'
+}
+
+sourceCompatibility = 11
+targetCompatibility = 11
+
+ext.moduleName = 'TarsosDSP.core'
+group 'be.tarsos.dsp'
+version '2.5'
+
+java {
+    withJavadocJar()
+    withSourcesJar()
+}
+
+repositories {
+    mavenCentral()
+}
+
+dependencies {
+    testImplementation 'org.junit.jupiter:junit-jupiter-api:5.8.2'
+    testImplementation 'org.junit.jupiter:junit-jupiter-engine:5.7.1'
+    testImplementation(project(":jvm"))
+}
+
+test {
+    useJUnitPlatform()
+}
+
+javadoc {
+    options.addStringOption("encoding", "UTF-8")
+}
+
+tasks.withType(JavaCompile) {
+    options.deprecation = true
+    options.encoding = "UTF-8"
+}
+
+jar{
+    manifest.attributes(
+            "Build-Version": project.version,
+            "Build-By" : System.properties['user.name'],
+            "Build-Date": new SimpleDateFormat("yyyy-MM-dd").format(new Date()),
+            'Build-JDK' : "${System.properties['java.version']} (${System.properties['java.vendor']} ${System.properties['java.vm.version']})",
+            'Build-OS'  : "${System.properties['os.name']} ${System.properties['os.arch']} ${System.properties['os.version']}"
+    )
+}
+
+publishing {
+    publications {
+        mavenJava(MavenPublication) {
+           from components.java
+
+            pom {
+                name = 'TarsosDSP'
+                description = 'A Real-Time Audio Processing Framework in Java'
+                url = 'https://github.com/JorenSix/TarsosDSP'
+                licenses {
+                    license {
+                        name = 'GNU GENERAL PUBLIC LICENSE Version 3'
+                        url = 'https://www.gnu.org/licenses/gpl-3.0.txtt'
+                    }
+                }
+                developers {
+                    developer {
+                        id = 'JorenSix'
+                        name = 'Joren Six'
+                        email = 'joren.six@ugent.be'
+                    }
+                }
+                scm {
+                    connection = 'https://github.com/JorenSix/TarsosDSP.git'
+                    developerConnection = 'git@github.com:JorenSix/TarsosDSP.git'
+                    url = 'https://github.com/JorenSix/TarsosDSP/'
+                }
+            }
+        }
+    }
+
+    repositories {
+        //Github packages repository. Unfortunately authentication is also needed for public
+        //packages, which limits the use of it altogether.
+        //It is, however, a practical backup...
+        //https://github.com/orgs/community/discussions/26634
+        //maven {
+        //    name = "GitHubPackages"
+       //     url = "https://maven.pkg.github.com/JorenSix/TarsosDSP"
+        //    credentials {
+         //       username = System.getenv("GITHUB_ACTOR")
+         //       password = System.getenv("GITHUB_TOKEN")
+         //   }
+       // }
+
+        //public, self hosted repository
+        maven {
+            name = "reposilite"
+            url = "https://mvn.0110.be/releases"
+            credentials {
+                username = System.getenv("REPOSILITE_ACTOR")
+                password = System.getenv("REPOSILITE_TOKEN")
+            }
+        }
+    }
+}

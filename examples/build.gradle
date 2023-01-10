@@ -1,0 +1,24 @@
+plugins {
+    id 'java'
+}
+
+sourceCompatibility = 17
+targetCompatibility = 17
+
+ext.moduleName = 'TarsosDSP.examples'
+
+repositories {
+    mavenCentral()
+}
+
+dependencies {
+    implementation 'org.reflections:reflections:0.10.2'
+
+    implementation(project(":core"))
+    implementation(project(":jvm"))
+}
+
+javadoc {
+    options.addStringOption("encoding", "UTF-8")
+}
+
