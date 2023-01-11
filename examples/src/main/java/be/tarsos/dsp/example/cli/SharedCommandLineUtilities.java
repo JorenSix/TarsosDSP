@@ -21,7 +21,7 @@
 * 
 */
 
-package be.tarsos.dsp.example.unverified;
+package be.tarsos.dsp.example.cli;
 
 public  class SharedCommandLineUtilities {
 	private SharedCommandLineUtilities(){

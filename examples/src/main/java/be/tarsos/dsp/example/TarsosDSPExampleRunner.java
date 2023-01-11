@@ -50,6 +50,7 @@ public class TarsosDSPExampleRunner {
 
         for(TarsosDSPExampleStarter cliExample : cliExamples){
             applicationTrie.insert(cliExample.name());
+            applications.put(cliExample.name(), cliExample);
         }
         String applicationName = args[0];
 
@@ -73,12 +74,17 @@ public class TarsosDSPExampleRunner {
             applications.get(applicationName).start(applicationArguments);
         } else {
             System.err.println("Did not find application " + applicationName);
-            System.err.print("\t");
+            System.err.print("\tArguments: ");
             for (int i = 0; i < args.length; i++) {
                 System.err.print(args[i]);
                 System.err.print(" ");
             }
             System.err.println("");
+            System.err.println("Known applications:");
+            for(TarsosDSPExampleStarter starter : cliExamples){
+                System.err.println("\t" + starter.name());
+                System.err.println("\t\t" + starter.description());
+            }
         }
     }
 

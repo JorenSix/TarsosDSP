@@ -21,12 +21,13 @@
 * 
 */
 
-package be.tarsos.dsp.example.unverified;
+package be.tarsos.dsp.example.cli;
 
 import javax.sound.sampled.UnsupportedAudioFileException;
 
 import be.tarsos.dsp.AudioDispatcher;
 import be.tarsos.dsp.DetermineDurationProcessor;
+import be.tarsos.dsp.example.TarsosDSPExampleStarter;
 import be.tarsos.dsp.io.jvm.AudioDispatcherFactory;
 
 /**
@@ -34,10 +35,30 @@ import be.tarsos.dsp.io.jvm.AudioDispatcherFactory;
  * 
  * @author Joren Six
  */
-public class AudioFormatDecoderExample {
+public class AudioFormatDecoderExample extends TarsosDSPExampleStarter {
+
+
+
+	@Override
+	public String name() {
+		return "audio_decoder";
+	}
+
+	@Override
+	public void start(String... args) {
+		AudioFormatDecoderExample.main(args);
+	}
+
+	public String description(){
+		return "Extract features from audio.";
+	}
+
+	public boolean hasGUI(){
+		return false;
+	}
 	
-	public static void main(String... args) throws UnsupportedAudioFileException{
-		if(args.length!=1){
+	public static void main(String... args) {
+		if(args.length!=1 ){
 			System.err.println("Please provide only one argument: an audio resource to decode. \nThe method also supports streaming over http.");
 		}else{
 			SharedCommandLineUtilities.printPrefix();
