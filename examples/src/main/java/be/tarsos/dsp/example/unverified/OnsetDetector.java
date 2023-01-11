@@ -149,7 +149,7 @@ public class OnsetDetector extends JFrame implements OnsetHandler {
 		for(String clipName : clips){
 		
 			try {
-				final InputStream inputStream = this.getClass().getResourceAsStream("resources/" + clipName);
+				final InputStream inputStream = ClassLoader.getSystemResourceAsStream(clipName);
 				AudioInputStream sound;
 				sound = AudioSystem.getAudioInputStream(inputStream);
 				  // load the sound into memory (a Clip)
@@ -236,7 +236,7 @@ public class OnsetDetector extends JFrame implements OnsetHandler {
 		textArea.append("Percussion at:" + time + "\n");
 		textArea.setCaretPosition(textArea.getDocument().getLength());
 		Clip clip = clipList.get(counter % clipList.size());
-		clip.setFramePosition(0);
+		//clip.setFramePosition(0);
 		clip.start();
 		counter++;
 		if(counter == clipList.size()){

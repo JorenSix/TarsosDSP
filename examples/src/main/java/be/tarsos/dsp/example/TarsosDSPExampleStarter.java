@@ -1,6 +1,6 @@
 package be.tarsos.dsp.example;
 
-public abstract class TarsosDSPExample {
+public abstract class TarsosDSPExampleStarter {
 	
 	public abstract String name();
 

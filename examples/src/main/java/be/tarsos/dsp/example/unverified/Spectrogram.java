@@ -51,7 +51,7 @@ import javax.swing.border.TitledBorder;
 import be.tarsos.dsp.AudioDispatcher;
 import be.tarsos.dsp.AudioEvent;
 import be.tarsos.dsp.AudioProcessor;
-import be.tarsos.dsp.example.TarsosDSPExample;
+import be.tarsos.dsp.example.TarsosDSPExampleStarter;
 import be.tarsos.dsp.io.jvm.AudioDispatcherFactory;
 import be.tarsos.dsp.io.jvm.AudioPlayer;
 import be.tarsos.dsp.io.jvm.JVMAudioInputStream;
@@ -234,7 +234,7 @@ public class Spectrogram extends JFrame implements PitchDetectionHandler {
 	}
 
 
-	public static class SpectrogramStarter extends TarsosDSPExample {
+	public static class SpectrogramStarter extends TarsosDSPExampleStarter {
 		@Override
 		public String name() {
 			return "Spectrogram";
@@ -246,9 +246,8 @@ public class Spectrogram extends JFrame implements PitchDetectionHandler {
 		}
 
 		@Override
-		public void start() {
+		public void start(String... args) {
 			try {
-				String[] args = {};
 				main(args);
 			} catch (InterruptedException e) {
 				e.printStackTrace();
