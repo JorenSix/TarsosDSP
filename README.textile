@@ -26,7 +26,7 @@ dependencies {
 }
 </code></pre>
 
-Add this to your *build.gradle* file:
+Add this to your *pom.xml* file:
 
 <pre><code><repository>
   <id>be.0110.repo-releases</id>
@@ -56,7 +56,7 @@ bc. @inproceedings{six2014tarsosdsp,
   year        =  2014
 }
 
-h3. TarsosDSP and Gradle
+h3. Building TarsosDSP with Gradle
 
 To build TarsosDSP from source the @gradlew@ script should get you started. The following commands fetch the source and builds the library: 
 <pre><code>git clone --depth 1 https://JorenSix@github.com/JorenSix/TarsosDSP.git
@@ -67,6 +67,18 @@ cd TarsosDSP
 h2. Source Code Organization & Developing
 
 The library is separated into three module folders: 1) the main core functionality is found in @core/src/main/java@, TarsosDSP example applications are found in @examples/src/main/java@, JVM audio I/O in @jvm/examples/src/main@.
+
+h2. TarsosDSP Examples
+
+To see TarsosDSP in action thre are a number of examples. These examples have either a graphical user interface or a command line interface. To see a window in which you can start all GUI examples the jar file needs to be started without arguments:
+
+<pre><code>gradle shadowJar
+java -jar examples/build/libs/examples-all.jar
+</code></pre>
+
+To use the command line examples, execute the jar with the example name as first argument. For example @java -jar examples/build/libs/examples-all.jar feature_extractor pitch audio.mp3@ starts the @feature_extractor@ application to extract pitch from an audio file.
+
+To get a list of all command line examples: @java -jar examples/build/libs/examples-all.jar list@
 
 
 h2. Credits

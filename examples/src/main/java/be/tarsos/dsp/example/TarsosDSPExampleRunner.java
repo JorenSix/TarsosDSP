@@ -6,8 +6,13 @@ import be.tarsos.dsp.example.util.Trie;
 import org.reflections.Reflections;
 
 import javax.swing.*;
+import javax.swing.border.EmptyBorder;
+import java.awt.*;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.lang.reflect.InvocationTargetException;
 import java.util.*;
+import java.util.List;
 
 
 /**
@@ -15,16 +20,37 @@ import java.util.*;
  */
 public class TarsosDSPExampleRunner {
 
-
-
     public static class TarsosDSPExampleChooser extends JFrame {
 
-        public TarsosDSPExampleChooser(){
+        public TarsosDSPExampleChooser(List<TarsosDSPExampleStarter> guiStarters){
+            this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+            this.setLocationRelativeTo(null);
+            this.setTitle("TarsosDSP GUI examples");
 
+            JPanel p = new JPanel();
+            p.setBorder(new EmptyBorder(10, 10, 10, 10));
+
+            p.setLayout(new GridLayout(0, 3,10,10));
+            p.add(new JLabel("Name"));
+            p.add(new JLabel("Description"));
+            p.add(new JLabel("Start"));
+
+            for(final TarsosDSPExampleStarter starter : guiStarters){
+                p.add(new JLabel( starter.name()));
+                JTextArea description = new JTextArea( starter.description());
+                description.setLineWrap(true);
+                description.setWrapStyleWord(true);
+                p.add(description);
+                JButton button = new JButton( starter.name());
+                button.addActionListener(e -> starter.start());
+                p.add(button);
+            }
+
+            this.add( new JScrollPane(p));
         }
     }
 
-    private static void startChooserGUI(){
+    private static void startChooserGUI(List<TarsosDSPExampleStarter> guiStarters){
         try {
             SwingUtilities.invokeAndWait(() -> {
                 try {
@@ -32,7 +58,7 @@ public class TarsosDSPExampleRunner {
                 } catch (Exception e) {
                     //ignore failure to set default look en feel;
                 }
-                JFrame frame = new TarsosDSPExampleChooser();
+                JFrame frame = new TarsosDSPExampleChooser(guiStarters);
                 frame.pack();
                 frame.setSize(640, 480);
                 frame.setVisible(true);
@@ -91,12 +117,11 @@ public class TarsosDSPExampleRunner {
 
     public static void main(String... args){
 
+
         boolean startGUI = args.length == 0;
 
         final List<TarsosDSPExampleStarter> guiExamples = new ArrayList<>();
         final List<TarsosDSPExampleStarter> cliExamples = new ArrayList<>();
-
-        Spectrogram.SpectrogramStarter s = new Spectrogram.SpectrogramStarter();
 
         //find all example starters, instantiate and add to list
         Reflections reflections = new Reflections("be.tarsos.dsp");
@@ -104,12 +129,13 @@ public class TarsosDSPExampleRunner {
         for(Class<? extends TarsosDSPExampleStarter> module : modules) {
             TarsosDSPExampleStarter starter = null;
             try {
+
                 starter = module.getDeclaredConstructor().newInstance();
             } catch (Exception e) {
                 //should not happen, instantiation should not be a problem
                 e.printStackTrace();
             }
-            if(starter.hasGUI()){
+            if(starter != null && starter.hasGUI()){
                 guiExamples.add(starter);
             }else {
                 cliExamples.add(starter);
@@ -117,7 +143,7 @@ public class TarsosDSPExampleRunner {
         }
 
         if(startGUI){
-            startChooserGUI();
+            startChooserGUI(guiExamples);
         }else{
             startCLIExample(cliExamples,args);
         }

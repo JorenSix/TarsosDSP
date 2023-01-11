@@ -228,7 +228,7 @@ public class OnsetDetector extends JFrame implements OnsetHandler {
 			frame.setVisible(true);
 		});
 	}
-
+	/*
 	public static class OnsetDetectorStarter extends TarsosDSPExampleStarter {
 
 		@Override
@@ -255,7 +255,7 @@ public class OnsetDetector extends JFrame implements OnsetHandler {
 		public boolean hasGUI(){
 			return true;
 		}
-	}
+	}*/
 
 	@Override
 	public void handleOnset(double time, double salience) {

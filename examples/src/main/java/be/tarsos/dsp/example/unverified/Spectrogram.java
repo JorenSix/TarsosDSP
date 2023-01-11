@@ -233,7 +233,7 @@ public class Spectrogram extends JFrame implements PitchDetectionHandler {
 		});
 	}
 
-
+/*
 	public static class SpectrogramStarter extends TarsosDSPExampleStarter {
 		@Override
 		public String name() {
@@ -255,5 +255,5 @@ public class Spectrogram extends JFrame implements PitchDetectionHandler {
 				e.printStackTrace();
 			}
 		}
-	}
+	}*/
 }

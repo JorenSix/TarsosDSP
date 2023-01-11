@@ -22,7 +22,7 @@
 */
 
 
-package be.tarsos.dsp.example.unverified;
+package be.tarsos.dsp.example.gui;
 
 import java.awt.BorderLayout;
 import java.awt.Font;
@@ -48,6 +48,7 @@ import javax.swing.border.TitledBorder;
 
 import be.tarsos.dsp.AudioDispatcher;
 import be.tarsos.dsp.AudioProcessor;
+import be.tarsos.dsp.example.TarsosDSPExampleStarter;
 import be.tarsos.dsp.io.TarsosDSPAudioFloatConverter;
 import be.tarsos.dsp.io.TarsosDSPAudioInputStream;
 import be.tarsos.dsp.io.jvm.AudioPlayer;
@@ -61,6 +62,8 @@ import be.tarsos.dsp.pitch.Goertzel.FrequenciesDetectedHandler;
  * @author Joren Six
  */
 public class GoertzelDTMF extends JFrame implements ActionListener{
+
+
 	/**
 	 * 
 	 */
@@ -114,7 +117,8 @@ public class GoertzelDTMF extends JFrame implements ActionListener{
 	
 	public GoertzelDTMF(){
 		this.getContentPane().setLayout(new BorderLayout(5,3));
-		this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+		this.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
+		this.setLocationRelativeTo(null);
 		this.setTitle("Goertzel");
 		
 		JPanel detectionPanel = new JPanel(new GridLayout(DTMF.DTMF_FREQUENCIES.length,2,5,3));
@@ -156,20 +160,18 @@ public class GoertzelDTMF extends JFrame implements ActionListener{
 	}
 
 	public static void main(String...strings){
-		SwingUtilities.invokeLater(new Runnable() {
-			@Override
-			public void run() {
-				try {
-					UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
-				} catch (Exception e) {
-					//ignore failure to set default look & feel;
-				}
-				JFrame frame = new GoertzelDTMF();
-				frame.pack();
-				frame.setSize(200,420);
-				frame.setVisible(true);
+		Runnable r = () -> {
+			try {
+				UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
+			} catch (Exception e) {
+				//ignore failure to set default look & feel;
 			}
-		});
+			JFrame frame = new GoertzelDTMF();
+			frame.pack();
+			frame.setSize(200,420);
+			frame.setVisible(true);
+		};
+		new Thread(r).start();
 	}
 
 	@Override
@@ -208,5 +210,23 @@ public class GoertzelDTMF extends JFrame implements ActionListener{
 		dispatcher.addAudioProcessor(new AudioPlayer(format));
 		new Thread(dispatcher).start();
 		
+	}
+
+	public static class GoertzelDTMFStarter extends TarsosDSPExampleStarter{
+
+		@Override
+		public String name() {
+			return "Goertzel DTMF";
+		}
+
+		@Override
+		public String description(){
+			return "Generate DTMF tones and detect the tones with the Goertzel algorithm.";
+		}
+
+		@Override
+		public void start(String... args) {
+			GoertzelDTMF.main(args);
+		}
 	}
 }

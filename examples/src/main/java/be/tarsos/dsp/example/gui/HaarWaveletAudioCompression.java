@@ -21,18 +21,13 @@
 * 
 */
 
-package be.tarsos.dsp.example.unverified;
+package be.tarsos.dsp.example.gui;
 
 import java.awt.BorderLayout;
 import java.lang.reflect.InvocationTargetException;
 
 import javax.sound.sampled.AudioFormat;
-import javax.swing.JComponent;
-import javax.swing.JFrame;
-import javax.swing.JLabel;
-import javax.swing.JPanel;
-import javax.swing.JSlider;
-import javax.swing.SwingUtilities;
+import javax.swing.*;
 import javax.swing.border.TitledBorder;
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
@@ -40,6 +35,7 @@ import javax.swing.event.ChangeListener;
 import be.tarsos.dsp.AudioDispatcher;
 import be.tarsos.dsp.BitDepthProcessor;
 import be.tarsos.dsp.GainProcessor;
+import be.tarsos.dsp.example.TarsosDSPExampleStarter;
 import be.tarsos.dsp.io.jvm.AudioDispatcherFactory;
 import be.tarsos.dsp.io.jvm.AudioPlayer;
 import be.tarsos.dsp.io.jvm.JVMAudioInputStream;
@@ -56,13 +52,14 @@ public class HaarWaveletAudioCompression extends JFrame{
 	private HaarWaveletCoder coder;
 	private GainProcessor gain;
 	private BitDepthProcessor bithDeptProcessor;
+
 	
 	public HaarWaveletAudioCompression(final String source){
 		this.setLayout(new BorderLayout());
-		this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+		this.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
+		this.setLocationRelativeTo(null);
 		this.setTitle("HaarWavelet Wavelet Audio Compression Example");
-	
-		
+
 		Runnable r = new Runnable() {
 			@Override
 			public void run() {
@@ -89,7 +86,6 @@ public class HaarWaveletAudioCompression extends JFrame{
 		};
 		new Thread(r, "Start processor").start();
 
-		
 		this.add(this.createGainPanel(),BorderLayout.NORTH);
 		this.add(this.createCompressionPanel(),BorderLayout.CENTER);
 		this.add(this.createBitDepthCompressionPanel(16),BorderLayout.SOUTH);
@@ -176,17 +172,48 @@ public class HaarWaveletAudioCompression extends JFrame{
 		if(args.length == 1){
 			source = args[0];
 		}else{
-			source =  "http://mp3.streampower.be/stubru-high.mp3";
+			source =  "https://22653.live.streamtheworld.com/RADIO1_128.mp3";
 		}
-		
-		SwingUtilities.invokeAndWait(new Runnable() {
+
+		Runnable r = new Runnable() {
 			@Override
 			public void run() {
+				try {
+					UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
+				} catch (Exception e) {
+					//ignore failure to set default look & feel;
+				}
 				JFrame frame = new HaarWaveletAudioCompression(source);
 				frame.pack();
 				frame.setSize(450,250);
 				frame.setVisible(true);
 			}
-		});
+		};
+		new Thread(r).start();
+	}
+
+
+	public static class HaarWaveletAudioCompressionStarter extends TarsosDSPExampleStarter {
+
+		@Override
+		public String name() {
+			return "Audio Compression";
+		}
+
+		@Override
+		public String description(){
+			return "Use a Haar wavelet or bit depth audio compressor on audio streamed over http";
+		}
+
+		@Override
+		public void start(String... args) {
+			try {
+				HaarWaveletAudioCompression.main(args);
+			} catch (InvocationTargetException e) {
+				throw new RuntimeException(e);
+			} catch (InterruptedException e) {
+				throw new RuntimeException(e);
+			}
+		}
 	}
 }

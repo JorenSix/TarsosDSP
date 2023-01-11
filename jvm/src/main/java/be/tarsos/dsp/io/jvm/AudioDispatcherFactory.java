@@ -181,7 +181,7 @@ public class AudioDispatcherFactory {
 	 * @return A new audioprocessor.
 	 */
 	public static AudioDispatcher fromPipe(final String source,final int targetSampleRate, final int audioBufferSize,final int bufferOverlap,final double startTimeOffset){
-		if(new File(source).exists()&&new File(source).isFile() && new File(source).canRead()){
+		if(source.startsWith("http") || (new File(source).exists() && new File(source).isFile() && new File(source).canRead())){
 			PipedAudioStream f = new PipedAudioStream(source);
 			TarsosDSPAudioInputStream audioStream = f.getMonoStream(targetSampleRate,startTimeOffset);
 			return new AudioDispatcher(audioStream, audioBufferSize, bufferOverlap);

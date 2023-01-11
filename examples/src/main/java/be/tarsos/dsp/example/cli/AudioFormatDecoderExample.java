@@ -37,8 +37,6 @@ import be.tarsos.dsp.io.jvm.AudioDispatcherFactory;
  */
 public class AudioFormatDecoderExample extends TarsosDSPExampleStarter {
 
-
-
 	@Override
 	public String name() {
 		return "audio_decoder";
