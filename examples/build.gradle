@@ -1,3 +1,5 @@
+import java.text.SimpleDateFormat
+
 plugins {
     id 'java'
 }
@@ -9,6 +11,19 @@ ext.moduleName = 'TarsosDSP.examples'
 
 repositories {
     mavenCentral()
+}
+
+jar {
+    manifest {
+        attributes(
+                "Main-Class": "be.tarsos.dsp.example.TarsosDSPExampleRunner",
+                "Build-Version": project.version,
+                "Build-By" : System.properties['user.name'],
+                "Build-Date":  new SimpleDateFormat("yyyy-MM-dd").format(new Date()),
+                'Build-JDK' : "${System.properties['java.version']} (${System.properties['java.vendor']} ${System.properties['java.vm.version']})",
+                'Build-OS'  : "${System.properties['os.name']} ${System.properties['os.arch']} ${System.properties['os.version']}"
+        )
+    }
 }
 
 dependencies {

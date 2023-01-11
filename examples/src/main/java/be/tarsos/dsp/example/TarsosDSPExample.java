@@ -8,5 +8,9 @@ public abstract class TarsosDSPExample {
 		return name();
 	}
 
-	public abstract void start();
+	public abstract void start(String... args);
+
+	public boolean hasGUI(){
+		return true;
+	}
 }

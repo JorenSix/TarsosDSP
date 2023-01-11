@@ -86,14 +86,14 @@ publishing {
         //packages, which limits the use of it altogether.
         //It is, however, a practical backup...
         //https://github.com/orgs/community/discussions/26634
-        //maven {
-        //    name = "GitHubPackages"
-       //     url = "https://maven.pkg.github.com/JorenSix/TarsosDSP"
-        //    credentials {
-         //       username = System.getenv("GITHUB_ACTOR")
-         //       password = System.getenv("GITHUB_TOKEN")
-         //   }
-       // }
+        maven {
+            name = "GitHubPackages"
+            url = "https://maven.pkg.github.com/JorenSix/TarsosDSP"
+           credentials {
+                username = System.getenv("GITHUB_ACTOR")
+                password = System.getenv("GITHUB_TOKEN")
+            }
+        }
 
         //public, self hosted repository
         maven {
