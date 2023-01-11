@@ -56,6 +56,7 @@ import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
 
 import be.tarsos.dsp.AudioDispatcher;
+import be.tarsos.dsp.example.TarsosDSPExampleStarter;
 import be.tarsos.dsp.io.jvm.JVMAudioInputStream;
 import be.tarsos.dsp.onsets.ComplexOnsetDetector;
 import be.tarsos.dsp.onsets.OnsetHandler;
@@ -215,20 +216,45 @@ public class OnsetDetector extends JFrame implements OnsetHandler {
 
 	public static void main(String... strings) throws InterruptedException,
 			InvocationTargetException {
-		SwingUtilities.invokeAndWait(new Runnable() {
-			@Override
-			public void run() {
-				try {
-					UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
-				} catch (Exception e) {
-					//ignore failure to set default look en feel;
-				}
-				JFrame frame = new OnsetDetector();
-				frame.pack();
-				frame.setSize(640, 480);
-				frame.setVisible(true);
+		SwingUtilities.invokeAndWait(() -> {
+			try {
+				UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
+			} catch (Exception e) {
+				//ignore failure to set default look en feel;
 			}
+			JFrame frame = new OnsetDetector();
+			frame.pack();
+			frame.setSize(640, 480);
+			frame.setVisible(true);
 		});
+	}
+
+	public static class OnsetDetectorStarter extends TarsosDSPExampleStarter {
+
+		@Override
+		public String name() {
+			return "onset detector";
+		}
+
+		@Override
+		public void start(String... args) {
+			try {
+				OnsetDetector.main(args);
+			} catch (InterruptedException e) {
+				e.printStackTrace();
+			} catch (InvocationTargetException e) {
+				e.printStackTrace();
+			}
+		}
+
+		public String description(){
+			return "Plays a sound when an onset is detected for a microphone.";
+		}
+
+		@Override
+		public boolean hasGUI(){
+			return true;
+		}
 	}
 
 	@Override
