@@ -22,7 +22,7 @@
 */
 
 
-package be.tarsos.dsp.example.unverified;
+package be.tarsos.dsp.example.gui;
 
 import java.awt.BorderLayout;
 import java.awt.GridLayout;
@@ -50,6 +50,8 @@ import javax.swing.event.ChangeListener;
 import be.tarsos.dsp.AudioDispatcher;
 import be.tarsos.dsp.GainProcessor;
 import be.tarsos.dsp.effects.DelayEffect;
+import be.tarsos.dsp.example.TarsosDSPExampleStarter;
+import be.tarsos.dsp.example.unverified.InputPanel;
 import be.tarsos.dsp.io.TarsosDSPAudioInputStream;
 import be.tarsos.dsp.io.jvm.AudioPlayer;
 import be.tarsos.dsp.io.jvm.JVMAudioInputStream;
@@ -86,11 +88,18 @@ public class Delay extends JFrame {
 	
 	public Delay() {
 		this.setLayout(new BorderLayout());
-		this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+		this.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
+		this.setLocationRelativeTo(null);
 		this.setTitle("Delay Effect Example");
 		JPanel inputPanel = new InputPanel();
 		inputPanel.addPropertyChangeListener("mixer",mixerChangedListener);
-		
+
+		this.addWindowListener(new java.awt.event.WindowAdapter() {
+			@Override
+			public void windowClosed(java.awt.event.WindowEvent windowEvent) {
+				dispatcher.stop();
+			}
+		});
 		
 		final JSlider echoLengthSlider = new JSlider(1, 4000);
 		echoLengthSlider.setValue(defaultDelay);
@@ -100,6 +109,7 @@ public class Delay extends JFrame {
 			public void stateChanged(ChangeEvent arg0) {
 				if (delayEffect != null) {
 					double echoLength = echoLengthSlider.getValue() / 1000.0;
+					echoLengthSlider.setToolTipText("Echo length: " + echoLength + "ms");
 					delayEffect.setEchoLength(echoLength);
 				}
 				
@@ -115,6 +125,7 @@ public class Delay extends JFrame {
 			public void stateChanged(ChangeEvent arg0) {
 				if (delayEffect != null) {
 					double decay = decaySlider.getValue() / 100.0;
+					echoLengthSlider.setToolTipText("Decay: " + decaySlider.getValue()  + "%");
 					delayEffect.setDecay(decay);
 				}
 			}
@@ -131,7 +142,7 @@ public class Delay extends JFrame {
 		params.add(decaySlider);
 		
 		label = new JLabel("Echo length (in ms)");
-		label.setToolTipText("The echo lengt in ms.");
+		label.setToolTipText("The echo length in ms.");
 		params.add(label);
 		params.add(echoLengthSlider);	
 		
@@ -143,6 +154,7 @@ public class Delay extends JFrame {
 			public void stateChanged(ChangeEvent arg0) {
 				if (inputGain != null) {
 					double gainValue = gainSlider.getValue() / 100.0;
+					echoLengthSlider.setToolTipText("Gain: " + gainSlider.getValue()  + "%");
 					inputGain.setGain(gainValue);
 				}
 			}
@@ -202,7 +214,7 @@ public class Delay extends JFrame {
 
 	public static void main(String... strings) throws InterruptedException,
 			InvocationTargetException {
-		SwingUtilities.invokeAndWait(new Runnable() {
+		Runnable r = new Runnable() {
 			@Override
 			public void run() {
 				try {
@@ -213,7 +225,35 @@ public class Delay extends JFrame {
 				JFrame frame = new Delay();
 				frame.pack();
 				frame.setVisible(true);
+				frame.setDefaultCloseOperation(EXIT_ON_CLOSE);
 			}
-		});
+		};
+
+		new Thread(r).start();
+
+	}
+
+	public static class DelayStarter extends TarsosDSPExampleStarter {
+
+		@Override
+		public String name() {
+			return "Echo effect";
+		}
+
+		@Override
+		public String description(){
+			return "Applies an echo or delay effect to incoming audio.";
+		}
+
+		@Override
+		public void start(String... args) {
+			try {
+				Delay.main(args);
+			} catch (InterruptedException e) {
+				throw new RuntimeException(e);
+			} catch (InvocationTargetException e) {
+				throw new RuntimeException(e);
+			}
+		}
 	}
 }

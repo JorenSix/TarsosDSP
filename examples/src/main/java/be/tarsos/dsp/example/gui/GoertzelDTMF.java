@@ -170,6 +170,7 @@ public class GoertzelDTMF extends JFrame implements ActionListener{
 			frame.pack();
 			frame.setSize(200,420);
 			frame.setVisible(true);
+			frame.setDefaultCloseOperation(EXIT_ON_CLOSE);
 		};
 		new Thread(r).start();
 	}

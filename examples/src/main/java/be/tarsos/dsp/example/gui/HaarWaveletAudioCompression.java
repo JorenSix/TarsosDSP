@@ -53,6 +53,8 @@ public class HaarWaveletAudioCompression extends JFrame{
 	private GainProcessor gain;
 	private BitDepthProcessor bithDeptProcessor;
 
+	private AudioDispatcher adp;
+
 	
 	public HaarWaveletAudioCompression(final String source){
 		this.setLayout(new BorderLayout());
@@ -60,11 +62,18 @@ public class HaarWaveletAudioCompression extends JFrame{
 		this.setLocationRelativeTo(null);
 		this.setTitle("HaarWavelet Wavelet Audio Compression Example");
 
+		this.addWindowListener(new java.awt.event.WindowAdapter() {
+			@Override
+			public void windowClosed(java.awt.event.WindowEvent windowEvent) {
+				adp.stop();
+			}
+		});
+
 		Runnable r = new Runnable() {
 			@Override
 			public void run() {
 				try {
-					AudioDispatcher adp = AudioDispatcherFactory.fromPipe(source, 44100, 32,0);
+					adp = AudioDispatcherFactory.fromPipe(source, 44100, 32,0);
 					AudioFormat format = JVMAudioInputStream.toAudioFormat(adp.getFormat());
 					coder = new HaarWaveletCoder();
 					HaarWaveletDecoder decoder = new HaarWaveletDecoder();
@@ -187,6 +196,7 @@ public class HaarWaveletAudioCompression extends JFrame{
 				frame.pack();
 				frame.setSize(450,250);
 				frame.setVisible(true);
+				frame.setDefaultCloseOperation(EXIT_ON_CLOSE);
 			}
 		};
 		new Thread(r).start();
