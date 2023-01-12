@@ -109,7 +109,7 @@ public class FlangerEffect implements AudioProcessor {
 	 */
 	public FlangerEffect(double maxFlangerLength, double wet,
 			double sampleRate, double lfoFrequency) {
-		flangerBuffer = new float[(int) (sampleRate * maxFlangerLength)];
+		this.flangerBuffer = new float[(int) (sampleRate * maxFlangerLength)];
 		this.sampleRate = sampleRate;
 		this.lfoFrequency = lfoFrequency;
 		this.wet = (float) wet;
@@ -124,8 +124,8 @@ public class FlangerEffect implements AudioProcessor {
 		// Divide f by two, to counter rectifier below, which effectively
 		// doubles the frequency
 		double twoPIf = 2 * Math.PI * lfoFrequency / 2.0;
-		double time = audioEvent.getTimeStamp();
-		double timeStep = 1.0 / sampleRate;
+		double time = audioEvent.getTimeStamp(); //in seconds
+		double timeStep = 1.0 / sampleRate; // also in seconds
 
 		for (int i = overlap; i < audioFloatBuffer.length; i++) {
 
@@ -135,7 +135,7 @@ public class FlangerEffect implements AudioProcessor {
 			// add a time step, each iteration
 			time += timeStep;
 
-			// Make the delay a positive integer
+			// Make the delay a positive integer, sine rectifier
 			int delay = (int) (Math.round(Math.abs(lfoValue)));
 			
 			// store the current sample in the delay buffer;
@@ -150,7 +150,7 @@ public class FlangerEffect implements AudioProcessor {
 				readPosition += flangerBuffer.length;
 			}
 
-			//increment the write position
+			//increment the write-position
 			writePosition++;
 
 			// Output is the input summed with the value at the delayed flanger
@@ -195,18 +195,5 @@ public class FlangerEffect implements AudioProcessor {
 	public void setWet(double wet) {
 		this.wet = (float) wet;
 		this.dry = (float) (1 - wet);
-	}
-
-	/**
-	 * Sets the wetness and wetness of the effect. Should be a value between
-	 * zero and one (inclusive), the wetness is determined by 1-dry.
-	 * 
-	 * @param dry
-	 *            A value between zero and one (inclusive) that determines the
-	 *            wet and dryness of the resulting mix.
-	 */
-	public void setDry(double dry) {
-		this.dry = (float) dry;
-		this.wet = (float) (1 - dry);
 	}
 }

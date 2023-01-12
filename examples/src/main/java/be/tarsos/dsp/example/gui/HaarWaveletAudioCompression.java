@@ -65,7 +65,7 @@ public class HaarWaveletAudioCompression extends JFrame{
 		this.addWindowListener(new java.awt.event.WindowAdapter() {
 			@Override
 			public void windowClosed(java.awt.event.WindowEvent windowEvent) {
-				adp.stop();
+				if(adp!=null) adp.stop();
 			}
 		});
 

@@ -48,9 +48,6 @@ public class SpectralParabolicInterpolationExample {
 	
 	public static void main(String[] args) throws UnsupportedAudioFileException, IOException{		
 		String fileName ="/home/joren/Desktop/desktop/440Hz-44.1kHz.wav";
-		fileName = "/home/joren/Desktop/desktop/452Hz-44.1kHz.wav";
-		fileName = "/home/joren/Desktop/desktop/430Hz-473Hz-44.1kHz.wav";
-		fileName = "/home/joren/Desktop/desktop/440Hz-550Hz-44.1kHz.wav";
 		fileName = "/home/joren/Desktop/desktop/440Hz-550Hz+5percent-44.1kHz.wav";
 		AudioDispatcher d = AudioDispatcherFactory.fromFile(new File(fileName), 1024, 512);
 		final SpectralPeakProcessor spp = new SpectralPeakProcessor(1024, 512, 44100);

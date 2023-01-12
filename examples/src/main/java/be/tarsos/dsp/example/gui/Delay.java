@@ -41,7 +41,6 @@ import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JSlider;
-import javax.swing.SwingUtilities;
 import javax.swing.UIManager;
 import javax.swing.border.TitledBorder;
 import javax.swing.event.ChangeEvent;
@@ -51,7 +50,6 @@ import be.tarsos.dsp.AudioDispatcher;
 import be.tarsos.dsp.GainProcessor;
 import be.tarsos.dsp.effects.DelayEffect;
 import be.tarsos.dsp.example.TarsosDSPExampleStarter;
-import be.tarsos.dsp.example.unverified.InputPanel;
 import be.tarsos.dsp.io.TarsosDSPAudioInputStream;
 import be.tarsos.dsp.io.jvm.AudioPlayer;
 import be.tarsos.dsp.io.jvm.JVMAudioInputStream;
@@ -91,7 +89,7 @@ public class Delay extends JFrame {
 		this.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
 		this.setLocationRelativeTo(null);
 		this.setTitle("Delay Effect Example");
-		JPanel inputPanel = new InputPanel();
+		JPanel inputPanel = new MicrophoneInputPanel();
 		inputPanel.addPropertyChangeListener("mixer",mixerChangedListener);
 
 		this.addWindowListener(new java.awt.event.WindowAdapter() {
@@ -225,7 +223,6 @@ public class Delay extends JFrame {
 				JFrame frame = new Delay();
 				frame.pack();
 				frame.setVisible(true);
-				frame.setDefaultCloseOperation(EXIT_ON_CLOSE);
 			}
 		};
 

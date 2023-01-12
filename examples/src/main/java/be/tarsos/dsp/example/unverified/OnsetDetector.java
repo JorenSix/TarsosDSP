@@ -56,7 +56,7 @@ import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
 
 import be.tarsos.dsp.AudioDispatcher;
-import be.tarsos.dsp.example.TarsosDSPExampleStarter;
+import be.tarsos.dsp.example.gui.MicrophoneInputPanel;
 import be.tarsos.dsp.io.jvm.JVMAudioInputStream;
 import be.tarsos.dsp.onsets.ComplexOnsetDetector;
 import be.tarsos.dsp.onsets.OnsetHandler;
@@ -79,7 +79,7 @@ public class OnsetDetector extends JFrame implements OnsetHandler {
 		this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		this.setTitle("Percussion Detector");
 			
-		JPanel inputPanel = new InputPanel();
+		JPanel inputPanel = new MicrophoneInputPanel();
 		inputPanel.addPropertyChangeListener("mixer",
 				new PropertyChangeListener() {
 					@Override

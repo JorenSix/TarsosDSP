@@ -1,5 +1,6 @@
 package be.tarsos.dsp.example;
 
+import be.tarsos.dsp.example.cli.SharedCommandLineUtilities;
 import be.tarsos.dsp.example.unverified.OnsetDetector;
 import be.tarsos.dsp.example.unverified.Spectrogram;
 import be.tarsos.dsp.example.util.Trie;
@@ -80,6 +81,22 @@ public class TarsosDSPExampleRunner {
         }
         String applicationName = args[0];
 
+        if(applicationName.equalsIgnoreCase("list")){
+            SharedCommandLineUtilities.printPrefix();
+            System.out.println("Use one TarsosDSP command line examples:");
+            SharedCommandLineUtilities.printLine();
+            for(TarsosDSPExampleStarter starter : cliExamples){
+                System.out.println("\t" + starter.name());
+                System.out.println("\t\t" + starter.description());
+            }
+            SharedCommandLineUtilities.printLine();
+            System.out.println();
+            System.out.println("For example start an example with:");
+            System.out.println("java -jar tarsosdsp-examples.jar " + cliExamples.get(0).name());
+            System.out.println();
+            return;
+        }
+
         //autocomplete application name
         if (!applications.containsKey(applicationName)) {
             Collection<String> completions = applicationTrie.autoComplete(applicationName);
@@ -94,6 +111,8 @@ public class TarsosDSPExampleRunner {
         for (int i = 1; i < args.length; i++) {
             applicationArguments[i - 1] = args[i];
         }
+
+
 
         //start the CLI application
         if (applications.containsKey(applicationName)) {

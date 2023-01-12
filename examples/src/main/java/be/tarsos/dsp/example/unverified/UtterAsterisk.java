@@ -47,6 +47,7 @@ import javax.swing.border.TitledBorder;
 
 import be.tarsos.dsp.AudioDispatcher;
 import be.tarsos.dsp.AudioEvent;
+import be.tarsos.dsp.example.gui.MicrophoneInputPanel;
 import be.tarsos.dsp.io.jvm.JVMAudioInputStream;
 import be.tarsos.dsp.pitch.PitchDetectionHandler;
 import be.tarsos.dsp.pitch.PitchDetectionResult;
@@ -86,7 +87,7 @@ public class UtterAsterisk extends JFrame implements PitchDetectionHandler {
 		
 		JPanel pitchDetectionPanel = new PitchDetectionPanel(algoChangeListener);
 		
-		JPanel inputPanel = new InputPanel();
+		JPanel inputPanel = new MicrophoneInputPanel();
 	
 		inputPanel.addPropertyChangeListener("mixer",
 				new PropertyChangeListener() {

@@ -51,7 +51,7 @@ import javax.swing.border.TitledBorder;
 import be.tarsos.dsp.AudioDispatcher;
 import be.tarsos.dsp.AudioEvent;
 import be.tarsos.dsp.AudioProcessor;
-import be.tarsos.dsp.example.TarsosDSPExampleStarter;
+import be.tarsos.dsp.example.gui.MicrophoneInputPanel;
 import be.tarsos.dsp.io.jvm.AudioDispatcherFactory;
 import be.tarsos.dsp.io.jvm.AudioPlayer;
 import be.tarsos.dsp.io.jvm.JVMAudioInputStream;
@@ -97,7 +97,7 @@ public class Spectrogram extends JFrame implements PitchDetectionHandler {
 		
 	public Spectrogram(String fileName){
 		this.setLayout(new BorderLayout());
-		this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+		this.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
 		this.setTitle("Spectrogram");
 		panel = new SpectrogramPanel();
 		algo = PitchEstimationAlgorithm.DYNAMIC_WAVELET;
@@ -105,7 +105,7 @@ public class Spectrogram extends JFrame implements PitchDetectionHandler {
 		
 		JPanel pitchDetectionPanel = new PitchDetectionPanel(algoChangeListener);
 		
-		JPanel inputPanel = new InputPanel();
+		JPanel inputPanel = new MicrophoneInputPanel();
 	
 		inputPanel.addPropertyChangeListener("mixer",
 				new PropertyChangeListener() {
