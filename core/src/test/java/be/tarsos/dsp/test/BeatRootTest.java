@@ -36,7 +36,6 @@ import be.tarsos.dsp.beatroot.Event;
 import be.tarsos.dsp.beatroot.EventList;
 import be.tarsos.dsp.beatroot.Induction;
 import be.tarsos.dsp.io.jvm.AudioDispatcherFactory;
-import be.tarsos.dsp.onsets.BeatRootSpectralFluxOnsetDetector;
 import be.tarsos.dsp.onsets.ComplexOnsetDetector;
 import be.tarsos.dsp.onsets.OnsetHandler;
 import org.junit.jupiter.api.Test;
