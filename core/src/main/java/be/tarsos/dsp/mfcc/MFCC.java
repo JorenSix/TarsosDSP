@@ -27,6 +27,7 @@ import be.tarsos.dsp.AudioEvent;
 import be.tarsos.dsp.AudioProcessor;
 import be.tarsos.dsp.util.fft.FFT;
 import be.tarsos.dsp.util.fft.HammingWindow;
+import be.tarsos.dsp.util.fft.WindowFunction;
 
 
 public class MFCC implements AudioProcessor {
@@ -46,18 +47,21 @@ public class MFCC implements AudioProcessor {
     private FFT fft;
     private int samplesPerFrame; 
     private float sampleRate;
-    
+
     public MFCC(int samplesPerFrame, int sampleRate){
     	this(samplesPerFrame, sampleRate, 30, 30, 133.3334f, ((float)sampleRate)/2f);
     }
+    public MFCC(int samplesPerFrame, float sampleRate, int amountOfCepstrumCoef, int amountOfMelFilters, float lowerFilterFreq, float upperFilterFreq){
+        this(samplesPerFrame, sampleRate, amountOfCepstrumCoef, amountOfMelFilters, lowerFilterFreq, upperFilterFreq, new HammingWindow());
+    }
 
-    public MFCC(int samplesPerFrame, float sampleRate, int amountOfCepstrumCoef, int amountOfMelFilters, float lowerFilterFreq, float upperFilterFreq) {
+    public MFCC(int samplesPerFrame, float sampleRate, int amountOfCepstrumCoef, int amountOfMelFilters, float lowerFilterFreq, float upperFilterFreq, WindowFunction windowFunction) {
         this.samplesPerFrame = samplesPerFrame; 
         this.sampleRate = sampleRate;
         this.amountOfCepstrumCoef = amountOfCepstrumCoef;
         this.amountOfMelFilters = amountOfMelFilters;
-        this.fft = new FFT(samplesPerFrame, new HammingWindow());
-        
+        this.fft = new FFT(samplesPerFrame, windowFunction);
+
         this.lowerFilterFreq = Math.max(lowerFilterFreq, 25);
         this.upperFilterFreq = Math.min(upperFilterFreq, sampleRate / 2);
         calculateFilterBanks();       
