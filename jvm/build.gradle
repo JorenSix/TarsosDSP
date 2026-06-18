@@ -4,21 +4,23 @@ plugins {
     id 'java'
     id 'maven-publish'
 }
-sourceCompatibility = 11
-targetCompatibility = 11
-
 ext.moduleName = 'TarsosDSP.jvm'
-group 'be.tarsos.dsp'
-version '2.5'
+group = 'be.tarsos.dsp'
+version = '2.5'
 
 java {
+    // Java 11 is the published bytecode floor for downstream consumers.
+    // Using the toolchain compiles with true --release 11 semantics.
+    toolchain {
+        languageVersion = JavaLanguageVersion.of(11)
+    }
     withJavadocJar()
     withSourcesJar()
 }
 
 dependencies {
-    testImplementation 'org.junit.jupiter:junit-jupiter-api:5.8.2'
-    testImplementation 'org.junit.jupiter:junit-jupiter-engine:5.7.1'
+    testImplementation libs.junit.jupiter
+    testRuntimeOnly libs.junit.platform.launcher
     implementation(project(":core"))
 }
 

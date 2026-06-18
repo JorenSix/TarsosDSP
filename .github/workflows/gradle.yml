@@ -2,7 +2,7 @@
 # They are provided by a third-party and are governed by
 # separate terms of service, privacy policy, and support
 # documentation.
-# This workflow will build a Java project with Gradle and cache/restore any dependencies to improve the workflow execution time
+# This workflow builds TarsosDSP with Gradle across several JDKs.
 # For more information see: https://help.github.com/actions/language-and-framework-guides/building-and-testing-java-with-gradle
 name: TarsosDSP Gradle Build
 
@@ -20,17 +20,32 @@ jobs:
 
     runs-on: ubuntu-latest
 
+    strategy:
+      fail-fast: false
+      matrix:
+        # The JDK that runs Gradle. Gradle 9.x requires JDK 17+ to run, so the
+        # Java-11 baseline is validated via the toolchain (see below), not by
+        # running Gradle on 11. The matrix proves the build + tests work across
+        # current LTS/latest JDKs.
+        java: [ '17', '21', '24' ]
+
     steps:
     - uses: actions/checkout@v4
     - uses: FedericoCarboni/setup-ffmpeg@v3
       id: setup-ffmpeg
       with:
         token: "${{ secrets.GITHUB_TOKEN }}"
-    - name: Set up JDK 17
+    # Install JDK 11 and 17 toolchains plus the matrix JDK. The last entry in
+    # java-version is the one Gradle runs on. core/jvm compile against the
+    # JDK 11 toolchain (true --release 11), examples against 17.
+    - name: Set up JDKs
       uses: actions/setup-java@v4
       with:
-        java-version: '17'
         distribution: 'temurin'
+        java-version: |
+          11
+          17
+          ${{ matrix.java }}
     - name: Set up Gradle
       uses: gradle/actions/setup-gradle@v4
     - name: Build with Gradle

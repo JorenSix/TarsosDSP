@@ -1,14 +1,18 @@
 import java.text.SimpleDateFormat
 
 plugins {
-    id 'com.github.johnrengelman.shadow' version '7.1.2'
+    alias(libs.plugins.shadow)
     id 'java'
 }
 
-sourceCompatibility = 17
-targetCompatibility = 17
-
 ext.moduleName = 'TarsosDSP.examples'
+
+java {
+    // Examples are not published, so they are free to target a higher baseline.
+    toolchain {
+        languageVersion = JavaLanguageVersion.of(17)
+    }
+}
 
 repositories {
     mavenCentral()
@@ -28,7 +32,7 @@ jar {
 }
 
 dependencies {
-    implementation 'org.reflections:reflections:0.10.2'
+    implementation libs.reflections
 
     implementation(project(":core"))
     implementation(project(":jvm"))

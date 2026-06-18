@@ -1,0 +1,12 @@
+[versions]
+junit = "5.11.4"
+reflections = "0.10.2"
+shadow = "9.4.2"
+
+[libraries]
+junit-jupiter = { module = "org.junit.jupiter:junit-jupiter", version.ref = "junit" }
+junit-platform-launcher = { module = "org.junit.platform:junit-platform-launcher" }
+reflections = { module = "org.reflections:reflections", version.ref = "reflections" }
+
+[plugins]
+shadow = { id = "com.gradleup.shadow", version.ref = "shadow" }

@@ -5,14 +5,16 @@ plugins {
     id 'maven-publish'
 }
 
-sourceCompatibility = 11
-targetCompatibility = 11
-
 ext.moduleName = 'TarsosDSP.core'
-group 'be.tarsos.dsp'
-version '2.5'
+group = 'be.tarsos.dsp'
+version = '2.5'
 
 java {
+    // Java 11 is the published bytecode floor for downstream consumers.
+    // Using the toolchain compiles with true --release 11 semantics.
+    toolchain {
+        languageVersion = JavaLanguageVersion.of(11)
+    }
     withJavadocJar()
     withSourcesJar()
 }
@@ -22,13 +24,20 @@ repositories {
 }
 
 dependencies {
-    testImplementation 'org.junit.jupiter:junit-jupiter-api:5.8.2'
-    testImplementation 'org.junit.jupiter:junit-jupiter-engine:5.7.1'
+    testImplementation libs.junit.jupiter
+    testRuntimeOnly libs.junit.platform.launcher
     testImplementation(project(":jvm"))
 }
 
 test {
-    useJUnitPlatform()
+    useJUnitPlatform {
+        // Tests tagged 'manual' require audio hardware (playback/capture) or are
+        // unverified ports; they are excluded from automated/CI runs. Run them
+        // explicitly with: ./gradlew test -PrunManual (see below).
+        if (!project.hasProperty('runManual')) {
+            excludeTags 'manual'
+        }
+    }
 }
 
 javadoc {

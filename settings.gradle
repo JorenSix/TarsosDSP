@@ -1,3 +1,10 @@
+plugins {
+    // Lets Gradle auto-provision the JDK declared by each module's toolchain
+    // (e.g. download a real JDK 11 to compile core/jvm against, regardless of
+    // the JDK running Gradle).
+    id 'org.gradle.toolchains.foojay-resolver-convention' version '1.0.0'
+}
+
 rootProject.name = 'TarsosDSP'
 include 'core'
 include 'jvm'
