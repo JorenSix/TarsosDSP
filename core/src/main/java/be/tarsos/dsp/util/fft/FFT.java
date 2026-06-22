@@ -68,34 +68,39 @@ public class FFT {
 	}
 
 	/**
-	 * Computes forward DFT.
-	 * 
-	 * @param data
-	 *            data to transform.
+	 * Computes forward real DFT in-place.
+	 * @param data The first {@code fftSize} samples must contain the time-domain signal;
 	 */
 	public void forwardTransform(final float[] data) {
-		if(windowFunction!=null){
-			for(int i = 0 ; i < data.length ; i++){
+		if (window != null)
+			for(int i = 0 ; i < window.length; i++)
 				data[i] = data[i] * window[i];
-			}
-			//windowFunction.apply(data);
-		}
 		fft.realForward(data);
 	}
 
-	/**
-	 * do a complex forward transform
-	 * @param data do a complex forward transform on these complex numbers
-	 */
+	/**do a complex forward transform, applying the window if any.
+	 * Complex number is stored as two float values in
+     * sequence: the real and imaginary part, i.e. the size of the input array
+     * must be greater or equal 2*n. The physical layout of the input data has
+     * to be as follows:<br>
+     * <pre>
+     * a[2*k] = Re[k], 
+     * a[2*k+1] = Im[k], 0&lt;=k&lt;n
+     * </pre>
+     * 	 * @param data do a complex forward transform on these complex numbers */
 	public void complexForwardTransform(final float[] data) {
-		if(windowFunction!=null){
-			for(int i = 0 ; i < data.length ; i++){
-				data[i] = data[i] * window[i];
-			}
-			//windowFunction.apply(data);
-		}
-		fft.complexForward(data);
+	    if (window != null) {
+	        if (data.length < 2 * window.length)
+	            throw new IllegalArgumentException("data length must be >= 2 * fft size");
+	        for (int i = 0; i < window.length; i++) {
+	            int ri = i * 2;
+	            data[ri] *= window[i];
+	            data[ri + 1] *= window[i];
+	        }
+	    }
+	    fft.complexForward(data);
 	}
+
 
 	/**
 	 * Computes inverse DFT.

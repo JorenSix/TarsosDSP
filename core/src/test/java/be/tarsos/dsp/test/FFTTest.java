@@ -40,6 +40,7 @@ import be.tarsos.dsp.io.jvm.JVMAudioInputStream;
 import be.tarsos.dsp.pitch.PitchDetectionResult;
 import be.tarsos.dsp.pitch.Yin;
 import be.tarsos.dsp.util.fft.FFT;
+import be.tarsos.dsp.util.fft.HammingWindow;
 import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -47,7 +48,111 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 
 public class FFTTest {
 
-	
+	@Test
+	public void testFFTWindow() {
+		final int FFT_SIZE = 4096;
+		final FFT noWindow = new FFT(FFT_SIZE);
+		final FFT withWindow = new FFT(FFT_SIZE, new HammingWindow());
+
+		final float[] test1 = new float[FFT_SIZE * 2];
+		final float[] test2 = new float[FFT_SIZE * 2];
+		float[] magnitudes;
+		float max;
+
+		// generate a 440 Hz tone at amplitude 0.6
+		final double SAMPLE_RATE = 48000.0;
+		final double HZ = 440.0;
+		final double AMPLITUDE = 0.6;
+		final float[] sinWave = TestUtilities.audioBufferSine(SAMPLE_RATE, HZ, FFT_SIZE, AMPLITUDE);
+
+		// copy audio into first half of test arrays (zeros remain in last half)
+		System.arraycopy(sinWave, 0, test1, 0, FFT_SIZE);
+		System.arraycopy(sinWave, 0, test2, 0, FFT_SIZE);
+
+		// no window
+		max = 0;
+		noWindow.forwardTransform(test1);
+		magnitudes = new float[test1.length / 2];
+		noWindow.modulus(test1, magnitudes);
+		for (int i = 0; i < magnitudes.length; i++) {
+			float m = magnitudes[i];
+			assertTrue(Float.isFinite(m) && m >= 0f, i + ": " + m);
+			if (m > max)
+				max = m;
+		}
+		assertTrue(max > 0);
+
+		// with window
+		max = 0;
+		withWindow.forwardTransform(test2);
+		magnitudes = new float[test2.length / 2];
+		withWindow.modulus(test2, magnitudes);
+		for (int i = 0; i < magnitudes.length; i++) {
+			float m = magnitudes[i];
+			assertTrue(Float.isFinite(m) && m >= 0f, i + ": " + m);
+			if (m > max)
+				max = m;
+		}
+		assertTrue(max > 0);
+	}
+
+	@Test
+	public void testComplexFFTWindow() {
+		final int FFT_SIZE = 1024;
+		final FFT noWindow = new FFT(FFT_SIZE);
+		final FFT withWindow = new FFT(FFT_SIZE, new HammingWindow());
+
+		// interleaved complex arrays: re0, im0, re1, im1, ...
+		final float[] bufNoWindow = new float[FFT_SIZE * 2];
+		final float[] bufWithWindow = new float[FFT_SIZE * 2];
+
+		// generate a short sine as real parts (imag parts remain zero)
+		final double SAMPLE_RATE = 48000.0;
+		final double HZ = 440.0;
+		final double AMPLITUDE = 0.6;
+		final float[] sinWave = TestUtilities.audioBufferSine(SAMPLE_RATE, HZ, FFT_SIZE, AMPLITUDE);
+
+		for (int i = 0; i < FFT_SIZE; i++) {
+			bufNoWindow[2 * i] = sinWave[i];
+			bufNoWindow[2 * i + 1] = 0f;
+			bufWithWindow[2 * i] = sinWave[i];
+			bufWithWindow[2 * i + 1] = 0f;
+		}
+
+		// run complex forward transforms
+		noWindow.complexForwardTransform(bufNoWindow);
+		withWindow.complexForwardTransform(bufWithWindow);
+
+		// verify magnitudes are finite and non-negative and that a peak exists
+		float maxNo = 0f;
+		float maxWith = 0f;
+		for (int i = 0; i < FFT_SIZE; i++) {
+			int reIdx = 2 * i;
+			int imIdx = reIdx + 1;
+			float reNo = bufNoWindow[reIdx];
+			float imNo = bufNoWindow[imIdx];
+			float magNo = (float) Math.hypot(reNo, imNo);
+			assertTrue(Float.isFinite(magNo) && magNo >= 0f, "no-window mag invalid at bin " + i);
+			if (magNo > maxNo) maxNo = magNo;
+
+			float reW = bufWithWindow[reIdx];
+			float imW = bufWithWindow[imIdx];
+			float magW = (float) Math.hypot(reW, imW);
+			assertTrue(Float.isFinite(magW) && magW >= 0f, "windowed mag invalid at bin " + i);
+			if (magW > maxWith) maxWith = magW;
+		}
+
+		assertTrue(maxNo > 0f, "expected non-zero magnitude without window");
+		assertTrue(maxWith > 0f, "expected non-zero magnitude with window");
+
+		// optional sanity: ensure transforms produced different results (window alters spectrum)
+		// This is not strictly required but useful as a lightweight check.
+		boolean different = false;
+		for (int i = 0; i < bufNoWindow.length; i++)
+			if (bufNoWindow[i] != bufWithWindow[i]) { different = true; break; }
+		assertTrue(different, "windowed and non-windowed outputs should differ");
+	}
+
 	@Test
 	public void testForwardAndBackwardsFFT() {
 		final double sampleRate = 44100.0;
