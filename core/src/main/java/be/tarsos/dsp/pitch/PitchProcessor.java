@@ -124,6 +124,20 @@ public class PitchProcessor implements AudioProcessor {
 		detector = algorithm.getDetector(sampleRate, bufferSize);
 		this.handler = handler;	
 	}
+
+	/**
+	 * Initialize a new pitch processor.
+	 * 
+	 * @param detector 
+	 * 			The pitch detector to use.
+	 * 
+	 * @param handler
+	 * 			The handler handles detected pitch.
+	 */
+	public PitchProcessor(PitchDetector detector, PitchDetectionHandler handler) {
+		this.detector = detector;
+		this.handler = handler;
+	}
 	
 	@Override
 	public boolean process(AudioEvent audioEvent) {
